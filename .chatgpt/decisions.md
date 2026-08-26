@@ -46,17 +46,17 @@ This decision supersedes the earlier `plugin-first` implementation sequencing wh
 
 The recovered founding roadmap is:
 
-1. **ZeroLocal/ANRD Specification v0.1** — first define protocol, roles, trust boundaries, contracts, and the provider adapter interface.
+1. **ZeroLocal Specification v0.1** — first define protocol, roles, trust boundaries, contracts, lifecycle, conformance, and the provider adapter interface.
 2. **Cloudflare executable reference** — use `iorLab/zerolocal-cloudflare-starter` to prove that the specification can be implemented and to expose ambiguity through real CI/deployment behavior.
 3. **ZeroLocal Core Skill** — translate the provider-neutral specification into a repeatable procedural workflow that ChatGPT can execute consistently.
 4. **Cloudflare Provider Skill** — separate Cloudflare-specific provisioning, deployment, verification, and recovery behavior from the Core Skill.
-5. **Second-project clean-room validation** — start from a different empty repository and run the skills end to end without relying on hidden context from `awesome-fame-slider`, the founding conversation, or unstated operator knowledge.
-6. **ZeroLocal Plugin only after stabilization** — once Core Skill, provider skills, contracts, and clean-room execution are stable, consider packaging them with GitHub integration and templates into an installable product.
+5. **Clean-room multi-project validation** — run the skills on new non-founding projects from empty repositories/fresh contexts without relying on hidden context from `awesome-fame-slider`, the founding conversation, or unstated operator knowledge.
+6. **ZeroLocal Plugin only after stabilization** — once Core Skill, provider skills, contracts, failure taxonomy, and clean-room execution are stable, consider packaging them with GitHub integration, templates, onboarding, and distribution into an installable product.
 
 Rationale:
 
 - Skills are the right layer for stabilizing procedural knowledge before fixing a broader product/API surface.
-- The executable reference tests the specification; the skills test repeatability; the second project tests portability and hidden-context independence.
+- The executable reference tests the specification; the skills test repeatability; clean-room projects test portability and hidden-context independence.
 - Packaging too early risks freezing accidental assumptions from the founding project into the product interface.
 - The Plugin should compose validated workflows rather than be the place where those workflows are first discovered.
 
@@ -66,3 +66,28 @@ Rationale:
 - Provider-specific behavior is modular and should be expressed through a defined provider adapter/skill contract.
 - Cloudflare is the first provider implementation; future providers may include Vercel, AWS, Fly.io, or others without changing provider-neutral Core semantics.
 - Where mature provider plugins/skills already exist, a ZeroLocal Provider Skill may delegate provider-specific operations rather than duplicate provider expertise.
+
+## 2026-08-26 — ANRD is the former name of ZeroLocal
+
+- `ANRD` means **AI-Native Repository Delivery** and is the former name used for the same project/operating model now called ZeroLocal.
+- Do not maintain ANRD and ZeroLocal as separate conceptual architectures unless a future explicit decision creates such a distinction.
+- Historical ANRD wording may be translated directly into current ZeroLocal terminology when extracting requirements and design rationale.
+
+## 2026-08-26 — Adopt the recovered development reference as directional guidance
+
+- The user-supplied `ZeroLocal 开发参考文档 v0.1` is accepted as a high-priority directional reference for the current development phase.
+- It is **not** the canonical Specification; normative truth remains in `iorLab/zerolocal`, especially `SPECIFICATION.md` and RPM decisions.
+- The reference's six-layer architecture is accepted as the current design frame: Human Governance, Agent, Repository Control Plane, Verification & Delivery, Provider Adapter, and Production Observation.
+- The current Core Contract families are Lifecycle, Repository, RPM, CI, Deployment, Trust Boundary, and Provider Adapter.
+- The lifecycle to formalize is `BOOTSTRAP -> IMPLEMENT -> VERIFY -> PROVISION -> DEPLOY -> OBSERVE -> REPAIR/ITERATE -> CHECKPOINT`.
+- The proposed Skill procedural surface is `Initialize -> Plan -> Implement -> Verify -> Deliver -> Observe -> Checkpoint`; the Specification lifecycle and Skill procedure are related but should remain distinct layers.
+- Phase ordering is authoritative for current planning: Founding Case -> Specification v0.1 -> Cloudflare Reference -> Skill v0.1 -> Skill Stabilization -> Plugin.
+- v0.1 explicitly does not target broad multi-provider support or Plugin-first productization; Cloudflare is the sole initial reference provider.
+- Plugin graduation is gate-driven rather than date-driven. At minimum, the skills must work on at least two new non-founding projects; the reference recommends 2-3 real projects before productization.
+
+## 2026-08-26 — Checkpoint after roadmap recovery
+
+- Current phase is **Phase 1 — Specification v0.1**.
+- The next substantive work is to tighten the protocol, roles, lifecycle, trust boundaries, contract families, conformance requirements, and Provider Adapter Contract before implementing the Cloudflare reference.
+- `iorLab/zerolocal-cloudflare-starter` remains empty/pending until the specification is sufficiently explicit to act as its contract.
+- Do not begin Plugin packaging during this phase.

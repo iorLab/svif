@@ -1,51 +1,87 @@
 # ZeroLocal
 
-**ZeroLocal** is a working specification for repository-first, AI-operated software delivery where a human can run the normal development, validation, release, and repository-side recovery loop without requiring a local project checkout or local project/deployment toolchain.
+**ZeroLocal** is an installable, provider-neutral orchestration plugin and working specification for repository-first, AI-operated software development where a human can run the normal implementation, validation, release, and repository-side recovery loop without requiring a local project checkout or local project/deployment toolchain.
 
 Local development is allowed. The defining property is that it is **not required**.
 
+## Target experience
+
+```text
+Install ZeroLocal
+        ↓
+“Use ZeroLocal mode for this project”
+        ↓
+ZeroLocal Core
+(repository + RPM + validation + recovery + trust boundaries)
+        ↓
+Deployment needed?
+        ↓
+Choose or resolve provider
+   ├─ Cloudflare → Cloudflare provider flow
+   ├─ Vercel     → Vercel provider flow
+   ├─ AWS        → AWS provider flow
+   └─ ...
+        ↓
+Remote delivery + production verification
+```
+
+The user should not need to start from, clone, or fork a provider-specific starter to enter the ZeroLocal workflow.
+
 ## Status
 
-ZeroLocal Specification v0.1 is a **Working Draft**.
+ZeroLocal v0.1 is a **Working Draft** covering both the normative operating model and the architecture of the installable orchestration plugin.
 
+- Canonical repository: `iorLab/zerolocal`
 - Canonical specification: [`SPECIFICATION.md`](./SPECIFICATION.md)
 - Repository Project Memory: [`.chatgpt/project-memory.yaml`](./.chatgpt/project-memory.yaml)
-- Cloudflare reference implementation: `iorLab/zerolocal-cloudflare-starter`
+- First provider reference/golden fixture: `iorLab/zerolocal-cloudflare-starter`
 - Founding case study: `mattamior/awesome-fame-slider`
+
+## Architecture
+
+ZeroLocal is intentionally split into layers:
+
+1. **ZeroLocal Core specification** — provider-neutral invariants for repository authority, no-local operation, remote validation, trust boundaries, delivery provenance, recovery, and durable project state.
+2. **ZeroLocal plugin/orchestrator** — the installable user-facing workflow that activates ZeroLocal mode, operates the repository, maintains RPM, and dispatches provider-specific work.
+3. **Provider flows/adapters** — modular deployment-specific behavior for Cloudflare, Vercel, AWS, or other platforms.
+4. **Provider reference fixtures** — repositories used to validate what a provider flow generates and how it behaves end to end.
+
+`iorLab/zerolocal-cloudflare-starter` belongs primarily to layer 4 and supports development/testing of the first Cloudflare provider flow. It is not the primary ZeroLocal product or required user entry point.
 
 ## Core idea
 
 ```text
 Human intent / approvals
         ↓
-AI / repository operator
+ZeroLocal plugin
         ↓
-Canonical repository + durable project state
+Canonical repository + RPM
         ↓
-Remote validation
+Remote implementation / validation / recovery
+        ↓
+Provider selection + provider flow
         ↓
 Remote delivery
         ↓
 Production verification
 ```
 
-The human retains trust-boundary control. Secrets stay in repository/provider secret stores rather than chat. Implementation, validation, deployment orchestration, diagnostics, and repository memory are designed to remain operable remotely.
+The human retains trust-boundary control. Secrets stay in repository/provider secret stores rather than chat. Provider-specific capabilities should be delegated to modular integrations where practical rather than hard-coded into ZeroLocal Core.
 
 ## v0.1 focus
 
-The first draft defines:
+The current work is to define:
 
-- a provider-neutral ZeroLocal Core;
-- the exact meaning of "no local prerequisite";
-- repository authority and immutable revision provenance;
+- the installable ZeroLocal plugin activation and lifecycle contract;
+- the provider-neutral orchestration state machine;
+- Repository Project Memory (RPM) bootstrap/resume/checkpoint behavior;
+- provider discovery and dispatch;
+- the provider adapter interface;
 - remote validation and repository-side failure recovery;
-- secrets and human trust boundaries;
-- deployment integrity for deployable systems;
-- an optional Repository Project Memory (RPM) profile;
-- an optional Continuous Delivery profile;
-- the boundary for provider-specific reference profiles.
-
-The first reference profile will target GitHub Actions + Cloudflare Workers, with optional D1 usage.
+- secret and human trust boundaries;
+- deployment integrity and immutable revision provenance;
+- project and provider-flow conformance checks;
+- Cloudflare as the first complete provider path.
 
 ## Project state
 

@@ -2,7 +2,9 @@ version: 1
 project:
   name: ZeroLocal
   repository: iorLab/zerolocal
-  reference_implementation: iorLab/zerolocal-cloudflare-starter
+  product_form: installable-plugin
+  provider_references:
+    cloudflare: iorLab/zerolocal-cloudflare-starter
   founding_case_study: mattamior/awesome-fame-slider
 canonical_source: github
 files:

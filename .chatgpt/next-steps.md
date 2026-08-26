@@ -1,14 +1,14 @@
 # Next Steps
 
-1. Define the ZeroLocal plugin's user-facing activation contract: installation, natural-language activation (for example, “use ZeroLocal mode for this project”), repository discovery, RPM bootstrap/load, and lifecycle entry.
-2. Define the provider-neutral ZeroLocal Core orchestration state machine: inspect repository -> establish durable project state -> implement -> remotely validate -> classify failures -> repair remotely -> choose/resolve deployment provider when needed -> deploy/verify -> checkpoint.
-3. Define a provider adapter contract covering provider discovery, capability/dependency checks, trust-boundary requirements, secret names/scopes, project scaffolding, CI/CD setup, resource provisioning, deployment, endpoint discovery, verification, and failure recovery.
-4. Decide provider packaging: provider flows embedded in the ZeroLocal plugin, delegated to provider-specific plugins/tools, or a hybrid model. Prefer composability so ZeroLocal does not duplicate mature provider capabilities unnecessarily.
-5. Revise `SPECIFICATION.md` so it distinguishes three layers explicitly: ZeroLocal normative operating model, ZeroLocal installable orchestration plugin, and provider-specific flows/adapters.
-6. Revise `README.md` and RPM terminology so `iorLab/zerolocal-cloudflare-starter` is described as the Cloudflare provider-flow reference scaffold/golden fixture/conformance testbed, not the primary ZeroLocal entry point.
-7. Bootstrap the actual ZeroLocal plugin/skill structure in `iorLab/zerolocal` and encode the core workflow before building provider-specific automation.
-8. Use Cloudflare as the first end-to-end provider path. Build the Cloudflare adapter/flow and use `iorLab/zerolocal-cloudflare-starter` to test generated repository state, CI, exact-SHA delivery, provisioning, health/readiness verification, and recovery behavior.
-9. Define a minimal machine-readable ZeroLocal project/provider manifest so the plugin can resume an existing project without repeatedly asking already-known provider or workflow information.
-10. Add conformance checks at both layers: repository/project conformance to ZeroLocal invariants and provider-flow conformance to the adapter contract.
-11. Extract the founding case study from `mattamior/awesome-fame-slider`, including the missing product lesson that ZeroLocal should become a reusable installable workflow rather than remain a project-specific playbook.
-12. After the Cloudflare path works through the plugin interface, add a second provider path to validate that provider dispatch is genuinely modular.
+1. Finish `SPECIFICATION.md` v0.1 around the provider-neutral protocol: roles, repository authority, trust boundaries, lifecycle contracts, remote validation/recovery, deployment provenance, and the provider adapter interface.
+2. Define the provider adapter contract in enough detail that a provider implementation can declare capabilities, dependencies, credential requirements/scopes, initialization, scaffolding, CI/CD behavior, provisioning, deployment, endpoint discovery, verification, and failure-recovery hooks.
+3. Bootstrap `iorLab/zerolocal-cloudflare-starter` as the first executable reference implementation of that provider contract. Use implementation failures and ambiguities to refine the specification rather than silently encoding Cloudflare assumptions into Core.
+4. Define and implement the **ZeroLocal Core Skill** in `iorLab/zerolocal`: repository discovery/initialization, RPM bootstrap/load/checkpoint, lifecycle orchestration, remote validation, failure classification, repository-side repair, trust-boundary handling, and provider dispatch.
+5. Define and implement the **Cloudflare Provider Skill** separately from Core. It should satisfy the provider adapter contract and may delegate mature provider-specific operations to existing Cloudflare skills/tools where that is cleaner than duplicating provider expertise.
+6. Add conformance checks at two layers: specification/project invariants and provider-adapter/skill behavior.
+7. Create or choose a **second real project starting from an empty repository** and execute the Core Skill + Cloudflare Provider Skill end to end. Treat any dependence on unstated context from `awesome-fame-slider`, this project conversation, or operator memory as a failure.
+8. Record every hidden assumption exposed by the second-project run and fix it at the appropriate layer: Specification, Core Skill, Provider Skill, reference fixture, or RPM contract.
+9. Repeat the second-project flow until a fresh conversation can bootstrap, develop, validate, deploy, diagnose, and checkpoint the project from repository state plus installed skills alone.
+10. Only after the skills and contracts are stable, define the **ZeroLocal Plugin** packaging layer that composes the validated skills, GitHub integration, templates, installation UX, provider discovery, and natural-language activation.
+11. After Cloudflare is stable, add a second provider implementation to validate that provider dispatch and the adapter contract are genuinely provider-neutral.
+12. Define explicit graduation criteria from Skill phase to Plugin phase, including clean-room reproducibility, provider-contract stability, RPM resume behavior, failure recovery, and absence of founding-project-specific assumptions.

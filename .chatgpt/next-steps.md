@@ -1,43 +1,38 @@
 # Next Steps
 
-## Phase 1 — Specification v0.1 (current)
+## Phase 4 — Skill Stabilization (current, mandatory before Plugin)
 
-1. Restructure and tighten `SPECIFICATION.md` around the ZeroLocal protocol rather than around any provider implementation. Define roles, normative terminology, lifecycle states/transitions, repository authority, and observable conformance evidence.
-2. Formalize the seven current Core Contract families:
-   - Lifecycle Contract
-   - Repository Contract
-   - RPM Contract
-   - CI Contract
-   - Deployment Contract
-   - Trust Boundary Contract
-   - Provider Adapter Contract
-3. Specify the lifecycle `BOOTSTRAP -> IMPLEMENT -> VERIFY -> PROVISION -> DEPLOY -> OBSERVE -> REPAIR/ITERATE -> CHECKPOINT`, including entry conditions, required evidence, valid transitions, failure paths, and completion criteria for each state.
-4. Define the Provider Adapter Contract in enough detail that a provider implementation can declare capabilities, dependencies, credential names/minimum scopes, initialization, scaffolding, CI/CD behavior, provisioning, migrations/state transitions, deployment, immutable revision provenance, endpoint discovery, production verification, and recovery hooks.
-5. Define glossary, maturity/conformance model, and the boundary between repository-static conformance evidence and live operational evidence.
-6. Align the existing numbered `ZL-CORE-*`, RPM, and Continuous Delivery requirements with the contract/lifecycle model; remove accidental Cloudflare/GitHub-specific assumptions from normative Core language.
-7. Resolve the v0.1 questions that block an executable reference, especially RPM's normative status, human production approval gates, exact validated-revision semantics, and the minimum machine-readable project/provider manifest.
+1. Select at least **two new non-founding real projects**, preferably **2-3**, that do not depend on `awesome-fame-slider` or this founding conversation.
+2. Start each validation from a fresh context and repository state. The operator should have only the installed ZeroLocal Skills plus repository/RPM evidence available.
+3. For each project, exercise the complete relevant path:
+   - Initialize / BOOTSTRAP
+   - Plan
+   - Implement / IMPLEMENT
+   - Verify / VERIFY
+   - Deliver / PROVISION + DEPLOY when applicable
+   - Observe / OBSERVE
+   - Repair/Iterate on at least one real failure when encountered
+   - Checkpoint / CHECKPOINT
+4. Treat any dependency on hidden chat history, founding-project knowledge, unstated provider assumptions, or human local tooling as a ZeroLocal defect.
+5. Fix each defect in the correct durable layer:
+   - protocol invariant or lifecycle ambiguity -> `SPECIFICATION.md`
+   - provider-neutral execution procedure -> `skills/zerolocal-core/SKILL.md`
+   - Cloudflare-specific behavior -> `skills/cloudflare-provider/SKILL.md`
+   - executable provider behavior -> `iorLab/zerolocal-cloudflare-starter`
+   - durable resume/bootstrap gap -> RPM contract/files
+   - regression risk -> conformance checks
+6. Build a reusable failure taxonomy/recovery playbook from observed failures, covering at least CI, dependencies/toolchain, repository permissions, protected secrets, provider authorization, provisioning, migrations/state transitions, routing/DNS, and production health/readiness.
+7. Tighten `ZEROLOCAL.yaml`/Provider Adapter fields only when fresh-project use demonstrates a concrete missing contract.
+8. Repeat clean-room runs until a fresh conversation can bootstrap, develop, validate, deliver, diagnose, repair, observe, and checkpoint without founding context or mandatory local project tooling.
 
-## Phase 2 — Cloudflare executable reference
+## Live Cloudflare reference evidence
 
-8. Once Phase 1 is sufficiently explicit, bootstrap `iorLab/zerolocal-cloudflare-starter` as the first executable reference implementation of the provider contract.
-9. Provide the smallest runnable reference covering RPM, CI, Deploy, exact-tested-SHA release, Cloudflare Workers, optional D1 provisioning/migrations, serialized production operations where required, and health/readiness verification.
-10. Treat every implementation ambiguity as specification feedback. Refine Core/contracts rather than silently encoding Cloudflare-specific assumptions into generic semantics.
+9. Static repository conformance and CI are part of Skill v0.1 completion. Live provider deploy/observation remains an explicit trust boundary until `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` exist in the reference repository's protected GitHub Actions secret store.
+10. When those protected prerequisites are available, confirm one end-to-end reference deployment: successful CI SHA -> same deployed SHA -> discovered Cloudflare target -> passing `/health` observation. Never move secret values into chat or repository plaintext.
 
-## Phase 3 — ZeroLocal Skill v0.1
+## Phase 5 — Plugin (still gated)
 
-11. Implement the **ZeroLocal Core Skill** as procedural knowledge corresponding to `Initialize -> Plan -> Implement -> Verify -> Deliver -> Observe -> Checkpoint`, while preserving the distinction between Skill procedures and protocol lifecycle states.
-12. Implement the **Cloudflare Provider Skill** separately from Core. It should satisfy the Provider Adapter Contract and may delegate mature provider-specific operations to existing Cloudflare tools/skills instead of duplicating them.
-13. Add conformance and acceptance checks for both repository/project invariants and provider-skill behavior.
-
-## Phase 4 — Skill stabilization (mandatory before Plugin)
-
-14. Run the skills end to end on at least **two new non-founding real projects**, preferably **2-3**, starting from empty repositories/fresh contexts.
-15. Treat any dependency on `awesome-fame-slider`, founding-chat history, this conversation, or unstated operator knowledge as a defect. Fix the missing knowledge in Specification, Core Skill, Provider Skill, reference fixture, or RPM as appropriate.
-16. Build a reusable failure taxonomy and recovery strategy for CI, dependencies, secrets, permissions, provisioning, migrations, DNS/routing, and production health/readiness failures.
-17. Repeat clean-room runs until a fresh conversation can bootstrap, develop, validate, deploy, diagnose, repair, observe, and checkpoint from repository state plus installed skills alone.
-
-## Phase 5 — Plugin (gated)
-
-18. Define explicit graduation criteria for Plugin work. Plugin packaging begins only after Core contracts and provider interfaces are stable across at least one minor cycle and the clean-room project gates pass.
-19. Only then design the ZeroLocal Plugin as the distribution/product shell combining validated skills, GitHub integration, templates, guided setup, provider discovery, versioning, installability, and natural-language activation.
-20. After the Cloudflare skill/reference path is stable, add a second provider implementation to validate provider neutrality before broad provider claims.
+11. Do not begin Plugin packaging until the multi-project clean-room gate passes and recurring failure modes have reusable recovery strategies.
+12. Before graduation, require at minimum two new project passes (preferably 2-3), stable Core/provider interfaces across a minor cycle, and no known hidden-context dependency.
+13. Only after that gate should Plugin work package the validated Skills, GitHub integration, templates, onboarding, provider discovery, versioning, and natural-language activation.
+14. Add a second provider implementation only after the Cloudflare path is stable enough to test provider neutrality rather than merely speculate about it.

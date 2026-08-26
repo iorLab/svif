@@ -1,47 +1,53 @@
 project: ZeroLocal
 status: active
-phase: plugin-architecture-v0.1
+phase: specification-v0.1
 repository: iorLab/zerolocal
-product_form: installable-plugin
+current_delivery_form: skills
+long_term_product_form: installable-plugin
 provider_references:
   cloudflare: iorLab/zerolocal-cloudflare-starter
 founding_case_study: mattamior/awesome-fame-slider
 updated_at: 2026-08-26
 summary: >-
-  ZeroLocal is being developed as an installable, provider-neutral orchestration plugin for
-  repository-first AI-operated software development. A user should be able to install the plugin,
-  state that a project should use ZeroLocal mode, and enter the ZeroLocal workflow without needing
-  a local checkout or local project/deployment toolchain. Deployment provider selection is a
-  separate step inside the flow; Cloudflare is the first provider-specific path. The founding
-  awesome-fame-slider project demonstrated the operating model on GitHub Actions and Cloudflare.
+  ZeroLocal is being developed from the AI-Native Repository Delivery (ANRD) operating model into
+  a reusable, provider-neutral way to run repository-first AI-operated software development without
+  requiring a human local checkout or local project/deployment toolchain. The recovered founding
+  roadmap is skill-first rather than plugin-first: first define Specification v0.1, then validate it
+  with an executable Cloudflare reference, encode the provider-neutral workflow as a Core Skill,
+  separate Cloudflare-specific behavior into a Provider Skill, and validate both from a second real
+  project with no hidden founding-project context. Only after those workflows stabilize should they
+  be packaged into an installable ZeroLocal Plugin.
 current_focus: >-
-  Define the ZeroLocal plugin architecture and provider-dispatch contract, then revise Specification
-  v0.1 around that product model. Build the provider-neutral core flow first, define how provider
-  adapters are selected and invoked, and use the Cloudflare reference repository as a golden fixture
-  and conformance testbed rather than as the primary user entry point.
+  Complete ZeroLocal Specification v0.1 around protocol, roles, trust boundaries, contracts, and a
+  provider adapter interface. Then use the Cloudflare reference implementation to pressure-test the
+  specification before encoding the repeatable procedural workflow as skills. Do not prematurely
+  freeze a plugin packaging/API layer before the skills survive a clean-room second-project test.
 confirmed_constraints:
   - The canonical ZeroLocal repository is iorLab/zerolocal.
-  - The target product form is an installable ChatGPT plugin/skill or equivalent installable orchestration package.
-  - A user activates ZeroLocal through natural-language intent rather than by forking a provider starter.
-  - ZeroLocal Core owns repository/RPM orchestration, remote validation, failure recovery, trust boundaries, provenance, and checkpoint behavior.
-  - Deployment provider selection is separate from ZeroLocal activation and dispatches into a provider-specific flow.
-  - Cloudflare is the first provider flow; iorLab/zerolocal-cloudflare-starter is its reference scaffold/golden fixture/conformance testbed.
+  - The founding operating model was called AI-Native Repository Delivery (ANRD); ZeroLocal is the current project/product identity built from that model.
+  - The immediate implementation target is a ZeroLocal Core Skill plus provider-specific skills, not a plugin.
+  - The long-term product target may be an installable ZeroLocal Plugin that composes stable skills, GitHub integration, and templates.
+  - A user-facing ZeroLocal workflow should eventually activate from natural-language intent such as “use ZeroLocal mode for this project”.
+  - ZeroLocal Core owns provider-neutral repository/RPM orchestration, remote validation, failure recovery, trust boundaries, provenance, and checkpoint behavior.
+  - Deployment provider selection is separate from ZeroLocal activation and dispatches into a provider-specific workflow.
+  - Cloudflare is the first provider path; iorLab/zerolocal-cloudflare-starter is the executable reference/golden fixture/conformance testbed for that path.
   - The founding case study is mattamior/awesome-fame-slider.
   - GitHub is the canonical source of truth and RPM store for this project.
   - Chat conversations are working memory only; durable project state belongs in the repository.
   - ZeroLocal means local project tooling is not required for the human's normal workflow; it does not prohibit optional local development.
   - Secrets must remain in GitHub or provider secret stores and must never be requested in chat.
   - Provider-specific behavior must remain modular and outside the provider-neutral core.
+  - A second real project created from an empty repository is required before treating the skills as stable; it must validate that execution does not depend on hidden context from awesome-fame-slider or this conversation.
 implemented:
   - RPM manifest, state, next steps, and durable decisions initialized under .chatgpt/.
   - README.md and SPECIFICATION.md initialized for ZeroLocal v0.1.
   - Initial draft contains numbered ZeroLocal Core requirements plus provisional RPM and Continuous Delivery profiles.
-  - Plugin-first, provider-second product architecture has been restored as the durable project direction.
-  - Cloudflare starter role has been corrected from whole-product reference implementation to provider-flow reference/golden fixture/testbed.
+  - Cloudflare starter role corrected from whole-product entry point to provider-flow executable reference/golden fixture/testbed.
+  - Recovered the founding productization roadmap: Specification -> Cloudflare executable reference -> Core Skill -> Cloudflare Provider Skill -> second-project clean-room validation -> Plugin only after stabilization.
 blockers: []
 open_questions:
-  - Exact installable plugin package structure and skill boundaries for ZeroLocal Core.
-  - Provider adapter contract: discovery, capability requirements, selection, initialization, deployment, verification, and recovery hooks.
-  - Whether provider flows live inside the ZeroLocal plugin, as dependencies on provider plugins, or as a hybrid model.
+  - Exact ZeroLocal Core Skill boundaries and procedural contract.
+  - Provider Skill/adapter contract: discovery, capability requirements, selection, initialization, deployment, verification, and recovery hooks.
+  - Whether provider skills directly implement provider operations or delegate to existing provider plugins/skills where available.
   - Minimum machine-readable project manifest needed for ZeroLocal activation and provider dispatch.
-  - Final conformance-level model and the relation between plugin behavior and repository/project conformance.
+  - Criteria that define “stable enough” to package the skills into a ZeroLocal Plugin.

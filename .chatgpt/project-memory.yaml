@@ -1,0 +1,19 @@
+version: 1
+project:
+  name: ZeroLocal
+  repository: iorLab/zerolocal
+  reference_implementation: iorLab/zerolocal-cloudflare-starter
+  founding_case_study: mattamior/awesome-fame-slider
+canonical_source: github
+files:
+  state: .chatgpt/state.yaml
+  next_steps: .chatgpt/next-steps.md
+  decisions: .chatgpt/decisions.md
+  specification: SPECIFICATION.md
+checkpoint:
+  triggers:
+    - 收尾
+    - 结束
+    - 先到这里
+    - checkpoint
+    - save progress

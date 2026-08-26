@@ -9,17 +9,19 @@ provider_references:
 founding_case_study: mattamior/awesome-fame-slider
 updated_at: 2026-08-26
 summary: >-
-  ZeroLocal Skill v0.1 is implementation-complete. The canonical v0.1 Specification now formalizes
-  the protocol lifecycle, seven Core Contract families, evidence model, trust boundaries, Provider
-  Adapter hooks, and mapping to the Core Skill procedure. The Cloudflare executable reference and
-  separate Core/Cloudflare Skills exist in GitHub and structural conformance CI passes. The project
-  is now in mandatory clean-room Skill Stabilization before any Plugin work.
+  ZeroLocal Skill v0.1 is implementation-complete. Specification v0.1, the Cloudflare executable
+  reference, separate Core/Cloudflare Skills, RPM, and structural conformance CI are in place. The
+  project is in mandatory clean-room Skill Stabilization. Validation Project #1 has now been selected:
+  mattamior/agent-skills, with the real delivery goal of building and deploying a Cloudflare-hosted
+  showcase website for the repository's Agent Skills.
 current_focus: >-
-  Validate ZeroLocal Core Skill v0.1 plus Cloudflare Provider Skill v0.1 on at least two new
-  non-founding real projects, preferably 2-3, from fresh contexts and repository state. Convert any
-  hidden-context dependency or recurring failure into explicit Specification, Skill, reference,
-  conformance, or RPM improvements. Build a reusable failure taxonomy/recovery playbook before
-  Plugin graduation.
+  Begin clean-room Validation Project #1 against mattamior/agent-skills. Use a fresh ChatGPT Project
+  with Project-only memory and no pre-seeded Project Instructions. For the user's current Plus plan,
+  do not assume ChatGPT Personal Skill upload/install availability; bootstrap by explicitly pointing
+  the fresh conversation at iorLab/zerolocal as the ZeroLocal Skills source and at mattamior/agent-skills
+  as the target repository. Observe whether ZeroLocal itself establishes durable RPM/bootstrap guidance,
+  requests any necessary Project Instructions, executes the lifecycle, and identifies human trust
+  boundaries without hidden founding-context help.
 development_phases:
   - phase: 0
     name: Founding Case Study
@@ -46,6 +48,12 @@ development_phases:
     name: Skill Stabilization
     status: active
     requirement: validate on at least two new non-founding real projects, preferably 2-3, from clean context/repository state
+    validation_projects:
+      - id: 1
+        repository: mattamior/agent-skills
+        goal: build and deploy a showcase website for repository Agent Skills on Cloudflare
+        status: selected-not-started
+        clean_room_setup: fresh ChatGPT Project; Project-only memory; Project Instructions initially blank; GitHub-connected; ZeroLocal source explicitly supplied as iorLab/zerolocal
   - phase: 5
     name: Plugin
     status: gated
@@ -68,6 +76,8 @@ confirmed_constraints:
   - Skill execution must be recoverable from repository state plus durable instructions/RPM and must not depend on founding chat history.
   - Before Plugin work begins, the skills must survive clean-room validation on multiple non-founding projects and common failure modes must have reusable classifications/recovery strategies.
   - The uploaded ZeroLocal development reference document v0.1 remains directional guidance, not canonical specification truth.
+  - Validation #1 must not pre-seed target-project RPM bootstrap instructions in ChatGPT Project Instructions; ZeroLocal should establish or request them itself if its procedure requires them.
+  - The current user environment is a personal Plus plan; current validation must not depend on Personal Skill upload/install being available in ChatGPT.
 implemented:
   - RPM manifest, state, next steps, and durable decisions under .chatgpt/.
   - SPECIFICATION.md restructured as ZeroLocal v0.1 protocol with lifecycle, seven contracts, provider adapter hooks, evidence classes, and Skill Definition of Done.
@@ -77,9 +87,11 @@ implemented:
   - Cloudflare reference initialized with ZEROLOCAL.yaml, RPM, minimal Worker, health endpoint, CI, trusted exact-tested-SHA deploy workflow, serialized production operations, manual immutable-SHA recovery, and post-deploy verification.
   - Cloudflare implementation pressure exposed and fixed an outdated Wrangler path; delivery now installs the repository Wrangler 4 toolchain before deploy.
   - README updated to mark Skill v0.1 implementation complete and Plugin as stabilization-gated.
+  - Validation Project #1 selected and clean-room experiment setup defined.
 blockers: []
 open_questions:
-  - Which two or three non-founding real projects should serve as clean-room stabilization fixtures.
+  - What defects, hidden-context dependencies, or recovery gaps will Validation Project #1 expose.
+  - Which second (and optionally third) non-founding real project should follow agent-skills.
   - Which failure classes recur often enough during clean-room runs to require new reusable recovery rules or conformance checks.
   - Whether provider descriptor fields need tightening after use in fresh projects.
   - Final Plugin graduation criteria beyond the current minimum two-project / preferred 2-3-project clean-room threshold and failure-taxonomy requirement.
@@ -89,5 +101,5 @@ reference_live_evidence:
     live_deploy_observe: pending protected CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID in repository secret stores
     classification: human trust boundary, not Skill v0.1 implementation blocker
 last_checkpoint:
-  saved_at: 2026-08-26T23:09:00+08:00
-  reason: user requested checkpoint after ZeroLocal Skill v0.1 completion and transition to clean-room Skill Stabilization
+  saved_at: 2026-08-26T23:40:00+08:00
+  reason: user requested checkpoint after selecting Validation Project #1 and defining the Plus-compatible clean-room bootstrap procedure

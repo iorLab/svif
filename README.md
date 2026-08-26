@@ -1,10 +1,10 @@
 # ZeroLocal
 
-**ZeroLocal** is a provider-neutral operating model and evolving skill set for repository-first, AI-operated software development where a human can run the normal implementation, validation, release, and repository-side recovery loop without requiring a local project checkout or local project/deployment toolchain.
+**ZeroLocal** is a provider-neutral operating model and skill set for repository-first, AI-operated software development where a human can run the normal implementation, validation, release, observation, and repository-side recovery loop without requiring a local project checkout or local project/deployment toolchain.
 
 Local development is allowed. The defining property is that it is **not required**.
 
-The founding operating model was developed under the name **AI-Native Repository Delivery (ANRD)**. ZeroLocal is the current project/product identity used to formalize, encode, validate, and eventually package that model for reuse.
+The founding operating model was developed under the name **AI-Native Repository Delivery (ANRD)**. ZeroLocal is the current project/product identity.
 
 ## Productization sequence
 
@@ -15,101 +15,94 @@ Specification v0.1
         ↓
 Cloudflare executable reference
         ↓
-ZeroLocal Core Skill
+ZeroLocal Core Skill v0.1
         ↓
-Cloudflare Provider Skill
+Cloudflare Provider Skill v0.1
         ↓
-Second-project clean-room validation
+Clean-room multi-project stabilization
         ↓
 Stable skills + contracts
         ↓
 ZeroLocal Plugin packaging
 ```
 
-The Plugin is a possible mature distribution/product layer, not the first implementation milestone. The workflows should be discovered and stabilized in the Specification, executable reference, and Skills before Plugin packaging freezes a broader product surface.
+Plugin packaging remains gated. The protocol and procedural workflows are stabilized before a wider product surface is frozen.
 
-## Target mature experience
+## Current status
 
-```text
-Install ZeroLocal
-        ↓
-“Use ZeroLocal mode for this project”
-        ↓
-ZeroLocal Core
-(repository + RPM + validation + recovery + trust boundaries)
-        ↓
-Deployment needed?
-        ↓
-Choose or resolve provider
-   ├─ Cloudflare → Cloudflare provider flow
-   ├─ Vercel     → Vercel provider flow
-   ├─ AWS        → AWS provider flow
-   └─ ...
-        ↓
-Remote delivery + production verification
-```
+**Skill v0.1 is implementation-complete.** The current artifacts are:
 
-The user should not need to start from, clone, or fork a provider-specific starter to enter the mature ZeroLocal workflow.
-
-## Status
-
-ZeroLocal v0.1 is a **Working Draft**. The current phase is Specification + executable-reference design; the immediate reusable implementation target is a **ZeroLocal Core Skill** and provider-specific Skills.
-
-- Canonical repository: `iorLab/zerolocal`
-- Canonical specification: [`SPECIFICATION.md`](./SPECIFICATION.md)
+- canonical protocol: [`SPECIFICATION.md`](./SPECIFICATION.md)
+- ZeroLocal Core Skill: [`skills/zerolocal-core/SKILL.md`](./skills/zerolocal-core/SKILL.md)
+- Cloudflare Provider Skill: [`skills/cloudflare-provider/SKILL.md`](./skills/cloudflare-provider/SKILL.md)
+- conformance checklist: [`conformance/v0.1.md`](./conformance/v0.1.md)
+- structural conformance runner: [`conformance/check_v0_1.py`](./conformance/check_v0_1.py)
+- Cloudflare executable reference/golden fixture: `iorLab/zerolocal-cloudflare-starter`
 - Repository Project Memory: [`.chatgpt/project-memory.yaml`](./.chatgpt/project-memory.yaml)
-- First executable provider reference/golden fixture: `iorLab/zerolocal-cloudflare-starter`
-- Founding case study: `mattamior/awesome-fame-slider`
+
+The next mandatory phase is **Skill Stabilization**: run the skills end to end on at least two new non-founding real projects, preferably 2-3, from fresh contexts and repository state. That phase is required before Plugin work.
 
 ## Architecture
 
-ZeroLocal is intentionally split into layers:
+ZeroLocal has six logical layers:
 
-1. **ZeroLocal Specification** — provider-neutral protocol and invariants for roles, repository authority, no-local operation, remote validation, trust boundaries, contracts, delivery provenance, recovery, durable project state, and provider adapters.
-2. **Executable provider references** — real implementations used to pressure-test the specification. Cloudflare is first.
-3. **ZeroLocal Core Skill** — repeatable procedural workflow that translates provider-neutral specification semantics into ChatGPT execution behavior.
-4. **Provider Skills** — modular provider-specific workflows that satisfy the provider adapter contract; Cloudflare is first.
-5. **Clean-room validation projects** — new projects used to prove that the skills operate from durable repository state and explicit contracts rather than hidden founding-project context.
-6. **ZeroLocal Plugin** — a later packaging/distribution layer that may combine stable skills, GitHub integration, templates, installation UX, and provider discovery.
+1. **Human Governance** — intent, judgment, account ownership, secrets, billing, approvals.
+2. **Agent** — ZeroLocal Core procedural orchestration.
+3. **Repository Control Plane** — canonical source, automation, RPM, durable history.
+4. **Verification & Delivery** — remote CI and exact-revision release mechanics.
+5. **Provider Adapter** — provider-specific skill/tool behavior.
+6. **Production Observation** — endpoint/readiness/health evidence and recovery signals.
 
-`iorLab/zerolocal-cloudflare-starter` belongs primarily to layers 2 and 4 as a reference fixture for the Cloudflare path. It is not the primary user entry point.
+Core semantics are provider-neutral. Cloudflare is the sole v0.1 reference provider, not a Core dependency.
 
-## Core idea
+## Lifecycle and Skill interface
+
+Protocol lifecycle:
 
 ```text
-Human intent / approvals
-        ↓
-ZeroLocal Core Skill
-        ↓
-Canonical repository + RPM
-        ↓
-Remote implementation / validation / recovery
-        ↓
-Provider selection + Provider Skill
-        ↓
-Remote delivery
-        ↓
-Production verification
+BOOTSTRAP → IMPLEMENT → VERIFY → PROVISION → DEPLOY → OBSERVE → CHECKPOINT
+                  ↘ failures → REPAIR/ITERATE → earliest violated state
 ```
 
-The human retains trust-boundary control. Secrets stay in repository/provider secret stores rather than chat. Provider-specific capabilities should be delegated to modular integrations where practical rather than hard-coded into ZeroLocal Core.
+Core Skill procedure:
 
-## v0.1 focus
+```text
+Initialize → Plan → Implement → Verify → Deliver → Observe → Checkpoint
+```
 
-The current work is to define:
+The procedure maps user intent onto protocol states; it is not a second lifecycle.
 
-- protocol roles and lifecycle contracts;
-- the provider-neutral orchestration model;
-- Repository Project Memory (RPM) bootstrap/resume/checkpoint behavior;
-- remote validation and repository-side failure recovery;
-- secret and human trust boundaries;
-- deployment integrity and immutable revision provenance;
-- provider discovery and dispatch;
-- the provider adapter interface;
-- Cloudflare as the first executable provider reference;
-- the ZeroLocal Core Skill and Cloudflare Provider Skill;
-- clean-room validation through a second real project before Plugin packaging.
+## Core invariants
+
+- The canonical repository is the project filesystem and durable source of truth.
+- Normal operation must not require a human local checkout, project toolchain, git commands, or deployment CLI.
+- Secrets stay in GitHub/provider secret stores and are never requested in chat or persisted in RPM plaintext.
+- CI verifies; deployment actuates.
+- Validation-gated production deploys the exact immutable revision that passed the gate.
+- Untrusted validation contexts do not gain production authority.
+- Production success requires observable verification, not merely a successful deploy command.
+- Provider-specific behavior remains behind Provider Skills/adapters.
+- Fresh contexts must be able to resume from repository state + RPM + installed skills rather than founding-chat history.
+
+## Cloudflare reference
+
+`iorLab/zerolocal-cloudflare-starter` is an executable contract fixture, not the ZeroLocal user entry point. It demonstrates:
+
+- `ZEROLOCAL.yaml` provider declaration;
+- repository-backed RPM;
+- PR/main remote validation;
+- trusted deployment only after successful `main` CI;
+- exact checkout/deployment of the tested SHA;
+- serialized production runs;
+- explicit manual recovery by immutable SHA;
+- deployment-target discovery;
+- post-deploy `/health` verification;
+- Cloudflare credentials as protected-store trust boundaries.
+
+## Mature product direction
+
+A later installable ZeroLocal product may package stable Skills, GitHub integration, templates, onboarding, provider discovery, and versioning. It should compose already-proven workflows rather than be the place where those workflows are first discovered.
 
 ## Project state
 
-This repository is the canonical source of truth. Durable project state, next steps, and decisions live under `.chatgpt/`; chat conversations are working memory only.
+`iorLab/zerolocal` is the canonical source of truth. Durable project state, next steps, and decisions live under `.chatgpt/`; chat conversations are working memory only.

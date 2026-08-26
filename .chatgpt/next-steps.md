@@ -1,12 +1,14 @@
 # Next Steps
 
-1. Review and tighten the normative language in `SPECIFICATION.md`, especially the exact meaning of `MUST`, `SHOULD`, and the human/local-tooling boundary.
-2. Decide the v0.1 conformance model: a single ZeroLocal Core plus optional RPM/Continuous Delivery profiles, or a layered mandatory profile set.
-3. Define a minimal machine-readable conformance manifest so a repository can declare its ZeroLocal version, RPM paths, CI workflow, deployment workflow, production environment, and verification endpoints without binding to one provider.
-4. Bootstrap `iorLab/zerolocal-cloudflare-starter` from the v0.1 draft with GitHub Actions CI, exact-SHA deployment, serialized production delivery, Cloudflare Workers deployment, optional D1 provisioning/migrations, and health/readiness verification.
-5. Add conformance checks to the starter and use failures to refine ambiguous specification language rather than encoding undocumented behavior.
-6. Extract a concise founding case study from `mattamior/awesome-fame-slider`, clearly separating generic ZeroLocal invariants from application-specific voting/X decisions.
-7. Define threat-model guidance for untrusted pull requests, repository write authority, workflow permissions, production secrets, provider tokens, dependency execution, and deployment provenance.
-8. Decide how repositories with mandatory production approval gates qualify: ZeroLocal should not require a local environment, but may permit a deliberate human approval at a trust boundary.
-9. Add examples for at least one non-Cloudflare deployment profile to test whether the Core is genuinely provider-neutral.
-10. Once the spec and starter agree on observable behavior, tag the first v0.1 draft checkpoint and update RPM with validated conformance claims.
+1. Define the ZeroLocal plugin's user-facing activation contract: installation, natural-language activation (for example, “use ZeroLocal mode for this project”), repository discovery, RPM bootstrap/load, and lifecycle entry.
+2. Define the provider-neutral ZeroLocal Core orchestration state machine: inspect repository -> establish durable project state -> implement -> remotely validate -> classify failures -> repair remotely -> choose/resolve deployment provider when needed -> deploy/verify -> checkpoint.
+3. Define a provider adapter contract covering provider discovery, capability/dependency checks, trust-boundary requirements, secret names/scopes, project scaffolding, CI/CD setup, resource provisioning, deployment, endpoint discovery, verification, and failure recovery.
+4. Decide provider packaging: provider flows embedded in the ZeroLocal plugin, delegated to provider-specific plugins/tools, or a hybrid model. Prefer composability so ZeroLocal does not duplicate mature provider capabilities unnecessarily.
+5. Revise `SPECIFICATION.md` so it distinguishes three layers explicitly: ZeroLocal normative operating model, ZeroLocal installable orchestration plugin, and provider-specific flows/adapters.
+6. Revise `README.md` and RPM terminology so `iorLab/zerolocal-cloudflare-starter` is described as the Cloudflare provider-flow reference scaffold/golden fixture/conformance testbed, not the primary ZeroLocal entry point.
+7. Bootstrap the actual ZeroLocal plugin/skill structure in `iorLab/zerolocal` and encode the core workflow before building provider-specific automation.
+8. Use Cloudflare as the first end-to-end provider path. Build the Cloudflare adapter/flow and use `iorLab/zerolocal-cloudflare-starter` to test generated repository state, CI, exact-SHA delivery, provisioning, health/readiness verification, and recovery behavior.
+9. Define a minimal machine-readable ZeroLocal project/provider manifest so the plugin can resume an existing project without repeatedly asking already-known provider or workflow information.
+10. Add conformance checks at both layers: repository/project conformance to ZeroLocal invariants and provider-flow conformance to the adapter contract.
+11. Extract the founding case study from `mattamior/awesome-fame-slider`, including the missing product lesson that ZeroLocal should become a reusable installable workflow rather than remain a project-specific playbook.
+12. After the Cloudflare path works through the plugin interface, add a second provider path to validate that provider dispatch is genuinely modular.

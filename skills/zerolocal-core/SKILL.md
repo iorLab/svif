@@ -16,7 +16,8 @@ Implements `SPECIFICATION.md` v0.1. GitHub is the canonical RPM/control-plane im
 5. Untrusted validation must not gain production credentials or deployment authority.
 6. Production success requires observable verification, not merely a successful deploy command.
 7. Provider-specific behavior belongs in a Provider Skill/adapter, never in Core.
-8. Repository state + RPM + installed skills must be sufficient to resume without founding-chat history.
+8. Repository state + RPM + durable bootstrap instructions + installed skills must be sufficient to resume without founding-chat history.
+9. RPM persistence is not sufficient by itself: a fresh conversation must have a durable way to discover the canonical repository and active RPM ref.
 
 ## Procedure
 
@@ -28,14 +29,16 @@ At the first substantive project turn:
 
 1. Resolve the canonical repository from explicit user context, project instructions, or repository metadata.
 2. Prefer repository-native/connected GitHub operations over asking for a local checkout or pasted files.
-3. Read `.chatgpt/project-memory.yaml` if present.
-4. Load every state/next-step file named by the manifest. Load decisions when architecture, security, lifecycle, provider behavior, or prior constraints are relevant.
+3. Read `.chatgpt/project-memory.yaml` if present. When durable bootstrap instructions identify an `rpm_ref`, read the manifest from that ref first. Otherwise inspect the default branch and repository evidence for an active ZeroLocal working ref before concluding that RPM is absent.
+4. Load every state/next-step file named by the manifest from the same RPM ref unless the manifest explicitly says otherwise. Load decisions when architecture, security, lifecycle, provider behavior, or prior constraints are relevant.
 5. Read `ZEROLOCAL.yaml` or equivalent project/provider descriptor when present.
 6. Inspect current repository revision, changed/open work, remote validation/delivery definitions, provider declaration, and current failures.
 7. If RPM is absent and the user is explicitly initializing ZeroLocal, create the minimum RPM layout from the Specification; otherwise do not silently impose RPM on an unrelated project.
-8. Never ask again for facts already durable in repository/RPM state.
+8. After ZeroLocal initialization creates RPM, establish a durable bootstrap pointer for future fresh conversations. In a ChatGPT Project, request or propose minimal Project Instructions containing only the ZeroLocal activation, canonical repository, RPM manifest path, and active RPM ref when it differs from the default branch. Do not copy project history, next steps, provider procedures, or secret material into Project Instructions.
+9. When the active RPM moves to another ref, update the durable bootstrap pointer at the next safe human-editable boundary. If the environment cannot persist Project Instructions programmatically, surface the exact minimal instruction change as a required resumability action rather than silently claiming checkpoint completeness.
+10. Never ask again for facts already durable in repository/RPM state.
 
-Initialization output must establish: canonical repo, current phase/state, requested intent, required validation, provider status if relevant, and explicit blockers/trust boundaries.
+Initialization output must establish: canonical repo, RPM ref/discovery path, current phase/state, requested intent, required validation, provider status if relevant, and explicit blockers/trust boundaries.
 
 ### Plan
 
@@ -71,6 +74,7 @@ Form a repository-executable plan, not a local shell plan.
    - migration/state transition
    - routing/DNS/external integration
    - production health/readiness
+   - RPM/bootstrap discovery
 5. Repository-owned failure: inspect logs, repair in repository, create a new immutable revision, repeat Verify.
 6. Trust-boundary failure: state the exact human action, protected store/account location, and required scope. Do not request the secret value.
 7. Do not substitute local commands for a missing remote validation path; repair or add the remote path when ZeroLocal conformance is the task.
@@ -114,9 +118,24 @@ Persist, as applicable:
 - unresolved blockers and trust boundaries;
 - next executable steps;
 - durable decisions affecting architecture, security, delivery, product scope, or protocol interpretation;
+- active RPM ref when RPM is not discoverable from the default branch;
 - checkpoint timestamp/reason.
 
+Before claiming a checkpoint is resumable, verify that a fresh conversation has a durable bootstrap path to the canonical repository and the RPM ref containing the checkpoint. In a ChatGPT Project this normally means minimal Project Instructions established during Initialize. If that pointer is missing or stale and cannot be updated directly, checkpoint status is `blocked at resumability boundary` until the user applies the minimal instruction update.
+
 Never persist secret values. After writes, re-read or otherwise verify the durable files if write uncertainty exists.
+
+## Minimal ChatGPT Project bootstrap
+
+When Project Instructions are required for resumability, keep them locator-only. They should convey the semantic equivalent of:
+
+- use ZeroLocal for this project;
+- canonical repository: `<owner/repository>`;
+- RPM manifest: `.chatgpt/project-memory.yaml`;
+- RPM ref: `<branch-or-ref>` when different from the repository default;
+- at the first substantive turn, load the manifest and its referenced durable state before acting.
+
+The bootstrap pointer is navigation metadata, not a second project-memory store. Repository RPM remains canonical.
 
 ## Provider dispatch contract
 
@@ -136,7 +155,8 @@ A user-facing completion claim must distinguish:
 - **verified** — required remote checks passed for an identified immutable revision;
 - **deployed** — provider delivery completed for an identified revision;
 - **observed** — production verification passed;
-- **blocked at trust boundary** — repository work is complete but a named human authorization/secret/account action remains.
+- **blocked at trust boundary** — repository work is complete but a named human authorization/secret/account action remains;
+- **blocked at resumability boundary** — RPM exists but a fresh conversation cannot yet discover the canonical repository/RPM ref through durable bootstrap metadata.
 
 Do not collapse these states into a generic "done".
 

@@ -89,5 +89,5 @@ reference_live_evidence:
     live_deploy_observe: pending protected CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID in repository secret stores
     classification: human trust boundary, not Skill v0.1 implementation blocker
 last_checkpoint:
-  saved_at: 2026-08-26T22:38:00+08:00
-  reason: ZeroLocal Skill v0.1 implementation completed; project advanced to clean-room Skill Stabilization
+  saved_at: 2026-08-26T23:09:00+08:00
+  reason: user requested checkpoint after ZeroLocal Skill v0.1 completion and transition to clean-room Skill Stabilization

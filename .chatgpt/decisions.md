@@ -91,3 +91,15 @@ Rationale:
 - The next substantive work is to tighten the protocol, roles, lifecycle, trust boundaries, contract families, conformance requirements, and Provider Adapter Contract before implementing the Cloudflare reference.
 - `iorLab/zerolocal-cloudflare-starter` remains empty/pending until the specification is sufficiently explicit to act as its contract.
 - Do not begin Plugin packaging during this phase.
+
+## 2026-08-27 — Treat RPM discovery as part of resumability
+
+Validation Project #1 demonstrated that durable RPM content is insufficient when a fresh conversation cannot discover the repository/ref containing it.
+
+- A conversational ZeroLocal environment that creates or adopts RPM must establish a durable bootstrap pointer into repository RPM.
+- For ChatGPT Projects, Project Instructions are an acceptable bootstrap surface, but they must remain locator-only metadata rather than a second project-memory store.
+- The minimum locator identifies ZeroLocal activation, the canonical repository, the RPM manifest path, and the authoritative RPM ref when it differs from the default branch.
+- Checkpoint must not claim fresh-context resumability while this pointer is missing or stale.
+- RPM on a feature/non-default branch is valid, but the active RPM ref must be discoverable before state is loaded.
+- This failure class is named `RPM/bootstrap discovery` and belongs in the Core failure taxonomy and conformance coverage.
+- Validation #1 must repeat the fresh-conversation resume test after this fix is verified and the target ChatGPT Project receives only the minimal locator instructions.

@@ -9,45 +9,79 @@ provider_references:
 founding_case_study: mattamior/awesome-fame-slider
 updated_at: 2026-08-26
 summary: >-
-  ZeroLocal is being developed from the AI-Native Repository Delivery (ANRD) operating model into
-  a reusable, provider-neutral way to run repository-first AI-operated software development without
-  requiring a human local checkout or local project/deployment toolchain. The recovered founding
-  roadmap is skill-first rather than plugin-first: first define Specification v0.1, then validate it
-  with an executable Cloudflare reference, encode the provider-neutral workflow as a Core Skill,
-  separate Cloudflare-specific behavior into a Provider Skill, and validate both from a second real
-  project with no hidden founding-project context. Only after those workflows stabilize should they
-  be packaged into an installable ZeroLocal Plugin.
+  ZeroLocal is a repository-first, AI-operated software delivery system whose current development
+  path is Specification -> executable provider reference -> Core Skill -> Provider Skill -> clean-room
+  multi-project stabilization -> Plugin. The founding operating model was previously named ANRD
+  (AI-Native Repository Delivery); ANRD is an old name for ZeroLocal, not a separate architecture.
+  The immediate goal is not Plugin packaging. It is to stabilize the protocol and procedural skills
+  so a fresh ChatGPT context plus repository state can execute the lifecycle without hidden founding
+  context or a human-operated local checkout/toolchain.
 current_focus: >-
-  Complete ZeroLocal Specification v0.1 around protocol, roles, trust boundaries, contracts, and a
-  provider adapter interface. Then use the Cloudflare reference implementation to pressure-test the
-  specification before encoding the repeatable procedural workflow as skills. Do not prematurely
-  freeze a plugin packaging/API layer before the skills survive a clean-room second-project test.
+  Complete ZeroLocal Specification v0.1 around protocol, roles, lifecycle, repository/RPM/CI/deployment/
+  trust-boundary contracts, provider-neutral invariants, conformance requirements, and the Provider
+  Adapter Contract. After the contract is sufficiently explicit, build the Cloudflare executable
+  reference and use implementation pressure to refine the spec before encoding Core and Cloudflare
+  procedural workflows as Skills.
+development_phases:
+  - phase: 0
+    name: Founding Case Study
+    status: completed
+    artifact: mattamior/awesome-fame-slider
+  - phase: 1
+    name: Specification v0.1
+    status: active
+    artifact: iorLab/zerolocal
+  - phase: 2
+    name: Cloudflare Reference Implementation
+    status: pending
+    artifact: iorLab/zerolocal-cloudflare-starter
+  - phase: 3
+    name: ZeroLocal Skill v0.1
+    status: pending
+    artifacts:
+      - ZeroLocal Core Skill
+      - Cloudflare Provider Skill
+  - phase: 4
+    name: Skill Stabilization
+    status: pending
+    requirement: validate on at least two new non-founding real projects, preferably 2-3, from clean context/repository state
+  - phase: 5
+    name: Plugin
+    status: gated
+    requirement: start only after stabilization criteria are met
 confirmed_constraints:
   - The canonical ZeroLocal repository is iorLab/zerolocal.
-  - The founding operating model was called AI-Native Repository Delivery (ANRD); ZeroLocal is the current project/product identity built from that model.
-  - The immediate implementation target is a ZeroLocal Core Skill plus provider-specific skills, not a plugin.
-  - The long-term product target may be an installable ZeroLocal Plugin that composes stable skills, GitHub integration, and templates.
-  - A user-facing ZeroLocal workflow should eventually activate from natural-language intent such as “use ZeroLocal mode for this project”.
-  - ZeroLocal Core owns provider-neutral repository/RPM orchestration, remote validation, failure recovery, trust boundaries, provenance, and checkpoint behavior.
-  - Deployment provider selection is separate from ZeroLocal activation and dispatches into a provider-specific workflow.
-  - Cloudflare is the first provider path; iorLab/zerolocal-cloudflare-starter is the executable reference/golden fixture/conformance testbed for that path.
-  - The founding case study is mattamior/awesome-fame-slider.
-  - GitHub is the canonical source of truth and RPM store for this project.
-  - Chat conversations are working memory only; durable project state belongs in the repository.
-  - ZeroLocal means local project tooling is not required for the human's normal workflow; it does not prohibit optional local development.
-  - Secrets must remain in GitHub or provider secret stores and must never be requested in chat.
-  - Provider-specific behavior must remain modular and outside the provider-neutral core.
-  - A second real project created from an empty repository is required before treating the skills as stable; it must validate that execution does not depend on hidden context from awesome-fame-slider or this conversation.
+  - ANRD means AI-Native Repository Delivery and is the former name of ZeroLocal; do not treat it as a separate product or architecture.
+  - GitHub is the canonical source of truth and RPM store for this project; chat is working memory only.
+  - ZeroLocal means human local checkout, local project toolchain, git commands, and deployment CLI are not required for the normal supported lifecycle; optional local development is allowed.
+  - Repository is the control plane for source, automation, migrations, docs, and durable project-operating state.
+  - Human governs intent, judgment, authorization, account ownership, secrets, billing, and explicit production-risk approvals; agent executes implementation, verification, repair, and delivery within authorized boundaries.
+  - CI verifies; Deploy actuates. Production delivery must preserve immutable revision provenance and, when gated by CI, deploy the exact validated revision.
+  - Production deployment success requires observable verification such as endpoint/health/readiness checks; a successful deploy command alone is insufficient.
+  - Secrets must remain in GitHub/provider secret stores and must never be requested in chat or stored in RPM/repository plaintext.
+  - Provider-specific logic must remain behind provider adapters/skills rather than entering ZeroLocal Core contracts.
+  - Cloudflare is the first reference provider only; v0.1 does not require broad multi-provider support.
+  - iorLab/zerolocal-cloudflare-starter is the executable Cloudflare reference/golden fixture/conformance testbed, not the user entry point for ZeroLocal as a whole.
+  - The immediate capability target is ZeroLocal Core Skill plus Cloudflare Provider Skill; Plugin is a later distribution/productization layer.
+  - Skill execution must be recoverable from repository state plus durable instructions/RPM and must not depend on founding chat history.
+  - Before Plugin work begins, the skills must survive clean-room validation on multiple non-founding projects and common failure modes must have reusable classifications/recovery strategies.
+  - The uploaded ZeroLocal development reference document v0.1 is a high-priority directional reference for architecture, phases, contracts, Skill/Plugin sequencing, and Definition of Done; it is not itself the canonical Specification.
 implemented:
   - RPM manifest, state, next steps, and durable decisions initialized under .chatgpt/.
   - README.md and SPECIFICATION.md initialized for ZeroLocal v0.1.
-  - Initial draft contains numbered ZeroLocal Core requirements plus provisional RPM and Continuous Delivery profiles.
-  - Cloudflare starter role corrected from whole-product entry point to provider-flow executable reference/golden fixture/testbed.
-  - Recovered the founding productization roadmap: Specification -> Cloudflare executable reference -> Core Skill -> Cloudflare Provider Skill -> second-project clean-room validation -> Plugin only after stabilization.
+  - Initial specification contains numbered Core requirements plus provisional RPM and Continuous Delivery profiles.
+  - Cloudflare starter role corrected to executable provider reference/golden fixture/conformance testbed.
+  - Skill-first productization route recovered and recorded durably.
+  - RPM manifest corrected so current_delivery_form is skills and long_term_product_form is installable-plugin.
 blockers: []
 open_questions:
-  - Exact ZeroLocal Core Skill boundaries and procedural contract.
-  - Provider Skill/adapter contract: discovery, capability requirements, selection, initialization, deployment, verification, and recovery hooks.
-  - Whether provider skills directly implement provider operations or delegate to existing provider plugins/skills where available.
-  - Minimum machine-readable project manifest needed for ZeroLocal activation and provider dispatch.
-  - Criteria that define “stable enough” to package the skills into a ZeroLocal Plugin.
+  - Exact normative Core Protocol and lifecycle transition rules for BOOTSTRAP -> IMPLEMENT -> VERIFY -> PROVISION -> DEPLOY -> OBSERVE -> REPAIR/ITERATE -> CHECKPOINT.
+  - Exact boundaries and MUST/SHOULD requirements for Repository, RPM, CI, Deployment, Trust Boundary, and Provider Adapter contracts.
+  - Provider Adapter Contract shape: capabilities, dependencies, credential scopes, initialization, scaffolding, provisioning, deployment, endpoint discovery, verification, and recovery hooks.
+  - Exact Core Skill procedural boundary and mapping from protocol lifecycle to agent operations Initialize/Plan/Implement/Verify/Deliver/Observe/Checkpoint.
+  - Whether provider skills directly implement provider operations or delegate to mature provider plugins/skills where available.
+  - Minimum machine-readable manifest needed for project resume and provider dispatch.
+  - Final stabilization threshold for Plugin graduation; current reference guidance requires at least two new projects and recommends 2-3 real projects.
+last_checkpoint:
+  saved_at: 2026-08-26T21:28:00+08:00
+  reason: user requested checkpoint after restoring the original skill-first ZeroLocal productization roadmap and supplying the development reference document

@@ -1,0 +1,38 @@
+project: ZeroLocal
+status: active
+phase: specification-v0.1
+repository: iorLab/zerolocal
+reference_implementation: iorLab/zerolocal-cloudflare-starter
+founding_case_study: mattamior/awesome-fame-slider
+updated_at: 2026-08-26
+summary: >-
+  ZeroLocal is being formalized as a provider-neutral, repository-first specification for
+  AI-operated software delivery in which a human does not need a local project checkout,
+  local build toolchain, or local deployment commands for the normal development, release,
+  and repository-side recovery loop. The founding awesome-fame-slider project demonstrated
+  the model on GitHub Actions and Cloudflare; the canonical specification and the Cloudflare
+  starter repositories are now being bootstrapped separately.
+current_focus: >-
+  Define ZeroLocal Specification v0.1: terminology, normative core requirements, Repository
+  Project Memory (RPM), trust boundaries, remote validation and delivery invariants, failure
+  recovery, conformance levels, and the boundary between the provider-neutral core and the
+  Cloudflare reference profile.
+confirmed_constraints:
+  - The canonical specification repository is iorLab/zerolocal.
+  - The Cloudflare reference implementation repository is iorLab/zerolocal-cloudflare-starter.
+  - The founding case study is mattamior/awesome-fame-slider.
+  - GitHub is the canonical source of truth and RPM store for this project.
+  - Chat conversations are working memory only; durable project state belongs in the repository.
+  - ZeroLocal means local project tooling is not required for the human's normal workflow; it does not prohibit optional local development.
+  - Secrets must remain in GitHub or provider secret stores and must never be requested in chat.
+  - The specification core should remain provider-neutral; Cloudflare-specific behavior belongs in a reference profile/implementation.
+implemented:
+  - RPM manifest initialized under .chatgpt/project-memory.yaml.
+  - Canonical repository, reference implementation, and founding case study identities recorded.
+  - Specification v0.1 drafting phase started.
+blockers: []
+open_questions:
+  - Final conformance-level names and whether v0.1 should expose one mandatory profile or layered profiles.
+  - Exact normative boundary between required RPM behavior and optional repository-memory conventions.
+  - Minimum portable interface expected from a provider-specific deployment profile.
+  - Whether conformance should require automated production deployment or allow an explicit human approval gate while still qualifying as ZeroLocal.

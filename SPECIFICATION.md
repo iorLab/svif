@@ -2,287 +2,116 @@
 
 **Status:** Working Draft  
 **Canonical repository:** `iorLab/zerolocal`  
-**Official product direction:** installable ZeroLocal plugin/orchestrator  
-**First provider reference fixture:** `iorLab/zerolocal-cloudflare-starter`  
-**Founding case study:** `mattamior/awesome-fame-slider`
+**Current delivery form:** Skills  
+**Long-term product form:** Installable plugin after stabilization  
+**First provider reference:** `iorLab/zerolocal-cloudflare-starter`
 
-## 1. Abstract
+## 1. Purpose
 
-ZeroLocal defines a repository-first operating model for software development in which a human operator can direct normal implementation, validation, release, and repository-side recovery without requiring a local project checkout, local package/build toolchain, local git commands, or a local deployment CLI.
+ZeroLocal is a repository-first, AI-operated software-delivery protocol. A conforming project provides a complete normal path for implementation, validation, delivery, observation, repair, and durable project-state recovery without requiring the human operator to maintain a local checkout, local project toolchain, local git workflow, or local deployment CLI.
 
-ZeroLocal does not prohibit local development. It specifies the existence and integrity of a complete remote path. A maintainer may still clone a repository or run tools locally, but doing so is not a prerequisite for the normal supported workflow.
+Local development MAY exist, but it MUST NOT be the only supported path for any lifecycle step claimed as ZeroLocal.
 
-The ZeroLocal project intends to operationalize this model as an **installable, provider-neutral orchestration plugin**. A user should be able to install ZeroLocal, state that a project should use ZeroLocal mode, and enter the repository/RPM/validation/recovery workflow. Deployment provider selection is a later concern inside that workflow: Cloudflare, Vercel, AWS, or another provider is selected or resolved only when provider-specific delivery behavior is needed.
+ZeroLocal v0.1 consists of three separable layers:
 
-The model assumes an authorized AI/operator can work directly with the canonical repository, remote automation provides reproducible validation and delivery, durable project state is stored outside transient chat context, secrets remain inside protected secret stores, and failures can be diagnosed from remote evidence.
+1. **Protocol** — provider-neutral roles, lifecycle, contracts, trust boundaries, and conformance rules defined here.
+2. **Core Skill** — procedural orchestration that translates user intent into protocol-compliant repository operations.
+3. **Provider Skill** — provider-specific implementation of the Provider Adapter Contract. Cloudflare is the first reference provider.
 
-This document defines the provider-neutral ZeroLocal Core, provisional optional profiles, the official plugin/orchestration model, and the boundary for provider-specific flows. Provider-specific deployment behavior is not part of ZeroLocal Core.
+The plugin is not part of the v0.1 delivery target. It is a later distribution shell gated on skill stabilization.
 
-## 2. Normative language
+## 2. Normative language and roles
 
-The key words **MUST**, **MUST NOT**, **REQUIRED**, **SHOULD**, **SHOULD NOT**, and **MAY** in this document are to be interpreted as normative requirement levels.
+`MUST`, `MUST NOT`, `SHOULD`, `SHOULD NOT`, and `MAY` are normative requirement levels.
 
-Each normative requirement has a stable draft identifier such as `ZL-CORE-001`. Identifiers are intended to support future automated conformance checks. Requirement text may still change while v0.1 remains a Working Draft.
+Roles:
 
-## 3. Scope and product layers
+- **Human Operator** — owns intent, judgment, account authority, secrets, billing, and explicit production-risk approvals.
+- **Agent Operator** — inspects and changes repository state, runs remote verification/delivery paths, diagnoses failures, repairs repository-owned causes, and checkpoints durable state.
+- **Canonical Repository** — authoritative source for code, configuration, automation, durable history, and Repository Project Memory (RPM) when used.
+- **Verification Environment** — remote environment that validates an immutable repository revision.
+- **Delivery Environment** — remote environment that actuates a release of an immutable repository revision.
+- **Provider Adapter** — provider-specific behavior invoked by Core only when provider work is required.
 
-ZeroLocal specifies an operating system around a software repository, not an application framework, programming language, cloud provider, AI model, or source-control vendor.
+## 3. Architecture and authority
 
-A ZeroLocal system consists of at least:
+The six logical layers are:
 
-- a **Human Operator** who supplies intent, judgment, authorization, provider choices when needed, and trust-boundary approvals;
-- an **AI/Repository Operator** authorized to inspect and modify project state through repository-native interfaces;
-- a **Canonical Repository** containing source, configuration, automation, durable history, and project-operating state;
-- a **Remote Validation Environment** that can build/test/check project-relevant revisions;
-- for deployable systems, a **Remote Delivery Environment** that can release an identified repository revision without local human tooling;
-- protected **Secret Stores** and provider/account control planes for credentials and account-owner actions.
+`Human Governance -> Agent -> Repository Control Plane -> Verification & Delivery -> Provider Adapter -> Production Observation`.
 
-The ZeroLocal project itself is split into four layers:
+Authority rules:
 
-1. **ZeroLocal Core specification** — provider-neutral requirements and invariants.
-2. **ZeroLocal plugin/orchestrator** — the installable user-facing workflow that activates ZeroLocal mode, operates the repository, maintains durable state, and dispatches provider-specific work.
-3. **Provider flows/adapters** — modular behavior for a selected deployment provider.
-4. **Provider reference fixtures** — repositories used to exercise and validate provider flows end to end.
+- The repository **MUST** be the canonical project filesystem and durable operating record.
+- Secret values **MUST NOT** be committed to the repository, RPM, chat, or other transient prompt context.
+- Human account-owner actions at explicit trust boundaries do not violate ZeroLocal.
+- Repository write authority and production authority **SHOULD** be separable.
+- CI verifies; deployment actuates. A successful deployment command by itself is not production-success evidence.
 
-A repository may conform to ZeroLocal Core without using the official ZeroLocal plugin. The official ZeroLocal product, however, is intended to make the conforming workflow installable and reusable rather than requiring each project to reconstruct the playbook manually.
+## 4. Protocol lifecycle
 
-`iorLab/zerolocal-cloudflare-starter` is a layer-4 Cloudflare provider reference fixture/scaffold/testbed. It is **not** the primary user entry point to ZeroLocal and users are not expected to fork it merely to activate ZeroLocal mode.
+The normative lifecycle is:
 
-## 4. Core principle
+`BOOTSTRAP -> IMPLEMENT -> VERIFY -> PROVISION -> DEPLOY -> OBSERVE -> CHECKPOINT`
 
-> A local machine may be useful, but it must not be required to operate the normal project lifecycle.
+`REPAIR/ITERATE` is a recovery state reachable from any executable state after failure evidence is available. It returns to the earliest state whose invariant was violated.
 
-For this specification, **normal lifecycle** means the documented path used for routine code/configuration changes, remote validation, release where applicable, and diagnosis/recovery of repository-side failures.
+### 4.1 BOOTSTRAP
 
-Account-owner actions at explicit trust boundaries are not considered violations of ZeroLocal. Examples include authorizing repository access, choosing or authorizing a deployment provider, creating a scoped provider token, storing a secret, approving billing, proving domain ownership, or approving a protected production deployment.
+Entry: repository intent is known or can be resolved.
 
-## 5. ZeroLocal Core requirements
+The Agent Operator MUST:
 
-### 5.1 Canonical repository
+- resolve the canonical repository;
+- read repository instructions and RPM manifest when present;
+- load referenced state, next steps, and decisions;
+- inspect project structure, validation/delivery automation, provider declarations, and outstanding failures;
+- identify trust-boundary prerequisites without requesting secret values.
 
-**ZL-CORE-001 — Canonical source of truth**  
-A conforming project **MUST** designate a canonical repository as the authoritative source for project code, configuration, automation, and durable project-operating state.
+Exit evidence: repository identity, current immutable revision, operating state, required remote checks, and provider status are known.
 
-**ZL-CORE-002 — Repository-native operation**  
-The normal workflow **MUST** provide an authorized repository-native path that is sufficient to inspect project state and create or modify repository content without requiring a human-operated local checkout.
+### 4.2 IMPLEMENT
 
-**ZL-CORE-003 — Durable history**  
-Material implementation and operating changes **MUST** be represented in durable repository history or in another durable system explicitly referenced by the repository.
+Entry: the requested change and repository authority are understood.
 
-### 5.2 No local prerequisite
+The Agent Operator MUST make material source/configuration/automation changes through repository-native interfaces and MUST preserve durable repository history.
 
-**ZL-CORE-004 — No mandatory local checkout**  
-The documented normal workflow **MUST NOT** require the Human Operator to clone or maintain a local project checkout.
+Exit evidence: an immutable candidate revision exists.
 
-**ZL-CORE-005 — No mandatory local toolchain**  
-The documented normal workflow **MUST NOT** require the Human Operator to install or run project package managers, compilers, test runners, build tools, source-control commands, infrastructure CLIs, or deployment CLIs locally.
+### 4.3 VERIFY
 
-**ZL-CORE-006 — Optional local development**  
-A conforming project **MAY** support local development. Optional local workflows **MUST NOT** be the only supported path for any lifecycle step claimed as ZeroLocal.
+Entry: candidate revision exists.
 
-### 5.3 Remote validation and evidence
+Required project checks MUST run remotely. Results MUST be attributable to the immutable candidate revision. Failure evidence MUST be remotely inspectable.
 
-**ZL-CORE-007 — Remote validation**  
-Project-relevant changes **MUST** have a remote validation path capable of executing the checks required by the project before those checks are considered satisfied.
+Exit: successful required checks, or `REPAIR/ITERATE`.
 
-**ZL-CORE-008 — Revision identity**  
-Remote validation results **MUST** be attributable to an immutable repository revision, such as a commit SHA.
+### 4.4 PROVISION
 
-**ZL-CORE-009 — Inspectable failure evidence**  
-Validation and delivery failures **MUST** produce remotely inspectable status and diagnostic evidence sufficient to distinguish at least repository/code failures from trust-boundary or provider/account failures.
+Entry: verified revision requires provider resources or state transitions.
 
-**ZL-CORE-010 — Repository-side recovery**  
-A repository/code failure **MUST** be recoverable through the repository-native operating path without requiring the Human Operator to debug or patch the project locally.
+Provisioning MUST be provider-adapter-owned, SHOULD be idempotent, and MUST surface human trust-boundary requirements separately from repository defects.
 
-### 5.4 Secrets and trust boundaries
+This state MAY be skipped when no provisioning is required.
 
-**ZL-CORE-011 — Protected secret storage**  
-Secret values used by automation **MUST** be stored in an appropriate protected secret store or provider-managed secret system and **MUST NOT** be committed to the repository.
+### 4.5 DEPLOY
 
-**ZL-CORE-012 — No conversational secret dependency**  
-The normal ZeroLocal workflow **MUST NOT** require secret values to be pasted into a chat conversation or other transient AI prompt context. Secret names, required scopes, and setup instructions are permitted.
+Entry: required verification and provisioning gates are satisfied.
 
-**ZL-CORE-013 — Explicit human trust boundaries**  
-Actions that require account ownership, credential creation, billing authority, external consent, provider authorization, or protected-environment approval **MAY** remain Human Operator actions and **SHOULD** be documented as explicit trust boundaries.
+A production deployment MUST identify the immutable revision being released. If delivery is validation-gated, the deployed revision MUST equal the validated revision unless the replacement revision is separately validated. Untrusted validation contexts MUST NOT gain production credentials or authority.
 
-**ZL-CORE-014 — Least privilege**  
-Repository automation and provider credentials **SHOULD** receive only the permissions required for their documented role.
+Concurrent production operations MUST be serialized or otherwise coordinated when concurrency could corrupt state, race migrations, or make provenance ambiguous.
 
-### 5.5 Automation as project state
+### 4.6 OBSERVE
 
-**ZL-CORE-015 — Versioned automation**  
-Automation that defines required validation or delivery behavior **MUST** be version-controlled in the canonical repository, except where a platform requires an external policy object; such external policy **MUST** be documented or referenced from the repository.
+Entry: a deployment or externally observable state change occurred.
 
-**ZL-CORE-016 — Reproducible remote execution**  
-Required validation and delivery steps **SHOULD** execute in a reproducible remote environment from repository-declared configuration and dependency metadata.
+Production success requires observable verification appropriate to the system, such as health/readiness checks, endpoint assertions, or equivalent provider evidence. A successful deploy command alone is insufficient.
 
-### 5.6 Deployment, when the project has production delivery
+Exit: observable success, or `REPAIR/ITERATE`.
 
-The following requirements apply to projects that claim ZeroLocal operation for a deployed environment.
+### 4.7 REPAIR/ITERATE
 
-**ZL-CORE-017 — Remote deploy path**  
-Production delivery **MUST** be executable remotely from repository/provider automation without requiring a Human Operator to run local deployment commands.
-
-**ZL-CORE-018 — Deploy revision provenance**  
-Every production deployment **MUST** identify the immutable repository revision it intends to release.
-
-**ZL-CORE-019 — Validated-revision integrity**  
-When production delivery depends on a validation result, the deployed revision **MUST** be the same immutable revision that satisfied the required validation gate, unless an explicit additional validation of the replacement revision occurs.
-
-**ZL-CORE-020 — Untrusted change isolation**  
-Untrusted pull-request or equivalent change contexts **MUST NOT** gain a path to production secrets or production deployment solely by causing ordinary validation to run.
-
-**ZL-CORE-021 — Idempotent provisioning and delivery**  
-Deployment/provisioning automation **SHOULD** be safe to re-run for the same intended state and **SHOULD NOT** create duplicate durable resources merely because a workflow is retried.
-
-**ZL-CORE-022 — Deployment serialization**  
-Where concurrent production operations could corrupt state, race migrations, or make provenance ambiguous, production delivery **MUST** serialize or otherwise coordinate those operations.
-
-**ZL-CORE-023 — Production verification**  
-A successful deployment **SHOULD** include an automated verification of the deployed system appropriate to the project, such as health/readiness checks or equivalent externally observable assertions.
-
-**ZL-CORE-024 — Human approval gates are allowed**  
-A project **MAY** require an explicit Human Operator approval before production deployment. Such an approval gate does not violate ZeroLocal if the approval is a trust-boundary action and no local project tooling is required.
-
-## 6. Repository Project Memory (RPM) profile
-
-RPM is the repository-backed durable-memory convention used by this specification project and the founding case study. RPM is provisional and is an optional profile in v0.1; it is not currently required for ZeroLocal Core conformance.
-
-A project claiming **ZeroLocal v0.1 + RPM** MUST satisfy ZeroLocal Core and the following requirements.
-
-**ZL-RPM-001 — Manifest**  
-The repository **MUST** contain `.chatgpt/project-memory.yaml` or an explicitly documented equivalent manifest.
-
-**ZL-RPM-002 — Canonical declaration**  
-The manifest **MUST** identify the project and canonical repository and **MUST** declare that durable project state is repository-backed.
-
-**ZL-RPM-003 — State and next steps**  
-The manifest **MUST** reference durable project-state and next-step files.
-
-**ZL-RPM-004 — Durable decisions**  
-The manifest **SHOULD** reference a durable decisions log containing project decisions that materially affect architecture, security, delivery, or product constraints.
-
-**ZL-RPM-005 — Conversation bootstrap**  
-The AI/Repository Operator's project instructions **SHOULD** require reading the RPM manifest and referenced state at the first substantive turn of a new working conversation.
-
-**ZL-RPM-006 — Checkpoint**  
-The operating model **SHOULD** define a checkpoint operation that persists material working-state changes before a conversation intentionally ends.
-
-A minimal v0.1 RPM layout is:
-
-```text
-.chatgpt/
-├── project-memory.yaml
-├── state.yaml
-├── next-steps.md
-└── decisions.md
-```
-
-Example manifest:
-
-```yaml
-version: 1
-project:
-  name: my-project
-  repository: owner/my-project
-canonical_source: github
-files:
-  state: .chatgpt/state.yaml
-  next_steps: .chatgpt/next-steps.md
-  decisions: .chatgpt/decisions.md
-checkpoint:
-  triggers:
-    - checkpoint
-    - save progress
-    - 收尾
-    - 结束
-```
-
-## 7. Continuous Delivery profile
-
-A project claiming **ZeroLocal v0.1 + Continuous Delivery** MUST satisfy ZeroLocal Core and the following provisional requirements.
-
-**ZL-CD-001 — Automated change validation**  
-Project-relevant changes to the release branch **MUST** automatically trigger required validation.
-
-**ZL-CD-002 — Validation-gated production**  
-Normal production delivery **MUST** require successful validation of the exact revision being released.
-
-**ZL-CD-003 — Trusted release event**  
-Automatic production delivery **MUST** originate only from a trusted event and **MUST NOT** be reachable from an untrusted pull-request validation event carrying production authority.
-
-**ZL-CD-004 — Exact revision checkout**  
-Deployment automation **MUST** explicitly resolve and deploy the immutable revision that passed the production validation gate.
-
-**ZL-CD-005 — Recovery trigger**  
-A manual or operator-invoked remote recovery/re-run mechanism **SHOULD** remain available even when normal production delivery is automatic.
-
-**ZL-CD-006 — Non-release state churn**  
-Repositories that frequently update RPM or documentation **SHOULD** avoid triggering production delivery for changes that cannot affect the deployed product.
-
-The founding case uses CI-gated automatic delivery from a trusted push to `main`, exact-SHA deployment, serialized production runs, and a manual dispatch fallback. These mechanics are evidence for this profile, not a requirement to use GitHub Actions specifically.
-
-## 8. Official ZeroLocal plugin/orchestration model
-
-The official ZeroLocal product is intended to be installable and activated by user intent rather than by copying a provider-specific repository template.
-
-A provisional lifecycle is:
-
-```text
-Install ZeroLocal
-        ↓
-Activate ZeroLocal mode for a project
-        ↓
-Resolve canonical repository
-        ↓
-Load or initialize RPM/project state
-        ↓
-Inspect project + requirements
-        ↓
-Implement through repository-native operations
-        ↓
-Remote validation
-        ↓
-Failure? ── yes → classify → repository repair or trust-boundary instruction → retry
-        ↓ no
-Deployment required?
-        ↓ yes
-Resolve provider (existing config or user choice)
-        ↓
-Dispatch provider-specific flow
-        ↓
-Remote deploy + verification
-        ↓
-Checkpoint durable project state
-```
-
-The official plugin SHOULD avoid asking the user for facts that are already durable in RPM or repository configuration.
-
-Provider selection SHOULD occur only when provider-specific work is needed. Choosing Cloudflare is not equivalent to choosing ZeroLocal; it selects the Cloudflare branch *inside* an already active ZeroLocal workflow.
-
-The plugin MAY delegate provider operations to another installed provider plugin or tool integration rather than reimplementing provider APIs, as long as the ZeroLocal orchestration invariants, trust boundaries, provenance, and recovery behavior remain intact.
-
-## 9. Failure-recovery contract
-
-A conforming ZeroLocal workflow should preserve a closed remote repair loop:
-
-```text
-Human intent or reported failure
-        ↓
-AI/Repository Operator
-        ↓
-Canonical repository
-        ↓
-Remote validation / delivery
-        ↓
-Remote status + logs + deployed verification
-        ↓
-AI/Repository Operator diagnoses
-        ↓
-repository fix OR precise trust-boundary instruction
-```
-
-Failures should be classified into at least:
+Failures MUST be classified at least as one of:
 
 - code/build/test;
 - dependency/toolchain;
@@ -294,103 +123,181 @@ Failures should be classified into at least:
 - routing/DNS/external integration;
 - production health/readiness.
 
-A repository-side category should lead to a repository-side repair. A trust-boundary category may require a Human Operator action, but should not default to "clone the repo and debug locally."
+Repository-owned failures MUST be repaired through the repository-native path. Trust-boundary failures MUST produce precise human action requirements without requesting secret values in chat and without defaulting to local debugging.
 
-## 10. Provider flow / adapter boundary
+### 4.8 CHECKPOINT
 
-ZeroLocal Core intentionally does not standardize a cloud API, deployment CLI, database, or runtime.
+Entry: a meaningful work boundary is reached.
 
-A provider-specific flow SHOULD expose enough behavior for the ZeroLocal plugin to perform or coordinate:
+The Agent Operator SHOULD persist changed project status, completed work, unresolved blockers, next steps, and durable decisions to RPM or an explicitly declared equivalent. The next fresh context SHOULD be able to resume from repository state alone.
 
-1. provider capability/dependency discovery;
-2. provider selection or recognition from existing project state;
-3. required credentials and minimum scopes, without requesting secret values in chat;
-4. project/repository scaffolding required for that provider;
-5. remote validation and delivery integration;
-6. resource discovery/provisioning behavior;
-7. migration/state-transition behavior where applicable;
-8. deployment command/API contract and immutable revision provenance;
-9. production endpoint discovery;
-10. health/readiness or equivalent verification;
-11. idempotency/retry behavior;
-12. remotely inspectable failure evidence and recovery classification.
+## 5. Core Contract families
 
-A provider flow may be packaged inside ZeroLocal, implemented by a separate provider plugin/tool, or use a hybrid model. v0.1 has not yet fixed the packaging mechanism; the important boundary is behavioral and provider-neutral.
+### 5.1 Lifecycle Contract
 
-Cloudflare is the first provider path. `iorLab/zerolocal-cloudflare-starter` serves as a reference scaffold/golden fixture/conformance testbed for what the Cloudflare flow creates and how the resulting project behaves. It does not define ZeroLocal as a whole.
+**ZL-LIFECYCLE-001** A conforming workflow MUST implement the lifecycle and evidence rules in section 4.  
+**ZL-LIFECYCLE-002** State transitions MUST be evidence-driven rather than inferred from conversational completion.  
+**ZL-LIFECYCLE-003** Failures MUST transition to `REPAIR/ITERATE` or a documented human trust boundary.
 
-## 11. Security invariants
+### 5.2 Repository Contract
 
-The following invariants are central to ZeroLocal and should remain stable as v0.1 evolves:
+**ZL-REPO-001** The project MUST designate a canonical repository.  
+**ZL-REPO-002** Normal implementation and repository repair MUST be possible through repository-native interfaces without human local checkout.  
+**ZL-REPO-003** Material implementation and operating changes MUST have durable history.  
+**ZL-REPO-004** Required validation/delivery automation MUST be versioned in the repository unless an external policy object is explicitly referenced.
 
-- moving work off the local machine **MUST NOT** mean moving secrets into chat;
-- repository write authority and production authority **SHOULD** be separable;
-- untrusted code **MUST NOT** acquire production credentials merely by participating in CI;
-- production provenance **MUST** identify what immutable repository revision was deployed;
-- provider credentials **SHOULD** be scoped and revocable;
-- repository automation **SHOULD** fail closed when required trust material is missing;
-- account-owner approvals **MAY** remain manual where risk policy requires them;
-- selecting a provider **MUST NOT** weaken the provider-neutral ZeroLocal trust and provenance invariants.
+### 5.3 RPM Contract
 
-## 12. Provisional conformance claims
+RPM is the standard durable-memory profile for the official skills.
 
-Until v0.1 exits Working Draft, the following claims are provisional:
+**ZL-RPM-001** `.chatgpt/project-memory.yaml` or an explicitly declared equivalent MUST identify the project, canonical repository, and durable state files.  
+**ZL-RPM-002** The manifest MUST reference current state and next steps and SHOULD reference durable decisions.  
+**ZL-RPM-003** A fresh Agent context SHOULD load RPM at the first substantive project turn.  
+**ZL-RPM-004** Checkpoint MUST NOT persist secret values.  
+**ZL-RPM-005** RPM content MUST be sufficient to resume without founding-chat context.
 
-- **ZeroLocal v0.1 Core** — satisfies all applicable `ZL-CORE-*` MUST/MUST NOT requirements.
-- **ZeroLocal v0.1 + RPM** — Core plus all `ZL-RPM-*` MUST/MUST NOT requirements.
-- **ZeroLocal v0.1 + Continuous Delivery** — Core plus all `ZL-CD-*` MUST/MUST NOT requirements.
+Minimum official layout:
 
-A project **SHOULD NOT** claim conformance based only on repository files. Operational requirements such as secret isolation, remote validation, deployment provenance, and production verification require observable evidence from the configured system.
+```text
+.chatgpt/
+  project-memory.yaml
+  state.yaml
+  next-steps.md
+  decisions.md
+```
 
-The official ZeroLocal plugin is an implementation/orchestration product, not itself the definition of repository conformance. Future v0.1 work may define a separate plugin/provider-adapter compatibility claim.
+### 5.4 CI Contract
 
-## 13. Founding case study: awesome-fame-slider
+**ZL-CI-001** Project-relevant changes MUST have a remote validation path.  
+**ZL-CI-002** Validation results MUST identify the immutable revision tested.  
+**ZL-CI-003** Failed checks MUST expose remotely inspectable status/log evidence.  
+**ZL-CI-004** Untrusted change validation MUST be isolated from production secrets and production authority.  
+**ZL-CI-005** A retry/recovery path SHOULD remain remotely invokable.
 
-The founding case demonstrated the initial ZeroLocal operating loop on a real Cloudflare application:
+### 5.5 Deployment Contract
 
-- the repository was initialized and maintained directly through GitHub without requiring a human local checkout;
-- GitHub stored durable RPM state and project history;
-- GitHub Actions provided CI and deployment execution;
-- Cloudflare Workers and D1 provided production compute and state;
-- deployment credentials remained in GitHub/provider secret stores;
-- deployment failures were diagnosed from GitHub Actions logs and repaired through repository commits;
-- production delivery evolved to CI-gated automatic deployment of the exact passing main-branch SHA;
-- production runs were serialized and verified with health/readiness checks;
-- pure RPM/docs changes were excluded from product deployment churn.
+**ZL-DEPLOY-001** Production delivery MUST be remotely executable without human local deployment tooling.  
+**ZL-DEPLOY-002** Every production deployment MUST identify an immutable repository revision.  
+**ZL-DEPLOY-003** Validation-gated production MUST deploy the exact validated revision.  
+**ZL-DEPLOY-004** Provisioning/delivery SHOULD be safe to retry for the same intended state.  
+**ZL-DEPLOY-005** State-sensitive production operations MUST be coordinated when concurrent execution could make state or provenance unsafe.  
+**ZL-DEPLOY-006** Production success MUST include observable post-deploy verification.  
+**ZL-DEPLOY-007** Human production approval MAY be required as a trust boundary.
 
-The reusable product lesson is broader than the Cloudflare implementation: the operating model should become an installable ZeroLocal workflow, with provider choice dispatched separately rather than requiring each new project to reconstruct the playbook manually.
+### 5.6 Trust Boundary Contract
 
-Application-specific voting, X sharing, UI behavior, and product architecture are not ZeroLocal requirements.
+**ZL-TRUST-001** Secret values MUST remain in protected repository/provider secret stores.  
+**ZL-TRUST-002** The workflow MUST NOT request secret values in chat.  
+**ZL-TRUST-003** Credential names, minimum scopes, and setup actions MAY be communicated.  
+**ZL-TRUST-004** Credentials SHOULD use least privilege.  
+**ZL-TRUST-005** Account ownership, billing, consent, provider authorization, domain ownership, and protected-environment approval MAY remain explicit human actions.  
+**ZL-TRUST-006** Provider/account failures MUST be distinguishable from repository/code failures.
 
-## 14. Open v0.1 questions
+### 5.7 Provider Adapter Contract
 
-The Working Draft intentionally leaves several items open:
+Each provider implementation MUST declare a machine-readable provider descriptor and procedural skill capable of satisfying these hooks:
 
-1. What is the exact installable plugin/skill package structure for ZeroLocal Core?
-2. Which responsibilities belong in the official ZeroLocal plugin versus provider adapters?
-3. Should provider flows be bundled, depend on separate provider plugins/tools, or use a hybrid model?
-4. What is the smallest useful machine-readable project/provider manifest so ZeroLocal can resume without repeated questions?
-5. Should RPM remain optional for generic conformance even if the official plugin relies on durable repository-backed state?
-6. Should Continuous Delivery remain an optional profile, or should every deployable ZeroLocal project require an automatic post-validation release path?
-7. How should protected production approval environments be described without binding the specification to GitHub Environments?
-8. Which provider should serve as the second provider-flow implementation to validate modular dispatch?
-9. Which requirements can be checked statically from repository content, and which require live operational probes?
-10. Should ZeroLocal distinguish repository/project conformance, official-plugin compatibility, and provider-adapter compatibility as separate claims?
+1. `detect` — recognize provider configuration and readiness;
+2. `capabilities` — declare supported runtimes/resources/features;
+3. `credentials` — name required credentials and minimum scopes without values;
+4. `scaffold` — create provider-owned repository configuration/automation;
+5. `validate` — state provider-relevant validation requirements;
+6. `provision` — discover/create/update provider resources idempotently where practical;
+7. `migrate` — apply ordered durable state transitions when applicable;
+8. `deploy` — release a specific immutable revision;
+9. `endpoint` — discover the externally observable deployment endpoint or equivalent target;
+10. `verify` — prove production readiness/health;
+11. `recover` — classify provider failures and prescribe repository repair or precise trust-boundary action.
 
-## 15. v0.1 development method
+A provider descriptor MUST include at least:
 
-The specification and product will be refined together by implementation pressure:
+```yaml
+version: 1
+provider:
+  id: provider-id
+  capabilities: {}
+  credentials: []
+  delivery:
+    validation_workflow: path-or-reference
+    deployment_workflow: path-or-reference
+    revision_source: immutable-revision-expression
+    verification_path: path-or-equivalent
+trust_boundaries: []
+```
 
-1. keep Core provider-neutral;
-2. define and implement the installable ZeroLocal plugin's core orchestration flow in `iorLab/zerolocal`;
-3. define a provider adapter contract;
-4. implement Cloudflare as the first provider flow;
-5. use `iorLab/zerolocal-cloudflare-starter` as a golden fixture/testbed for the Cloudflare flow rather than as the user entry point;
-6. encode observable project and provider-flow conformance checks;
-7. compare behavior with the founding case;
-8. turn ambiguities and implementation-specific assumptions into explicit decisions;
-9. add a second provider flow before treating provider modularity as validated.
+Provider-specific implementation details MUST NOT become Core invariants merely because the first reference provider uses them.
 
-The target user experience is intentionally simple: install ZeroLocal, ask to use ZeroLocal mode for a project, and only then choose a deployment provider when deployment-specific work is required.
+## 6. Core Skill procedural interface
 
-The goal of v0.1 is not to standardize every AI-native development workflow. It is to define a small set of testable invariants and an installable orchestration model that make "no local environment required" a dependable engineering property rather than a project-specific demo claim.
+The official ZeroLocal Core Skill implements this agent-facing procedure:
+
+`Initialize -> Plan -> Implement -> Verify -> Deliver -> Observe -> Checkpoint`
+
+This is not a second protocol lifecycle. It is the procedural interface that maps user intent onto lifecycle states:
+
+| Skill procedure | Protocol states |
+|---|---|
+| Initialize | BOOTSTRAP |
+| Plan | BOOTSTRAP / IMPLEMENT preparation |
+| Implement | IMPLEMENT |
+| Verify | VERIFY / REPAIR/ITERATE |
+| Deliver | PROVISION / DEPLOY / REPAIR/ITERATE |
+| Observe | OBSERVE / REPAIR/ITERATE |
+| Checkpoint | CHECKPOINT |
+
+Core MUST delegate provider-specific work through a compatible Provider Skill and MUST preserve protocol invariants across that delegation.
+
+## 7. Cloudflare reference profile
+
+`iorLab/zerolocal-cloudflare-starter` is the executable Cloudflare reference/golden fixture. It MUST demonstrate at minimum:
+
+- repository-backed RPM;
+- remote CI for pull requests and release-branch pushes;
+- separation of untrusted validation from production authority;
+- `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` in protected repository secrets;
+- trusted production delivery after successful validation;
+- checkout/deployment of the exact validated SHA;
+- serialized production runs;
+- Worker endpoint discovery;
+- automated `/health` or equivalent post-deploy verification;
+- manual remote recovery for an explicitly identified immutable revision.
+
+D1 is an optional v0.1 capability. When used, creation/migration behavior MUST be idempotent or safely replayable and production migration ordering MUST be explicit.
+
+## 8. Conformance evidence
+
+Conformance is evidence-based.
+
+**Repository-static evidence** includes protocol/RPM/provider manifests, workflow definitions, secret-name declarations, source/configuration, validation commands, and documented trust boundaries.
+
+**Live operational evidence** includes CI results attributed to a SHA, deployment logs, deployed revision identity, provider resource status, endpoint discovery, and health/readiness results.
+
+A repository cannot claim live deployment conformance solely from static workflow files. Conversely, provider credentials or live access are not required to inspect static contract conformance.
+
+## 9. Skill v0.1 Definition of Done
+
+Skill v0.1 is complete when:
+
+1. this specification defines lifecycle, seven contracts, provider adapter hooks, trust boundaries, evidence, and the Core procedural mapping;
+2. the Cloudflare reference repository implements the provider descriptor, remote validation, exact-tested-revision deployment, and production verification path;
+3. `skills/zerolocal-core/SKILL.md` can bootstrap/resume a project from repository/RPM state and execute the complete procedural interface without founding-chat knowledge;
+4. `skills/cloudflare-provider/SKILL.md` implements the Provider Adapter Contract without leaking Cloudflare semantics into Core;
+5. repository/project and provider conformance checklists exist;
+6. remaining failures that require account ownership or secrets are documented as trust-boundary prerequisites rather than hidden implementation work.
+
+This Definition of Done establishes **Skill v0.1 implementation completeness**, not stabilization. Plugin work remains gated until clean-room validation succeeds on at least two new non-founding real projects, preferably 2-3, and recurring failure modes have reusable recovery strategies.
+
+## 10. Non-goals for v0.1
+
+- broad multi-provider support;
+- Plugin packaging, marketplace distribution, or onboarding UX;
+- requiring projects to fork the Cloudflare reference fixture;
+- standardizing a specific application framework or language;
+- moving secrets into chat or repository plaintext;
+- eliminating optional local development.
+
+## 11. Compatibility and evolution
+
+Cloudflare is the sole reference provider for v0.1. Provider neutrality is an architectural boundary, not a claim that multiple providers have already passed conformance.
+
+Changes to lifecycle semantics, trust-boundary invariants, provider hooks, or exact-revision delivery semantics require a durable RPM decision and specification revision. Skills MUST identify the specification version they implement.

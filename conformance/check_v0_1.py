@@ -22,12 +22,23 @@ checks = {
         "detect", "capabilities", "credentials", "scaffold", "validate", "provision",
         "migrate", "deploy", "endpoint", "verify", "recover"
     ]),
+    "spec durable bootstrap contract": all(x in spec for x in [
+        "ZL-RPM-006", "ZL-RPM-007", "ZL-RPM-008", "ZL-RPM-009",
+        "durable bootstrap pointer", "RPM ref"
+    ]),
+    "spec bootstrap locator-only": "locator-only metadata" in spec,
+    "spec rpm discovery failure": "RPM/bootstrap discovery" in spec,
     "core procedures": all(f"### {x}" in core for x in [
         "Initialize", "Plan", "Implement", "Verify", "Deliver", "Observe", "Checkpoint"
     ]),
     "core secret boundary": "Never request or reproduce secret values in chat" in core,
     "core exact revision invariant": "deploy the exact immutable revision that passed the gate" in core,
     "core provider delegation": "provider skill" in core.lower() and "provider-specific behavior belongs" in core.lower(),
+    "core durable bootstrap": all(x in core for x in [
+        "durable bootstrap pointer", "canonical repository", "RPM manifest", "RPM ref"
+    ]),
+    "core branch-aware rpm discovery": "active ZeroLocal working ref" in core,
+    "core checkpoint resumability gate": "blocked at resumability boundary" in core,
     "cloudflare provider hooks": all(f"### {x}" in cloudflare for x in [
         "detect", "capabilities", "credentials", "scaffold", "validate", "provision",
         "migrate", "deploy", "endpoint", "verify", "recover"

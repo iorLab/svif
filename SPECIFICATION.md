@@ -65,9 +65,13 @@ The Agent Operator MUST:
 - read repository instructions and RPM manifest when present;
 - load referenced state, next steps, and decisions;
 - inspect project structure, validation/delivery automation, provider declarations, and outstanding failures;
-- identify trust-boundary prerequisites without requesting secret values.
+- identify trust-boundary prerequisites without requesting secret values;
+- when RPM is created or adopted for a conversational project environment, establish a durable bootstrap pointer that lets a fresh Agent context rediscover the canonical repository and RPM manifest without replaying project history;
+- when the authoritative RPM lives on a non-default repository ref, record enough durable locator metadata to resolve that active RPM ref before loading state.
 
-Exit evidence: repository identity, current immutable revision, operating state, required remote checks, and provider status are known.
+A bootstrap pointer MAY live in ChatGPT Project Instructions or an equivalent durable conversation-environment instruction surface. It MUST remain locator-only metadata: canonical repository, RPM manifest path, and active RPM ref when needed. It MUST NOT duplicate project history, mutable execution state, or secrets that belong in repository RPM.
+
+Exit evidence: repository identity, current immutable revision, operating state, required remote checks, provider status, and a working durable RPM discovery path are known.
 
 ### 4.2 IMPLEMENT
 
@@ -121,15 +125,16 @@ Failures MUST be classified at least as one of:
 - infrastructure provisioning;
 - migration/state transition;
 - routing/DNS/external integration;
-- production health/readiness.
+- production health/readiness;
+- RPM/bootstrap discovery.
 
-Repository-owned failures MUST be repaired through the repository-native path. Trust-boundary failures MUST produce precise human action requirements without requesting secret values in chat and without defaulting to local debugging.
+Repository-owned failures MUST be repaired through the repository-native path. Trust-boundary failures MUST produce precise human action requirements without requesting secret values in chat and without defaulting to local debugging. RPM/bootstrap discovery failures MUST be repaired at the durable locator/RPM layer rather than by replaying conversational history.
 
 ### 4.8 CHECKPOINT
 
 Entry: a meaningful work boundary is reached.
 
-The Agent Operator SHOULD persist changed project status, completed work, unresolved blockers, next steps, and durable decisions to RPM or an explicitly declared equivalent. The next fresh context SHOULD be able to resume from repository state alone.
+The Agent Operator SHOULD persist changed project status, completed work, unresolved blockers, next steps, and durable decisions to RPM or an explicitly declared equivalent. Before claiming resumability, the Agent Operator MUST ensure that a fresh context has a durable path to discover the canonical repository, RPM manifest, and authoritative RPM ref when non-default. The next fresh context SHOULD be able to resume from repository state alone.
 
 ## 5. Core Contract families
 
@@ -154,7 +159,11 @@ RPM is the standard durable-memory profile for the official skills.
 **ZL-RPM-002** The manifest MUST reference current state and next steps and SHOULD reference durable decisions.  
 **ZL-RPM-003** A fresh Agent context SHOULD load RPM at the first substantive project turn.  
 **ZL-RPM-004** Checkpoint MUST NOT persist secret values.  
-**ZL-RPM-005** RPM content MUST be sufficient to resume without founding-chat context.
+**ZL-RPM-005** RPM content MUST be sufficient to resume without founding-chat context.  
+**ZL-RPM-006** When RPM is established for a conversational project environment, that environment MUST have a durable bootstrap pointer sufficient to rediscover the canonical repository and RPM manifest without replaying project history.  
+**ZL-RPM-007** If authoritative RPM state is on a non-default repository ref, the durable bootstrap path MUST identify or deterministically resolve that ref before state is loaded.  
+**ZL-RPM-008** Bootstrap instructions MUST remain locator-only metadata and MUST NOT become a second store for mutable project state or secrets.  
+**ZL-RPM-009** A checkpoint MUST NOT claim fresh-context resumability while the bootstrap pointer is missing, stale, or unable to resolve the authoritative RPM.
 
 Minimum official layout:
 
@@ -165,6 +174,17 @@ Minimum official layout:
   next-steps.md
   decisions.md
 ```
+
+Minimum conversational bootstrap locator:
+
+```text
+ZeroLocal project
+Canonical repository: owner/repository
+RPM manifest: .chatgpt/project-memory.yaml
+RPM ref: branch-or-other-ref-when-non-default
+```
+
+The exact instruction syntax is environment-specific. The semantic requirement is that the fresh context can enter repository RPM without relying on prior chat memory.
 
 ### 5.4 CI Contract
 
@@ -268,9 +288,9 @@ D1 is an optional v0.1 capability. When used, creation/migration behavior MUST b
 
 Conformance is evidence-based.
 
-**Repository-static evidence** includes protocol/RPM/provider manifests, workflow definitions, secret-name declarations, source/configuration, validation commands, and documented trust boundaries.
+**Repository-static evidence** includes protocol/RPM/provider manifests, workflow definitions, secret-name declarations, source/configuration, validation commands, documented trust boundaries, and durable bootstrap locator semantics.
 
-**Live operational evidence** includes CI results attributed to a SHA, deployment logs, deployed revision identity, provider resource status, endpoint discovery, and health/readiness results.
+**Live operational evidence** includes CI results attributed to a SHA, deployment logs, deployed revision identity, provider resource status, endpoint discovery, health/readiness results, and a successful fresh-context RPM resume test when conversational resumability is claimed.
 
 A repository cannot claim live deployment conformance solely from static workflow files. Conversely, provider credentials or live access are not required to inspect static contract conformance.
 
@@ -300,4 +320,4 @@ This Definition of Done establishes **Skill v0.1 implementation completeness**, 
 
 Cloudflare is the sole reference provider for v0.1. Provider neutrality is an architectural boundary, not a claim that multiple providers have already passed conformance.
 
-Changes to lifecycle semantics, trust-boundary invariants, provider hooks, or exact-revision delivery semantics require a durable RPM decision and specification revision. Skills MUST identify the specification version they implement.
+Changes to lifecycle semantics, trust-boundary invariants, provider hooks, RPM bootstrap/resumability semantics, or exact-revision delivery semantics require a durable RPM decision and specification revision. Skills MUST identify the specification version they implement.

@@ -13,6 +13,7 @@ files:
   next_steps: .chatgpt/next-steps.md
   decisions: .chatgpt/decisions.md
   specification: SPECIFICATION.md
+  validation_1: .chatgpt/validation-1.md
 checkpoint:
   triggers:
     - 收尾

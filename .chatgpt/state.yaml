@@ -10,13 +10,13 @@ summary: >-
   AI-operated software delivery in which a human does not need a local project checkout,
   local build toolchain, or local deployment commands for the normal development, release,
   and repository-side recovery loop. The founding awesome-fame-slider project demonstrated
-  the model on GitHub Actions and Cloudflare; the canonical specification and the Cloudflare
-  starter repositories are now being bootstrapped separately.
+  the model on GitHub Actions and Cloudflare. RPM is now initialized in the canonical spec
+  repository and Specification v0.1 has an initial substantive Working Draft.
 current_focus: >-
-  Define ZeroLocal Specification v0.1: terminology, normative core requirements, Repository
-  Project Memory (RPM), trust boundaries, remote validation and delivery invariants, failure
-  recovery, conformance levels, and the boundary between the provider-neutral core and the
-  Cloudflare reference profile.
+  Refine ZeroLocal Specification v0.1 and validate it through the Cloudflare starter: tighten
+  normative terminology, settle conformance profiles, define a machine-readable conformance
+  manifest, implement observable checks, and use implementation pressure to remove ambiguous
+  or provider-specific assumptions from Core.
 confirmed_constraints:
   - The canonical specification repository is iorLab/zerolocal.
   - The Cloudflare reference implementation repository is iorLab/zerolocal-cloudflare-starter.
@@ -28,11 +28,17 @@ confirmed_constraints:
   - The specification core should remain provider-neutral; Cloudflare-specific behavior belongs in a reference profile/implementation.
 implemented:
   - RPM manifest initialized under .chatgpt/project-memory.yaml.
+  - RPM state, next steps, and durable decisions initialized and linked from the manifest.
   - Canonical repository, reference implementation, and founding case study identities recorded.
-  - Specification v0.1 drafting phase started.
+  - README.md created with the ZeroLocal definition, status, project map, and v0.1 focus.
+  - SPECIFICATION.md created as ZeroLocal Specification v0.1 Working Draft.
+  - Initial draft contains 24 numbered ZeroLocal Core requirements covering repository authority, no-local prerequisites, remote validation/evidence, secrets/trust boundaries, automation, deployment provenance, isolation, idempotency, coordination, production verification, and human approval gates.
+  - Provisional optional RPM and Continuous Delivery profiles are defined.
+  - Failure-recovery contract, provider-profile boundary, security invariants, provisional conformance claims, founding-case evidence, and open v0.1 questions are documented.
 blockers: []
 open_questions:
   - Final conformance-level names and whether v0.1 should expose one mandatory profile or layered profiles.
   - Exact normative boundary between required RPM behavior and optional repository-memory conventions.
   - Minimum portable interface expected from a provider-specific deployment profile.
   - Whether conformance should require automated production deployment or allow an explicit human approval gate while still qualifying as ZeroLocal.
+  - Which requirements can be validated statically and which require live operational evidence.

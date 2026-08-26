@@ -1,6 +1,6 @@
 project: ZeroLocal
 status: active
-phase: specification-v0.1
+phase: skill-stabilization
 repository: iorLab/zerolocal
 current_delivery_form: skills
 long_term_product_form: installable-plugin
@@ -9,19 +9,17 @@ provider_references:
 founding_case_study: mattamior/awesome-fame-slider
 updated_at: 2026-08-26
 summary: >-
-  ZeroLocal is a repository-first, AI-operated software delivery system whose current development
-  path is Specification -> executable provider reference -> Core Skill -> Provider Skill -> clean-room
-  multi-project stabilization -> Plugin. The founding operating model was previously named ANRD
-  (AI-Native Repository Delivery); ANRD is an old name for ZeroLocal, not a separate architecture.
-  The immediate goal is not Plugin packaging. It is to stabilize the protocol and procedural skills
-  so a fresh ChatGPT context plus repository state can execute the lifecycle without hidden founding
-  context or a human-operated local checkout/toolchain.
+  ZeroLocal Skill v0.1 is implementation-complete. The canonical v0.1 Specification now formalizes
+  the protocol lifecycle, seven Core Contract families, evidence model, trust boundaries, Provider
+  Adapter hooks, and mapping to the Core Skill procedure. The Cloudflare executable reference and
+  separate Core/Cloudflare Skills exist in GitHub and structural conformance CI passes. The project
+  is now in mandatory clean-room Skill Stabilization before any Plugin work.
 current_focus: >-
-  Complete ZeroLocal Specification v0.1 around protocol, roles, lifecycle, repository/RPM/CI/deployment/
-  trust-boundary contracts, provider-neutral invariants, conformance requirements, and the Provider
-  Adapter Contract. After the contract is sufficiently explicit, build the Cloudflare executable
-  reference and use implementation pressure to refine the spec before encoding Core and Cloudflare
-  procedural workflows as Skills.
+  Validate ZeroLocal Core Skill v0.1 plus Cloudflare Provider Skill v0.1 on at least two new
+  non-founding real projects, preferably 2-3, from fresh contexts and repository state. Convert any
+  hidden-context dependency or recurring failure into explicit Specification, Skill, reference,
+  conformance, or RPM improvements. Build a reusable failure taxonomy/recovery playbook before
+  Plugin graduation.
 development_phases:
   - phase: 0
     name: Founding Case Study
@@ -29,21 +27,24 @@ development_phases:
     artifact: mattamior/awesome-fame-slider
   - phase: 1
     name: Specification v0.1
-    status: active
-    artifact: iorLab/zerolocal
+    status: completed
+    artifact: iorLab/zerolocal/SPECIFICATION.md
   - phase: 2
     name: Cloudflare Reference Implementation
-    status: pending
+    status: completed
     artifact: iorLab/zerolocal-cloudflare-starter
+    note: static/executable repository path implemented; live provider observation requires protected Cloudflare authorization
   - phase: 3
     name: ZeroLocal Skill v0.1
-    status: pending
+    status: completed
     artifacts:
-      - ZeroLocal Core Skill
-      - Cloudflare Provider Skill
+      - iorLab/zerolocal/skills/zerolocal-core/SKILL.md
+      - iorLab/zerolocal/skills/cloudflare-provider/SKILL.md
+      - iorLab/zerolocal/conformance/v0.1.md
+      - iorLab/zerolocal/conformance/check_v0_1.py
   - phase: 4
     name: Skill Stabilization
-    status: pending
+    status: active
     requirement: validate on at least two new non-founding real projects, preferably 2-3, from clean context/repository state
   - phase: 5
     name: Plugin
@@ -62,26 +63,31 @@ confirmed_constraints:
   - Provider-specific logic must remain behind provider adapters/skills rather than entering ZeroLocal Core contracts.
   - Cloudflare is the first reference provider only; v0.1 does not require broad multi-provider support.
   - iorLab/zerolocal-cloudflare-starter is the executable Cloudflare reference/golden fixture/conformance testbed, not the user entry point for ZeroLocal as a whole.
-  - The immediate capability target is ZeroLocal Core Skill plus Cloudflare Provider Skill; Plugin is a later distribution/productization layer.
+  - ZeroLocal Core Skill v0.1 implements Initialize -> Plan -> Implement -> Verify -> Deliver -> Observe -> Checkpoint while preserving the distinct protocol lifecycle.
+  - Cloudflare Provider Skill v0.1 implements detect/capabilities/credentials/scaffold/validate/provision/migrate/deploy/endpoint/verify/recover and may delegate current provider mechanics to mature Cloudflare tools/skills.
   - Skill execution must be recoverable from repository state plus durable instructions/RPM and must not depend on founding chat history.
   - Before Plugin work begins, the skills must survive clean-room validation on multiple non-founding projects and common failure modes must have reusable classifications/recovery strategies.
-  - The uploaded ZeroLocal development reference document v0.1 is a high-priority directional reference for architecture, phases, contracts, Skill/Plugin sequencing, and Definition of Done; it is not itself the canonical Specification.
+  - The uploaded ZeroLocal development reference document v0.1 remains directional guidance, not canonical specification truth.
 implemented:
-  - RPM manifest, state, next steps, and durable decisions initialized under .chatgpt/.
-  - README.md and SPECIFICATION.md initialized for ZeroLocal v0.1.
-  - Initial specification contains numbered Core requirements plus provisional RPM and Continuous Delivery profiles.
-  - Cloudflare starter role corrected to executable provider reference/golden fixture/conformance testbed.
-  - Skill-first productization route recovered and recorded durably.
-  - RPM manifest corrected so current_delivery_form is skills and long_term_product_form is installable-plugin.
+  - RPM manifest, state, next steps, and durable decisions under .chatgpt/.
+  - SPECIFICATION.md restructured as ZeroLocal v0.1 protocol with lifecycle, seven contracts, provider adapter hooks, evidence classes, and Skill Definition of Done.
+  - ZeroLocal Core Skill v0.1 added under skills/zerolocal-core/SKILL.md.
+  - Cloudflare Provider Skill v0.1 added under skills/cloudflare-provider/SKILL.md.
+  - Conformance checklist and structural conformance CI added; canonical Conformance workflow passes.
+  - Cloudflare reference initialized with ZEROLOCAL.yaml, RPM, minimal Worker, health endpoint, CI, trusted exact-tested-SHA deploy workflow, serialized production operations, manual immutable-SHA recovery, and post-deploy verification.
+  - Cloudflare implementation pressure exposed and fixed an outdated Wrangler path; delivery now installs the repository Wrangler 4 toolchain before deploy.
+  - README updated to mark Skill v0.1 implementation complete and Plugin as stabilization-gated.
 blockers: []
 open_questions:
-  - Exact normative Core Protocol and lifecycle transition rules for BOOTSTRAP -> IMPLEMENT -> VERIFY -> PROVISION -> DEPLOY -> OBSERVE -> REPAIR/ITERATE -> CHECKPOINT.
-  - Exact boundaries and MUST/SHOULD requirements for Repository, RPM, CI, Deployment, Trust Boundary, and Provider Adapter contracts.
-  - Provider Adapter Contract shape: capabilities, dependencies, credential scopes, initialization, scaffolding, provisioning, deployment, endpoint discovery, verification, and recovery hooks.
-  - Exact Core Skill procedural boundary and mapping from protocol lifecycle to agent operations Initialize/Plan/Implement/Verify/Deliver/Observe/Checkpoint.
-  - Whether provider skills directly implement provider operations or delegate to mature provider plugins/skills where available.
-  - Minimum machine-readable manifest needed for project resume and provider dispatch.
-  - Final stabilization threshold for Plugin graduation; current reference guidance requires at least two new projects and recommends 2-3 real projects.
+  - Which two or three non-founding real projects should serve as clean-room stabilization fixtures.
+  - Which failure classes recur often enough during clean-room runs to require new reusable recovery rules or conformance checks.
+  - Whether provider descriptor fields need tightening after use in fresh projects.
+  - Final Plugin graduation criteria beyond the current minimum two-project / preferred 2-3-project clean-room threshold and failure-taxonomy requirement.
+reference_live_evidence:
+  cloudflare:
+    static_ci: implemented
+    live_deploy_observe: pending protected CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID in repository secret stores
+    classification: human trust boundary, not Skill v0.1 implementation blocker
 last_checkpoint:
-  saved_at: 2026-08-26T21:28:00+08:00
-  reason: user requested checkpoint after restoring the original skill-first ZeroLocal productization roadmap and supplying the development reference document
+  saved_at: 2026-08-26T22:38:00+08:00
+  reason: ZeroLocal Skill v0.1 implementation completed; project advanced to clean-room Skill Stabilization

@@ -27,7 +27,7 @@ checks = {
     ]),
     "core secret boundary": "Never request or reproduce secret values in chat" in core,
     "core exact revision invariant": "deploy the exact immutable revision that passed the gate" in core,
-    "core provider delegation": "Provider Skill" in core and "provider-specific behavior belongs" in core,
+    "core provider delegation": "provider skill" in core.lower() and "provider-specific behavior belongs" in core.lower(),
     "cloudflare provider hooks": all(f"### {x}" in cloudflare for x in [
         "detect", "capabilities", "credentials", "scaffold", "validate", "provision",
         "migrate", "deploy", "endpoint", "verify", "recover"

@@ -28,6 +28,11 @@ checks = {
     "core secret boundary": "Never request or reproduce secret values in chat" in core,
     "core exact revision invariant": "deploy the exact immutable revision that passed the gate" in core,
     "core provider delegation": "provider skill" in core.lower() and "provider-specific behavior belongs" in core.lower(),
+    "core durable bootstrap": all(x in core for x in [
+        "durable bootstrap pointer", "canonical repository", "RPM manifest", "RPM ref"
+    ]),
+    "core branch-aware rpm discovery": "active ZeroLocal working ref" in core,
+    "core checkpoint resumability gate": "blocked at resumability boundary" in core,
     "cloudflare provider hooks": all(f"### {x}" in cloudflare for x in [
         "detect", "capabilities", "credentials", "scaffold", "validate", "provision",
         "migrate", "deploy", "endpoint", "verify", "recover"

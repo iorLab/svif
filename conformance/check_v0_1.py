@@ -22,6 +22,12 @@ checks = {
         "detect", "capabilities", "credentials", "scaffold", "validate", "provision",
         "migrate", "deploy", "endpoint", "verify", "recover"
     ]),
+    "spec durable bootstrap contract": all(x in spec for x in [
+        "ZL-RPM-006", "ZL-RPM-007", "ZL-RPM-008", "ZL-RPM-009",
+        "durable bootstrap pointer", "RPM ref"
+    ]),
+    "spec bootstrap locator-only": "locator-only metadata" in spec,
+    "spec rpm discovery failure": "RPM/bootstrap discovery" in spec,
     "core procedures": all(f"### {x}" in core for x in [
         "Initialize", "Plan", "Implement", "Verify", "Deliver", "Observe", "Checkpoint"
     ]),

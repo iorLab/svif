@@ -2,7 +2,8 @@
 
 **Status:** Working Draft  
 **Canonical repository:** `iorLab/zerolocal`  
-**Reference implementation:** `iorLab/zerolocal-cloudflare-starter`  
+**Official product direction:** installable ZeroLocal plugin/orchestrator  
+**First provider reference fixture:** `iorLab/zerolocal-cloudflare-starter`  
 **Founding case study:** `mattamior/awesome-fame-slider`
 
 ## 1. Abstract
@@ -11,9 +12,11 @@ ZeroLocal defines a repository-first operating model for software development in
 
 ZeroLocal does not prohibit local development. It specifies the existence and integrity of a complete remote path. A maintainer may still clone a repository or run tools locally, but doing so is not a prerequisite for the normal supported workflow.
 
+The ZeroLocal project intends to operationalize this model as an **installable, provider-neutral orchestration plugin**. A user should be able to install ZeroLocal, state that a project should use ZeroLocal mode, and enter the repository/RPM/validation/recovery workflow. Deployment provider selection is a later concern inside that workflow: Cloudflare, Vercel, AWS, or another provider is selected or resolved only when provider-specific delivery behavior is needed.
+
 The model assumes an authorized AI/operator can work directly with the canonical repository, remote automation provides reproducible validation and delivery, durable project state is stored outside transient chat context, secrets remain inside protected secret stores, and failures can be diagnosed from remote evidence.
 
-This document defines the provider-neutral ZeroLocal Core and provisional optional profiles. Provider-specific behavior belongs in reference profiles and implementations.
+This document defines the provider-neutral ZeroLocal Core, provisional optional profiles, the official plugin/orchestration model, and the boundary for provider-specific flows. Provider-specific deployment behavior is not part of ZeroLocal Core.
 
 ## 2. Normative language
 
@@ -21,20 +24,29 @@ The key words **MUST**, **MUST NOT**, **REQUIRED**, **SHOULD**, **SHOULD NOT**, 
 
 Each normative requirement has a stable draft identifier such as `ZL-CORE-001`. Identifiers are intended to support future automated conformance checks. Requirement text may still change while v0.1 remains a Working Draft.
 
-## 3. Scope
+## 3. Scope and product layers
 
 ZeroLocal specifies an operating system around a software repository, not an application framework, programming language, cloud provider, AI model, or source-control vendor.
 
 A ZeroLocal system consists of at least:
 
-- a **Human Operator** who supplies intent, judgment, authorization, and trust-boundary approvals;
+- a **Human Operator** who supplies intent, judgment, authorization, provider choices when needed, and trust-boundary approvals;
 - an **AI/Repository Operator** authorized to inspect and modify project state through repository-native interfaces;
 - a **Canonical Repository** containing source, configuration, automation, durable history, and project-operating state;
 - a **Remote Validation Environment** that can build/test/check project-relevant revisions;
 - for deployable systems, a **Remote Delivery Environment** that can release an identified repository revision without local human tooling;
 - protected **Secret Stores** and provider/account control planes for credentials and account-owner actions.
 
-ZeroLocal does not require a specific AI implementation. Conformance is about the available operating path and its observable invariants.
+The ZeroLocal project itself is split into four layers:
+
+1. **ZeroLocal Core specification** — provider-neutral requirements and invariants.
+2. **ZeroLocal plugin/orchestrator** — the installable user-facing workflow that activates ZeroLocal mode, operates the repository, maintains durable state, and dispatches provider-specific work.
+3. **Provider flows/adapters** — modular behavior for a selected deployment provider.
+4. **Provider reference fixtures** — repositories used to exercise and validate provider flows end to end.
+
+A repository may conform to ZeroLocal Core without using the official ZeroLocal plugin. The official ZeroLocal product, however, is intended to make the conforming workflow installable and reusable rather than requiring each project to reconstruct the playbook manually.
+
+`iorLab/zerolocal-cloudflare-starter` is a layer-4 Cloudflare provider reference fixture/scaffold/testbed. It is **not** the primary user entry point to ZeroLocal and users are not expected to fork it merely to activate ZeroLocal mode.
 
 ## 4. Core principle
 
@@ -42,7 +54,7 @@ ZeroLocal does not require a specific AI implementation. Conformance is about th
 
 For this specification, **normal lifecycle** means the documented path used for routine code/configuration changes, remote validation, release where applicable, and diagnosis/recovery of repository-side failures.
 
-Account-owner actions at explicit trust boundaries are not considered violations of ZeroLocal. Examples include authorizing repository access, creating a scoped provider token, storing a secret, approving billing, proving domain ownership, or approving a protected production deployment.
+Account-owner actions at explicit trust boundaries are not considered violations of ZeroLocal. Examples include authorizing repository access, choosing or authorizing a deployment provider, creating a scoped provider token, storing a secret, approving billing, proving domain ownership, or approving a protected production deployment.
 
 ## 5. ZeroLocal Core requirements
 
@@ -91,7 +103,7 @@ Secret values used by automation **MUST** be stored in an appropriate protected 
 The normal ZeroLocal workflow **MUST NOT** require secret values to be pasted into a chat conversation or other transient AI prompt context. Secret names, required scopes, and setup instructions are permitted.
 
 **ZL-CORE-013 — Explicit human trust boundaries**  
-Actions that require account ownership, credential creation, billing authority, external consent, or protected-environment approval **MAY** remain Human Operator actions and **SHOULD** be documented as explicit trust boundaries.
+Actions that require account ownership, credential creation, billing authority, external consent, provider authorization, or protected-environment approval **MAY** remain Human Operator actions and **SHOULD** be documented as explicit trust boundaries.
 
 **ZL-CORE-014 — Least privilege**  
 Repository automation and provider credentials **SHOULD** receive only the permissions required for their documented role.
@@ -210,7 +222,47 @@ Repositories that frequently update RPM or documentation **SHOULD** avoid trigge
 
 The founding case uses CI-gated automatic delivery from a trusted push to `main`, exact-SHA deployment, serialized production runs, and a manual dispatch fallback. These mechanics are evidence for this profile, not a requirement to use GitHub Actions specifically.
 
-## 8. Failure-recovery contract
+## 8. Official ZeroLocal plugin/orchestration model
+
+The official ZeroLocal product is intended to be installable and activated by user intent rather than by copying a provider-specific repository template.
+
+A provisional lifecycle is:
+
+```text
+Install ZeroLocal
+        ↓
+Activate ZeroLocal mode for a project
+        ↓
+Resolve canonical repository
+        ↓
+Load or initialize RPM/project state
+        ↓
+Inspect project + requirements
+        ↓
+Implement through repository-native operations
+        ↓
+Remote validation
+        ↓
+Failure? ── yes → classify → repository repair or trust-boundary instruction → retry
+        ↓ no
+Deployment required?
+        ↓ yes
+Resolve provider (existing config or user choice)
+        ↓
+Dispatch provider-specific flow
+        ↓
+Remote deploy + verification
+        ↓
+Checkpoint durable project state
+```
+
+The official plugin SHOULD avoid asking the user for facts that are already durable in RPM or repository configuration.
+
+Provider selection SHOULD occur only when provider-specific work is needed. Choosing Cloudflare is not equivalent to choosing ZeroLocal; it selects the Cloudflare branch *inside* an already active ZeroLocal workflow.
+
+The plugin MAY delegate provider operations to another installed provider plugin or tool integration rather than reimplementing provider APIs, as long as the ZeroLocal orchestration invariants, trust boundaries, provenance, and recovery behavior remain intact.
+
+## 9. Failure-recovery contract
 
 A conforming ZeroLocal workflow should preserve a closed remote repair loop:
 
@@ -244,26 +296,30 @@ Failures should be classified into at least:
 
 A repository-side category should lead to a repository-side repair. A trust-boundary category may require a Human Operator action, but should not default to "clone the repo and debug locally."
 
-## 9. Provider profile boundary
+## 10. Provider flow / adapter boundary
 
 ZeroLocal Core intentionally does not standardize a cloud API, deployment CLI, database, or runtime.
 
-A provider-specific profile SHOULD define:
+A provider-specific flow SHOULD expose enough behavior for the ZeroLocal plugin to perform or coordinate:
 
-1. the remote execution environment;
-2. required provider credentials and minimum scopes;
-3. resource discovery/provisioning behavior;
-4. migration/state-transition behavior;
-5. deployment command or API contract;
-6. deployment revision provenance;
-7. production endpoint discovery;
-8. health/readiness or equivalent verification;
-9. idempotency behavior;
-10. failure evidence exposed to the AI/Repository Operator.
+1. provider capability/dependency discovery;
+2. provider selection or recognition from existing project state;
+3. required credentials and minimum scopes, without requesting secret values in chat;
+4. project/repository scaffolding required for that provider;
+5. remote validation and delivery integration;
+6. resource discovery/provisioning behavior;
+7. migration/state-transition behavior where applicable;
+8. deployment command/API contract and immutable revision provenance;
+9. production endpoint discovery;
+10. health/readiness or equivalent verification;
+11. idempotency/retry behavior;
+12. remotely inspectable failure evidence and recovery classification.
 
-The first reference profile will target GitHub Actions + Cloudflare Workers, with optional D1 usage. The reference implementation lives in `iorLab/zerolocal-cloudflare-starter`.
+A provider flow may be packaged inside ZeroLocal, implemented by a separate provider plugin/tool, or use a hybrid model. v0.1 has not yet fixed the packaging mechanism; the important boundary is behavioral and provider-neutral.
 
-## 10. Security invariants
+Cloudflare is the first provider path. `iorLab/zerolocal-cloudflare-starter` serves as a reference scaffold/golden fixture/conformance testbed for what the Cloudflare flow creates and how the resulting project behaves. It does not define ZeroLocal as a whole.
+
+## 11. Security invariants
 
 The following invariants are central to ZeroLocal and should remain stable as v0.1 evolves:
 
@@ -273,9 +329,10 @@ The following invariants are central to ZeroLocal and should remain stable as v0
 - production provenance **MUST** identify what immutable repository revision was deployed;
 - provider credentials **SHOULD** be scoped and revocable;
 - repository automation **SHOULD** fail closed when required trust material is missing;
-- account-owner approvals **MAY** remain manual where risk policy requires them.
+- account-owner approvals **MAY** remain manual where risk policy requires them;
+- selecting a provider **MUST NOT** weaken the provider-neutral ZeroLocal trust and provenance invariants.
 
-## 11. Provisional conformance claims
+## 12. Provisional conformance claims
 
 Until v0.1 exits Working Draft, the following claims are provisional:
 
@@ -285,7 +342,9 @@ Until v0.1 exits Working Draft, the following claims are provisional:
 
 A project **SHOULD NOT** claim conformance based only on repository files. Operational requirements such as secret isolation, remote validation, deployment provenance, and production verification require observable evidence from the configured system.
 
-## 12. Founding case study: awesome-fame-slider
+The official ZeroLocal plugin is an implementation/orchestration product, not itself the definition of repository conformance. Future v0.1 work may define a separate plugin/provider-adapter compatibility claim.
+
+## 13. Founding case study: awesome-fame-slider
 
 The founding case demonstrated the initial ZeroLocal operating loop on a real Cloudflare application:
 
@@ -299,29 +358,39 @@ The founding case demonstrated the initial ZeroLocal operating loop on a real Cl
 - production runs were serialized and verified with health/readiness checks;
 - pure RPM/docs changes were excluded from product deployment churn.
 
+The reusable product lesson is broader than the Cloudflare implementation: the operating model should become an installable ZeroLocal workflow, with provider choice dispatched separately rather than requiring each new project to reconstruct the playbook manually.
+
 Application-specific voting, X sharing, UI behavior, and product architecture are not ZeroLocal requirements.
 
-## 13. Open v0.1 questions
+## 14. Open v0.1 questions
 
 The Working Draft intentionally leaves several items open:
 
-1. Should RPM remain optional, or should durable repository-backed operator memory become part of Core?
-2. Should Continuous Delivery remain an optional profile, or should every deployable ZeroLocal project require an automatic post-validation release path?
-3. What is the smallest useful machine-readable conformance manifest?
-4. How should protected production approval environments be described without binding the specification to GitHub Environments?
-5. Which runtime/provider should serve as the second reference implementation to test provider neutrality?
-6. Which requirements can be checked statically from repository content, and which require live operational probes?
-7. Should ZeroLocal distinguish conformance of a repository template from conformance of a fully configured deployed project?
+1. What is the exact installable plugin/skill package structure for ZeroLocal Core?
+2. Which responsibilities belong in the official ZeroLocal plugin versus provider adapters?
+3. Should provider flows be bundled, depend on separate provider plugins/tools, or use a hybrid model?
+4. What is the smallest useful machine-readable project/provider manifest so ZeroLocal can resume without repeated questions?
+5. Should RPM remain optional for generic conformance even if the official plugin relies on durable repository-backed state?
+6. Should Continuous Delivery remain an optional profile, or should every deployable ZeroLocal project require an automatic post-validation release path?
+7. How should protected production approval environments be described without binding the specification to GitHub Environments?
+8. Which provider should serve as the second provider-flow implementation to validate modular dispatch?
+9. Which requirements can be checked statically from repository content, and which require live operational probes?
+10. Should ZeroLocal distinguish repository/project conformance, official-plugin compatibility, and provider-adapter compatibility as separate claims?
 
-## 14. v0.1 development method
+## 15. v0.1 development method
 
-The specification will be refined by implementation pressure:
+The specification and product will be refined together by implementation pressure:
 
 1. keep Core provider-neutral;
-2. implement the Cloudflare starter;
-3. encode observable conformance checks;
-4. compare behavior with the founding case;
-5. turn ambiguities and implementation-specific assumptions into explicit decisions;
-6. add a second provider/runtime example before treating provider neutrality as validated.
+2. define and implement the installable ZeroLocal plugin's core orchestration flow in `iorLab/zerolocal`;
+3. define a provider adapter contract;
+4. implement Cloudflare as the first provider flow;
+5. use `iorLab/zerolocal-cloudflare-starter` as a golden fixture/testbed for the Cloudflare flow rather than as the user entry point;
+6. encode observable project and provider-flow conformance checks;
+7. compare behavior with the founding case;
+8. turn ambiguities and implementation-specific assumptions into explicit decisions;
+9. add a second provider flow before treating provider modularity as validated.
 
-The goal of v0.1 is not to standardize every AI-native development workflow. It is to define a small set of testable invariants that make "no local environment required" a dependable engineering property rather than a demo claim.
+The target user experience is intentionally simple: install ZeroLocal, ask to use ZeroLocal mode for a project, and only then choose a deployment provider when deployment-specific work is required.
+
+The goal of v0.1 is not to standardize every AI-native development workflow. It is to define a small set of testable invariants and an installable orchestration model that make "no local environment required" a dependable engineering property rather than a project-specific demo claim.

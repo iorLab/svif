@@ -27,7 +27,7 @@ PLAN semantics are mandatory for every material operation. A trivial operation m
 
 ## Agnir dependency boundary
 
-Svif depends on a compatible Agnir Core protocol, not a specific Agnir repository layout, backend, implementation, adapter, VCS, GitHub integration, or ChatGPT integration. The active development compatibility target is Agnir Core `0.1`.
+Svif depends on a compatible Agnir Core protocol, not a specific Agnir repository layout, backend, implementation, adapter, VCS, GitHub integration, or ChatGPT integration. The active development compatibility target is Agnir Core `0.1`. The current Agnir project repository is `iorLab/agnir`.
 
 CHECKPOINT delegates durable persistence/discovery/resumability semantics to Agnir and does not define a competing Svif memory model.
 
@@ -35,11 +35,11 @@ CHECKPOINT delegates durable persistence/discovery/resumability semantics to Agn
 
 Svif has a standard evidence record that preserves stable subject identity, derivation, target identity, result, producer, authority reference, and evidence locator across transformation, verification, delivery, and observation.
 
-Evidence provenance is now executable conformance rather than schema-only validation. The positive fixture covers source candidate -> artifact transformation -> verification -> delivery -> observation. The negative fixture establishes a valid replacement artifact but deliberately delivers it without independent verification; conformance requires this to fail specifically as a provenance violation.
+Evidence provenance is executable conformance rather than schema-only validation. The positive fixture covers source candidate -> artifact transformation -> verification -> delivery -> observation. The negative fixture establishes a valid replacement artifact but deliberately delivers it without independent verification; conformance requires this to fail specifically as a provenance violation.
 
 Capability Adapter operation names are implementation/profile-extensible. Each declared operation must map to a Core semantic effect (`resolve`, `inspect`, `mutate`, `identify`, `verify`, `actuate`, `observe`, `authorize`, `recover`, or `checkpoint`) so orchestration and repair do not depend on provider-specific verbs.
 
-Concrete executable adapter fixtures now cover workspace/SCM, verification, delivery/provider, and observation boundaries. They enforce semantic-effect mappings, authority and retry classes, portable failure classes, Evidence record I/O declarations, verification/delivery authority separation, protected credential references without secret-value transport, provenance mismatch reporting, and independent observation semantics.
+Concrete executable adapter fixtures cover workspace/SCM, verification, delivery/provider, and observation boundaries. They enforce semantic-effect mappings, authority and retry classes, portable failure classes, Evidence record I/O declarations, verification/delivery authority separation, protected credential references without secret-value transport, provenance mismatch reporting, and independent observation semantics.
 
 ## Branch governance
 
@@ -57,22 +57,23 @@ On 2026-08-27, concrete Capability Adapter fixtures landed in commit `67c7b4e93e
 
 ## Repository identity transition
 
-Repository/public-name cleanup is approved as the immediate identity task. The intended coordinated mapping is:
+The coordinated repository identity transition is complete.
 
-- `mattamior/rpm` -> `mattamior/agnir`
-- `iorLab/zerolocal` -> `iorLab/svif`
-- `iorLab/zerolocal-cloudflare-starter` -> `iorLab/svif-cloudflare-starter`
+Canonical repositories are now:
 
-Perform the rename in that order: Agnir first, Svif second, Cloudflare starter third. Legacy branch names remain unchanged because they intentionally preserve predecessor identity.
+- Agnir: `iorLab/agnir` (renamed from `mattamior/rpm` and transferred into the organization)
+- Svif: `iorLab/svif`
+- Cloudflare reference repository: `iorLab/svif-cloudflare-starter`
 
-Until each GitHub rename actually occurs, the current repository name remains the resolvable canonical location for that repository. Immediately after each rename, update durable repository references, manifests/shims, README/documentation, cross-project references, and CI/reference URLs; do not rely on GitHub redirects as the normative identity mechanism.
+Legacy branch names remain unchanged because they intentionally preserve predecessor identity. GitHub redirects from predecessor repository names are compatibility behavior only; active durable repository references use the canonical names above.
 
-The current connected GitHub execution surface does not expose repository-settings mutation/rename. This is an execution-surface capability limitation, not a change to the approved rename decision; the rename remains pending until executed through a surface with repository administration mutation capability.
+## Cloudflare reference boundary
+
+`iorLab/svif-cloudflare-starter` is currently a ZeroLocal-era executable Cloudflare delivery fixture after repository rename. Its existing contents demonstrate real CI/deploy/trust-boundary behavior, but still use `ZEROLOCAL.yaml` and ZeroLocal vocabulary. It must be semantically recast before it can serve as Svif provider/profile implementation evidence. Whether its public name should remain `starter` or become a more precise `reference`/`adapter` identity is an explicit packaging decision, not a Core protocol decision.
 
 ## Known gaps
 
-- Execute the approved coordinated repository rename and reconcile all canonical references.
-- Recast the Cloudflare starter as a Svif Software Delivery + Cloudflare Provider Adapter reference implementation; this should also supply provider/profile implementation evidence beyond generic fixtures.
+- Decide and implement the final packaging/role of the Cloudflare repository, then recast it as Svif Software Delivery + Cloudflare Provider Adapter evidence if retained.
 - Rewrite Validation Project #2 against Svif 0.2 + Agnir 0.1 before resuming Cloudflare deployment validation.
 - Add at least one materially different execution/storage arrangement from ChatGPT + GitHub + Cloudflare before making strong neutrality claims.
 - Add multi-project workspace isolation conformance after Agnir's corresponding fixture is ready.

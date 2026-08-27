@@ -18,6 +18,6 @@ conformance:
 
 extensions:
   svif/repository:
-    canonical: "iorLab/zerolocal"
+    canonical: "iorLab/svif"
     authoritative_ref: "main"
     predecessor_ref: "legacy/zerolocal-v0.1"

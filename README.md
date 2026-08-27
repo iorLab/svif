@@ -10,7 +10,7 @@ It coordinates Project work from discovery and planning through change, verifica
 
 `main` is the Svif `0.2` development line. ZeroLocal v0.1 is preserved as predecessor history on `legacy/zerolocal-v0.1`; predecessor `ZL-*` conformance and ChatGPT Skill packaging are not active Svif Core structure.
 
-The repository is still named `iorLab/zerolocal` during transition. Repository naming is not protocol identity.
+The canonical repository is `iorLab/svif`. Repository naming is packaging/discovery metadata, not protocol identity.
 
 ## Structure
 
@@ -40,7 +40,7 @@ PLAN semantics are required before material mutation, but trivial operations may
 
 ## Agnir
 
-Svif delegates durable Project continuity to Agnir. The active development target is Agnir Core `0.1`, consumed at the protocol layer only.
+Svif delegates durable Project continuity to Agnir. The active development target is Agnir Core `0.1`, consumed at the protocol layer only. The Agnir project currently lives at `iorLab/agnir`.
 
 Svif does not require Agnir's reference repository, storage backend, ChatGPT adapter, Git, GitHub, or `.agnir/` layout. This repository happens to self-host using Agnir's repository/filesystem profile.
 
@@ -48,18 +48,20 @@ Svif does not require Agnir's reference repository, storage backend, ChatGPT ada
 
 Provider/tool-specific capabilities are isolated behind adapters. Operation names remain implementation/profile-extensible; each operation maps to a portable Core effect such as `verify`, `actuate`, or `observe`.
 
+Concrete conformance fixtures cover workspace/SCM, verification, delivery/provider, and observation boundaries, including authority separation and portable failure mappings.
+
 ## Evidence
 
 Svif `evidence-record/0.2` standardizes stable subject identity, derivation, target identity, result status, producer, authority reference, and evidence locator so candidate provenance can survive adapter boundaries.
 
-For software delivery, full immutable Git SHA remains a strong SCM realization, but Git is not the Core candidate model.
+For software delivery, full immutable Git SHA remains a strong SCM realization, but Git is not the Core candidate model. Executable conformance includes a positive provenance chain and a negative unverified-replacement delivery case.
 
 ## Conformance
 
-Run the initial active-line structural checker:
+Run the active-line checker:
 
 ```bash
 python conformance/check_svif_0_2.py
 ```
 
-Release-quality conformance still requires evidence-chain fixtures, adapter fixtures, provider/profile evidence, Agnir cold-start/isolation pressure, and at least one materially different execution/storage arrangement from the founding ChatGPT + GitHub + Cloudflare path.
+Release-quality conformance still requires provider/profile implementation evidence, stronger Agnir cold-start/isolation pressure, and at least one materially different execution/storage arrangement from the founding ChatGPT + GitHub + Cloudflare path.

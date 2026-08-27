@@ -1,0 +1,30 @@
+{
+  "svif_adapter": {"version": "0.2"},
+  "adapter": {
+    "id": "fixture.observation",
+    "version": "0.1.0",
+    "kinds": ["observation"]
+  },
+  "operations": [
+    {
+      "name": "observe_delivered_subject",
+      "effect": "observe",
+      "authority": "read",
+      "retry": "idempotent",
+      "input_record_kinds": ["delivery"],
+      "output_record_kinds": ["observation"],
+      "failure_classes": ["OBSERVATION_FAILURE", "EXTERNAL_INTEGRATION_FAILURE", "TRANSIENT_EXTERNAL_FAILURE"]
+    },
+    {
+      "name": "recover_observation",
+      "effect": "recover",
+      "authority": "none",
+      "retry": "idempotent",
+      "failure_classes": ["OBSERVATION_FAILURE", "TRANSIENT_EXTERNAL_FAILURE"]
+    }
+  ],
+  "extensions": {
+    "fixture_boundary": "observation",
+    "observation_is_independent_from_actuation": true
+  }
+}

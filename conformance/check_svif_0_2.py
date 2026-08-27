@@ -155,7 +155,126 @@ def evidence_fixture_errors(records: Any) -> list[str]:
     return errors
 
 
+def adapter_fixture_errors(descriptor: Any, adapter_schema: dict[str, Any], evidence_kinds: set[str]) -> list[str]:
+    errors: list[str] = []
+    if not isinstance(descriptor, dict):
+        return ["adapter fixture must be a JSON object"]
+
+    svif_adapter = descriptor.get("svif_adapter")
+    if not isinstance(svif_adapter, dict) or svif_adapter.get("version") != "0.2":
+        errors.append("adapter fixture does not declare svif_adapter 0.2")
+
+    adapter = descriptor.get("adapter")
+    if not isinstance(adapter, dict):
+        return errors + ["adapter fixture has no adapter metadata"]
+
+    if not isinstance(adapter.get("id"), str) or not adapter.get("id"):
+        errors.append("adapter id is missing")
+    if not isinstance(adapter.get("version"), str) or not adapter.get("version"):
+        errors.append("adapter version is missing")
+
+    allowed_kinds = set(adapter_schema["properties"]["adapter"]["properties"]["kinds"]["items"]["enum"])
+    kinds = adapter.get("kinds")
+    if not isinstance(kinds, list) or not kinds:
+        errors.append("adapter kinds must be a non-empty array")
+        kinds = []
+    elif len(kinds) != len(set(kinds)):
+        errors.append("adapter kinds are not unique")
+    unknown_kinds = set(kinds) - allowed_kinds
+    if unknown_kinds:
+        errors.append(f"adapter uses unknown kind(s): {', '.join(sorted(unknown_kinds))}")
+
+    operation_schema = adapter_schema["properties"]["operations"]["items"]["properties"]
+    allowed_effects = set(operation_schema["effect"]["enum"])
+    allowed_authority = set(operation_schema["authority"]["enum"])
+    allowed_retry = set(operation_schema["retry"]["enum"])
+    allowed_failures = set(adapter_schema["$defs"]["failureClass"]["enum"])
+
+    operations = descriptor.get("operations")
+    if not isinstance(operations, list) or not operations:
+        errors.append("adapter operations must be a non-empty array")
+        operations = []
+
+    names: set[str] = set()
+    for index, operation in enumerate(operations):
+        label = f"operation[{index}]"
+        if not isinstance(operation, dict):
+            errors.append(f"{label} is not an object")
+            continue
+
+        name = operation.get("name")
+        if not isinstance(name, str) or not name:
+            errors.append(f"{label} has no name")
+        elif name in names:
+            errors.append(f"duplicate operation name: {name}")
+        else:
+            names.add(name)
+
+        effect = operation.get("effect")
+        authority = operation.get("authority")
+        retry = operation.get("retry")
+        if effect not in allowed_effects:
+            errors.append(f"{label} has unknown semantic effect: {effect}")
+        if authority not in allowed_authority:
+            errors.append(f"{label} has unknown authority class: {authority}")
+        if retry not in allowed_retry:
+            errors.append(f"{label} has unknown retry class: {retry}")
+
+        for record_key in ("input_record_kinds", "output_record_kinds"):
+            record_kinds = operation.get(record_key, [])
+            if not isinstance(record_kinds, list):
+                errors.append(f"{label} {record_key} is not an array")
+                continue
+            if len(record_kinds) != len(set(record_kinds)):
+                errors.append(f"{label} {record_key} contains duplicates")
+            unknown_records = set(record_kinds) - evidence_kinds
+            if unknown_records:
+                errors.append(f"{label} {record_key} uses unknown Evidence kind(s): {', '.join(sorted(unknown_records))}")
+
+        failure_classes = operation.get("failure_classes", [])
+        if not isinstance(failure_classes, list):
+            errors.append(f"{label} failure_classes is not an array")
+        else:
+            if len(failure_classes) != len(set(failure_classes)):
+                errors.append(f"{label} failure_classes contains duplicates")
+            unknown_failures = set(failure_classes) - allowed_failures
+            if unknown_failures:
+                errors.append(f"{label} uses unknown failure class(es): {', '.join(sorted(unknown_failures))}")
+
+        if effect == "verify" and authority in {"protected-delivery", "destructive", "principal-action"}:
+            errors.append(f"{label} verification operation improperly implies protected delivery/destructive authority")
+
+    credentials = descriptor.get("credentials", [])
+    if not isinstance(credentials, list):
+        errors.append("credentials is not an array")
+    else:
+        allowed_credential_keys = {"reference", "purpose", "minimum_scope", "value_transport"}
+        allowed_transport = {"none", "protected-store-only", "adapter-managed"}
+        for index, credential in enumerate(credentials):
+            label = f"credential[{index}]"
+            if not isinstance(credential, dict):
+                errors.append(f"{label} is not an object")
+                continue
+            extra_keys = set(credential) - allowed_credential_keys
+            if extra_keys:
+                errors.append(f"{label} contains forbidden/unknown field(s): {', '.join(sorted(extra_keys))}")
+            if not isinstance(credential.get("reference"), str) or not credential.get("reference"):
+                errors.append(f"{label} has no protected credential reference")
+            if not isinstance(credential.get("purpose"), str) or not credential.get("purpose"):
+                errors.append(f"{label} has no purpose")
+            if credential.get("value_transport") not in allowed_transport:
+                errors.append(f"{label} has invalid value_transport")
+
+    return errors
+
+
 def main() -> None:
+    adapter_fixture_paths = [
+        "conformance/fixtures/adapters/workspace-scm.json",
+        "conformance/fixtures/adapters/verification.json",
+        "conformance/fixtures/adapters/delivery-provider.json",
+        "conformance/fixtures/adapters/observation.json",
+    ]
     required = [
         "SVIF.yaml",
         "AGNIR.yaml",
@@ -170,6 +289,7 @@ def main() -> None:
         "schemas/evidence-record.schema.json",
         "conformance/fixtures/evidence-chain-positive.json",
         "conformance/fixtures/evidence-chain-provenance-mismatch.json",
+        *adapter_fixture_paths,
         "history/PREDECESSOR.md",
         ".chatgpt/project-memory.yaml",
     ]
@@ -211,6 +331,58 @@ def main() -> None:
     if kinds != {"candidate", "transformation", "verification", "delivery", "observation", "checkpoint"}:
         fail("Evidence Record kind vocabulary is incomplete or unexpected")
 
+    aggregate_adapter_kinds: set[str] = set()
+    aggregate_fixture_effects: set[str] = set()
+    adapters_by_id: dict[str, dict[str, Any]] = {}
+    for path in adapter_fixture_paths:
+        descriptor = load_json(path)
+        descriptor_errors = adapter_fixture_errors(descriptor, adapter_schema, kinds)
+        if descriptor_errors:
+            fail(f"Capability Adapter fixture {path} failed: " + "; ".join(descriptor_errors))
+        adapter_id = descriptor["adapter"]["id"]
+        if adapter_id in adapters_by_id:
+            fail(f"duplicate Capability Adapter fixture id: {adapter_id}")
+        adapters_by_id[adapter_id] = descriptor
+        aggregate_adapter_kinds.update(descriptor["adapter"]["kinds"])
+        aggregate_fixture_effects.update(operation["effect"] for operation in descriptor["operations"])
+
+    required_fixture_kinds = {"workspace", "scm", "verification", "delivery", "provider", "observation"}
+    if not required_fixture_kinds <= aggregate_adapter_kinds:
+        missing = required_fixture_kinds - aggregate_adapter_kinds
+        fail("Capability Adapter fixtures do not cover boundary kind(s): " + ", ".join(sorted(missing)))
+
+    required_fixture_effects = {"resolve", "inspect", "mutate", "identify", "verify", "actuate", "observe", "recover"}
+    if not required_fixture_effects <= aggregate_fixture_effects:
+        missing = required_fixture_effects - aggregate_fixture_effects
+        fail("Capability Adapter fixtures do not exercise semantic effect(s): " + ", ".join(sorted(missing)))
+
+    workspace = adapters_by_id["fixture.workspace-scm"]
+    identify_ops = [operation for operation in workspace["operations"] if operation["effect"] == "identify"]
+    if not identify_ops or "candidate" not in identify_ops[0].get("output_record_kinds", []):
+        fail("workspace/SCM fixture does not emit candidate evidence from identify")
+
+    verification = adapters_by_id["fixture.verification"]
+    verify_ops = [operation for operation in verification["operations"] if operation["effect"] == "verify"]
+    if not verify_ops or verify_ops[0]["authority"] != "verification" or "verification" not in verify_ops[0].get("output_record_kinds", []):
+        fail("verification fixture does not preserve verification-only authority/evidence semantics")
+
+    delivery = adapters_by_id["fixture.delivery-provider"]
+    actuate_ops = [operation for operation in delivery["operations"] if operation["effect"] == "actuate"]
+    if not actuate_ops:
+        fail("delivery/provider fixture has no actuation operation")
+    actuate = actuate_ops[0]
+    if actuate["authority"] != "protected-delivery":
+        fail("delivery/provider actuation does not declare protected-delivery authority")
+    if "verification" not in actuate.get("input_record_kinds", []) or "delivery" not in actuate.get("output_record_kinds", []):
+        fail("delivery/provider actuation does not consume verification and emit delivery evidence")
+    if "PROVENANCE_MISMATCH" not in actuate.get("failure_classes", []):
+        fail("delivery/provider actuation does not expose portable provenance mismatch failure")
+
+    observation = adapters_by_id["fixture.observation"]
+    observe_ops = [operation for operation in observation["operations"] if operation["effect"] == "observe"]
+    if not observe_ops or "delivery" not in observe_ops[0].get("input_record_kinds", []) or "observation" not in observe_ops[0].get("output_record_kinds", []):
+        fail("observation fixture does not consume delivery and emit independent observation evidence")
+
     positive = load_json("conformance/fixtures/evidence-chain-positive.json")
     positive_errors = evidence_fixture_errors(positive)
     if positive_errors:
@@ -250,7 +422,7 @@ def main() -> None:
     if "Svif depends on a compatible Agnir Core protocol" not in state:
         fail("Agnir protocol dependency boundary missing from durable state")
 
-    print("PASS: Svif 0.2 structure, Agnir 0.1 continuity, and evidence provenance fixtures")
+    print("PASS: Svif 0.2 structure, Agnir 0.1 continuity, evidence provenance, and Capability Adapter fixtures")
 
 
 if __name__ == "__main__":

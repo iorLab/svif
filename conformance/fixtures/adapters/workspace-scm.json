@@ -1,0 +1,43 @@
+{
+  "svif_adapter": {"version": "0.2"},
+  "adapter": {
+    "id": "fixture.workspace-scm",
+    "version": "0.1.0",
+    "kinds": ["workspace", "scm"]
+  },
+  "operations": [
+    {
+      "name": "resolve_project",
+      "effect": "resolve",
+      "authority": "read",
+      "retry": "idempotent",
+      "failure_classes": ["ADAPTER_UNAVAILABLE", "ADAPTER_CONFIGURATION_INVALID"]
+    },
+    {
+      "name": "inspect_project_state",
+      "effect": "inspect",
+      "authority": "read",
+      "retry": "idempotent",
+      "failure_classes": ["ADAPTER_UNAVAILABLE", "TRANSIENT_EXTERNAL_FAILURE"]
+    },
+    {
+      "name": "identify_candidate",
+      "effect": "identify",
+      "authority": "read",
+      "retry": "idempotent",
+      "output_record_kinds": ["candidate"],
+      "failure_classes": ["CANDIDATE_IDENTITY_FAILURE"]
+    },
+    {
+      "name": "apply_project_change",
+      "effect": "mutate",
+      "authority": "mutation",
+      "retry": "guarded",
+      "failure_classes": ["STATE_TRANSITION_FAILURE"]
+    }
+  ],
+  "extensions": {
+    "fixture_boundary": "workspace-scm",
+    "identity_forms": ["project-uri", "immutable-revision"]
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "svif_adapter": {"version": "0.2"},
+  "adapter": {
+    "id": "fixture.delivery-provider",
+    "version": "0.1.0",
+    "kinds": ["delivery", "provider"]
+  },
+  "operations": [
+    {
+      "name": "resolve_delivery_target",
+      "effect": "resolve",
+      "authority": "read",
+      "retry": "idempotent",
+      "failure_classes": ["ADAPTER_CONFIGURATION_INVALID", "EXTERNAL_ACCOUNT_STATE"]
+    },
+    {
+      "name": "deliver_verified_subject",
+      "effect": "actuate",
+      "authority": "protected-delivery",
+      "retry": "guarded",
+      "input_record_kinds": ["verification"],
+      "output_record_kinds": ["delivery"],
+      "failure_classes": ["AUTHORITY_REQUIRED", "CREDENTIAL_UNAVAILABLE", "PROVENANCE_MISMATCH", "DELIVERY_FAILURE", "TRANSIENT_EXTERNAL_FAILURE"]
+    },
+    {
+      "name": "recover_delivery",
+      "effect": "recover",
+      "authority": "mutation",
+      "retry": "guarded",
+      "failure_classes": ["DELIVERY_FAILURE", "EXTERNAL_INTEGRATION_FAILURE", "TRANSIENT_EXTERNAL_FAILURE"]
+    }
+  ],
+  "credentials": [
+    {
+      "reference": "protected-store://fixture/delivery-authority",
+      "purpose": "actuate protected delivery target",
+      "minimum_scope": "fixture:deliver",
+      "value_transport": "protected-store-only"
+    }
+  ],
+  "extensions": {
+    "fixture_boundary": "delivery-provider",
+    "target_identity_forms": ["provider-resource-uri"]
+  }
+}

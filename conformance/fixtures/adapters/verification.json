@@ -1,0 +1,30 @@
+{
+  "svif_adapter": {"version": "0.2"},
+  "adapter": {
+    "id": "fixture.verification",
+    "version": "0.1.0",
+    "kinds": ["verification"]
+  },
+  "operations": [
+    {
+      "name": "verify_candidate",
+      "effect": "verify",
+      "authority": "verification",
+      "retry": "idempotent",
+      "input_record_kinds": ["candidate", "transformation"],
+      "output_record_kinds": ["verification"],
+      "failure_classes": ["DEPENDENCY_TOOLCHAIN", "CANDIDATE_IDENTITY_FAILURE", "STATE_TRANSITION_FAILURE"]
+    },
+    {
+      "name": "recover_verification",
+      "effect": "recover",
+      "authority": "none",
+      "retry": "idempotent",
+      "failure_classes": ["DEPENDENCY_TOOLCHAIN", "TRANSIENT_EXTERNAL_FAILURE"]
+    }
+  ],
+  "extensions": {
+    "fixture_boundary": "verification",
+    "verification_does_not_imply_delivery_authority": true
+  }
+}

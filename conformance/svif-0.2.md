@@ -9,10 +9,15 @@ The current executable checker validates:
 - presence of Core, Capability Adapter, Evidence, and Software Delivery Profile contracts;
 - machine-readable adapter/evidence schema version constants and semantic enums;
 - PLAN semantics and generalized lifecycle in Core;
+- concrete Capability Adapter descriptors for workspace/SCM, verification, delivery/provider, and observation boundaries;
+- adapter operation-to-Core-effect mappings, authority/retry classes, portable failure classes, Evidence record I/O declarations, and protected credential references without secret-value transport;
+- verification authority remains distinct from protected delivery authority;
+- delivery/provider actuation consumes verification evidence, emits delivery evidence, and exposes `PROVENANCE_MISMATCH`;
+- observation consumes delivery evidence and emits independent observation evidence;
 - a positive evidence chain from candidate -> transformation -> verification -> delivery -> observation;
 - a negative provenance fixture in which a valid derived replacement is delivered without independent verification and therefore must fail;
 - successful delivery/observation subject-target correspondence in the executable fixture chain;
 - absence of active ZeroLocal v0.1 spec/Skill/conformance files on `main`;
 - recovery of a material current fact from authoritative `.agnir` state.
 
-This is not final release conformance. Concrete Capability Adapter fixtures, provider/profile implementation evidence, Agnir multi-project isolation, and a materially different execution/storage arrangement remain required.
+This is not final release conformance. Provider/profile reference implementation evidence, Agnir multi-project isolation, and a materially different execution/storage arrangement remain required.

@@ -99,3 +99,9 @@
 31. Defer broad renames of `iorLab/zerolocal`, `iorLab/zerolocal-cloudflare-starter`, `ZEROLOCAL.yaml`, Skill directories, public identifiers, and historical files until migration/compatibility rules are explicit.
 32. Treat Skill, Plugin, CLI, SDK, IDE extension, CI automation, and similar surfaces as integrations/packaging rather than Svif Core architecture.
 33. Revisit product packaging only after generalized Core/profile/adapter contracts pass materially diverse conformance cases.
+
+## Branch governance — cleanup deferred
+
+34. Treat `main` as the authoritative active Svif line and `legacy/zerolocal-v0.1` as the preserved predecessor line.
+35. Ignore temporary, redundant, or incidental branches during active architecture work unless one causes a real conflict or ambiguity.
+36. After the new Svif version is substantially complete, review and delete non-authoritative branches in one deliberate cleanup pass.

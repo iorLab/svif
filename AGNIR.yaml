@@ -1,0 +1,23 @@
+agnir:
+  version: "0.1"
+  discovery_profile: "repository-filesystem/0.1"
+
+project:
+  identity: "urn:svif:project:svif-core"
+  profiles:
+    - generic
+
+memory:
+  state: ".agnir/state.md"
+  next_actions: ".agnir/next-actions.md"
+  decisions: ".agnir/decisions.md"
+  evidence: ".agnir/evidence/"
+
+policy:
+  checkpoint: event-driven
+
+extensions:
+  agnir/repository:
+    canonical: "iorLab/zerolocal"
+    authoritative_ref: "main"
+    predecessor_ref: "legacy/zerolocal-v0.1"

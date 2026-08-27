@@ -1,108 +1,63 @@
-# ZeroLocal
+# Svif
 
-**ZeroLocal** is a provider-neutral operating model and skill set for repository-first, AI-operated software development where a human can run the normal implementation, validation, release, observation, and repository-side recovery loop without requiring a local project checkout or local project/deployment toolchain.
+Svif is an execution-environment-independent Project operation protocol.
 
-Local development is allowed. The defining property is that it is **not required**.
+It coordinates Project work from discovery and planning through change, verification, optional delivery, external observation, repair, and durable continuation. Its stable rule is:
 
-The founding operating model was developed under the name **AI-Native Repository Delivery (ANRD)**. ZeroLocal is the current project/product identity.
+> The Project persists; Executors and execution environments may change.
 
-## Productization sequence
+## Active line
 
-ZeroLocal is deliberately **skill-first, plugin-later**:
+`main` is the Svif `0.2` development line. ZeroLocal v0.1 is preserved as predecessor history on `legacy/zerolocal-v0.1`; predecessor `ZL-*` conformance and ChatGPT Skill packaging are not active Svif Core structure.
 
-```text
-Specification v0.1
-        ↓
-Cloudflare executable reference
-        ↓
-ZeroLocal Core Skill v0.1
-        ↓
-Cloudflare Provider Skill v0.1
-        ↓
-Clean-room multi-project stabilization
-        ↓
-Stable skills + contracts
-        ↓
-ZeroLocal Plugin packaging
-```
+The repository is still named `iorLab/zerolocal` during transition. Repository naming is not protocol identity.
 
-Plugin packaging remains gated. The protocol and procedural workflows are stabilized before a wider product surface is frozen.
-
-## Current status
-
-**Skill v0.1 is implementation-complete.** The current artifacts are:
-
-- canonical protocol: [`SPECIFICATION.md`](./SPECIFICATION.md)
-- ZeroLocal Core Skill: [`skills/zerolocal-core/SKILL.md`](./skills/zerolocal-core/SKILL.md)
-- Cloudflare Provider Skill: [`skills/cloudflare-provider/SKILL.md`](./skills/cloudflare-provider/SKILL.md)
-- conformance checklist: [`conformance/v0.1.md`](./conformance/v0.1.md)
-- structural conformance runner: [`conformance/check_v0_1.py`](./conformance/check_v0_1.py)
-- Cloudflare executable reference/golden fixture: `iorLab/zerolocal-cloudflare-starter`
-- Repository Project Memory: [`.chatgpt/project-memory.yaml`](./.chatgpt/project-memory.yaml)
-
-The next mandatory phase is **Skill Stabilization**: run the skills end to end on at least two new non-founding real projects, preferably 2-3, from fresh contexts and repository state. That phase is required before Plugin work.
-
-## Architecture
-
-ZeroLocal has six logical layers:
-
-1. **Human Governance** — intent, judgment, account ownership, secrets, billing, approvals.
-2. **Agent** — ZeroLocal Core procedural orchestration.
-3. **Repository Control Plane** — canonical source, automation, RPM, durable history.
-4. **Verification & Delivery** — remote CI and exact-revision release mechanics.
-5. **Provider Adapter** — provider-specific skill/tool behavior.
-6. **Production Observation** — endpoint/readiness/health evidence and recovery signals.
-
-Core semantics are provider-neutral. Cloudflare is the sole v0.1 reference provider, not a Core dependency.
-
-## Lifecycle and Skill interface
-
-Protocol lifecycle:
+## Structure
 
 ```text
-BOOTSTRAP → IMPLEMENT → VERIFY → PROVISION → DEPLOY → OBSERVE → CHECKPOINT
-                  ↘ failures → REPAIR/ITERATE → earliest violated state
+SVIF.yaml                           # this repository's Svif self-description
+AGNIR.yaml                          # Agnir cold-start discovery anchor
+.agnir/                             # authoritative Project continuity for this repo
+spec/CORE.md                        # Svif Core 0.2
+spec/CAPABILITY_ADAPTER.md          # portable adapter semantics
+spec/EVIDENCE.md                    # candidate/evidence envelope
+profiles/SOFTWARE_DELIVERY.md       # software-delivery specialization
+schemas/                            # reference machine-readable contracts
+conformance/                        # executable new-line conformance pressure
 ```
 
-Core Skill procedure:
+`SVIF.yaml` is a repository self-description, not a universal mandatory Svif Core filename. `AGNIR.yaml` is defined by Agnir's repository/filesystem profile, not by Svif Core.
 
-```text
-Initialize → Plan → Implement → Verify → Deliver → Observe → Checkpoint
+## Lifecycle
+
+`DISCOVER -> PLAN -> CHANGE -> VERIFY -> DELIVER -> OBSERVE -> CHECKPOINT`
+
+`REPAIR` returns to the earliest violated invariant.
+
+PLAN semantics are required before material mutation, but trivial operations may coalesce PLAN in an execution trace when no separate plan artifact is material. DELIVER is optional when no external actuation is required. OBSERVE is mandatory whenever external effect is claimed.
+
+## Agnir
+
+Svif delegates durable Project continuity to Agnir. The active development target is Agnir Core `0.1`, consumed at the protocol layer only.
+
+Svif does not require Agnir's reference repository, storage backend, ChatGPT adapter, Git, GitHub, or `.agnir/` layout. This repository happens to self-host using Agnir's repository/filesystem profile.
+
+## Capability Adapters
+
+Provider/tool-specific capabilities are isolated behind adapters. Operation names remain implementation/profile-extensible; each operation maps to a portable Core effect such as `verify`, `actuate`, or `observe`.
+
+## Evidence
+
+Svif `evidence-record/0.2` standardizes stable subject identity, derivation, target identity, result status, producer, authority reference, and evidence locator so candidate provenance can survive adapter boundaries.
+
+For software delivery, full immutable Git SHA remains a strong SCM realization, but Git is not the Core candidate model.
+
+## Conformance
+
+Run the initial active-line structural checker:
+
+```bash
+python conformance/check_svif_0_2.py
 ```
 
-The procedure maps user intent onto protocol states; it is not a second lifecycle.
-
-## Core invariants
-
-- The canonical repository is the project filesystem and durable source of truth.
-- Normal operation must not require a human local checkout, project toolchain, git commands, or deployment CLI.
-- Secrets stay in GitHub/provider secret stores and are never requested in chat or persisted in RPM plaintext.
-- CI verifies; deployment actuates.
-- Validation-gated production deploys the exact immutable revision that passed the gate.
-- Untrusted validation contexts do not gain production authority.
-- Production success requires observable verification, not merely a successful deploy command.
-- Provider-specific behavior remains behind Provider Skills/adapters.
-- Fresh contexts must be able to resume from repository state + RPM + installed skills rather than founding-chat history.
-
-## Cloudflare reference
-
-`iorLab/zerolocal-cloudflare-starter` is an executable contract fixture, not the ZeroLocal user entry point. It demonstrates:
-
-- `ZEROLOCAL.yaml` provider declaration;
-- repository-backed RPM;
-- PR/main remote validation;
-- trusted deployment only after successful `main` CI;
-- exact checkout/deployment of the tested SHA;
-- serialized production runs;
-- explicit manual recovery by immutable SHA;
-- deployment-target discovery;
-- post-deploy `/health` verification;
-- Cloudflare credentials as protected-store trust boundaries.
-
-## Mature product direction
-
-A later installable ZeroLocal product may package stable Skills, GitHub integration, templates, onboarding, provider discovery, and versioning. It should compose already-proven workflows rather than be the place where those workflows are first discovered.
-
-## Project state
-
-`iorLab/zerolocal` is the canonical source of truth. Durable project state, next steps, and decisions live under `.chatgpt/`; chat conversations are working memory only.
+Release-quality conformance still requires evidence-chain fixtures, adapter fixtures, provider/profile evidence, Agnir cold-start/isolation pressure, and at least one materially different execution/storage arrangement from the founding ChatGPT + GitHub + Cloudflare path.

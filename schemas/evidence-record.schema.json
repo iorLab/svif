@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://svif.dev/schema/evidence-record/0.2.json",
+  "title": "Svif Evidence Record 0.2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["svif", "record", "subject", "result"],
+  "properties": {
+    "svif": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version", "schema"],
+      "properties": {
+        "version": {"const": "0.2"},
+        "schema": {"const": "evidence-record/0.2"}
+      }
+    },
+    "record": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "project_identity", "operation_id"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "kind": {"$ref": "#/$defs/recordKind"},
+        "project_identity": {"type": "string", "minLength": 1},
+        "operation_id": {"type": "string", "minLength": 1}
+      }
+    },
+    "subject": {"$ref": "#/$defs/subject"},
+    "target": {
+      "oneOf": [
+        {"$ref": "#/$defs/target"},
+        {"type": "null"}
+      ]
+    },
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": {"enum": ["succeeded", "failed", "blocked", "unknown"]},
+        "summary": {"type": ["string", "null"]}
+      }
+    },
+    "producer": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "adapter_id": {"type": ["string", "null"]},
+        "implementation": {"type": ["string", "null"]},
+        "execution_environment": {"type": ["string", "null"]}
+      }
+    },
+    "authority": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "class": {"enum": ["none", "read", "mutation", "verification", "protected-delivery", "destructive", "principal-action"]},
+        "reference": {"type": ["string", "null"]}
+      }
+    },
+    "evidence_locator": {"type": ["string", "null"]},
+    "observed_at": {"type": ["string", "null"], "format": "date-time"},
+    "extensions": {"type": "object", "additionalProperties": true}
+  },
+  "$defs": {
+    "recordKind": {
+      "enum": ["candidate", "transformation", "verification", "delivery", "observation", "checkpoint"]
+    },
+    "subject": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["identity"],
+      "properties": {
+        "identity": {"type": "string", "minLength": 1},
+        "kind": {"type": ["string", "null"]},
+        "digest": {"type": ["string", "null"]},
+        "version": {"type": ["string", "null"]},
+        "derived_from": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "target": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["identity"],
+      "properties": {
+        "identity": {"type": "string", "minLength": 1},
+        "kind": {"type": ["string", "null"]}
+      }
+    }
+  }
+}

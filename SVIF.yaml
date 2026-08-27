@@ -1,0 +1,23 @@
+svif:
+  version: "0.2"
+  contract: "core/0.2"
+
+project:
+  identity: "urn:svif:project:svif-core"
+
+continuity:
+  protocol: agnir
+  compatibility: "0.1"
+  discovery: "AGNIR.yaml"
+
+profiles:
+  - "software-delivery/0.2"
+
+conformance:
+  checker: "conformance/check_svif_0_2.py"
+
+extensions:
+  svif/repository:
+    canonical: "iorLab/zerolocal"
+    authoritative_ref: "main"
+    predecessor_ref: "legacy/zerolocal-v0.1"

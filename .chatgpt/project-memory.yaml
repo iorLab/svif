@@ -1,46 +1,22 @@
-version: 1
+compatibility:
+  role: chatgpt-bootstrap-shim
+  authoritative_discovery: AGNIR.yaml
+  note: >-
+    This file exists only because the current ChatGPT workspace bootstrap convention
+    looks here first. Svif Project continuity is authoritative through AGNIR.yaml and
+    its locators; this shim must not become a second mutable memory root.
+
 project:
   name: Svif
-  former_name: ZeroLocal
   repository: iorLab/zerolocal
-  phase: svif-v0.2-architecture-transition
-  predecessor_delivery_form: skills
-  product_packaging: deferred-until-core-stabilization
-  provider_references:
-    cloudflare: iorLab/zerolocal-cloudflare-starter
-  founding_case_study: mattamior/awesome-fame-slider
-canonical_source: github
+
 files:
-  state: .chatgpt/state.yaml
-  next_steps: .chatgpt/next-steps.md
-  decisions: .chatgpt/decisions.md
-  transition_decisions:
-    - .chatgpt/decisions/2026-08-27-svif-v0.2-transition.md
-    - .chatgpt/decisions/2026-08-27-branch-governance.md
-  predecessor_specification: SPECIFICATION.md
-  architecture_draft: SVIF_ARCHITECTURE_DRAFT.md
-  capability_adapter_draft: SVIF_CAPABILITY_ADAPTER_DRAFT.md
-  software_delivery_profile_draft: profiles/SOFTWARE_DELIVERY_DRAFT.md
-  recovery_playbook: .chatgpt/recovery-playbook.md
-  validation_1: .chatgpt/validation-1.md
-  validation_2: .chatgpt/validation-2.md
-durable_continuity:
-  target_protocol: Agnir Core
-  target_line: "0.1"
-  project: mattamior/rpm
-  current_maintenance_layout: legacy-rpm-chatgpt-repository
-  note: >-
-    The current .chatgpt maintenance layout is predecessor project memory used during
-    the migration. Svif Core targets Agnir-compatible continuity and does not require
-    this path, Git, GitHub, ChatGPT, or repository-backed persistence.
+  state: .agnir/state.md
+  next_steps: .agnir/next-actions.md
+  decisions: .agnir/decisions.md
+  checkpoints: .agnir/evidence
+
 branch_governance:
   active: main
   predecessor: legacy/zerolocal-v0.1
   cleanup: deferred-until-new-version-complete
-checkpoint:
-  triggers:
-    - 收尾
-    - 结束
-    - 先到这里
-    - checkpoint
-    - save progress

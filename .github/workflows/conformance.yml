@@ -1,20 +1,19 @@
-name: Conformance
+name: Svif conformance
 
 on:
-  pull_request:
   push:
     branches: [main]
+  pull_request:
 
 permissions:
   contents: read
 
 jobs:
-  zerolocal-v0-1:
+  core-structure:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-python@v6
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
-          python-version: "3.13"
-      - run: python conformance/check_v0_1.py
+          python-version: "3.12"
+      - run: python conformance/check_svif_0_2.py

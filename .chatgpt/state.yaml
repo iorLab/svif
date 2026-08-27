@@ -38,6 +38,8 @@ current_focus: >-
 historical_baseline:
   specification: ZeroLocal v0.1
   delivery_form: ChatGPT Skills
+  preserved_branch: legacy/zerolocal-v0.1
+  preserved_revision: 8ccbb1d30520ca3d0b8b9f2cfe2963d35a853cf6
   phase_completed_through: Skill v0.1 implementation plus Validation Project #1
   validation_projects:
     - id: 1
@@ -82,6 +84,7 @@ confirmed_direction:
   - The initial adapter kinds are workspace, scm, verification, delivery, provider, observation, authority, and execution_surface.
   - Adapter composition must preserve candidate/artifact/delivery/observation provenance across boundaries.
   - The Software Delivery Profile preserves exact-verified-candidate delivery, protected delivery authority separation, state-sensitive concurrency safety, observable success, provider isolation, and evidence-based repair.
+  - Predecessor ZeroLocal v0.1 is preserved on a dedicated legacy branch while main is the active Svif development line.
 
 legacy_constraints_retained_as_predecessor_or_profile_evidence:
   - Remote CI was mandatory in ZeroLocal v0.1; Svif verification is execution-location-neutral.
@@ -97,6 +100,7 @@ resolved_questions:
   - Git SHA becomes a profile-specific realization of the Core stable-candidate-provenance invariant.
   - Provider Skill semantics map into a generic Capability Adapter plus optional execution-surface wrapper.
   - ZeroLocal software-delivery invariants are preserved in a separate Software Delivery Profile rather than copied wholesale into Svif Core.
+  - The predecessor line is preserved outside main rather than forcing long-lived transition compatibility inside the active development branch.
 
 open_questions:
   - What exact Agnir 0.1 release version/range Svif should declare after Agnir Core stabilizes.
@@ -109,17 +113,17 @@ open_questions:
   - How the external ChatGPT workspace registry should point to both Svif and Agnir without becoming shared mutable memory.
 
 next_major_work:
-  - reconcile Svif architecture/profile/adapter drafts into a normative Svif v0.2 draft
-  - settle PLAN semantics and the standard candidate/evidence envelope
+  - freeze Agnir repository/filesystem discovery schema and cold-start conformance
+  - settle Svif PLAN semantics and the standard candidate/evidence envelope
   - define versioned machine-readable Capability Adapter schema and conformance expectations
-  - coordinate with Agnir repository/filesystem discovery profile and freeze Svif <-> Agnir compatibility after Agnir Core stabilizes
   - create new Svif conformance identifiers/tests rather than renaming ZL-* claims
   - revise Validation Project #2 success criteria for Svif Core + Software Delivery Profile + Agnir cold-start discovery
   - migrate Cloudflare reference into provider/profile implementation terminology while preserving historical evidence
-  - rename files/repositories/integrations only after compatibility boundaries are documented
+  - rename files/repositories/integrations once new main-line contracts are executable and compatibility boundaries are documented
   - update external multi-project workspace registry after repository-side discovery targets are explicit
 
 last_checkpoint:
-  saved_at: 2026-08-27T17:58:00+08:00
-  reason: Rename ZeroLocal to Svif, establish Agnir as independent durable-memory foundation, generalize both projects beyond platform/agent/storage assumptions, and adopt a shared-workspace/separate-memory operating model
-  resumability: repository state persisted; architecture has advanced substantially since this checkpoint and should be captured at the next explicit checkpoint
+  saved_at: 2026-08-27T21:30:00+08:00
+  reason: Freeze the current Svif/Agnir architecture-transition boundary, preserve ZeroLocal v0.1 on a dedicated legacy branch, and establish main as the active Svif development line.
+  evidence: .chatgpt/checkpoints/2026-08-27-svif-agnir-architecture.md
+  resumability: repository state, transition decisions, architecture drafts, legacy-version boundary, and next work are durably persisted

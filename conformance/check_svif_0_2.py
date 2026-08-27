@@ -5,6 +5,7 @@ import json
 import re
 import sys
 from pathlib import Path
+from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -30,11 +31,128 @@ def scalar(text: str, section: str, key: str) -> str | None:
     return None
 
 
-def load_json(path: str) -> dict:
+def load_json(path: str) -> Any:
     try:
         return json.loads((ROOT / path).read_text(encoding="utf-8"))
     except Exception as exc:
         fail(f"invalid JSON in {path}: {exc}")
+
+
+def evidence_fixture_errors(records: Any) -> list[str]:
+    errors: list[str] = []
+    if not isinstance(records, list) or not records:
+        return ["fixture must be a non-empty JSON array of Evidence Records"]
+
+    expected_project: str | None = None
+    expected_operation: str | None = None
+    established: set[str] = set()
+    verified: set[str] = set()
+    deliveries: set[tuple[str, str]] = set()
+    observations: set[tuple[str, str]] = set()
+    seen_kinds: set[str] = set()
+    allowed_statuses = {"succeeded", "failed", "blocked", "unknown"}
+
+    for index, record in enumerate(records):
+        label = f"record[{index}]"
+        if not isinstance(record, dict):
+            errors.append(f"{label} is not an object")
+            continue
+
+        svif = record.get("svif")
+        if not isinstance(svif, dict) or svif.get("version") != "0.2" or svif.get("schema") != "evidence-record/0.2":
+            errors.append(f"{label} does not identify the Evidence Record 0.2 schema")
+
+        metadata = record.get("record")
+        if not isinstance(metadata, dict):
+            errors.append(f"{label} has no record metadata")
+            continue
+
+        kind = metadata.get("kind")
+        if not isinstance(kind, str):
+            errors.append(f"{label} has no record kind")
+            continue
+        seen_kinds.add(kind)
+
+        project_identity = metadata.get("project_identity")
+        operation_id = metadata.get("operation_id")
+        if not isinstance(project_identity, str) or not project_identity:
+            errors.append(f"{label} has no project identity")
+        elif expected_project is None:
+            expected_project = project_identity
+        elif project_identity != expected_project:
+            errors.append(f"{label} crosses project identity within one fixture chain")
+
+        if not isinstance(operation_id, str) or not operation_id:
+            errors.append(f"{label} has no operation id")
+        elif expected_operation is None:
+            expected_operation = operation_id
+        elif operation_id != expected_operation:
+            errors.append(f"{label} crosses operation id within one fixture chain")
+
+        subject = record.get("subject")
+        if not isinstance(subject, dict) or not isinstance(subject.get("identity"), str) or not subject.get("identity"):
+            errors.append(f"{label} has no stable subject identity")
+            continue
+        subject_identity = subject["identity"]
+
+        result = record.get("result")
+        if not isinstance(result, dict) or result.get("status") not in allowed_statuses:
+            errors.append(f"{label} has an invalid result status")
+            continue
+        if result["status"] != "succeeded":
+            continue
+
+        if kind == "candidate":
+            established.add(subject_identity)
+
+        elif kind == "transformation":
+            parents = subject.get("derived_from")
+            if not isinstance(parents, list) or not parents:
+                errors.append(f"{label} successful transformation has no derivation input")
+            else:
+                missing = [parent for parent in parents if parent not in established]
+                if missing:
+                    errors.append(f"{label} derives from unestablished subject(s): {', '.join(missing)}")
+            established.add(subject_identity)
+
+        elif kind == "verification":
+            if subject_identity not in established:
+                errors.append(f"{label} verifies a subject that was not established in the chain")
+            verified.add(subject_identity)
+
+        elif kind == "delivery":
+            if subject_identity not in established:
+                errors.append(f"{label} delivers a subject that was not established in the chain")
+            if subject_identity not in verified:
+                errors.append(f"{label} delivery subject {subject_identity} was not independently verified")
+            target = record.get("target")
+            if not isinstance(target, dict) or not isinstance(target.get("identity"), str) or not target.get("identity"):
+                errors.append(f"{label} successful delivery has no target identity")
+            else:
+                deliveries.add((subject_identity, target["identity"]))
+
+        elif kind == "observation":
+            target = record.get("target")
+            if not isinstance(target, dict) or not isinstance(target.get("identity"), str) or not target.get("identity"):
+                errors.append(f"{label} successful observation has no target identity")
+            else:
+                pair = (subject_identity, target["identity"])
+                if pair not in deliveries:
+                    errors.append(f"{label} observation does not correspond to a successful delivered subject/target pair")
+                observations.add(pair)
+
+    required_kinds = {"candidate", "transformation", "verification", "delivery", "observation"}
+    missing_kinds = required_kinds - seen_kinds
+    if missing_kinds:
+        errors.append(f"fixture chain is missing required record kind(s): {', '.join(sorted(missing_kinds))}")
+
+    for subject_identity, target_identity in sorted(deliveries):
+        if (subject_identity, target_identity) not in observations:
+            errors.append(
+                f"successful delivery of {subject_identity} to {target_identity} has no matching successful observation"
+            )
+
+    return errors
 
 
 def main() -> None:
@@ -50,6 +168,8 @@ def main() -> None:
         "profiles/SOFTWARE_DELIVERY.md",
         "schemas/capability-adapter.schema.json",
         "schemas/evidence-record.schema.json",
+        "conformance/fixtures/evidence-chain-positive.json",
+        "conformance/fixtures/evidence-chain-provenance-mismatch.json",
         "history/PREDECESSOR.md",
         ".chatgpt/project-memory.yaml",
     ]
@@ -91,6 +211,18 @@ def main() -> None:
     if kinds != {"candidate", "transformation", "verification", "delivery", "observation", "checkpoint"}:
         fail("Evidence Record kind vocabulary is incomplete or unexpected")
 
+    positive = load_json("conformance/fixtures/evidence-chain-positive.json")
+    positive_errors = evidence_fixture_errors(positive)
+    if positive_errors:
+        fail("positive evidence-chain fixture failed: " + "; ".join(positive_errors))
+
+    negative = load_json("conformance/fixtures/evidence-chain-provenance-mismatch.json")
+    negative_errors = evidence_fixture_errors(negative)
+    if not negative_errors:
+        fail("negative provenance fixture unexpectedly passed")
+    if not any("not independently verified" in error for error in negative_errors):
+        fail("negative provenance fixture failed for the wrong reason: " + "; ".join(negative_errors))
+
     forbidden = [
         "SPECIFICATION.md",
         "SVIF_ARCHITECTURE_DRAFT.md",
@@ -118,7 +250,7 @@ def main() -> None:
     if "Svif depends on a compatible Agnir Core protocol" not in state:
         fail("Agnir protocol dependency boundary missing from durable state")
 
-    print("PASS: Svif 0.2 active structure with Agnir 0.1 continuity")
+    print("PASS: Svif 0.2 structure, Agnir 0.1 continuity, and evidence provenance fixtures")
 
 
 if __name__ == "__main__":

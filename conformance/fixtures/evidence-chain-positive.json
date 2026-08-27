@@ -1,0 +1,96 @@
+[
+  {
+    "svif": {"version": "0.2", "schema": "evidence-record/0.2"},
+    "record": {
+      "id": "fixture-positive-candidate",
+      "kind": "candidate",
+      "project_identity": "urn:svif:fixture:evidence-chain",
+      "operation_id": "operation-positive"
+    },
+    "subject": {
+      "identity": "fixture:source:A",
+      "kind": "source",
+      "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "derived_from": []
+    },
+    "result": {"status": "succeeded", "summary": "source candidate established"},
+    "producer": {"adapter_id": "fixture/scm", "implementation": "svif-conformance", "execution_environment": "fixture"},
+    "authority": {"class": "read", "reference": "fixture-policy"},
+    "evidence_locator": "fixture://positive/candidate"
+  },
+  {
+    "svif": {"version": "0.2", "schema": "evidence-record/0.2"},
+    "record": {
+      "id": "fixture-positive-transformation",
+      "kind": "transformation",
+      "project_identity": "urn:svif:fixture:evidence-chain",
+      "operation_id": "operation-positive"
+    },
+    "subject": {
+      "identity": "fixture:artifact:B",
+      "kind": "artifact",
+      "digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "derived_from": ["fixture:source:A"]
+    },
+    "result": {"status": "succeeded", "summary": "artifact B derived from source A"},
+    "producer": {"adapter_id": "fixture/build", "implementation": "svif-conformance", "execution_environment": "fixture"},
+    "authority": {"class": "mutation", "reference": "fixture-policy"},
+    "evidence_locator": "fixture://positive/transformation"
+  },
+  {
+    "svif": {"version": "0.2", "schema": "evidence-record/0.2"},
+    "record": {
+      "id": "fixture-positive-verification",
+      "kind": "verification",
+      "project_identity": "urn:svif:fixture:evidence-chain",
+      "operation_id": "operation-positive"
+    },
+    "subject": {
+      "identity": "fixture:artifact:B",
+      "kind": "artifact",
+      "digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    "result": {"status": "succeeded", "summary": "artifact B verified"},
+    "producer": {"adapter_id": "fixture/verification", "implementation": "svif-conformance", "execution_environment": "fixture"},
+    "authority": {"class": "verification", "reference": "fixture-policy"},
+    "evidence_locator": "fixture://positive/verification"
+  },
+  {
+    "svif": {"version": "0.2", "schema": "evidence-record/0.2"},
+    "record": {
+      "id": "fixture-positive-delivery",
+      "kind": "delivery",
+      "project_identity": "urn:svif:fixture:evidence-chain",
+      "operation_id": "operation-positive"
+    },
+    "subject": {
+      "identity": "fixture:artifact:B",
+      "kind": "artifact",
+      "digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    "target": {"identity": "fixture:target:production", "kind": "service"},
+    "result": {"status": "succeeded", "summary": "verified artifact B delivered"},
+    "producer": {"adapter_id": "fixture/delivery", "implementation": "svif-conformance", "execution_environment": "fixture"},
+    "authority": {"class": "protected-delivery", "reference": "fixture-policy"},
+    "evidence_locator": "fixture://positive/delivery"
+  },
+  {
+    "svif": {"version": "0.2", "schema": "evidence-record/0.2"},
+    "record": {
+      "id": "fixture-positive-observation",
+      "kind": "observation",
+      "project_identity": "urn:svif:fixture:evidence-chain",
+      "operation_id": "operation-positive"
+    },
+    "subject": {
+      "identity": "fixture:artifact:B",
+      "kind": "artifact",
+      "digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    "target": {"identity": "fixture:target:production", "kind": "service"},
+    "result": {"status": "succeeded", "summary": "production target observed running artifact B"},
+    "producer": {"adapter_id": "fixture/observation", "implementation": "svif-conformance", "execution_environment": "fixture"},
+    "authority": {"class": "read", "reference": "fixture-policy"},
+    "evidence_locator": "fixture://positive/observation"
+  }
+]

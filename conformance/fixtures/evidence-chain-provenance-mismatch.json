@@ -1,0 +1,115 @@
+[
+  {
+    "svif": {"version": "0.2", "schema": "evidence-record/0.2"},
+    "record": {
+      "id": "fixture-negative-candidate",
+      "kind": "candidate",
+      "project_identity": "urn:svif:fixture:evidence-chain",
+      "operation_id": "operation-negative"
+    },
+    "subject": {
+      "identity": "fixture:source:A",
+      "kind": "source",
+      "digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "derived_from": []
+    },
+    "result": {"status": "succeeded", "summary": "source candidate established"},
+    "producer": {"adapter_id": "fixture/scm", "implementation": "svif-conformance", "execution_environment": "fixture"},
+    "authority": {"class": "read", "reference": "fixture-policy"},
+    "evidence_locator": "fixture://negative/candidate"
+  },
+  {
+    "svif": {"version": "0.2", "schema": "evidence-record/0.2"},
+    "record": {
+      "id": "fixture-negative-transformation-b",
+      "kind": "transformation",
+      "project_identity": "urn:svif:fixture:evidence-chain",
+      "operation_id": "operation-negative"
+    },
+    "subject": {
+      "identity": "fixture:artifact:B",
+      "kind": "artifact",
+      "digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "derived_from": ["fixture:source:A"]
+    },
+    "result": {"status": "succeeded", "summary": "artifact B derived from source A"},
+    "producer": {"adapter_id": "fixture/build", "implementation": "svif-conformance", "execution_environment": "fixture"},
+    "authority": {"class": "mutation", "reference": "fixture-policy"},
+    "evidence_locator": "fixture://negative/transformation-b"
+  },
+  {
+    "svif": {"version": "0.2", "schema": "evidence-record/0.2"},
+    "record": {
+      "id": "fixture-negative-verification-b",
+      "kind": "verification",
+      "project_identity": "urn:svif:fixture:evidence-chain",
+      "operation_id": "operation-negative"
+    },
+    "subject": {
+      "identity": "fixture:artifact:B",
+      "kind": "artifact",
+      "digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    "result": {"status": "succeeded", "summary": "artifact B verified"},
+    "producer": {"adapter_id": "fixture/verification", "implementation": "svif-conformance", "execution_environment": "fixture"},
+    "authority": {"class": "verification", "reference": "fixture-policy"},
+    "evidence_locator": "fixture://negative/verification-b"
+  },
+  {
+    "svif": {"version": "0.2", "schema": "evidence-record/0.2"},
+    "record": {
+      "id": "fixture-negative-transformation-c",
+      "kind": "transformation",
+      "project_identity": "urn:svif:fixture:evidence-chain",
+      "operation_id": "operation-negative"
+    },
+    "subject": {
+      "identity": "fixture:artifact:C",
+      "kind": "artifact",
+      "digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+      "derived_from": ["fixture:source:A"]
+    },
+    "result": {"status": "succeeded", "summary": "replacement artifact C derived but never verified"},
+    "producer": {"adapter_id": "fixture/build", "implementation": "svif-conformance", "execution_environment": "fixture"},
+    "authority": {"class": "mutation", "reference": "fixture-policy"},
+    "evidence_locator": "fixture://negative/transformation-c"
+  },
+  {
+    "svif": {"version": "0.2", "schema": "evidence-record/0.2"},
+    "record": {
+      "id": "fixture-negative-delivery-c",
+      "kind": "delivery",
+      "project_identity": "urn:svif:fixture:evidence-chain",
+      "operation_id": "operation-negative"
+    },
+    "subject": {
+      "identity": "fixture:artifact:C",
+      "kind": "artifact",
+      "digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    },
+    "target": {"identity": "fixture:target:production", "kind": "service"},
+    "result": {"status": "succeeded", "summary": "unverified replacement artifact C delivered"},
+    "producer": {"adapter_id": "fixture/delivery", "implementation": "svif-conformance", "execution_environment": "fixture"},
+    "authority": {"class": "protected-delivery", "reference": "fixture-policy"},
+    "evidence_locator": "fixture://negative/delivery-c"
+  },
+  {
+    "svif": {"version": "0.2", "schema": "evidence-record/0.2"},
+    "record": {
+      "id": "fixture-negative-observation-c",
+      "kind": "observation",
+      "project_identity": "urn:svif:fixture:evidence-chain",
+      "operation_id": "operation-negative"
+    },
+    "subject": {
+      "identity": "fixture:artifact:C",
+      "kind": "artifact",
+      "digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"
+    },
+    "target": {"identity": "fixture:target:production", "kind": "service"},
+    "result": {"status": "succeeded", "summary": "production target observed running artifact C"},
+    "producer": {"adapter_id": "fixture/observation", "implementation": "svif-conformance", "execution_environment": "fixture"},
+    "authority": {"class": "read", "reference": "fixture-policy"},
+    "evidence_locator": "fixture://negative/observation-c"
+  }
+]

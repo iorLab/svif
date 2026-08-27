@@ -1,70 +1,54 @@
 # Next Steps
 
-## Phase 4 — Skill Stabilization (current, mandatory before Plugin)
+## Immediate — Svif / Agnir architecture transition
 
-### Validation Project #1 — `mattamior/agent-skills` — PASS
+1. Treat ZeroLocal v0.1, its Skills, conformance checks, validation evidence, and Cloudflare reference as the **historical predecessor baseline**. Do not silently rename existing claims into Svif conformance.
+2. Coordinate with `mattamior/rpm`, the independent project evolving from PPMP / PPM / Sandminni into **Agnir**. Record matching cross-project decisions there without creating shared mutable project memory.
+3. Define the target Agnir identity and migration boundary first enough that Svif can depend on a versioned, platform/storage/executor-neutral durable-memory contract.
+4. Draft Svif's generalized Core architecture and vocabulary. Remove normative dependence on:
+   - ChatGPT;
+   - GitHub or any repository host;
+   - Git or a required VCS;
+   - a particular AI agent;
+   - conversational state;
+   - ChatGPT Skill packaging;
+   - the local-vs-remote distinction as the defining conformance property.
+5. Replace predecessor role/surface terminology with neutral concepts. Current candidates include:
+   - `Principal` for intent/authority/policy;
+   - `Executor` for any human, agent, CLI, automation, CI runner, or composed system that performs work;
+   - `cold-start discovery` / `fresh-executor recovery` for the generalized resumability invariant.
+6. Define the Svif <-> Agnir dependency explicitly:
+   - Agnir is independently usable without Svif;
+   - Svif requires durable project continuity through Agnir or a precisely defined compatible contract;
+   - project memory is project-owned and must be discoverable without executor-private predecessor context.
+7. Decide which ZeroLocal v0.1 invariants remain Svif Core invariants after the generalization. Re-evaluate, rather than automatically discard, exact-revision provenance, observable verification, trust boundaries, provider isolation, evidence-driven lifecycle transitions, repair taxonomy, and checkpoint semantics.
+8. Design an explicit migration plan for names and files only after the architecture is stable enough to preserve compatibility. Candidate changes include `ZEROLOCAL.yaml`, `skills/zerolocal-core`, provider Skill naming, `.chatgpt/`-specific semantics, conformance identifiers, the canonical repository name, and the Cloudflare reference repository name.
 
-1. Preserve the completed evidence in `.chatgpt/validation-1.md` and reusable recovery rules in `.chatgpt/recovery-playbook.md`.
-2. Treat the following as demonstrated recovery classes from Validation #1:
-   - `RPM/bootstrap discovery`;
-   - `dependency/toolchain`;
-   - protected-secret trust boundary;
-   - bounded production propagation/readiness observation;
-   - provider resource rename/orphan awareness.
-3. Non-blocking repository hygiene: the final target RPM is still authoritative on `feat/skill-gallery-cloudflare`. When convenient, consolidate the final RPM checkpoint onto target `main`, update the ChatGPT Project locator so no non-default `RPM ref` is needed, verify one fresh-context resume, then delete the feature branch only if desired. Do not treat this hygiene item as a Validation #1 pass blocker.
+## Shared workspace / separate project state
 
-### Validation Project #2 — `mattamior/cloud-mail`
+9. Use this ChatGPT Project as a **workspace** for Svif and Agnir when useful, not as either project's canonical memory store.
+10. Keep independent durable state for each project. Project-scoped work loads only that project's Agnir; explicitly cross-project work loads both projects.
+11. Persist cross-project decisions separately in each affected project according to their local meaning. Do not create a third shared mutable state store.
+12. Later update the external ChatGPT Project bootstrap to a thin multi-project registry containing only project/discovery locators. Until that external configuration is synchronized, do not claim fully proven fresh-context multi-project resumability.
 
-4. Create a fresh ChatGPT Project dedicated to Validation #2 with **Project-only memory**.
-5. Leave **Project Instructions blank initially**. The repaired ZeroLocal Core must itself establish or request locator-only bootstrap instructions after RPM is created/adopted. Do not pre-seed repository/RPM paths, Cloudflare resource topology, workflow repairs, secret names, or provider internals.
-6. Ensure GitHub access is available. Validation must remain compatible with the user's current personal Plus environment and must not depend on Personal Skill upload/install availability.
-7. Start a fresh conversation with only the minimum source and business intent, equivalent to:
+## Validation Project #2 — `mattamior/cloud-mail`
 
-   `Use the ZeroLocal Skills from iorLab/zerolocal to develop mattamior/cloud-mail. Bring the existing Cloud Mail app under ZeroLocal, create a non-destructive Cloudflare validation deployment with a working observable frontend/backend and required stateful resources, and let ZeroLocal proceed normally.`
+13. Preserve `.chatgpt/validation-2.md` and the previously selected non-destructive stateful Cloudflare validation intent.
+14. **Pause execution** of Validation #2 while the Svif/Agnir architecture and migration boundary are being defined. A fresh clean-room run against predecessor-only ZeroLocal v0.1 would no longer test the intended target architecture.
+15. When the new contracts are ready, revise Validation #2 success criteria to test Svif's generalized executor/project semantics plus the Agnir cold-start/discovery contract, while retaining the strong stateful-provider, trust-boundary, exact-provenance, and external-observation pressure from the original plan where those invariants survive review.
 
-8. Do not coach the clean-room agent on the repository's existing Cloudflare workflow, D1/KV/R2 provisioning, migrations, exact deployment design, secret names, or repair steps. Any hidden-context requirement is evidence of a ZeroLocal defect.
-9. Require ZeroLocal to distinguish clearly between:
-   - repository-owned code/config/automation work;
-   - provider resource provisioning or migration work;
-   - protected credentials/account state;
-   - destructive or domain/mail-routing changes requiring explicit human authorization.
-10. Do **not** authorize real DNS/email-routing changes, paid/external mail sending, or destructive provider cleanup merely to make the validation pass. A non-destructive validation deployment must exercise a meaningful frontend/backend/stateful slice while keeping those operations at a named trust boundary unless explicitly approved.
-11. Let the run exercise the complete applicable lifecycle:
-   - Initialize / BOOTSTRAP, including durable bootstrap establishment;
-   - Plan;
-   - Implement / IMPLEMENT;
-   - Verify / VERIFY;
-   - Provision/Migrate as actually required by repository evidence;
-   - Deliver / DEPLOY;
-   - Observe / OBSERVE;
-   - Repair/Iterate on real failures;
-   - Checkpoint / CHECKPOINT.
-12. After the first meaningful checkpoint, open another fresh conversation in the Validation #2 ChatGPT Project and test resume without manually restating project history. This is again a required recovery test.
-13. Record every new observed failure or hidden assumption in `.chatgpt/validation-2.md`, and promote reusable repairs to the correct durable layer:
-   - protocol invariant/lifecycle ambiguity -> `SPECIFICATION.md`;
-   - provider-neutral procedure -> `skills/zerolocal-core/SKILL.md`;
-   - Cloudflare-specific behavior -> `skills/cloudflare-provider/SKILL.md`;
-   - executable provider behavior -> `iorLab/zerolocal-cloudflare-starter`;
-   - resumability/state issue -> RPM contract/files;
-   - reusable recovery -> `.chatgpt/recovery-playbook.md`;
-   - regression risk -> conformance checks.
-14. Validation #2 passes only with remote verification for an immutable revision, a non-destructive stateful Cloudflare deployment, auditable resource/migration handling for the exercised slice, external frontend/backend health observation, preserved secret/trust boundaries, durable RPM, and fresh-conversation resumability.
+## Historical evidence to preserve
 
-### Stabilization gate after Validation #2
+16. Keep Validation Project #1 (`mattamior/agent-skills`) as a passed ZeroLocal v0.1 clean-room result. Its main reusable design evidence includes:
+   - discovery/resumability failure pressure;
+   - dependency/toolchain recovery;
+   - protected-secret trust boundaries;
+   - bounded production readiness observation;
+   - provider resource lifecycle awareness;
+   - immutable revision provenance.
+17. Reinterpret the **lesson**, not the old claim: the fresh-conversation RPM failure becomes evidence for a generalized fresh-executor / cold-start discovery invariant in Agnir and Svif.
 
-15. Compare Validation #1 and #2 evidence. Minimum numerical gate is two non-founding project passes, but do not open Plugin work merely because the count reaches two.
-16. Require the two runs together to demonstrate sufficiently diverse repository shapes and recovery behavior, with no known hidden-context dependency and reusable treatment of recurring failures.
-17. If Validation #2 exposes unstable provider hooks/contracts, or if both passes leave important stateful/provider behavior untested, select a third clean-room project before Plugin graduation.
-18. Tighten `ZEROLOCAL.yaml`/Provider Adapter fields only when a concrete fresh-project failure demonstrates a missing contract; avoid speculative schema expansion.
+## Productization
 
-## Live Cloudflare reference evidence
-
-19. Static repository conformance and CI remain part of Skill v0.1 completion. Live provider deploy/observation for `iorLab/zerolocal-cloudflare-starter` remains a separate explicit trust boundary until its required protected Cloudflare authorization exists.
-20. When those protected prerequisites are available, confirm one reference deployment with successful CI SHA -> same deployed SHA -> discovered target -> passing `/health` observation. Never move secret values into chat or repository plaintext.
-
-## Phase 5 — Plugin (still gated)
-
-21. Do not begin Plugin packaging until the multi-project clean-room gate passes and recurring failure modes have durable recovery strategies.
-22. Before graduation, require at minimum two new project passes (preferably 2-3), stable Core/provider interfaces across a minor cycle, and no known hidden-context dependency.
-23. Only after that gate should Plugin work package the validated Skills, GitHub integration, templates, onboarding, provider discovery, versioning, and natural-language activation.
-24. Add a second provider implementation only after the Cloudflare path is stable enough to test provider neutrality rather than merely speculate about it.
+18. Keep Plugin/product packaging gated. Do not freeze a new distribution surface while Svif Core and Agnir interfaces are undergoing a deliberate architecture migration.
+19. After the generalized contracts stabilize, validate them on multiple execution surfaces and project shapes before deciding the next packaging form. ChatGPT Skill/Plugin remains one integration option rather than the normative architecture.

@@ -14,8 +14,12 @@ files:
   state: .chatgpt/state.yaml
   next_steps: .chatgpt/next-steps.md
   decisions: .chatgpt/decisions.md
+  transition_decisions:
+    - .chatgpt/decisions/2026-08-27-svif-v0.2-transition.md
   predecessor_specification: SPECIFICATION.md
   architecture_draft: SVIF_ARCHITECTURE_DRAFT.md
+  capability_adapter_draft: SVIF_CAPABILITY_ADAPTER_DRAFT.md
+  software_delivery_profile_draft: profiles/SOFTWARE_DELIVERY_DRAFT.md
   recovery_playbook: .chatgpt/recovery-playbook.md
   validation_1: .chatgpt/validation-1.md
   validation_2: .chatgpt/validation-2.md

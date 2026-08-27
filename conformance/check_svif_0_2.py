@@ -50,6 +50,8 @@ def main() -> None:
         "profiles/SOFTWARE_DELIVERY.md",
         "schemas/capability-adapter.schema.json",
         "schemas/evidence-record.schema.json",
+        "history/PREDECESSOR.md",
+        ".chatgpt/project-memory.yaml",
     ]
     for path in required:
         if not (ROOT / path).exists():
@@ -96,8 +98,15 @@ def main() -> None:
         "profiles/SOFTWARE_DELIVERY_DRAFT.md",
         "conformance/check_v0_1.py",
         "conformance/v0.1.md",
-        "skills/zerolocal-core/SKILL.md",
-        "skills/cloudflare-provider/SKILL.md",
+        "skills",
+        ".chatgpt/state.yaml",
+        ".chatgpt/next-steps.md",
+        ".chatgpt/decisions.md",
+        ".chatgpt/checkpoints",
+        ".chatgpt/decisions",
+        ".chatgpt/recovery-playbook.md",
+        ".chatgpt/validation-1.md",
+        ".chatgpt/validation-2.md",
     ]
     for path in forbidden:
         if (ROOT / path).exists():

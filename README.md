@@ -18,15 +18,17 @@ The repository is still named `iorLab/zerolocal` during transition. Repository n
 SVIF.yaml                           # this repository's Svif self-description
 AGNIR.yaml                          # Agnir cold-start discovery anchor
 .agnir/                             # authoritative Project continuity for this repo
+.chatgpt/project-memory.yaml        # ChatGPT bootstrap shim only
 spec/CORE.md                        # Svif Core 0.2
 spec/CAPABILITY_ADAPTER.md          # portable adapter semantics
 spec/EVIDENCE.md                    # candidate/evidence envelope
 profiles/SOFTWARE_DELIVERY.md       # software-delivery specialization
 schemas/                            # reference machine-readable contracts
 conformance/                        # executable new-line conformance pressure
+history/PREDECESSOR.md              # locator to preserved ZeroLocal lineage
 ```
 
-`SVIF.yaml` is a repository self-description, not a universal mandatory Svif Core filename. `AGNIR.yaml` is defined by Agnir's repository/filesystem profile, not by Svif Core.
+`SVIF.yaml` is a repository self-description, not a universal mandatory Svif Core filename. `AGNIR.yaml` is defined by Agnir's repository/filesystem profile, not by Svif Core. `.chatgpt/project-memory.yaml` exists only to bridge the current ChatGPT workspace bootstrap convention into Agnir discovery; it is not a second memory root.
 
 ## Lifecycle
 

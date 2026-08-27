@@ -13,7 +13,9 @@ files:
   next_steps: .chatgpt/next-steps.md
   decisions: .chatgpt/decisions.md
   specification: SPECIFICATION.md
+  recovery_playbook: .chatgpt/recovery-playbook.md
   validation_1: .chatgpt/validation-1.md
+  validation_2: .chatgpt/validation-2.md
 checkpoint:
   triggers:
     - 收尾

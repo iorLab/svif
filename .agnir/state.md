@@ -10,6 +10,7 @@ Svif is the authoritative active project/protocol identity on `main`. ZeroLocal 
 - Capability Adapter descriptor: `capability-adapter/0.2`.
 - Evidence record: `evidence-record/0.2`.
 - Project continuity is discovered from top-level `AGNIR.yaml` and stored according to its locators.
+- Active Project structure no longer contains execution-surface-specific bootstrap files.
 
 ## Stable rule
 
@@ -27,7 +28,7 @@ PLAN semantics are mandatory for every material operation. A trivial operation m
 
 ## Agnir dependency boundary
 
-Svif depends on a compatible Agnir Core protocol, not a specific Agnir repository layout, backend, implementation, adapter, VCS, GitHub integration, or ChatGPT integration. The active development compatibility target is Agnir Core `0.1`. The current Agnir project repository is `iorLab/agnir`.
+Svif depends on a compatible Agnir Core protocol, not a specific Agnir repository layout, backend, implementation, adapter, VCS, repository host, agent, or execution surface. The active development compatibility target is Agnir Core `0.1`. The current Agnir project repository is `iorLab/agnir`.
 
 CHECKPOINT delegates durable persistence/discovery/resumability semantics to Agnir and does not define a competing Svif memory model.
 
@@ -49,32 +50,32 @@ Concrete executable adapter fixtures cover workspace/SCM, verification, delivery
 
 ## Current implementation status
 
-The active main line is no longer organized around the ZeroLocal v0.1 specification/Skill layout. It contains direct Svif 0.2 Core, Capability Adapter, Evidence, Software Delivery Profile, schemas, Agnir continuity, and an executable conformance checker. Historical ZeroLocal files are removed from the active structure and remain recoverable from the legacy branch.
+The active main line contains direct Svif 0.2 Core, Capability Adapter, Evidence, Software Delivery Profile, schemas, Agnir continuity, and executable conformance. Historical ZeroLocal files remain recoverable from the legacy branch.
+
+The former ChatGPT-specific bootstrap shim has been removed from active `main`; repository cold start now begins directly with `AGNIR.yaml`.
 
 On 2026-08-27, evidence-chain conformance landed in commit `853ea4bf05679ab2b03864aeaa01e8aae9350542`; Svif conformance run `33090238664` completed successfully.
 
 On 2026-08-27, concrete Capability Adapter fixtures landed in commit `67c7b4e93e0130d37c01c40a261b55fba381f786`; Svif conformance run `33090480399` completed successfully.
 
-## Repository identity transition
+## Canonical repositories
 
-The coordinated repository identity transition is complete.
-
-Canonical repositories are now:
-
-- Agnir: `iorLab/agnir` (renamed from `mattamior/rpm` and transferred into the organization)
+- Agnir: `iorLab/agnir`
 - Svif: `iorLab/svif`
-- Cloudflare reference repository: `iorLab/svif-cloudflare-starter`
+- Cloudflare executable reference: `iorLab/svif-cloudflare-reference`
 
-Legacy branch names remain unchanged because they intentionally preserve predecessor identity. GitHub redirects from predecessor repository names are compatibility behavior only; active durable repository references use the canonical names above.
+Legacy branch names remain unchanged because they intentionally preserve predecessor identity. Repository redirects from predecessor names are compatibility behavior only.
 
 ## Cloudflare reference boundary
 
-`iorLab/svif-cloudflare-starter` is currently a ZeroLocal-era executable Cloudflare delivery fixture after repository rename. Its existing contents demonstrate real CI/deploy/trust-boundary behavior, but still use `ZEROLOCAL.yaml` and ZeroLocal vocabulary. It must be semantically recast before it can serve as Svif provider/profile implementation evidence. Whether its public name should remain `starter` or become a more precise `reference`/`adapter` identity is an explicit packaging decision, not a Core protocol decision.
+`iorLab/svif-cloudflare-reference` is the provider-specific executable reference implementation for Svif Software Delivery + Cloudflare Provider Adapter semantics. It is not a user starter/template and it does not define provider-neutral Core behavior.
+
+Its migration from the ZeroLocal-era fixture is the current provider/profile implementation task: move continuity to Agnir, replace `ZEROLOCAL.yaml` with Svif-native self-description and a concrete Cloudflare Capability Adapter descriptor, preserve exact verified-candidate delivery, protected production authority, serialized delivery, target discovery, and independent post-delivery observation.
 
 ## Known gaps
 
-- Decide and implement the final packaging/role of the Cloudflare repository, then recast it as Svif Software Delivery + Cloudflare Provider Adapter evidence if retained.
-- Rewrite Validation Project #2 against Svif 0.2 + Agnir 0.1 before resuming Cloudflare deployment validation.
-- Add at least one materially different execution/storage arrangement from ChatGPT + GitHub + Cloudflare before making strong neutrality claims.
+- Complete and validate the Svif-native Cloudflare reference implementation and record provider/profile implementation evidence.
+- Rewrite Validation Project #2 against Svif 0.2 + Agnir 0.1 before resuming live Cloudflare deployment validation.
+- Add at least one materially different execution/storage arrangement from the founding GitHub + Cloudflare path before making strong neutrality claims.
 - Add multi-project workspace isolation conformance after Agnir's corresponding fixture is ready.
 - Freeze the exact Agnir compatibility expression only after Agnir 0.1 release criteria are concrete.

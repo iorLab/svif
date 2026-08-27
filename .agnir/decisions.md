@@ -4,9 +4,9 @@
 
 - `main` implements Svif directly. ZeroLocal v0.1 remains predecessor evidence on `legacy/zerolocal-v0.1`; its active Skill/spec/conformance layout is not retained on the Svif main line.
 - Svif Core version is the `0.2` development line and depends on the Agnir Core `0.1` protocol line.
-- Svif's own durable continuity is now discovered through `AGNIR.yaml`; `.chatgpt/project-memory.yaml` is only a ChatGPT bootstrap shim and not a second memory root.
+- Svif's own durable continuity is discovered through `AGNIR.yaml`.
 - PLAN semantics are mandatory, but a trivial operation may coalesce PLAN in its execution trace when no separately inspectable plan artifact/evidence is material. Planning preconditions still apply before CHANGE.
-- Capability Adapter operation *names* are extensible; every operation declares one Core semantic effect. This keeps third-party/provider APIs out of Core while preserving portable orchestration semantics.
+- Capability Adapter operation names are extensible; every operation declares one Core semantic effect. This keeps third-party/provider APIs out of Core while preserving portable orchestration semantics.
 - The Core semantic effects are `resolve`, `inspect`, `mutate`, `identify`, `verify`, `actuate`, `observe`, `authorize`, `recover`, and `checkpoint`.
 - Stable candidate provenance is represented through standard evidence records rather than requiring Git SHA. Git full SHA remains the recommended strong Software Delivery + SCM realization.
 - The standard evidence record carries Project/operation identity, record kind, stable subject identity, optional derivation chain, optional target identity, result status, producer/adapter reference, authority reference, evidence locator, and timestamp.
@@ -17,8 +17,21 @@
 
 ## 2026-08-27 — Repository identity transition
 
-- The repository rename is no longer deferred until late-stage completion. The main-line architecture is sufficiently separated from predecessor layout that old repository names now create more identity debt than migration safety.
-- Rename sequence is: `mattamior/rpm` -> `mattamior/agnir`, `iorLab/zerolocal` -> `iorLab/svif`, then `iorLab/zerolocal-cloudflare-starter` -> `iorLab/svif-cloudflare-starter`.
+- Canonical repositories are `iorLab/agnir` and `iorLab/svif`.
 - Legacy branch names are intentionally not renamed: `legacy/zerolocal-v0.1` and `legacy/ppmp-v2.0.0` preserve predecessor identity and history.
-- GitHub redirects may preserve navigation after a rename, but redirects are compatibility behavior rather than canonical project identity. Durable manifests, repository extensions, bootstrap shims, documentation, cross-project references, and CI/reference URLs must be updated after each rename.
+- Repository redirects are compatibility behavior rather than canonical project identity.
 - Repository naming remains packaging/discovery metadata, not a Svif Core semantic dependency.
+
+## 2026-08-28 — Execution-surface-neutral active Project structure
+
+- Execution-surface bootstrap configuration belongs to the execution surface, not the canonical Svif Project structure.
+- The former `.chatgpt/project-memory.yaml` compatibility shim is removed from active `main`.
+- For this repository's Agnir repository/filesystem profile, cold start begins directly at top-level `AGNIR.yaml`.
+- Svif conformance treats active `.chatgpt/` structure as forbidden in this reference Project.
+
+## 2026-08-28 — Cloudflare implementation role
+
+- The Cloudflare repository is canonical at `iorLab/svif-cloudflare-reference`.
+- Its role is an executable reference implementation/conformance testbed for Svif Software Delivery + Cloudflare Provider Adapter semantics.
+- It is not a user starter/template and does not define provider-neutral Core semantics.
+- The reference must preserve exact verified-candidate delivery, protected production authority, serialized state-sensitive delivery, target discovery, and independent post-delivery observation while replacing ZeroLocal-era naming and memory layout with Svif/Agnir-native structure.

@@ -131,3 +131,46 @@ Rationale:
 - Real production DNS/email routing, paid/external sending services, or destructive resource changes remain explicit human trust boundaries and are not authorized merely to make the validation pass.
 - Project Instructions must again start blank; the repaired Core is expected to establish/request the minimal locator-only bootstrap itself.
 - Plugin remains gated after selection; after Validation #2, evidence diversity and interface stability must be reviewed before deciding whether the minimum two-project count is sufficient or a third clean-room project is required.
+
+## 2026-08-27 — Rename ZeroLocal to Svif and preserve predecessor lineage
+
+- **Svif** is the new project/product identity. ZeroLocal and ANRD become historical predecessor names rather than parallel architectures.
+- This is not a cosmetic rename. The transition is an explicit architecture migration that must preserve the ZeroLocal v0.1 specification, validation evidence, failure taxonomy, and reference implementation as historical evidence.
+- Existing ZeroLocal v0.1 validation results MUST NOT be silently relabeled as Svif conformance. New Svif conformance claims require the generalized Svif contracts to be defined and exercised.
+- Repository renames, filenames, manifests, implementation identities, and public branding are deferred until the protocol and compatibility migration are explicit enough to avoid accidental breakage.
+
+## 2026-08-27 — Generalize Svif beyond platform, executor, repository-host, and local/remote assumptions
+
+- Svif's stable conceptual unit is the **project**, not GitHub, a repository host, ChatGPT, an AI agent, a Skill, or a local/remote execution location.
+- Svif is defined as an execution-environment-independent project operation protocol. Execution environments and executors may change while project continuity persists.
+- No execution environment becomes authoritative merely because work occurred there.
+- Normative Core semantics MUST NOT require ChatGPT, GitHub, Git, a particular AI agent, conversational state, local-vs-remote execution, or ChatGPT Skill packaging.
+- Existing terms such as `Human Operator`, `Agent Operator`, `fresh conversation`, `Core Skill`, and `Provider Skill` are predecessor vocabulary to be replaced by neutral roles/interfaces. `Principal` and `Executor` are current candidate terms, not yet frozen normative names.
+- The real invariant discovered by ZeroLocal Validation #1 is generalized from `RPM/bootstrap discovery` / fresh-conversation recovery to **cold-start/fresh-executor discovery**: a compatible executor with no private predecessor context must be able to discover the project's durable state and resume safely.
+- GitHub, Git persistence, ChatGPT Projects, Skills, local CLI, IDEs, CI runners, and other surfaces belong in adapters, profiles, backends, or implementations rather than Svif Core.
+
+## 2026-08-27 — Establish Agnir as Svif's independent durable-memory foundation
+
+- `mattamior/rpm` is the existing project that will evolve from the PPMP / PPM / Sandminni lineage into **Agnir**.
+- Agnir is project-owned durable memory/continuity. It is not `GitHub-backed Agent memory`: Git, GitHub, repositories, ChatGPT, conversational UI, and any particular agent are implementation choices rather than Agnir Core requirements.
+- Agnir memory belongs to the project and must be usable by any compatible reader/executor that can discover and interpret it.
+- Agnir remains an independent project and may be used without Svif.
+- Svif builds on Agnir-compatible durable continuity; the dependency direction is **Svif -> Agnir**, not the reverse.
+- The exact versioned Svif-to-Agnir dependency/compatibility contract must be defined before the Svif migration is considered complete.
+
+## 2026-08-27 — Use one workspace for Svif and Agnir while isolating durable project state
+
+- A single ChatGPT Project MAY be used as a development workspace for both Svif and Agnir. The ChatGPT Project is an execution workspace, not either project's identity or source of truth.
+- Svif and Agnir MUST retain independent canonical projects/repositories and independent durable Agnir state.
+- There MUST NOT be a shared mutable cross-project memory store that becomes authoritative for both projects.
+- Cross-project decisions are persisted separately in each affected project according to their local architectural meaning.
+- Workspace-level configuration should be a thin project registry/locator only. It MAY identify the Svif and Agnir projects and their discovery entry points, but MUST NOT duplicate mutable project state.
+- For project-scoped work, an executor should load only that project's durable state. For explicitly cross-project work, it should load both.
+- This shared-workspace/separate-memory pattern is a useful future multi-project Agnir conformance scenario because it tests continuity without context bleed.
+
+## 2026-08-27 — Pause predecessor Validation #2 until the Svif/Agnir boundary is explicit
+
+- `mattamior/cloud-mail` remains the selected second non-founding validation project and its existing plan/evidence are preserved.
+- Starting a new clean-room run against predecessor-only ZeroLocal v0.1 contracts would validate an architecture that is now intentionally being generalized.
+- Validation #2 is therefore paused until the Svif Core vocabulary, Agnir dependency/discovery contract, and migration boundary are explicit enough to define what the run is expected to conform to.
+- The prior ZeroLocal Validation #1 remains valuable historical implementation evidence and design pressure for the new generalized contracts.

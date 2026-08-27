@@ -81,9 +81,22 @@ Legacy branch names remain unchanged because they intentionally preserve predece
 
 The reference therefore provides executable provider/profile evidence for static conformance, provenance, verification/delivery authority separation, and disabled-authority behavior. Successful live Cloudflare delivery + independent `/health` observation remains an explicit unproven boundary until protected authority is enabled.
 
+## Validation Project #2 evidence
+
+`mattamior/cloud-mail` now has a Svif/Agnir-native non-founding validation ref `svif/cloudflare-validation`, derived from predecessor ref `zerolocal/cloudflare-validation` while keeping production `main` outside the validation mutation boundary.
+
+- Migration commit `250e5173f3cb0258e865097f9f9cd632aabe95f0` replaced active `.chatgpt/`, `ZEROLOCAL.yaml`, predecessor workflow/script/config names with `AGNIR.yaml`, `.agnir/`, `SVIF.yaml`, a Cloudflare validation Capability Adapter, explicit success criteria, and a Svif validation workflow.
+- Production `.github/workflows/deploy-cloudflare.yml` was not changed by the migration.
+- Svif Validation run `33098133983` failed in its conformance step before dependency install/build/dry-run. The failure was traced to the checker requiring literal `checks.assets` while the existing Cloud Mail health hook validly expresses the assets check as `assets: Boolean(env.assets)`.
+- The failed run's protected delivery job was skipped; no provider actuation or observation occurred.
+- Checker fix commit `dde68f0b2c55224ba5e36bc6d7c30671ff311b25` relaxes the implementation-form assumption without weakening the semantic health contract.
+- Explicit checkpoint commit `5b32462f3725327805f0dd696475a16f07b666aa` persists the current Validation #2 state, next actions, and evidence in Agnir.
+- At this checkpoint, a successful post-fix credential-free static verification run has not yet been recorded, so Validation Project #2 static success and end-to-end success remain unproven.
+- Live provider actuation remains explicitly gated by `SVIF_ENABLE_VALIDATION_DELIVERY=true` and is disabled by default.
+
 ## Known gaps
 
-- Rewrite and run Validation Project #2 against Svif 0.2 + Software Delivery 0.2 + Agnir 0.1 cold start.
+- Complete the post-checker credential-free static verification for Validation Project #2 and record the immutable candidate/run evidence if and only if it succeeds.
 - Complete a successful protected Cloudflare delivery + `/health` observation when live authority is explicitly enabled; do not treat this as a prerequisite for provider-neutral Core work.
 - Add at least one materially different execution/storage arrangement from the founding GitHub + Cloudflare path before making strong neutrality claims.
 - Add multi-project workspace isolation conformance after Agnir's corresponding fixture is ready.

@@ -103,3 +103,31 @@ Validation Project #1 demonstrated that durable RPM content is insufficient when
 - RPM on a feature/non-default branch is valid, but the active RPM ref must be discoverable before state is loaded.
 - This failure class is named `RPM/bootstrap discovery` and belongs in the Core failure taxonomy and conformance coverage.
 - Validation #1 must repeat the fresh-conversation resume test after this fix is verified and the target ChatGPT Project receives only the minimal locator instructions.
+
+## 2026-08-27 — Validation Project #1 passes Skill Stabilization
+
+Validation Project #1 (`mattamior/agent-skills`) is accepted as a clean-room **PASS**.
+
+- The fresh-conversation resume retest passed after the locator-only bootstrap repair; the new conversation recovered repository/RPM state without project-history replay.
+- Repository implementation and validation completed without a required human local checkout/toolchain.
+- Protected Cloudflare credentials remained a correctly identified human trust boundary and were never requested in chat.
+- Production delivery preserved exact validated-revision provenance and external `/health.json` observation verified the deployed revision.
+- Final observed revision was `b72b103fa1aeebe0f733b8f4ed57ce01f0385ce4` at `https://agent-skills.mattamior.workers.dev`.
+- A real production failure caused by Wrangler 3.90.0 versus the assets-only configuration was correctly classified `dependency/toolchain`, repaired in repository automation via PR #2, remotely revalidated, and redeployed.
+- A Worker rename via PR #3 exposed provider resource-lifecycle behavior: the new endpoint was observed while the old Worker remained; destructive cleanup was not performed implicitly.
+- The run therefore contributes one of the minimum two non-founding project passes required before Plugin graduation.
+- Full evidence is canonical in `.chatgpt/validation-1.md`; reusable rules are maintained in `.chatgpt/recovery-playbook.md`.
+
+## 2026-08-27 — Select `mattamior/cloud-mail` for Validation Project #2
+
+Validation Project #2 will use the public non-founding repository `mattamior/cloud-mail`.
+
+Rationale:
+
+- Validation #1 was primarily a new static Workers delivery path; a second static-site-shaped project would add limited pressure to the Provider Adapter contract.
+- `cloud-mail` is an existing Cloudflare-native application with frontend/backend behavior, stateful provider resources, and an existing deployment workflow, making it a strong adoption/retrofit test rather than another greenfield scaffold.
+- The clean-room run should test provisioning/migrations, multiple provider resource types, existing workflow inspection, destructive-change boundaries, and fresh-context RPM bootstrap from project start.
+- The business goal is a non-destructive Cloudflare validation deployment with a working observable frontend/backend and required stateful resources.
+- Real production DNS/email routing, paid/external sending services, or destructive resource changes remain explicit human trust boundaries and are not authorized merely to make the validation pass.
+- Project Instructions must again start blank; the repaired Core is expected to establish/request the minimal locator-only bootstrap itself.
+- Plugin remains gated after selection; after Validation #2, evidence diversity and interface stability must be reviewed before deciding whether the minimum two-project count is sufficient or a third clean-room project is required.

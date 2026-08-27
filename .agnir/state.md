@@ -33,7 +33,7 @@ CHECKPOINT delegates durable persistence/discovery/resumability semantics to Agn
 
 ## Evidence and adapters
 
-Svif now has a standard evidence record that preserves stable subject identity, derivation, target identity, result, producer, authority reference, and evidence locator across transformation, verification, delivery, and observation.
+Svif has a standard evidence record that preserves stable subject identity, derivation, target identity, result, producer, authority reference, and evidence locator across transformation, verification, delivery, and observation.
 
 Capability Adapter operation names are implementation/profile-extensible. Each declared operation must map to a Core semantic effect (`resolve`, `inspect`, `mutate`, `identify`, `verify`, `actuate`, `observe`, `authorize`, `recover`, or `checkpoint`) so orchestration and repair do not depend on provider-specific verbs.
 
@@ -45,12 +45,25 @@ Capability Adapter operation names are implementation/profile-extensible. Each d
 
 ## Current implementation status
 
-The active main line is no longer organized around the ZeroLocal v0.1 specification/Skill layout. It now contains direct Svif 0.2 Core, Capability Adapter, Evidence, Software Delivery Profile, schemas, Agnir continuity, and a new conformance checker. Historical ZeroLocal files are removed from the active structure and remain recoverable from the legacy branch.
+The active main line is no longer organized around the ZeroLocal v0.1 specification/Skill layout. It contains direct Svif 0.2 Core, Capability Adapter, Evidence, Software Delivery Profile, schemas, Agnir continuity, and an executable conformance checker. Historical ZeroLocal files are removed from the active structure and remain recoverable from the legacy branch.
 
-The repository name `iorLab/zerolocal` remains temporarily unchanged; repository renaming is packaging/identity cleanup, not a Core semantic dependency.
+At the 2026-08-27 checkpoint, the pre-checkpoint `main` head was `f524bf034cbfd2836ca7225cec00e8c1ec31a05c`; Svif conformance run `33081158821` completed successfully for that head.
+
+## Repository identity transition
+
+Repository/public-name cleanup is now approved as the next execution step rather than deferred until the end of the new-version work. The intended coordinated mapping is:
+
+- `mattamior/rpm` -> `mattamior/agnir`
+- `iorLab/zerolocal` -> `iorLab/svif`
+- `iorLab/zerolocal-cloudflare-starter` -> `iorLab/svif-cloudflare-starter`
+
+Perform the rename in that order: Agnir first, Svif second, Cloudflare starter third. Legacy branch names remain unchanged because they intentionally preserve predecessor identity.
+
+Until each GitHub rename actually occurs, the current repository name remains the resolvable canonical location for that repository. Immediately after each rename, update durable repository references, manifests/shims, README/documentation, cross-project references, and CI/reference URLs; do not rely on GitHub redirects as the normative identity mechanism.
 
 ## Known gaps
 
+- Repository rename and reference reconciliation are the immediate next work.
 - Capability Adapter schema needs provider/reference fixtures beyond schema validation.
 - Evidence-chain conformance needs positive and provenance-mismatch negative fixtures.
 - Validation Project #2 must be rewritten against Svif 0.2 + Agnir 0.1 before resuming Cloudflare deployment validation.

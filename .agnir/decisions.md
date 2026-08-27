@@ -14,3 +14,11 @@
 - OBSERVE is mandatory when external effect is claimed; actuation success alone is not sufficient.
 - CHECKPOINT remains a Svif lifecycle state but delegates persistence/resumability to Agnir.
 - Secret values remain in authorized protected channels/stores; adapter descriptors and evidence may carry references/scopes but not require plaintext secret transport.
+
+## 2026-08-27 — Repository identity transition
+
+- The repository rename is no longer deferred until late-stage completion. The main-line architecture is sufficiently separated from predecessor layout that old repository names now create more identity debt than migration safety.
+- Rename sequence is: `mattamior/rpm` -> `mattamior/agnir`, `iorLab/zerolocal` -> `iorLab/svif`, then `iorLab/zerolocal-cloudflare-starter` -> `iorLab/svif-cloudflare-starter`.
+- Legacy branch names are intentionally not renamed: `legacy/zerolocal-v0.1` and `legacy/ppmp-v2.0.0` preserve predecessor identity and history.
+- GitHub redirects may preserve navigation after a rename, but redirects are compatibility behavior rather than canonical project identity. Durable manifests, repository extensions, bootstrap shims, documentation, cross-project references, and CI/reference URLs must be updated after each rename.
+- Repository naming remains packaging/discovery metadata, not a Svif Core semantic dependency.

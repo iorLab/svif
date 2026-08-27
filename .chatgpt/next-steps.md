@@ -1,54 +1,72 @@
 # Next Steps
 
-## Immediate — Svif / Agnir architecture transition
+## Immediate — make Svif v0.2 and Agnir 0.1 testable
 
 1. Treat ZeroLocal v0.1, its Skills, conformance checks, validation evidence, and Cloudflare reference as the **historical predecessor baseline**. Do not silently rename existing claims into Svif conformance.
-2. Coordinate with `mattamior/rpm`, the independent project evolving from PPMP / PPM / Sandminni into **Agnir**. Record matching cross-project decisions there without creating shared mutable project memory.
-3. Define the target Agnir identity and migration boundary first enough that Svif can depend on a versioned, platform/storage/executor-neutral durable-memory contract.
-4. Draft Svif's generalized Core architecture and vocabulary. Remove normative dependence on:
-   - ChatGPT;
-   - GitHub or any repository host;
-   - Git or a required VCS;
-   - a particular AI agent;
-   - conversational state;
-   - ChatGPT Skill packaging;
-   - the local-vs-remote distinction as the defining conformance property.
-5. Replace predecessor role/surface terminology with neutral concepts. Current candidates include:
-   - `Principal` for intent/authority/policy;
-   - `Executor` for any human, agent, CLI, automation, CI runner, or composed system that performs work;
-   - `cold-start discovery` / `fresh-executor recovery` for the generalized resumability invariant.
-6. Define the Svif <-> Agnir dependency explicitly:
-   - Agnir is independently usable without Svif;
-   - Svif requires durable project continuity through Agnir or a precisely defined compatible contract;
-   - project memory is project-owned and must be discoverable without executor-private predecessor context.
-7. Decide which ZeroLocal v0.1 invariants remain Svif Core invariants after the generalization. Re-evaluate, rather than automatically discard, exact-revision provenance, observable verification, trust boundaries, provider isolation, evidence-driven lifecycle transitions, repair taxonomy, and checkpoint semantics.
-8. Design an explicit migration plan for names and files only after the architecture is stable enough to preserve compatibility. Candidate changes include `ZEROLOCAL.yaml`, `skills/zerolocal-core`, provider Skill naming, `.chatgpt/`-specific semantics, conformance identifiers, the canonical repository name, and the Cloudflare reference repository name.
+2. Continue coordinated work with `mattamior/rpm`, which is evolving the PPMP / PPM / Sandminni lineage into **Agnir**.
+3. Tighten `SVIF_ARCHITECTURE_DRAFT.md` and `mattamior/rpm/spec/AGNIR_CORE_DRAFT.md` into testable normative drafts before broad rename work.
+4. In Agnir, finalize the Discovery Record, Locator Chain, cold-start failure semantics, and PPMP v2 -> Agnir 0.1 migration mapping.
+5. In Svif, keep the dependency at the **Agnir Core protocol** layer. Do not depend on a particular Agnir implementation, backend, adapter, repository layout, or execution surface.
+6. Treat `Agnir Core 0.1` as the current draft dependency target; freeze the exact release compatibility version/range only after Agnir Core stabilizes.
+
+## Svif Core refinement
+
+7. Refine the generalized lifecycle:
+   - `DISCOVER -> PLAN -> CHANGE -> VERIFY -> DELIVER -> OBSERVE -> CHECKPOINT`;
+   - `REPAIR` returns to the earliest violated invariant;
+   - states may be skipped only when their semantic effect is inapplicable.
+8. Decide whether `PLAN` remains a normative lifecycle state for all operations or may be implicit for trivial work while retaining planning semantics.
+9. Define stable candidate provenance precisely enough to cover Git revisions, content digests, versioned objects/documents, transactions, and other unambiguous candidate identities.
+10. Define the minimum machine-readable **Capability Adapter** contract, including capabilities, required authority, evidence outputs, failure classes, and optional delivery/observation hooks.
+11. Keep these as Svif Core invariants unless later evidence disproves their generality:
+   - evidence-driven lifecycle transitions;
+   - stable candidate provenance;
+   - verification/delivery authority separation;
+   - observable success for externally claimed effects;
+   - explicit trust boundaries;
+   - adapter isolation;
+   - durable continuation through Agnir.
+12. Keep protected secret values inside authorized protected channels/stores. Core must not require secret transfer through unprotected conversational or execution surfaces.
+
+## Svif Software Delivery Profile
+
+13. Extract the strongest ZeroLocal software-delivery semantics into a future **Svif Software Delivery Profile** instead of keeping them universal Core requirements.
+14. Re-evaluate and preserve where justified:
+   - immutable SCM revision identity;
+   - exact-validated-revision delivery;
+   - CI evidence attribution;
+   - provisioning/deployment substates beneath generic `DELIVER`;
+   - stateful migration ordering;
+   - production concurrency coordination;
+   - provider resource lifecycle awareness;
+   - remote recovery paths;
+   - externally observed readiness/health.
+15. Move repository-specific and GitHub-specific mechanics into SCM/repository adapters or profile conventions rather than Core.
+16. Recast the Cloudflare reference as a **Svif Software Delivery + Cloudflare provider implementation**, not as a definition of Svif Core.
+
+## Conformance migration
+
+17. Design new Svif/Agnir conformance identifiers rather than renaming existing `ZL-*` claims in place.
+18. Preserve Validation Project #1 (`mattamior/agent-skills`) as a passed ZeroLocal v0.1 result and requirements-discovery evidence.
+19. Require future Svif conformance to test Agnir cold-start discovery from a fresh Executor without predecessor-private context.
+20. Include at least one execution/storage arrangement materially different from the founding ChatGPT + GitHub + Cloudflare route so neutrality is demonstrated rather than asserted.
+21. Add a multi-project workspace isolation case once Agnir's workspace-registry/discovery semantics are ready.
 
 ## Shared workspace / separate project state
 
-9. Use this ChatGPT Project as a **workspace** for Svif and Agnir when useful, not as either project's canonical memory store.
-10. Keep independent durable state for each project. Project-scoped work loads only that project's Agnir; explicitly cross-project work loads both projects.
-11. Persist cross-project decisions separately in each affected project according to their local meaning. Do not create a third shared mutable state store.
-12. Later update the external ChatGPT Project bootstrap to a thin multi-project registry containing only project/discovery locators. Until that external configuration is synchronized, do not claim fully proven fresh-context multi-project resumability.
+22. Continue using this ChatGPT Project as a **workspace** for Svif and Agnir when useful, not as either project's canonical memory store.
+23. Keep independent durable state for each Project. Project-scoped work loads only that Project; explicitly cross-project work loads both.
+24. Persist cross-project decisions separately in each affected Project according to local meaning. Do not create a third shared mutable state store.
+25. Update the external ChatGPT Project bootstrap to a thin multi-project registry only after repository-side Agnir discovery targets are explicit. Until then, do not claim fully proven fresh-context multi-project resumability.
 
 ## Validation Project #2 — `mattamior/cloud-mail`
 
-13. Preserve `.chatgpt/validation-2.md` and the previously selected non-destructive stateful Cloudflare validation intent.
-14. **Pause execution** of Validation #2 while the Svif/Agnir architecture and migration boundary are being defined. A fresh clean-room run against predecessor-only ZeroLocal v0.1 would no longer test the intended target architecture.
-15. When the new contracts are ready, revise Validation #2 success criteria to test Svif's generalized executor/project semantics plus the Agnir cold-start/discovery contract, while retaining the strong stateful-provider, trust-boundary, exact-provenance, and external-observation pressure from the original plan where those invariants survive review.
+26. Preserve `.chatgpt/validation-2.md` and the previously selected non-destructive stateful Cloudflare validation intent.
+27. Keep Validation #2 paused until the Svif Core draft, Agnir dependency/discovery contract, Software Delivery Profile, and migration boundary are explicit enough to define conformance.
+28. When resumed, revise success criteria to test Svif generalized executor/project semantics plus Agnir cold-start discovery while retaining stateful-provider, trust-boundary, candidate-provenance, and external-observation pressure where those invariants survive.
 
-## Historical evidence to preserve
+## Naming and packaging — defer until contracts settle
 
-16. Keep Validation Project #1 (`mattamior/agent-skills`) as a passed ZeroLocal v0.1 clean-room result. Its main reusable design evidence includes:
-   - discovery/resumability failure pressure;
-   - dependency/toolchain recovery;
-   - protected-secret trust boundaries;
-   - bounded production readiness observation;
-   - provider resource lifecycle awareness;
-   - immutable revision provenance.
-17. Reinterpret the **lesson**, not the old claim: the fresh-conversation RPM failure becomes evidence for a generalized fresh-executor / cold-start discovery invariant in Agnir and Svif.
-
-## Productization
-
-18. Keep Plugin/product packaging gated. Do not freeze a new distribution surface while Svif Core and Agnir interfaces are undergoing a deliberate architecture migration.
-19. After the generalized contracts stabilize, validate them on multiple execution surfaces and project shapes before deciding the next packaging form. ChatGPT Skill/Plugin remains one integration option rather than the normative architecture.
+29. Do not broadly rename `iorLab/zerolocal`, `iorLab/zerolocal-cloudflare-starter`, `ZEROLOCAL.yaml`, Skill directories, public identifiers, or historical evidence until migration/compatibility rules are explicit.
+30. Treat Skill, Plugin, CLI, SDK, IDE extension, and other surfaces as integrations/packaging rather than Svif Core architecture.
+31. Revisit packaging only after the generalized contracts pass materially diverse conformance cases.

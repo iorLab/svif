@@ -33,7 +33,8 @@ current_focus: >-
   and Agnir Core 0.1 discovery/migration drafts into testable normative boundaries. Finalize the
   PLAN-state rule, stable candidate/evidence envelope, adapter schema/versioning, and profile/Core
   split. Then introduce new Svif conformance identifiers/tests and revise Validation Project #2
-  against the new contract before any broad repository/integration rename.
+  against the new contract before broad repository/integration rename. Branch housekeeping is
+  intentionally deferred until the new version is substantially complete.
 
 historical_baseline:
   specification: ZeroLocal v0.1
@@ -61,6 +62,12 @@ historical_baseline:
       evidence: .chatgpt/validation-2.md
       note: selected under ZeroLocal v0.1; resume only after Svif/Agnir migration contracts are explicit
 
+branch_governance:
+  authoritative_active_branch: main
+  authoritative_predecessor_branch: legacy/zerolocal-v0.1
+  cleanup_policy: defer non-authoritative branch cleanup until the new Svif version is substantially complete
+  incidental_branches: non-authoritative unless explicitly promoted by a durable decision
+
 confirmed_direction:
   - Svif is the new project/product identity; ZeroLocal and ANRD are predecessor identities.
   - Svif Core is execution-environment-independent and project-centered.
@@ -85,6 +92,7 @@ confirmed_direction:
   - Adapter composition must preserve candidate/artifact/delivery/observation provenance across boundaries.
   - The Software Delivery Profile preserves exact-verified-candidate delivery, protected delivery authority separation, state-sensitive concurrency safety, observable success, provider isolation, and evidence-based repair.
   - Predecessor ZeroLocal v0.1 is preserved on a dedicated legacy branch while main is the active Svif development line.
+  - Only main and the explicit legacy predecessor branch are authoritative branch boundaries during the rewrite; incidental branches are ignored until final cleanup unless explicitly promoted.
 
 legacy_constraints_retained_as_predecessor_or_profile_evidence:
   - Remote CI was mandatory in ZeroLocal v0.1; Svif verification is execution-location-neutral.
@@ -101,6 +109,7 @@ resolved_questions:
   - Provider Skill semantics map into a generic Capability Adapter plus optional execution-surface wrapper.
   - ZeroLocal software-delivery invariants are preserved in a separate Software Delivery Profile rather than copied wholesale into Svif Core.
   - The predecessor line is preserved outside main rather than forcing long-lived transition compatibility inside the active development branch.
+  - Non-authoritative branch cleanup is deferred until the new Svif version is substantially complete.
 
 open_questions:
   - What exact Agnir 0.1 release version/range Svif should declare after Agnir Core stabilizes.
@@ -121,9 +130,10 @@ next_major_work:
   - migrate Cloudflare reference into provider/profile implementation terminology while preserving historical evidence
   - rename files/repositories/integrations once new main-line contracts are executable and compatibility boundaries are documented
   - update external multi-project workspace registry after repository-side discovery targets are explicit
+  - after the new Svif version is substantially complete, review and delete non-authoritative branches in one cleanup pass
 
 last_checkpoint:
-  saved_at: 2026-08-27T21:30:00+08:00
-  reason: Freeze the current Svif/Agnir architecture-transition boundary, preserve ZeroLocal v0.1 on a dedicated legacy branch, and establish main as the active Svif development line.
-  evidence: .chatgpt/checkpoints/2026-08-27-svif-agnir-architecture.md
-  resumability: repository state, transition decisions, architecture drafts, legacy-version boundary, and next work are durably persisted
+  saved_at: 2026-08-27T06:49:51-07:00
+  reason: Confirm branch governance after preserving the predecessor line: main is authoritative for active Svif development, legacy/zerolocal-v0.1 is authoritative predecessor history, and incidental branch cleanup is deferred until the new version is substantially complete.
+  evidence: .chatgpt/checkpoints/2026-08-27-branch-governance.md
+  resumability: branch authority, deferred cleanup policy, architecture state, next work, and predecessor boundary are durably persisted

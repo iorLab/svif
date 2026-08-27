@@ -4,26 +4,35 @@ status: active
 phase: svif-v0.2-architecture-transition
 repository: iorLab/zerolocal
 repository_rename: pending
+architecture_draft: SVIF_ARCHITECTURE_DRAFT.md
+predecessor_specification: SPECIFICATION.md
+
 durable_memory_dependency:
-  name: Agnir
+  name: Agnir Core
   repository: mattamior/rpm
-  relationship: independent foundational project; Svif consumes Agnir-compatible durable project memory
+  target_line: "0.1"
+  relationship: independent foundational protocol; Svif consumes any implementation conforming to the required Agnir Core contract
+
 provider_references:
   cloudflare: iorLab/zerolocal-cloudflare-starter
 founding_case_study: mattamior/awesome-fame-slider
 updated_at: 2026-08-27
+
 summary: >-
-  ZeroLocal v0.1 remains the historical validated implementation baseline. The project is now
-  transitioning to Svif: an execution-environment-independent project operation protocol whose
-  core semantics must not depend on ChatGPT, GitHub, Git, a local/remote distinction, a particular
-  AI agent, or the ChatGPT Skill product form. Svif builds on Agnir for project-owned durable
-  continuity. Agnir remains an independent project and may be used without Svif.
+  ZeroLocal v0.1 remains the historical validated implementation baseline. Svif is now defined
+  as an execution-environment-independent project operation protocol. The current transition draft
+  replaces Agent/Repository/remote-only/Skill assumptions with Project, Principal, Executor,
+  Execution Environment, Agnir continuity, evidence-driven lifecycle semantics, and capability
+  adapters. Svif depends normatively on the Agnir Core protocol rather than on any Agnir
+  implementation/backend/adapter.
+
 current_focus: >-
-  Design and execute an explicit ZeroLocal -> Svif architecture migration together with the
-  independent PPMP/PPM/Sandminni -> Agnir evolution. Preserve old validation evidence as historical
-  evidence, remove platform/executor/storage assumptions from normative Core semantics, define the
-  Svif-to-Agnir versioned boundary, and only then resume clean-room Validation Project #2 under the
-  new architecture.
+  Tighten SVIF_ARCHITECTURE_DRAFT.md and the parallel Agnir Core 0.1 draft into testable contracts.
+  Define the Svif Software Delivery Profile that preserves the strongest ZeroLocal delivery
+  invariants without making Git, repository, remote execution, ChatGPT, Skills, or Cloudflare
+  universal Core requirements. Freeze the exact Svif-to-Agnir compatibility expression only after
+  the Agnir 0.1 contract stabilizes, then migrate conformance and resume Validation Project #2.
+
 historical_baseline:
   specification: ZeroLocal v0.1
   delivery_form: ChatGPT Skills
@@ -47,45 +56,62 @@ historical_baseline:
       status: paused-before-new-architecture-validation
       evidence: .chatgpt/validation-2.md
       note: selected under ZeroLocal v0.1; resume only after Svif/Agnir migration contracts are explicit
+
 confirmed_direction:
-  - The product/project identity is Svif; ZeroLocal and ANRD are historical names for the predecessor lineage.
-  - Agnir is the project-owned durable-memory foundation used by Svif and is developed independently in mattamior/rpm.
-  - Agnir MUST NOT require Git, GitHub, a repository host, ChatGPT, a conversational interface, or any particular AI agent.
-  - Agnir memory belongs to the project and must be usable by any compatible reader/executor that can discover and interpret it.
-  - Svif MUST NOT make ChatGPT, GitHub, Git, an AI-agent identity, local-vs-remote execution, or Skill packaging normative Core requirements.
-  - The stable conceptual unit is the project; execution environments and executors may change.
+  - Svif is the new project/product identity; ZeroLocal and ANRD are predecessor identities.
+  - Svif Core is execution-environment-independent and project-centered.
+  - Agnir is an independent project-owned durable-continuity protocol and the dependency direction is Svif -> Agnir.
+  - Svif depends on a compatible Agnir Core protocol version, not on a specific Agnir implementation, backend, adapter, Git repository layout, or ChatGPT integration.
+  - The current draft dependency target is the Agnir Core 0.1 line; the exact release compatibility expression remains unfrozen.
+  - The stable conceptual unit is the Project; Executors and execution environments may change.
+  - Neutral Core roles are Principal and Executor. Execution Environment and Capability Adapter are first-class neutral concepts.
   - No execution environment becomes authoritative merely because work occurred there.
-  - Fresh-context recovery generalizes to cold-start/fresh-executor discovery rather than ChatGPT-specific fresh-conversation semantics.
-  - Human Operator / Agent Operator terminology should be replaced by platform-neutral authority/execution roles such as Principal and Executor.
-  - ChatGPT Skills, GitHub integration, Git persistence, local CLI, CI runners, and provider tools belong in implementations, adapters, profiles, or execution surfaces rather than protocol Core.
-  - Svif and Agnir remain separate projects and canonical sources. Svif depends on Agnir; Agnir does not depend on Svif.
-  - A single ChatGPT Project may act as a workspace for both projects, but each project must keep independent durable Agnir state.
-  - Cross-project decisions are recorded in each affected project according to their local meaning; no shared mutable cross-project memory store is authoritative.
-  - Workspace-level configuration should be locator/registry metadata only, not mutable project state.
-  - Existing ZeroLocal v0.1 validation evidence remains valid as historical implementation evidence and must not be silently relabeled as Svif conformance.
-legacy_constraints_retained_until_migrated:
-  - CI verifies and deployment actuates; production success requires observable verification.
-  - Exact validated-revision provenance remains a strong delivery invariant unless explicitly revised by the Svif specification.
-  - Secrets must remain in protected stores and must never be requested in chat or persisted in plaintext project memory.
+  - Fresh-context recovery is generalized to Agnir cold-start discovery / fresh-executor recovery.
+  - The generalized Svif lifecycle is DISCOVER -> PLAN -> CHANGE -> VERIFY -> DELIVER -> OBSERVE -> CHECKPOINT, with REPAIR as the recovery loop.
+  - DELIVER is skippable when no external actuation is required; software delivery may expand DELIVER into provisioning/deployment substates.
+  - Stable candidate provenance replaces Git SHA as the Core abstraction. Immutable Git revision remains a strong software/SCM realization.
+  - Evidence-driven transitions, verification/delivery authority separation, observable success, explicit trust boundaries, adapter isolation, and durable continuity remain Core invariants.
+  - Canonical Git repository, remote-only operation, human-local-checkout prohibition, ChatGPT, Skills, and Cloudflare move out of Core into profiles/adapters/integrations or predecessor evidence.
+  - CHECKPOINT delegates durable persistence/resumability semantics to Agnir and MUST NOT create a second competing memory model.
+  - Secret values must remain inside authorized protected channels/stores; Svif Core must not require secret transfer through unprotected conversational or execution surfaces.
+  - Existing ZeroLocal v0.1 validation evidence remains historical implementation evidence and MUST NOT be silently relabeled as Svif conformance.
+  - Svif and Agnir remain separate canonical projects with independent durable state; one execution workspace may coordinate both.
+
+legacy_constraints_retained_until_profile_migration:
+  - CI verifies and deployment actuates in the ZeroLocal software-delivery predecessor model.
+  - Exact validated Git revision provenance remains a strong software-delivery invariant pending formal profile extraction.
   - Provider-specific behavior remains outside provider-neutral Core semantics.
-blockers: []
+  - Production/external success requires observable verification when an external effect is claimed.
+
+resolved_questions:
+  - Svif should require Agnir Core protocol conformance, not an Agnir implementation and not a separately redefined Svif memory interface.
+  - The target neutral role names are Principal and Executor.
+  - Fresh-conversation/RPM bootstrap semantics map to Agnir cold-start discovery.
+  - ZeroLocal PROVISION + DEPLOY collapse into generic Svif DELIVER at Core level; software delivery may re-expand them in a profile.
+  - Git SHA becomes a profile-specific realization of the Core stable-candidate-provenance invariant.
+
 open_questions:
-  - What exact Agnir protocol/version boundary Svif should require after the Agnir migration.
-  - Whether Svif should require Agnir specifically or define a durable-continuity interface with Agnir as the normative/default realization.
-  - Which ZeroLocal v0.1 invariants remain Svif Core invariants after removing repository, remote-only, Agent, and Skill assumptions.
-  - What new neutral terminology should replace canonical repository, Agent Operator, Human Operator, fresh conversation, Core Skill, and Provider Skill.
-  - What explicit migration/versioning strategy preserves ZeroLocal v0.1 evidence while establishing Svif's first generalized specification.
-  - When to rename iorLab/zerolocal and iorLab/zerolocal-cloudflare-starter after architecture and compatibility boundaries are documented.
-  - How the shared ChatGPT workspace registry should point to both Svif and Agnir without becoming a second memory store.
+  - What exact Agnir 0.1 release version/range Svif should declare after Agnir Core stabilizes.
+  - Which ZeroLocal v0.1 requirements belong in the future Svif Software Delivery Profile versus generic Core.
+  - What minimum machine-readable Capability Adapter descriptor Svif should standardize.
+  - Whether PLAN is a normative lifecycle state in all Svif operations or a semantic phase that MAY be implicit for trivial work.
+  - How conformance should express candidate identity requirements for mutable external systems that lack natural immutable revisions.
+  - When to rename iorLab/zerolocal and iorLab/zerolocal-cloudflare-starter after migration compatibility is explicit.
+  - How the external ChatGPT workspace registry should point to both Svif and Agnir without becoming shared mutable memory.
+
 next_major_work:
-  - checkpoint matching cross-project decisions into mattamior/rpm
-  - define Agnir identity and migration from PPMP/PPM/Sandminni
-  - draft platform-neutral Svif Core terminology and architecture
-  - define Svif <-> Agnir dependency and discovery contract
-  - design explicit migration of filenames, manifests, skills/adapters, conformance, and reference repositories
-  - update ChatGPT workspace bootstrap/registry only after repository-side migration targets are explicit
-  - resume Validation Project #2 against the new Svif/Agnir contract rather than the predecessor-only contract
+  - tighten Agnir Core 0.1 Discovery Record and Locator Chain semantics in mattamior/rpm
+  - draft explicit PPMP v2 -> Agnir 0.1 migration mapping
+  - tighten SVIF_ARCHITECTURE_DRAFT.md into a normative Svif v0.2 draft
+  - define the Svif Software Delivery Profile from retained ZeroLocal invariants
+  - define machine-readable Capability Adapter semantics and failure contracts
+  - freeze the Svif <-> Agnir compatibility declaration after Agnir Core stabilizes
+  - migrate conformance identifiers and tests without relabeling predecessor evidence
+  - rename files/repositories/integrations only after compatibility boundaries are documented
+  - update the external multi-project workspace registry after repository-side discovery targets are explicit
+  - resume Validation Project #2 against the Svif + Agnir contracts
+
 last_checkpoint:
   saved_at: 2026-08-27T17:58:00+08:00
   reason: Rename ZeroLocal to Svif, establish Agnir as independent durable-memory foundation, generalize both projects beyond platform/agent/storage assumptions, and adopt a shared-workspace/separate-memory operating model
-  resumability: repository state persisted; shared ChatGPT workspace registry still requires later external bootstrap synchronization
+  resumability: repository state persisted; architecture has advanced since this checkpoint and should be captured at the next explicit checkpoint

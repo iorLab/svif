@@ -16,6 +16,7 @@ files:
   decisions: .chatgpt/decisions.md
   transition_decisions:
     - .chatgpt/decisions/2026-08-27-svif-v0.2-transition.md
+    - .chatgpt/decisions/2026-08-27-branch-governance.md
   predecessor_specification: SPECIFICATION.md
   architecture_draft: SVIF_ARCHITECTURE_DRAFT.md
   capability_adapter_draft: SVIF_CAPABILITY_ADAPTER_DRAFT.md
@@ -32,6 +33,10 @@ durable_continuity:
     The current .chatgpt maintenance layout is predecessor project memory used during
     the migration. Svif Core targets Agnir-compatible continuity and does not require
     this path, Git, GitHub, ChatGPT, or repository-backed persistence.
+branch_governance:
+  active: main
+  predecessor: legacy/zerolocal-v0.1
+  cleanup: deferred-until-new-version-complete
 checkpoint:
   triggers:
     - 收尾

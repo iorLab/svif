@@ -35,7 +35,11 @@ CHECKPOINT delegates durable persistence/discovery/resumability semantics to Agn
 
 Svif has a standard evidence record that preserves stable subject identity, derivation, target identity, result, producer, authority reference, and evidence locator across transformation, verification, delivery, and observation.
 
+Evidence provenance is now executable conformance rather than schema-only validation. The positive fixture covers source candidate -> artifact transformation -> verification -> delivery -> observation. The negative fixture establishes a valid replacement artifact but deliberately delivers it without independent verification; conformance requires this to fail specifically as a provenance violation.
+
 Capability Adapter operation names are implementation/profile-extensible. Each declared operation must map to a Core semantic effect (`resolve`, `inspect`, `mutate`, `identify`, `verify`, `actuate`, `observe`, `authorize`, `recover`, or `checkpoint`) so orchestration and repair do not depend on provider-specific verbs.
+
+Concrete executable adapter fixtures now cover workspace/SCM, verification, delivery/provider, and observation boundaries. They enforce semantic-effect mappings, authority and retry classes, portable failure classes, Evidence record I/O declarations, verification/delivery authority separation, protected credential references without secret-value transport, provenance mismatch reporting, and independent observation semantics.
 
 ## Branch governance
 
@@ -47,11 +51,13 @@ Capability Adapter operation names are implementation/profile-extensible. Each d
 
 The active main line is no longer organized around the ZeroLocal v0.1 specification/Skill layout. It contains direct Svif 0.2 Core, Capability Adapter, Evidence, Software Delivery Profile, schemas, Agnir continuity, and an executable conformance checker. Historical ZeroLocal files are removed from the active structure and remain recoverable from the legacy branch.
 
-At the 2026-08-27 checkpoint, the pre-checkpoint `main` head was `f524bf034cbfd2836ca7225cec00e8c1ec31a05c`; Svif conformance run `33081158821` completed successfully for that head.
+On 2026-08-27, evidence-chain conformance landed in commit `853ea4bf05679ab2b03864aeaa01e8aae9350542`; Svif conformance run `33090238664` completed successfully.
+
+On 2026-08-27, concrete Capability Adapter fixtures landed in commit `67c7b4e93e0130d37c01c40a261b55fba381f786`; Svif conformance run `33090480399` completed successfully.
 
 ## Repository identity transition
 
-Repository/public-name cleanup is now approved as the next execution step rather than deferred until the end of the new-version work. The intended coordinated mapping is:
+Repository/public-name cleanup is approved as the immediate identity task. The intended coordinated mapping is:
 
 - `mattamior/rpm` -> `mattamior/agnir`
 - `iorLab/zerolocal` -> `iorLab/svif`
@@ -61,11 +67,13 @@ Perform the rename in that order: Agnir first, Svif second, Cloudflare starter t
 
 Until each GitHub rename actually occurs, the current repository name remains the resolvable canonical location for that repository. Immediately after each rename, update durable repository references, manifests/shims, README/documentation, cross-project references, and CI/reference URLs; do not rely on GitHub redirects as the normative identity mechanism.
 
+The current connected GitHub execution surface does not expose repository-settings mutation/rename. This is an execution-surface capability limitation, not a change to the approved rename decision; the rename remains pending until executed through a surface with repository administration mutation capability.
+
 ## Known gaps
 
-- Repository rename and reference reconciliation are the immediate next work.
-- Capability Adapter schema needs provider/reference fixtures beyond schema validation.
-- Evidence-chain conformance needs positive and provenance-mismatch negative fixtures.
-- Validation Project #2 must be rewritten against Svif 0.2 + Agnir 0.1 before resuming Cloudflare deployment validation.
-- The Cloudflare starter still needs migration to Software Delivery + Provider Adapter terminology.
-- At least one materially different execution/storage arrangement from ChatGPT + GitHub + Cloudflare is required before strong neutrality claims.
+- Execute the approved coordinated repository rename and reconcile all canonical references.
+- Recast the Cloudflare starter as a Svif Software Delivery + Cloudflare Provider Adapter reference implementation; this should also supply provider/profile implementation evidence beyond generic fixtures.
+- Rewrite Validation Project #2 against Svif 0.2 + Agnir 0.1 before resuming Cloudflare deployment validation.
+- Add at least one materially different execution/storage arrangement from ChatGPT + GitHub + Cloudflare before making strong neutrality claims.
+- Add multi-project workspace isolation conformance after Agnir's corresponding fixture is ready.
+- Freeze the exact Agnir compatibility expression only after Agnir 0.1 release criteria are concrete.

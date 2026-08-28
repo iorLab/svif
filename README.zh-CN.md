@@ -10,23 +10,23 @@ Svif 是一个 **Project orchestration（项目编排）产品**，负责协调�
 
 ```mermaid
 flowchart LR
-    P[Principal / 用户] --> E[Execution Surface\n当前：ChatGPT]
+    P["用户 / 负责人（Principal）<br/>提出目标、审批操作并授予必要权限"] --> E["执行环境（Execution Surface）<br/>负责理解意图并完成工作<br/>当前：ChatGPT"]
 
     subgraph S[iorLab/svif]
-        O[Svif Orchestrator]
-        X[Execution integration\nsrc/svif/execution]
-        K[Capability Providers\nsrc/svif/capabilities]
-        R[Portable contracts\nEvidence · Authority · Profiles]
+        O["Svif 编排器（Orchestrator）<br/>协调记忆、执行和外部能力<br/>保证整个操作形成可信闭环"]
+        X["执行环境适配层<br/>把 Project 上下文交给执行环境<br/>src/svif/execution"]
+        K["能力提供层（Capability Providers）<br/>调用外部系统读取或改变真实状态<br/>src/svif/capabilities"]
+        R["可移植规则层（Portable Contracts）<br/>定义证据、权限、Profile 等共同规则"]
         O --- R
         X <--> O
         O <--> K
     end
 
     E <--> X
-    O <--> C[Continuity Provider\n当前：Agnir]
-    K <--> F[外部系统\n当前：Cloudflare]
+    O <--> C["项目连续性提供者（Continuity Provider）<br/>保存可恢复的项目事实和后续工作<br/>当前：Agnir"]
+    K <--> F["外部目标系统<br/>真正发生部署、查询或状态变化的地方<br/>当前：Cloudflare"]
 
-    C -. 独立协议 .-> A[iorLab/agnir]
+    C -. "Agnir 是独立协议" .-> A["iorLab/agnir<br/>定义 Project continuity 的持久化与发现规则"]
 ```
 
 Svif 自己负责的是三类可替换边界之间的协调。Orchestrator 并不永久依赖 Agnir、ChatGPT 或 Cloudflare；它们分别是 Continuity Provider、Execution Surface 和 Capability Provider 的首批/当前 binding。
@@ -42,25 +42,25 @@ Provider-specific 的 Svif 行为应留在 `iorLab/svif` 内，除非它未来�
 
 ```mermaid
 flowchart TD
-    I[Principal 意图] --> B[Orchestrator.begin\n解析 Project binding]
-    B --> L[加载 durable continuity]
-    L <--> A[Agnir Continuity Provider]
-    L --> M[构造 Project-scoped execution context]
-    M --> E[Execution Surface / Executor\n当前：ChatGPT]
-    E --> W[结构化 WorkResult\nsubject + evidence + requested effect]
-    W --> V{是否验证了同一 exact subject?}
-    V -- 否 --> STOP[停止 / Repair\n禁止错误 checkpoint]
-    V -- 是 --> Q{是否请求外部效果?}
-    Q -- 否 --> C[Reconcile + checkpoint]
-    Q -- 是 --> U{是否获得所需 authority?}
-    U -- 否 --> STOP
-    U -- 是 --> D[Capability Provider 执行 actuation\n当前：Cloudflare]
-    D --> O[独立观察外部结果]
-    O --> R{观察到的 subject / target 是否一致?}
-    R -- 否 --> STOP
-    R -- 是 --> C
+    I["用户提出操作目标<br/>例如：修改并部署一个已验证版本"] --> B["Svif 开始一次操作（Orchestrator.begin）<br/>解析 Project binding，并确定要使用哪些组件"]
+    B --> L["加载项目连续性<br/>读取当前状态、后续动作、决策和已有证据"]
+    L <--> A["Agnir 连续性提供者<br/>提供并持久保存可恢复的 Project truth"]
+    L --> M["构造本次执行所需的 Project 上下文<br/>只向执行环境提供当前操作需要的信息"]
+    M --> E["执行环境 / Executor<br/>理解目标并实际完成工作<br/>当前：ChatGPT"]
+    E --> W["返回结构化工作结果（WorkResult）<br/>包含目标对象、验证证据和请求的外部操作"]
+    W --> V{"是否已经成功验证<br/>将要继续操作的正是同一个目标对象？"}
+    V -- "否" --> STOP["停止并进入修复（Repair）<br/>不得把失败或不确定结果写成成功状态"]
+    V -- "是" --> Q{"这次操作是否需要改变外部真实状态？"}
+    Q -- "否" --> C["核对结果并写入 checkpoint<br/>把新的可靠项目事实持久化"]
+    Q -- "是" --> U{"当前是否已经获得<br/>执行该外部操作所需的授权？"}
+    U -- "否" --> STOP
+    U -- "是" --> D["能力提供者执行外部操作<br/>例如把已验证版本部署到 Cloudflare"]
+    D --> O["独立观察外部结果<br/>重新读取真实系统，而不是只相信部署命令返回成功"]
+    O --> R{"外部系统中实际观察到的<br/>目标对象和目标位置是否与部署结果一致？"}
+    R -- "否" --> STOP
+    R -- "是" --> C
     C --> A
-    C --> N[新的 durable Project truth\n供下一 Executor 恢复]
+    C --> N["形成新的持久 Project truth<br/>下一位 Executor 或下一次会话可以从这里继续"]
 ```
 
 默认内部生命周期为：
@@ -105,6 +105,8 @@ Python 目前只是可执行 reference vehicle，并不冻结未来 Plugin/产�
 ## 文档同步规则
 
 `README.md` 与 `README.zh-CN.md` 是并行维护的项目入口。只要产品架构、组件归属、依赖方向、authority/provenance boundary 或运行流程发生变化，**同一个 change set 必须同步更新受影响的 README 架构图和运行流程图**。这些图描述的是当前架构，而不是历史快照。
+
+中文版图表还有一条额外规则：**节点必须优先让中文读者直接看懂“这个东西是什么、负责什么”，英文术语只作为括注或代码/API 名称保留，不得用生硬直译替代解释。**
 
 ## 检查
 

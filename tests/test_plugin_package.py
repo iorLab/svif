@@ -76,38 +76,78 @@ def validate_agent_plugins_1_0_manifest(manifest: object) -> tuple[list[str], li
     return errors, diagnostics
 
 
-def validate_plugin_filesystem(plugin_root: Path) -> list[str]:
-    errors: list[str] = []
+def inspect_plugin_filesystem(plugin_root: Path) -> dict[str, list[str]]:
+    """Model Agent Plugins 1.0 filesystem containment at its normative failure boundaries."""
+    result = {
+        "plugin_errors": [],
+        "component_errors": [],
+        "skipped_skills": [],
+        "denied_paths": [],
+    }
     try:
         resolved_root = plugin_root.resolve(strict=True)
     except FileNotFoundError:
-        return ["plugin root does not exist"]
+        result["plugin_errors"].append("plugin root does not exist")
+        return result
 
     manifest = plugin_root / "plugin.json"
-    if not manifest.is_file():
-        errors.append("plugin.json must be a regular file at the plugin root")
-
-    for path in plugin_root.rglob("*"):
-        try:
-            resolved = path.resolve(strict=True)
-        except FileNotFoundError:
-            errors.append(f"package path does not resolve: {path.relative_to(plugin_root)}")
-            continue
-        if not resolved.is_relative_to(resolved_root):
-            errors.append(f"package path escapes plugin root: {path.relative_to(plugin_root)}")
+    try:
+        resolved_manifest = manifest.resolve(strict=True)
+    except FileNotFoundError:
+        result["plugin_errors"].append("plugin.json must exist at the plugin root")
+    else:
+        if not resolved_manifest.is_relative_to(resolved_root):
+            result["plugin_errors"].append("plugin.json resolves outside plugin root")
+        elif not resolved_manifest.is_file():
+            result["plugin_errors"].append("plugin.json must resolve to a regular file")
 
     skills = plugin_root / "skills"
-    if skills.exists() and not skills.is_dir():
-        errors.append("skills fixed component location must be a directory when present")
-    elif skills.is_dir():
+    skills_valid = True
+    if skills.exists() or skills.is_symlink():
+        try:
+            resolved_skills = skills.resolve(strict=True)
+        except FileNotFoundError:
+            result["component_errors"].append("skills fixed component location does not resolve")
+            skills_valid = False
+        else:
+            if not resolved_skills.is_relative_to(resolved_root):
+                result["component_errors"].append("skills fixed component location escapes plugin root")
+                skills_valid = False
+            elif not resolved_skills.is_dir():
+                result["component_errors"].append("skills fixed component location must resolve to a directory")
+                skills_valid = False
+
+    discovered_skill_files: set[Path] = set()
+    if skills_valid and skills.is_dir():
         for skill_dir in skills.iterdir():
             if not skill_dir.is_dir():
                 continue
             skill_file = skill_dir / "SKILL.md"
-            if skill_file.exists() and not skill_file.is_file():
-                errors.append(f"discovered SKILL.md must be a regular file: {skill_file.relative_to(plugin_root)}")
+            if not (skill_file.exists() or skill_file.is_symlink()):
+                continue
+            try:
+                resolved_skill = skill_file.resolve(strict=True)
+            except FileNotFoundError:
+                continue
+            discovered_skill_files.add(skill_file)
+            if not resolved_skill.is_relative_to(resolved_root):
+                result["skipped_skills"].append(str(skill_dir.relative_to(skills)))
+                continue
+            if not resolved_skill.is_file():
+                discovered_skill_files.discard(skill_file)
 
-    return errors
+    for path in plugin_root.rglob("*"):
+        if path == manifest or path == skills or path in discovered_skill_files:
+            continue
+        try:
+            resolved = path.resolve(strict=True)
+        except FileNotFoundError:
+            result["denied_paths"].append(str(path.relative_to(plugin_root)))
+            continue
+        if not resolved.is_relative_to(resolved_root):
+            result["denied_paths"].append(str(path.relative_to(plugin_root)))
+
+    return result
 
 
 def parse_skill_frontmatter(text: str) -> tuple[dict[str, str], str, list[str]]:
@@ -210,9 +250,41 @@ class PluginPackageTests(unittest.TestCase):
         self.assertEqual(diagnostics, [])
 
     def test_plugin_package_paths_are_contained_within_plugin_root(self) -> None:
-        self.assertEqual(validate_plugin_filesystem(PLUGIN_ROOT), [])
+        result = inspect_plugin_filesystem(PLUGIN_ROOT)
+        self.assertEqual(result, {
+            "plugin_errors": [],
+            "component_errors": [],
+            "skipped_skills": [],
+            "denied_paths": [],
+        })
 
-    def test_plugin_filesystem_validator_rejects_escape_symlink(self) -> None:
+    def test_manifest_escape_rejects_whole_plugin(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            base = Path(temporary)
+            plugin_root = base / "plugin"
+            plugin_root.mkdir()
+            outside = base / "manifest.json"
+            outside.write_text('{"$schema": "x", "name": "svif"}', encoding="utf-8")
+            (plugin_root / "plugin.json").symlink_to(outside)
+
+            result = inspect_plugin_filesystem(plugin_root)
+            self.assertTrue(any("plugin.json resolves outside" in error for error in result["plugin_errors"]))
+
+    def test_skills_location_escape_invalidates_only_skill_component_type(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            base = Path(temporary)
+            plugin_root = base / "plugin"
+            plugin_root.mkdir()
+            (plugin_root / "plugin.json").write_text('{"$schema": "x", "name": "svif"}', encoding="utf-8")
+            outside_skills = base / "outside-skills"
+            outside_skills.mkdir()
+            (plugin_root / "skills").symlink_to(outside_skills, target_is_directory=True)
+
+            result = inspect_plugin_filesystem(plugin_root)
+            self.assertEqual(result["plugin_errors"], [])
+            self.assertTrue(any("skills fixed component location escapes" in error for error in result["component_errors"]))
+
+    def test_escaping_skill_is_skipped_without_rejecting_plugin(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             base = Path(temporary)
             plugin_root = base / "plugin"
@@ -223,8 +295,24 @@ class PluginPackageTests(unittest.TestCase):
             outside.write_text("outside", encoding="utf-8")
             (skill_dir / "SKILL.md").symlink_to(outside)
 
-            errors = validate_plugin_filesystem(plugin_root)
-            self.assertTrue(any("escapes plugin root" in error for error in errors))
+            result = inspect_plugin_filesystem(plugin_root)
+            self.assertEqual(result["plugin_errors"], [])
+            self.assertEqual(result["component_errors"], [])
+            self.assertEqual(result["skipped_skills"], ["svif"])
+
+    def test_unrelated_escape_is_denied_without_rejecting_plugin(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            base = Path(temporary)
+            plugin_root = base / "plugin"
+            plugin_root.mkdir()
+            (plugin_root / "plugin.json").write_text('{"$schema": "x", "name": "svif"}', encoding="utf-8")
+            outside = base / "outside.txt"
+            outside.write_text("outside", encoding="utf-8")
+            (plugin_root / "notes.txt").symlink_to(outside)
+
+            result = inspect_plugin_filesystem(plugin_root)
+            self.assertEqual(result["plugin_errors"], [])
+            self.assertIn("notes.txt", result["denied_paths"])
 
     def test_svif_skill_conforms_to_agent_skills_frontmatter_contract(self) -> None:
         skill_dir = PLUGIN_ROOT / "skills" / "svif"

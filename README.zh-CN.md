@@ -80,6 +80,7 @@ src/svif/capabilities/cloudflare.py    # Svif-owned Cloudflare Capability Provid
 integrations/chatgpt/                  # ChatGPT app/MCP packaging boundary
 integrations/cloudflare/               # Cloudflare provider descriptor / integration notes
 
+tests/test_founding_e2e.py             # founding Agnir + ChatGPT + Cloudflare 产品闭环
 tests/                                # runtime/provider/surface behavior
 conformance/                          # portable contract conformance
 spec/                                 # 内部 portable contracts
@@ -95,8 +96,11 @@ Python 目前只是可执行 reference vehicle，并不冻结未来 Plugin/产�
 - 已有 Agnir repository/filesystem Continuity Provider adapter。
 - 已有 ChatGPT structured execution bridge，支持 externally driven 的 `Orchestrator.begin()` / `Orchestrator.complete()` handoff。
 - Cloudflare provider 已归 Svif 自己所有，并使用 injected transport boundary，因此测试不需要 live credentials。
+- `tests/test_founding_e2e.py` 已把三者通过真实 Orchestrator 边界串起来：从 Agnir Project 读取 continuity，由 ChatGPT bridge 构造并解析结构化操作，在完成阶段由可信 integration 层授予 protected authority，再通过无密钥 fake transport 执行 Cloudflare delivery 和独立 observation，最后把新的 state / next actions / decisions 和 operation evidence checkpoint 回 Agnir。
 - Protected authority 不来自不可信的 model/result payload。
 - 外部成功必须满足 exact verified-subject delivery，并经过 independent observation 后才能 checkpoint。
+
+这个 founding E2E 刻意不使用真实 Cloudflare 凭据。它证明的是 Svif 产品闭环和各边界语义已经可执行，而不是声称已完成真实生产部署。
 
 ## Project binding
 
@@ -118,4 +122,4 @@ PYTHONPATH=src python -m unittest discover -s tests -v
 
 ## 下一步
 
-下一里程碑是在本仓库内完成 Agnir + ChatGPT + Cloudflare 通过 Orchestrator 的 founding E2E scenario。之后再进行 ChatGPT packaging hardening、更广泛的 neutrality evidence 和 release compatibility 工作。
+下一里程碑是围绕已经可执行的 founding product loop，完善具体的 ChatGPT app/MCP packaging。之后再推进更广泛的 neutrality evidence、与 Agnir 对齐的 multi-project isolation，以及 release compatibility。真实 Cloudflare actuation 仍然单独受权限门控，不是 credential-free founding E2E 的前提。

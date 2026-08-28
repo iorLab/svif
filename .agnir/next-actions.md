@@ -30,6 +30,7 @@
 - The mature **installable Plugin** distribution target is explicitly reaffirmed by current Svif architecture/decisions and synchronized into both READMEs.
 - README compact repository trees explain major module responsibilities; `REPOSITORY_TREE.md` provides the full tracked file-level map with per-file responsibility annotations.
 - Svif repository checks enforce the documentation baseline without byte-for-byte prose locking.
+- Main-only branch governance is complete: retired branch tip SHAs are indexed in `history/BRANCH_ARCHIVE.md`, GitHub branch enumeration returns only `main`, and checkpoint evidence is `.agnir/evidence/2026-08-28-main-only-branch-cleanup-checkpoint.md`.
 
 ## Repository-retirement note
 

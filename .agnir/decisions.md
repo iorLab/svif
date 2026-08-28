@@ -41,5 +41,14 @@
 - Both language versions MUST show the current **Architecture Diagram** and **Runtime / Operation Flow** using Mermaid so the repository explains both static component topology and dynamic operation semantics without requiring a reader to reconstruct them from specifications.
 - Architecture, component ownership, dependency direction, authority/provenance boundaries, or runtime-flow changes MUST update the affected diagrams in both README language versions in the same change set.
 - Localized READMEs describe the same canonical architecture. Translation may adapt explanatory prose, but it must not introduce a separate product model.
-- Localized diagrams are **comprehension-first, not literal translations**. In `README.zh-CN.md`, each node SHOULD explain in Chinese both what the component is and what role it plays; English terminology is secondary annotation or an exact code/API identifier.
+- Localized diagrams are comprehension-first, not literal translations. In the Simplified Chinese README, important nodes must communicate both role and responsibility so the diagram remains understandable without prior knowledge of the English term; English terminology may remain as a secondary label.
 - Repository checks enforce diagram/locale structure rather than exact prose wording.
+
+## 2026-08-28 — Founding credential-free E2E baseline
+
+- `tests/test_founding_e2e.py` is the founding in-repository executable product scenario across Agnir + ChatGPT + Cloudflare through the real Svif Orchestrator boundary.
+- The scenario MUST use injected non-secret/fake provider transport by default so the product loop is continuously testable without protected credentials.
+- Trusted authority is supplied to `Orchestrator.complete()` by the integration context; model/result payloads do not carry or self-grant `protected-delivery` authority.
+- A successful founding E2E proves the orchestration loop, boundary contracts, exact-subject verification, independent observation, and Agnir checkpoint/resume behavior.
+- Credential-free founding E2E success does **not** constitute evidence of live Cloudflare production actuation. Live provider delivery remains separately authorized and separately evidenced.
+- Product-check run `33143308949` succeeded with repository-integrity, runtime-kernel, and portable-contracts jobs; durable evidence is `.agnir/evidence/2026-08-28-founding-e2e.md`.

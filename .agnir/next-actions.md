@@ -3,9 +3,8 @@
 1. **Harden the concrete ChatGPT Apps SDK / MCP packaging** around `integrations/chatgpt/` and the existing `ChatGPTExecutionSurface` bridge. Preserve the externally driven `Orchestrator.begin()` / `Orchestrator.complete()` control direction, keep protected authority outside untrusted model/result payloads, and do not duplicate kernel semantics in the packaging layer.
 2. **Add broader neutrality evidence** using Agnir's proven non-repository continuity and multi-project isolation cases as pressure inputs. Do not make GitHub, Cloudflare, or ChatGPT universal Svif dependencies.
 3. **Advance the installable Plugin product surface** on top of the validated kernel and integrations, including installation/onboarding/distribution concerns, without moving canonical Project truth out of the Continuity Provider or reimplementing Orchestrator semantics.
-4. Keep Svif's Agnir dependency at the current Core compatibility/interface boundary only; do not bind Svif release readiness to Agnir predecessor migration history or repository layout.
+4. Keep Svif's Agnir dependency at the current Core compatibility/interface boundary only; do not bind Svif release readiness to Agnir predecessor history or repository layout.
 5. Keep live Cloudflare delivery disabled unless explicitly authorized. If authorized later, preserve exact verified-subject delivery and require independent observation before success claims.
-6. Keep incidental branch cleanup deferred until the new Svif version is substantially complete; preserve `legacy/zerolocal-v0.1` as history only.
 
 ## Documentation maintenance rule
 
@@ -14,9 +13,10 @@
 - README repository trees remain compact navigation views.
 - `REPOSITORY_TREE.md` is the exhaustive file-level map. Tracked file additions/removals/moves or material responsibility changes must update it in the same change set; if the compact tree is also affected, both README language versions must update as well.
 
-## Legacy rule
+## Branch governance
 
-Legacy branches and historical evidence are not active implementation inputs, compatibility obligations, conformance requirements, or release gates. A historical idea survives only when it is independently reaffirmed in current Svif architecture/decisions.
+- `main` is the only long-lived branch.
+- Historical predecessor and retired work is indexed by commit SHA in `history/BRANCH_ARCHIVE.md`; live legacy/feature/fix/tmp branch refs are not retained.
 
 ## Completed in the current implementation sequence
 
@@ -30,7 +30,6 @@ Legacy branches and historical evidence are not active implementation inputs, co
 - The mature **installable Plugin** distribution target is explicitly reaffirmed by current Svif architecture/decisions and synchronized into both READMEs.
 - README compact repository trees explain major module responsibilities; `REPOSITORY_TREE.md` provides the full tracked file-level map with per-file responsibility annotations.
 - Svif repository checks enforce the documentation baseline without byte-for-byte prose locking.
-- Pre-checkpoint repository-documentation head `97e70f9980de36aa7e3095cf8284f40c6fbf285e` passed product-check run `33146795882`.
 
 ## Repository-retirement note
 

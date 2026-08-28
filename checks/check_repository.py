@@ -26,6 +26,9 @@ def main() -> None:
         ".agnir/state.md",
         ".agnir/next-actions.md",
         ".agnir/decisions.md",
+        "src/svif/__init__.py",
+        "src/svif/runtime.py",
+        "tests/test_runtime.py",
         "spec/CORE.md",
         "spec/PROJECT_BINDING.md",
         "spec/CAPABILITY_ADAPTER.md",
@@ -93,8 +96,10 @@ def main() -> None:
             'provider: "agnir"',
             'compatibility: "0.1"',
             'discovery: "AGNIR.yaml"',
+            'runtime: "src/svif/runtime.py"',
             'repository_integrity: "checks/check_repository.py"',
             'portable_contracts: "conformance/check_contracts.py"',
+            'runtime_kernel: "tests/test_runtime.py"',
         ],
         "SVIF.yaml",
     )
@@ -111,6 +116,20 @@ def main() -> None:
             "The mature product target remains a Plugin.",
         ],
         "spec/CORE.md",
+    )
+
+    runtime = (ROOT / "src/svif/runtime.py").read_text(encoding="utf-8")
+    require_text(
+        runtime,
+        [
+            "class Orchestrator:",
+            "class ContinuityProvider(Protocol):",
+            "class ExecutionSurface(Protocol):",
+            "class CapabilityProvider(Protocol):",
+            "external actuation requires successful verification evidence for the exact subject",
+            "observation does not match the successfully delivered subject/target",
+        ],
+        "src/svif/runtime.py",
     )
 
     binding = (ROOT / "spec/PROJECT_BINDING.md").read_text(encoding="utf-8")

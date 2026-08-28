@@ -47,6 +47,9 @@ SVIF.yaml                           # Project binding/configuration manifest for
 AGNIR.yaml                          # current Continuity Provider discovery anchor
 .agnir/                             # authoritative continuity for this repository
 
+src/svif/                           # minimal executable Orchestrator kernel
+tests/                              # runtime invariant tests
+
 spec/CORE.md                        # portable orchestration contract
 spec/PROJECT_BINDING.md             # Project binding contract
 spec/CAPABILITY_ADAPTER.md          # capability-provider adapter semantics
@@ -59,11 +62,28 @@ conformance/                        # portable contract conformance/fixtures
 history/PREDECESSOR.md              # preserved ZeroLocal lineage locator
 ```
 
-Product implementation/runtime and concrete integrations will grow around these foundations; the repository is no longer treated as a specification-only end state.
+The repository now contains both portable product contracts and a minimal executable kernel. Python is the current executable reference vehicle for the kernel; this does not freeze the eventual Plugin implementation technology.
+
+## Executable kernel
+
+`src/svif/runtime.py` implements the first Orchestrator loop across replaceable Continuity Provider, Execution Surface, and Capability Provider interfaces.
+
+The current kernel enforces:
+
+- Project identity consistency when continuity is loaded;
+- stable subject identity from execution;
+- exact-subject verification before external actuation;
+- explicit authority before protected actuation;
+- subject/target preservation across delivery;
+- independent observation matching the delivered subject/target;
+- checkpoint only after all applicable invariants succeed;
+- direct checkpoint for non-effectful operations without forcing delivery/observation.
+
+The founding provider names appear only in tests/bindings; the Orchestrator itself does not hard-code Agnir, ChatGPT, or Cloudflare.
 
 ## Project binding
 
-`SVIF.yaml` now implements the repository/filesystem serialization of `project-binding/0.2`.
+`SVIF.yaml` implements the repository/filesystem serialization of `project-binding/0.2`.
 
 It binds this Project to a Continuity Provider and may bind Execution Surfaces and Capability Providers. For this repository, continuity is currently Agnir `0.1`; execution and external capabilities are intentionally unbound in the canonical repository manifest.
 
@@ -99,21 +119,25 @@ For software delivery, full immutable Git SHA remains a strong SCM realization, 
 
 ## Checks
 
-Two distinct categories are now explicit:
+Three distinct executable checks are active:
 
 ```bash
 python checks/check_repository.py
 python conformance/check_contracts.py
+PYTHONPATH=src python -m unittest discover -s tests -v
 ```
 
-`checks/check_repository.py` checks **this Svif product repository's integrity**.
+`checks/check_repository.py` checks this Svif product repository's integrity. `conformance/check_contracts.py` exercises portable Project Binding, Capability Adapter, and Evidence contracts. Runtime tests exercise Orchestrator behavior and failure ordering.
 
-`conformance/check_contracts.py` exercises **portable product contracts** such as Capability Adapter and Evidence provenance. Passing repository integrity is not evidence that an arbitrary Project is Svif-conformant.
+Passing repository integrity is not evidence that an arbitrary Project is Svif-conformant.
 
 ## Near-term implementation direction
 
-The next milestone is a minimal Svif product kernel/integration path that demonstrates:
+The minimal generic Orchestrator kernel now exists. The next milestone is to replace scripted founding test doubles with concrete product integrations:
 
-`load continuity -> materialize execution context -> execute/verify -> optional external capability -> observe/reconcile -> checkpoint`
+1. Agnir Continuity Provider adapter;
+2. ChatGPT Execution Surface integration/product surface;
+3. reusable Cloudflare Capability Provider implementation;
+4. an end-to-end founding scenario wiring all three through the Orchestrator.
 
-using Agnir + ChatGPT + Cloudflare as the founding bindings without making them permanent kernel dependencies.
+Only after that product path is executable should broader non-founding neutrality cases become the main priority.

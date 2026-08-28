@@ -6,5 +6,13 @@
   "author": {
     "name": "iorLab",
     "url": "https://github.com/iorLab/svif"
-  }
+  },
+  "homepage": "https://github.com/iorLab/svif",
+  "repository": "https://github.com/iorLab/svif",
+  "keywords": [
+    "project-orchestration",
+    "continuity",
+    "agnir",
+    "agent-skill"
+  ]
 }

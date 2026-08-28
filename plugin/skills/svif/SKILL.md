@@ -7,19 +7,27 @@ description: Operate software and technical Projects with durable Agnir continui
 
 Use Svif as an execution discipline for real Project work. Prefer completing concrete work through available tools over producing abstract plans when the task is actionable.
 
-## 1. Discover the Project before acting
+## 1. Discover and activate the Project before acting
 
-When a Project exposes `AGNIR.yaml`, read it first. Treat the Project-managed Agnir state as durable authority for current state, next actions, decisions, and referenced evidence. Do not treat chat history, an executor's private context, Git, GitHub, ChatGPT, or any other execution surface as canonical merely because work happened there.
+For an Agnir-initialized repository/filesystem Project, follow the current Agnir activation route when those surfaces exist:
 
-When a Project exposes `SVIF.yaml`, read it after Agnir discovery and use it to understand the Project's Svif bindings and active product contracts.
+`Project root -> AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml -> declared durable memory`
+
+`AGENTS.md` is only a locator; the target Project README owns the full Agnir Project Instructions. Preserve unrelated existing `AGENTS.md` instructions and never silently override a material conflict.
+
+When `AGNIR.yaml` is available, read it before substantive work. Treat the Project-managed Agnir state as durable authority for current state, next actions, decisions, and referenced evidence. Do not treat chat history, an executor's private context, Git, GitHub, ChatGPT, or any other execution surface as canonical merely because work happened there.
+
+When `SVIF.yaml` is available, read it after Agnir discovery and use it to understand the Project's Svif bindings and active product contracts.
+
+If Agnir is expected but discovery or activation fails, do not invent Project state. Identify the failed locator/discovery step, repair it when authorized, otherwise surface the blocker and stop before making state-dependent changes.
 
 If more than one Project is involved, keep each Project's durable state isolated. Cross-project decisions must be recorded from each affected Project's own perspective rather than merged into one mutable workspace memory.
 
 ## 2. Reconstruct only the context needed for the current operation
 
-Load the current state and the next actions first. Read decisions and evidence that materially constrain the requested operation. Avoid pulling historical or retired artifacts back into active architecture unless the current Project explicitly declares them authoritative.
+Load current state and next actions first. Then read only decisions and evidence that materially constrain the requested operation. Avoid pulling historical or retired artifacts back into active architecture unless the current Project explicitly declares them authoritative.
 
-Use the Project's canonical repository or substrate when one is declared. For `iorLab/svif`, `main` is the active line and repository-managed Agnir state is canonical.
+Use the Project's canonical repository or substrate when one is declared. For `iorLab/svif`, `main` is the active line and repository-managed Agnir state is canonical. Svif currently consumes Agnir Core compatibility `0.1` through the `repository-filesystem/0.1` profile; Agnir repository release `0.1.0` is a separate SemVer layer and must not be confused with the Core/profile compatibility identifiers.
 
 ## 3. Execute through the Svif lifecycle
 
@@ -31,10 +39,12 @@ Use this lifecycle as the default control loop:
 
 For implementation tasks:
 
+- choose the strongest available Project tool instead of asking the user to perform work the executor can perform;
 - make the smallest coherent set of changes that satisfies the intent;
-- run or inspect the strongest available verification before claiming success;
+- after each material change, verify the exact changed subject with the strongest available check;
 - preserve stable subject identity across verification and any later effect;
-- keep evidence inspectable enough that another executor can determine what actually happened.
+- keep evidence inspectable enough that another executor can determine what actually happened;
+- if verification fails, repair before delivery or checkpointing success.
 
 ## 4. Enforce provenance before external effects
 
@@ -51,6 +61,8 @@ Before an external effect that depends on verification:
 
 Untrusted model/result payloads must never self-grant protected authority.
 
+If authority is missing, stop before actuation. If observation is unavailable or contradicts the requested result, record the effect as unconfirmed/failed rather than successful.
+
 ## 5. Keep execution surfaces replaceable
 
 Agnir is the founding Continuity Provider for Svif, ChatGPT is a founding Execution Surface, and Cloudflare is a founding Capability Provider. They are bindings, not universal kernel dependencies.
@@ -59,15 +71,16 @@ Do not introduce an unnecessary dependency on ChatGPT, GitHub, Cloudflare, Git, 
 
 ## 6. Checkpoint durable truth
 
-Checkpoint after meaningful state transitions and whenever the user asks to checkpoint, save progress, stop, finish, or equivalent.
+Checkpoint after a meaningful state transition and whenever the user asks to checkpoint, save progress, stop, finish, or equivalent.
 
-A checkpoint should preserve at least:
+Write the checkpoint through the Project's declared Agnir memory locations. Update, as applicable:
 
-- what is now true;
-- what remains to do;
-- durable decisions made during the operation;
-- evidence needed to justify important claims or recover the work;
-- enough identity information for a fresh executor to resume without relying on private prior context.
+- Current State: what is now demonstrably true, including the verified subject/version;
+- Next Actions: concrete remaining work in resume order;
+- Decisions: only durable choices made or superseded during the operation;
+- Evidence: verification/observation identifiers, relevant commit/run/target identity, and uncertainty needed for audit or recovery.
+
+Before finishing a checkpoint, re-read the durable state needed to ensure it does not contradict the operation just completed. A fresh executor should be able to resume from Project-owned surfaces without private conversation context.
 
 Do not checkpoint a failed or uncertain external effect as successful. Record the uncertainty and the next repair action instead.
 
@@ -75,11 +88,12 @@ Do not checkpoint a failed or uncertain external effect as successful. Record th
 
 When operating on `iorLab/svif` itself:
 
-- read `AGNIR.yaml`, `.agnir/state.md`, `.agnir/next-actions.md`, `.agnir/decisions.md`, and relevant evidence before substantive changes;
+- follow the Agnir activation/discovery route, then read `AGNIR.yaml`, `.agnir/state.md`, `.agnir/next-actions.md`, `.agnir/decisions.md`, and relevant evidence before substantive changes;
 - also read `SVIF.yaml` and relevant specifications;
 - work directly on the active `main` line unless the Project state says otherwise;
-- keep `README.md` and `README.zh-CN.md` synchronized when architecture, runtime flow, or documented repository structure changes;
+- keep `README.md` and `README.zh-CN.md` synchronized when architecture, runtime flow, distribution status, or documented repository structure changes;
 - update `REPOSITORY_TREE.md` whenever tracked files are added, removed, moved, or materially change responsibility;
-- run the repository integrity, contract, and runtime test layers before claiming the change is complete.
+- run repository integrity, portable contract, and runtime/unit test layers before claiming the change is complete;
+- distinguish package/conformance success from real client installation success; do not claim installation validation until an actual supported client has installed/exercised the package or Skill.
 
 The Plugin/distribution layer must call into or guide the existing Svif product semantics. It must not reimplement the Orchestrator or move canonical Project truth out of the configured Continuity Provider.

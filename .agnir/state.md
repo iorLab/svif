@@ -60,6 +60,8 @@ Both READMEs MUST contain:
 
 Architecture, component ownership, dependency direction, authority/provenance boundaries, or runtime-flow changes require the affected diagrams in both language versions to be updated in the same change set. Repository integrity checks enforce the presence of both localized READMEs and both Mermaid diagram classes without treating prose as a byte-for-byte contract.
 
+Localized diagrams are **comprehension-first, not literal translations**. In the Simplified Chinese README, important diagram nodes must be understandable to a Chinese reader without requiring prior understanding of the English technical term: nodes should communicate both the role and its responsibility, while English terms may remain as secondary labels where useful.
+
 ## Historical Cloudflare evidence
 
 The retired standalone reference supplied useful migration evidence but no live success claim. Preserved details are in `history/CLOUDFLARE_REFERENCE.md`.
@@ -80,6 +82,16 @@ The product structure is now consolidated. The next phase is execution rather th
 4. freeze exact Agnir compatibility/release expression when Agnir `0.1` criteria are concrete.
 
 Live Cloudflare delivery remains disabled unless explicitly authorized.
+
+## 2026-08-28 checkpoint
+
+README architecture documentation and localization policy are now durable project state.
+
+- Simplified Chinese diagram clarification commit: `5460bc388a638ce4dff8e5d8fe12d467c687a54a`.
+- Localization-policy decision commit: `a8fcd4e76d502f57bc9e751e9763eddf3530a001`.
+- Product-check run `33142755892`: success.
+- Durable evidence: `.agnir/evidence/2026-08-28-readme-diagram-localization-checkpoint.md`.
+- Resume point remains the in-repository founding E2E across Agnir + ChatGPT + Cloudflare.
 
 ## Branch governance
 

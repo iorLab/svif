@@ -28,7 +28,10 @@ def main() -> None:
         ".agnir/decisions.md",
         "src/svif/__init__.py",
         "src/svif/runtime.py",
+        "src/svif/continuity/__init__.py",
+        "src/svif/continuity/agnir.py",
         "tests/test_runtime.py",
+        "tests/test_agnir_continuity.py",
         "spec/CORE.md",
         "spec/PROJECT_BINDING.md",
         "spec/CAPABILITY_ADAPTER.md",
@@ -97,11 +100,41 @@ def main() -> None:
             'compatibility: "0.1"',
             'discovery: "AGNIR.yaml"',
             'runtime: "src/svif/runtime.py"',
+            'agnir_repository_filesystem_adapter: "src/svif/continuity/agnir.py"',
             'repository_integrity: "checks/check_repository.py"',
             'portable_contracts: "conformance/check_contracts.py"',
             'runtime_kernel: "tests/test_runtime.py"',
+            'agnir_continuity: "tests/test_agnir_continuity.py"',
         ],
         "SVIF.yaml",
+    )
+
+    runtime = (ROOT / "src/svif/runtime.py").read_text(encoding="utf-8")
+    require_text(
+        runtime,
+        [
+            "class Orchestrator:",
+            "class ContinuityProvider(Protocol):",
+            "class ExecutionSurface(Protocol):",
+            "class CapabilityProvider(Protocol):",
+            "class ContinuityUpdate:",
+            "external actuation requires successful verification evidence for the exact subject",
+            "observation does not match the successfully delivered subject/target",
+        ],
+        "src/svif/runtime.py",
+    )
+
+    agnir = (ROOT / "src/svif/continuity/agnir.py").read_text(encoding="utf-8")
+    require_text(
+        agnir,
+        [
+            'provider_id = "agnir"',
+            '"AGNIR_DISCOVERY_UNSUPPORTED_VERSION"',
+            '"AGNIR_DISCOVERY_PROJECT_MISMATCH"',
+            '"AGNIR_DISCOVERY_UNRESOLVABLE"',
+            "def checkpoint(self, outcome: OperationOutcome)",
+        ],
+        "src/svif/continuity/agnir.py",
     )
 
     core = (ROOT / "spec/CORE.md").read_text(encoding="utf-8")
@@ -116,20 +149,6 @@ def main() -> None:
             "The mature product target remains a Plugin.",
         ],
         "spec/CORE.md",
-    )
-
-    runtime = (ROOT / "src/svif/runtime.py").read_text(encoding="utf-8")
-    require_text(
-        runtime,
-        [
-            "class Orchestrator:",
-            "class ContinuityProvider(Protocol):",
-            "class ExecutionSurface(Protocol):",
-            "class CapabilityProvider(Protocol):",
-            "external actuation requires successful verification evidence for the exact subject",
-            "observation does not match the successfully delivered subject/target",
-        ],
-        "src/svif/runtime.py",
     )
 
     binding = (ROOT / "spec/PROJECT_BINDING.md").read_text(encoding="utf-8")

@@ -50,7 +50,22 @@ class EvidenceRecord:
 class ContinuitySnapshot:
     project_identity: str
     state: object | None = None
-    evidence: tuple[EvidenceRecord, ...] = ()
+    next_actions: object | None = None
+    decisions: object | None = None
+    evidence: object | None = None
+
+
+@dataclass(frozen=True)
+class ContinuityUpdate:
+    """Provider-neutral durable-truth update returned by an Execution Surface.
+
+    Values are intentionally opaque to the Orchestrator. A concrete Continuity
+    Provider validates and serializes the values it supports.
+    """
+
+    state: object | None = None
+    next_actions: object | None = None
+    decisions: object | None = None
 
 
 @dataclass(frozen=True)
@@ -75,6 +90,7 @@ class WorkResult:
     subject_identity: str
     evidence: tuple[EvidenceRecord, ...] = ()
     capability_request: CapabilityRequest | None = None
+    continuity_update: ContinuityUpdate = ContinuityUpdate()
 
 
 @dataclass(frozen=True)
@@ -91,6 +107,7 @@ class OperationOutcome:
     subject_identity: str
     evidence: tuple[EvidenceRecord, ...]
     externally_effectful: bool
+    continuity_update: ContinuityUpdate = ContinuityUpdate()
 
 
 class ContinuityProvider(Protocol):
@@ -261,6 +278,7 @@ class Orchestrator:
             subject_identity=work.subject_identity,
             evidence=tuple(evidence),
             externally_effectful=externally_effectful,
+            continuity_update=work.continuity_update,
         )
 
         continuity.checkpoint(outcome)

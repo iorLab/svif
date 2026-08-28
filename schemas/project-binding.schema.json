@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:svif:schema:project-binding:0.2",
+  "title": "Svif Project Binding 0.2",
+  "type": "object",
+  "required": [
+    "svif",
+    "project",
+    "bindings"
+  ],
+  "properties": {
+    "svif": {
+      "type": "object",
+      "required": [
+        "version",
+        "manifest"
+      ],
+      "properties": {
+        "version": {
+          "const": "0.2"
+        },
+        "manifest": {
+          "const": "project-binding/0.2"
+        }
+      },
+      "additionalProperties": true
+    },
+    "project": {
+      "type": "object",
+      "required": [
+        "identity"
+      ],
+      "properties": {
+        "identity": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": true
+    },
+    "bindings": {
+      "type": "object",
+      "required": [
+        "continuity"
+      ],
+      "properties": {
+        "continuity": {
+          "type": "object",
+          "required": [
+            "provider"
+          ],
+          "properties": {
+            "provider": {
+              "type": "string",
+              "minLength": 1
+            },
+            "compatibility": {
+              "type": "string",
+              "minLength": 1
+            },
+            "config": {
+              "type": "object"
+            }
+          },
+          "additionalProperties": true
+        },
+        "execution": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "surface"
+            ],
+            "properties": {
+              "surface": {
+                "type": "string",
+                "minLength": 1
+              },
+              "adapter": {
+                "type": "string",
+                "minLength": 1
+              },
+              "config": {
+                "type": "object"
+              }
+            },
+            "additionalProperties": true
+          }
+        },
+        "capabilities": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "provider"
+            ],
+            "properties": {
+              "provider": {
+                "type": "string",
+                "minLength": 1
+              },
+              "adapter": {
+                "type": "string",
+                "minLength": 1
+              },
+              "kinds": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "config": {
+                "type": "object"
+              }
+            },
+            "additionalProperties": true
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "profiles": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "product": {
+      "type": "object"
+    },
+    "checks": {
+      "type": "object"
+    },
+    "extensions": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

@@ -1,4 +1,4 @@
-name: Svif conformance
+name: Svif product checks
 
 on:
   push:
@@ -9,11 +9,20 @@ permissions:
   contents: read
 
 jobs:
-  core-structure:
+  repository-integrity:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: python conformance/check_svif_0_2.py
+      - run: python checks/check_repository.py
+
+  portable-contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python conformance/check_contracts.py

@@ -1,20 +1,32 @@
 svif:
   version: "0.2"
-  contract: "core/0.2"
+  manifest: "project-binding/0.2"
 
 project:
   identity: "urn:svif:project:svif-core"
 
-continuity:
-  protocol: agnir
-  compatibility: "0.1"
-  discovery: "AGNIR.yaml"
+bindings:
+  continuity:
+    provider: "agnir"
+    compatibility: "0.1"
+    config:
+      discovery: "AGNIR.yaml"
+  execution: []
+  capabilities: []
 
 profiles:
   - "software-delivery/0.2"
 
-conformance:
-  checker: "conformance/check_svif_0_2.py"
+product:
+  architecture: "ARCHITECTURE.md"
+  orchestration_contract: "spec/CORE.md"
+  project_binding_contract: "spec/PROJECT_BINDING.md"
+  capability_adapter_contract: "spec/CAPABILITY_ADAPTER.md"
+  evidence_contract: "spec/EVIDENCE.md"
+
+checks:
+  repository_integrity: "checks/check_repository.py"
+  portable_contracts: "conformance/check_contracts.py"
 
 extensions:
   svif/repository:

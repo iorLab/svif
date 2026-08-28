@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import json
-import re
 import sys
 from pathlib import Path
 from typing import Any
@@ -13,21 +12,6 @@ ROOT = Path(__file__).resolve().parents[1]
 def fail(message: str) -> None:
     print(f"FAIL: {message}", file=sys.stderr)
     raise SystemExit(1)
-
-
-def scalar(text: str, section: str, key: str) -> str | None:
-    in_section = False
-    for line in text.splitlines():
-        if re.match(rf"^{re.escape(section)}:\s*$", line):
-            in_section = True
-            continue
-        if in_section and line and not line.startswith((" ", "\t", "#")):
-            break
-        if in_section:
-            match = re.match(rf"^\s{{2}}{re.escape(key)}:\s*(.+?)\s*$", line)
-            if match:
-                return match.group(1).strip().strip("\"'")
-    return None
 
 
 def load_json(path: str) -> Any:
@@ -60,7 +44,8 @@ def evidence_errors(records: Any) -> list[str]:
             errors.append(f"{label} has wrong Evidence schema")
         metadata = record.get("record", {})
         kind = metadata.get("kind")
-        seen.add(kind) if isinstance(kind, str) else None
+        if isinstance(kind, str):
+            seen.add(kind)
         current_project = metadata.get("project_identity")
         current_operation = metadata.get("operation_id")
         if project is None:
@@ -140,7 +125,8 @@ def adapter_errors(descriptor: Any, schema: dict[str, Any], evidence_kinds: set[
         name = op.get("name")
         if not name or name in names:
             errors.append("operation name missing or duplicated")
-        names.add(name)
+        if isinstance(name, str):
+            names.add(name)
         if op.get("effect") not in allowed_effects:
             errors.append(f"{name}: invalid effect")
         if op.get("authority") not in allowed_authority:
@@ -174,38 +160,42 @@ def main() -> None:
         "conformance/fixtures/adapters/observation.json",
     ]
     required = [
-        "SVIF.yaml", "AGNIR.yaml", ".agnir/state.md", ".agnir/next-actions.md", ".agnir/decisions.md",
-        "spec/CORE.md", "spec/CAPABILITY_ADAPTER.md", "spec/EVIDENCE.md", "profiles/SOFTWARE_DELIVERY.md",
-        "schemas/capability-adapter.schema.json", "schemas/evidence-record.schema.json",
-        "conformance/fixtures/evidence-chain-positive.json", "conformance/fixtures/evidence-chain-provenance-mismatch.json",
-        *adapters, "history/PREDECESSOR.md",
+        "schemas/capability-adapter.schema.json",
+        "schemas/evidence-record.schema.json",
+        "schemas/project-binding.schema.json",
+        "conformance/fixtures/evidence-chain-positive.json",
+        "conformance/fixtures/evidence-chain-provenance-mismatch.json",
+        *adapters,
     ]
     for path in required:
         if not (ROOT / path).exists():
-            fail(f"missing active Svif artifact: {path}")
-
-    if (ROOT / ".chatgpt").exists():
-        fail("execution-surface-specific .chatgpt structure remains active on main")
-
-    svif = (ROOT / "SVIF.yaml").read_text(encoding="utf-8")
-    agnir = (ROOT / "AGNIR.yaml").read_text(encoding="utf-8")
-    if scalar(svif, "svif", "version") != "0.2":
-        fail("SVIF.yaml does not declare Svif 0.2")
-    if scalar(svif, "continuity", "protocol") != "agnir" or scalar(svif, "continuity", "compatibility") != "0.1":
-        fail("SVIF.yaml does not declare Agnir 0.1 continuity")
-    if scalar(agnir, "agnir", "version") != "0.1":
-        fail("AGNIR.yaml does not declare Agnir 0.1")
-
-    core = (ROOT / "spec/CORE.md").read_text(encoding="utf-8")
-    if "DISCOVER -> PLAN -> CHANGE -> VERIFY -> DELIVER -> OBSERVE -> CHECKPOINT" not in core:
-        fail("Core lifecycle is missing or changed")
-    if "Planning semantics are mandatory before material mutation" not in core:
-        fail("PLAN semantic rule is missing")
+            fail(f"missing portable contract artifact: {path}")
 
     adapter_schema = load_json("schemas/capability-adapter.schema.json")
     evidence_schema = load_json("schemas/evidence-record.schema.json")
+    binding_schema = load_json("schemas/project-binding.schema.json")
+
+    if binding_schema.get("$id") != "urn:svif:schema:project-binding:0.2":
+        fail("Project Binding schema id diverged")
+    svif_props = binding_schema["properties"]["svif"]["properties"]
+    if svif_props["version"].get("const") != "0.2" or svif_props["manifest"].get("const") != "project-binding/0.2":
+        fail("Project Binding schema version/manifest constants diverged")
+    if "continuity" not in binding_schema["properties"]["bindings"]["required"]:
+        fail("Project Binding schema no longer requires a Continuity Provider")
+
     evidence_kinds = set(evidence_schema["$defs"]["recordKind"]["enum"])
-    expected_effects = {"resolve", "inspect", "mutate", "identify", "verify", "actuate", "observe", "authorize", "recover", "checkpoint"}
+    expected_effects = {
+        "resolve",
+        "inspect",
+        "mutate",
+        "identify",
+        "verify",
+        "actuate",
+        "observe",
+        "authorize",
+        "recover",
+        "checkpoint",
+    }
     actual_effects = set(adapter_schema["properties"]["operations"]["items"]["properties"]["effect"]["enum"])
     if actual_effects != expected_effects:
         fail("Capability Adapter effect vocabulary diverged")
@@ -228,8 +218,14 @@ def main() -> None:
         fail("Capability Adapter fixtures do not exercise required effects")
 
     actuate = next(op for op in by_id["fixture.delivery-provider"]["operations"] if op["effect"] == "actuate")
-    if actuate["authority"] != "protected-delivery" or "verification" not in actuate.get("input_record_kinds", []) or "delivery" not in actuate.get("output_record_kinds", []) or "PROVENANCE_MISMATCH" not in actuate.get("failure_classes", []):
+    if (
+        actuate["authority"] != "protected-delivery"
+        or "verification" not in actuate.get("input_record_kinds", [])
+        or "delivery" not in actuate.get("output_record_kinds", [])
+        or "PROVENANCE_MISMATCH" not in actuate.get("failure_classes", [])
+    ):
         fail("delivery/provider fixture does not preserve verification-gated protected delivery semantics")
+
     observe = next(op for op in by_id["fixture.observation"]["operations"] if op["effect"] == "observe")
     if "delivery" not in observe.get("input_record_kinds", []) or "observation" not in observe.get("output_record_kinds", []):
         fail("observation fixture does not preserve independent observation semantics")
@@ -237,21 +233,12 @@ def main() -> None:
     positive_errors = evidence_errors(load_json("conformance/fixtures/evidence-chain-positive.json"))
     if positive_errors:
         fail("positive evidence-chain fixture failed: " + "; ".join(positive_errors))
+
     negative_errors = evidence_errors(load_json("conformance/fixtures/evidence-chain-provenance-mismatch.json"))
     if not any("not independently verified" in error for error in negative_errors):
         fail("negative provenance fixture did not fail for provenance mismatch")
 
-    for path in ["SPECIFICATION.md", "SVIF_ARCHITECTURE_DRAFT.md", "SVIF_CAPABILITY_ADAPTER_DRAFT.md", "profiles/SOFTWARE_DELIVERY_DRAFT.md", "conformance/check_v0_1.py", "conformance/v0.1.md", "skills"]:
-        if (ROOT / path).exists():
-            fail(f"predecessor artifact remains active on main: {path}")
-
-    state = (ROOT / ".agnir/state.md").read_text(encoding="utf-8")
-    if "The Project persists; Executors and execution environments may change." not in state:
-        fail("cold-start state did not recover the expected stable rule")
-    if "Svif depends on a compatible Agnir Core protocol" not in state:
-        fail("Agnir protocol dependency boundary missing from durable state")
-
-    print("PASS: Svif 0.2 structure, Agnir 0.1 continuity, evidence provenance, and Capability Adapter fixtures")
+    print("PASS: Svif portable Project Binding, Capability Adapter, and Evidence contracts")
 
 
 if __name__ == "__main__":

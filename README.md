@@ -1,68 +1,119 @@
 # Svif
 
-Svif is an execution-environment-independent Project operation protocol.
+Svif is a **Project orchestration product**.
 
-It coordinates Project work from discovery and planning through change, verification, optional delivery, external observation, repair, and durable continuation. Its stable rule is:
+It coordinates durable Project continuity, the execution surface in which work is interpreted/performed, and capability providers that inspect or change Project/external state. Its stable rule is:
 
 > The Project persists; Executors and execution environments may change.
 
+The active founding bindings are:
+
+- Continuity Provider: **Agnir**;
+- Execution Surface: **ChatGPT**;
+- Capability / Effect Provider: **Cloudflare**.
+
+These are current integrations, not permanent product dependencies.
+
 ## Active line
 
-`main` is the Svif `0.2` development line. ZeroLocal v0.1 is preserved as predecessor history on `legacy/zerolocal-v0.1`; predecessor `ZL-*` conformance and product-specific packaging are not active Svif Core structure.
+`main` is the Svif `0.2` development line. ZeroLocal v0.1 is preserved as predecessor history on `legacy/zerolocal-v0.1`.
 
-The canonical repository is `iorLab/svif`. Repository naming is packaging/discovery metadata, not protocol identity.
+The canonical repository is `iorLab/svif`.
 
-## Structure
+## Product architecture
 
-```text
-SVIF.yaml                           # this repository's Svif self-description
-AGNIR.yaml                          # Agnir cold-start discovery anchor
-.agnir/                             # authoritative Project continuity for this repo
-spec/CORE.md                        # Svif Core 0.2
-spec/CAPABILITY_ADAPTER.md          # portable adapter semantics
-spec/EVIDENCE.md                    # candidate/evidence envelope
-profiles/SOFTWARE_DELIVERY.md       # software-delivery specialization
-schemas/                            # reference machine-readable contracts
-conformance/                        # executable new-line conformance pressure
-history/PREDECESSOR.md              # locator to preserved ZeroLocal lineage
-```
+The active architecture has four first-class components:
 
-`SVIF.yaml` is a repository self-description, not a universal mandatory Svif Core filename. `AGNIR.yaml` is defined by Agnir's repository/filesystem profile, not by Svif Core. Execution-surface bootstrap configuration belongs to the execution surface, not the canonical Project structure.
+1. **Orchestrator** — cross-boundary Project coordination;
+2. **Continuity Provider** — durable Project truth/resumability;
+3. **Execution Surface** — where an Executor interprets intent and performs work;
+4. **Capability Provider** — workspace/verification/delivery/external-effect capabilities.
 
-## Lifecycle
+See `ARCHITECTURE.md` for the frozen `0.2` product-architecture baseline.
+
+The internal lifecycle remains:
 
 `DISCOVER -> PLAN -> CHANGE -> VERIFY -> DELIVER -> OBSERVE -> CHECKPOINT`
 
 `REPAIR` returns to the earliest violated invariant.
 
-PLAN semantics are required before material mutation, but trivial operations may coalesce PLAN in an execution trace when no separate plan artifact is material. DELIVER is optional when no external actuation is required. OBSERVE is mandatory whenever external effect is claimed.
+Those lifecycle semantics are an internal portable product contract; they do not make Svif itself a standalone protocol.
 
-## Agnir
+## Current structure
 
-Svif delegates durable Project continuity to Agnir. The active development target is Agnir Core `0.1`, consumed at the protocol layer only. The Agnir project lives at `iorLab/agnir`.
+```text
+ARCHITECTURE.md                     # Svif product architecture
+SVIF.yaml                           # Project binding/configuration manifest for this repo
+AGNIR.yaml                          # current Continuity Provider discovery anchor
+.agnir/                             # authoritative continuity for this repository
 
-Svif does not require Agnir's reference repository, storage backend, any specific agent/execution surface, Git, GitHub, or `.agnir/` layout. This repository happens to self-host using Agnir's repository/filesystem profile.
+spec/CORE.md                        # portable orchestration contract
+spec/PROJECT_BINDING.md             # Project binding contract
+spec/CAPABILITY_ADAPTER.md          # capability-provider adapter semantics
+spec/EVIDENCE.md                    # candidate/evidence envelope
+profiles/SOFTWARE_DELIVERY.md       # software-delivery specialization
 
-## Capability Adapters
+schemas/                            # reference machine-readable contracts
+checks/                             # Svif repository integrity checks
+conformance/                        # portable contract conformance/fixtures
+history/PREDECESSOR.md              # preserved ZeroLocal lineage locator
+```
 
-Provider/tool-specific capabilities are isolated behind adapters. Operation names remain implementation/profile-extensible; each operation maps to a portable Core effect such as `verify`, `actuate`, or `observe`.
+Product implementation/runtime and concrete integrations will grow around these foundations; the repository is no longer treated as a specification-only end state.
 
-Concrete conformance fixtures cover workspace/SCM, verification, delivery/provider, and observation boundaries, including authority separation and portable failure mappings.
+## Project binding
 
-The executable Cloudflare reference implementation is maintained separately at `iorLab/svif-cloudflare-reference`.
+`SVIF.yaml` now implements the repository/filesystem serialization of `project-binding/0.2`.
+
+It binds this Project to a Continuity Provider and may bind Execution Surfaces and Capability Providers. For this repository, continuity is currently Agnir `0.1`; execution and external capabilities are intentionally unbound in the canonical repository manifest.
+
+`SVIF.yaml` is not required as a universal filename when another installation/execution environment supplies an equivalent Project binding.
+
+## Continuity
+
+Svif depends on a Continuity Provider interface, not permanently on one memory protocol.
+
+Agnir is the first/current provider and remains an independent project at `iorLab/agnir`. This repository uses Agnir's repository/filesystem profile via `AGNIR.yaml`, but the Svif kernel must not assume `.agnir/`, Git, GitHub, or a particular storage backend.
+
+## Execution surfaces
+
+Project canonical truth remains execution-surface-neutral.
+
+ChatGPT is the founding Svif Execution Surface integration and remains the primary near-term product/distribution target. Removing ChatGPT-owned canonical state does not remove ChatGPT from the Svif product.
+
+The mature distribution target remains an installable Plugin; Skill packaging may remain an earlier product surface where useful.
+
+## Capability providers
+
+Provider/tool-specific capabilities are isolated behind adapters or equivalent bindings. Each operation maps to a portable semantic effect such as `verify`, `actuate`, or `observe`, with explicit authority, retry, failure, and evidence behavior.
+
+Cloudflare is the founding external effect/delivery provider family. The executable reference/testbed is maintained separately at `iorLab/svif-cloudflare-reference`.
+
+As the product matures, reusable Cloudflare capability implementation should be owned by Svif and consumed/tested by the reference repository.
 
 ## Evidence
 
-Svif `evidence-record/0.2` standardizes stable subject identity, derivation, target identity, result status, producer, authority reference, and evidence locator so candidate provenance can survive adapter boundaries.
+Svif `evidence-record/0.2` preserves stable subject identity, derivation, target identity, result status, producer, authority reference, and evidence locator across boundaries.
 
-For software delivery, full immutable Git SHA remains a strong SCM realization, but Git is not the Core candidate model. Executable conformance includes a positive provenance chain and a negative unverified-replacement delivery case.
+For software delivery, full immutable Git SHA remains a strong SCM realization, but Git is not the product's universal candidate model.
 
-## Conformance
+## Checks
 
-Run the active-line checker:
+Two distinct categories are now explicit:
 
 ```bash
-python conformance/check_svif_0_2.py
+python checks/check_repository.py
+python conformance/check_contracts.py
 ```
 
-Release-quality conformance still requires provider/profile implementation evidence, stronger Agnir cold-start/isolation pressure, and at least one materially different execution/storage arrangement from the founding implementation path.
+`checks/check_repository.py` checks **this Svif product repository's integrity**.
+
+`conformance/check_contracts.py` exercises **portable product contracts** such as Capability Adapter and Evidence provenance. Passing repository integrity is not evidence that an arbitrary Project is Svif-conformant.
+
+## Near-term implementation direction
+
+The next milestone is a minimal Svif product kernel/integration path that demonstrates:
+
+`load continuity -> materialize execution context -> execute/verify -> optional external capability -> observe/reconcile -> checkpoint`
+
+using Agnir + ChatGPT + Cloudflare as the founding bindings without making them permanent kernel dependencies.

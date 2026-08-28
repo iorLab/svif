@@ -22,14 +22,24 @@ ALLOWED_SKILL_FRONTMATTER_KEYS = {
 }
 
 
-def validate_agent_plugins_1_0_manifest(manifest: object) -> list[str]:
+def validate_agent_plugins_1_0_manifest(manifest: object) -> tuple[list[str], list[str]]:
+    """Return fatal errors and non-fatal diagnostics using Agent Plugins 1.0 rules.
+
+    The normative specification deliberately makes two closed-schema failures non-fatal:
+    unknown top-level fields, and a non-object ``extensions`` field. The former are
+    reported and ignored; the latter is reported and ignored. Unknown extension
+    namespaces are client-owned and their values are not validated by a portable
+    package validator.
+    """
     errors: list[str] = []
+    diagnostics: list[str] = []
     if not isinstance(manifest, dict):
-        return ["manifest must be an object"]
+        return ["manifest must be an object"], diagnostics
 
     unknown = set(manifest) - ALLOWED_MANIFEST_KEYS
     if unknown:
-        errors.append(f"additional properties are forbidden: {sorted(unknown)}")
+        diagnostics.append(f"unknown top-level fields must be reported and ignored: {sorted(unknown)}")
+
     if manifest.get("$schema") != SCHEMA_ID:
         errors.append("$schema must target Agent Plugins 1.0.0")
     if "name" not in manifest:
@@ -60,12 +70,10 @@ def validate_agent_plugins_1_0_manifest(manifest: object) -> list[str]:
         if not isinstance(keywords, list) or any(not isinstance(item, str) for item in keywords):
             errors.append("keywords must be an array of strings")
 
-    if "extensions" in manifest:
-        extensions = manifest["extensions"]
-        if not isinstance(extensions, dict) or any(not isinstance(value, dict) for value in extensions.values()):
-            errors.append("extensions must be an object whose values are objects")
+    if "extensions" in manifest and not isinstance(manifest["extensions"], dict):
+        diagnostics.append("non-object extensions must be reported and ignored")
 
-    return errors
+    return errors, diagnostics
 
 
 def validate_plugin_filesystem(plugin_root: Path) -> list[str]:
@@ -161,20 +169,45 @@ def validate_agent_skill(skill_dir: Path, text: str) -> list[str]:
 
 
 class PluginPackageTests(unittest.TestCase):
-    def test_manifest_conforms_to_agent_plugins_1_0_schema_constraints(self) -> None:
+    def test_manifest_conforms_to_agent_plugins_1_0_constraints(self) -> None:
         manifest = json.loads((PLUGIN_ROOT / "plugin.json").read_text(encoding="utf-8"))
-        self.assertEqual(validate_agent_plugins_1_0_manifest(manifest), [])
+        errors, diagnostics = validate_agent_plugins_1_0_manifest(manifest)
+        self.assertEqual(errors, [])
+        self.assertEqual(diagnostics, [])
         self.assertEqual(manifest["name"], "svif")
         self.assertEqual(manifest["version"], "0.2.0-dev")
         self.assertEqual(manifest["repository"], "https://github.com/iorLab/svif")
         self.assertEqual(manifest["homepage"], "https://github.com/iorLab/svif")
 
-    def test_manifest_validator_rejects_schema_breakage(self) -> None:
-        invalid = {"$schema": SCHEMA_ID, "name": "Svif", "unexpected": True}
-        errors = validate_agent_plugins_1_0_manifest(invalid)
-        self.assertTrue(errors)
-        self.assertTrue(any("additional properties" in error for error in errors))
+    def test_manifest_validator_rejects_fatal_schema_breakage(self) -> None:
+        invalid = {"$schema": SCHEMA_ID, "name": "Svif"}
+        errors, diagnostics = validate_agent_plugins_1_0_manifest(invalid)
         self.assertTrue(any("name violates" in error for error in errors))
+        self.assertEqual(diagnostics, [])
+
+    def test_manifest_validator_preserves_normative_non_fatal_exceptions(self) -> None:
+        tolerated = {
+            "$schema": SCHEMA_ID,
+            "name": "svif",
+            "unexpected": True,
+            "extensions": "invalid-but-non-fatal",
+        }
+        errors, diagnostics = validate_agent_plugins_1_0_manifest(tolerated)
+        self.assertEqual(errors, [])
+        self.assertTrue(any("unknown top-level" in diagnostic for diagnostic in diagnostics))
+        self.assertTrue(any("non-object extensions" in diagnostic for diagnostic in diagnostics))
+
+    def test_manifest_validator_does_not_validate_unimplemented_extension_namespaces(self) -> None:
+        portable = {
+            "$schema": SCHEMA_ID,
+            "name": "svif",
+            "extensions": {
+                "com.example.client": "opaque-to-portable-validator",
+            },
+        }
+        errors, diagnostics = validate_agent_plugins_1_0_manifest(portable)
+        self.assertEqual(errors, [])
+        self.assertEqual(diagnostics, [])
 
     def test_plugin_package_paths_are_contained_within_plugin_root(self) -> None:
         self.assertEqual(validate_plugin_filesystem(PLUGIN_ROOT), [])

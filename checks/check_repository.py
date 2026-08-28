@@ -44,13 +44,13 @@ def main() -> None:
 
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     require_text(readme, [
-        "Svif is a **Project orchestration product**.", "Continuity Provider", "Execution Surface",
-        "Capability Provider", "mature distribution target remains an installable Plugin",
+        "Project orchestration product", "Continuity Provider", "Execution Surface",
+        "Capability Provider", "mature distribution target remains an installable **Plugin**",
     ], "README.md")
 
     architecture = (ROOT / "ARCHITECTURE.md").read_text(encoding="utf-8")
     require_text(architecture, [
-        "Svif is a **Project orchestration product**.", "**Orchestrator**", "**Continuity Provider**",
+        "Project orchestration product", "**Orchestrator**", "**Continuity Provider**",
         "**Execution Surface**", "**Capability Provider**", "Orchestrator.begin()", "Orchestrator.complete()",
         "Untrusted model/result payloads MUST NOT self-grant protected authority.",
     ], "ARCHITECTURE.md")

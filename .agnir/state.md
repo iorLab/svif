@@ -1,16 +1,37 @@
 # Svif Current State
 
-Svif is the authoritative active project/protocol identity on `main`. ZeroLocal v0.1 is predecessor history preserved on `legacy/zerolocal-v0.1`.
+Svif is the authoritative active **product** identity on `main`. ZeroLocal v0.1 is predecessor history preserved on `legacy/zerolocal-v0.1`.
 
-## Active contract line
+## Product identity correction — 2026-08-28
 
-- Svif Core: `0.2` development line.
+Svif is **not** a pure Project-operation protocol. It is a Project orchestration product intended to become an installable/distributable capability, with the mature distribution target remaining a Plugin.
+
+Its stable product role is to coordinate three replaceable sides around a Project:
+
+1. **Continuity Provider** — durable Project truth and resumability. Current implementation: **Agnir**.
+2. **Execution Surface / Executor Host** — where intent is interpreted and work is performed. Current founding integration: **ChatGPT**.
+3. **Capability / Effect Provider** — where Svif causes and observes external/authoritative effects. Current founding provider: **Cloudflare**.
+
+Svif itself is the orchestration layer that binds these sides, enforces lifecycle, authority, provenance, and observation invariants, reconciles resulting state, and checkpoints durable Project truth.
+
+Agnir stores durable Project continuity; an execution surface such as ChatGPT consumes that continuity and performs work; a capability provider such as Cloudflare changes external state; Svif keeps these processes coherent.
+
+The existing lifecycle remains useful as an internal Svif operational contract:
+
+`DISCOVER -> PLAN -> CHANGE -> VERIFY -> DELIVER -> OBSERVE -> CHECKPOINT`, with `REPAIR` returning to the earliest violated invariant.
+
+These semantics describe how Svif operates; they do not make Svif itself a standalone protocol in the same sense as Agnir.
+
+## Current architecture line
+
+- Svif product line: `0.2` development.
 - Continuity dependency: Agnir Core `0.1` protocol line.
-- Software Delivery Profile: `software-delivery/0.2`.
-- Capability Adapter descriptor: `capability-adapter/0.2`.
+- Software Delivery specialization: `software-delivery/0.2`.
+- Capability Adapter contract: `capability-adapter/0.2`.
 - Evidence record: `evidence-record/0.2`.
-- Project continuity is discovered from top-level `AGNIR.yaml` and stored according to its locators.
-- Active Project structure contains no execution-surface-specific bootstrap files.
+- Current version marker: `0.2.0-dev`.
+- Active branch: `main`.
+- Predecessor: `legacy/zerolocal-v0.1`.
 
 ## Stable rule
 
@@ -18,86 +39,119 @@ The Project persists; Executors and execution environments may change.
 
 No execution environment becomes authoritative merely because execution occurred there.
 
-## Core lifecycle
-
-`DISCOVER -> PLAN -> CHANGE -> VERIFY -> DELIVER -> OBSERVE -> CHECKPOINT`, with `REPAIR` returning to the earliest violated invariant.
-
-PLAN semantics are mandatory for every material operation. A trivial operation may coalesce the PLAN state in an implementation trace when no separate plan artifact/evidence is material, but the Executor must establish scope, verification, actuation/observation applicability, trust boundaries, and repair considerations before mutation.
-
-`DELIVER` is skipped when no external actuation is required. `OBSERVE` is skipped only when no externally observable effect is claimed.
+This rule remains valid, but it is a product architecture invariant rather than sufficient definition of Svif's product identity.
 
 ## Agnir dependency boundary
 
-Svif depends on a compatible Agnir Core protocol, not a specific Agnir repository layout, backend, implementation, adapter, VCS, repository host, agent, or execution surface. The active development compatibility target is Agnir Core `0.1`. The current Agnir project repository is `iorLab/agnir`.
+Agnir remains an independent project/protocol and the current Continuity Provider. Dependency direction is `Svif -> Agnir`.
+
+Svif consumes Agnir through a portable continuity boundary and MUST NOT make ChatGPT, GitHub, Git, `.agnir/`, a repository/filesystem backend, or any specific Agnir implementation part of Svif product identity.
 
 CHECKPOINT delegates durable persistence/discovery/resumability semantics to Agnir and does not define a competing Svif memory model.
 
-## Evidence and adapters
+## Existing assets that remain valid
 
-Svif has a standard evidence record that preserves stable subject identity, derivation, target identity, result, producer, authority reference, and evidence locator across transformation, verification, delivery, and observation.
+The current protocol-oriented work is not discarded. The following are retained as internal product contracts/foundations:
 
-Evidence provenance is executable conformance rather than schema-only validation. The positive fixture covers source candidate -> artifact transformation -> verification -> delivery -> observation. The negative fixture establishes a valid replacement artifact but deliberately delivers it without independent verification; conformance requires this to fail specifically as a provenance violation.
+- lifecycle semantics;
+- Evidence/provenance model;
+- Capability Adapter vocabulary and portable semantic effects;
+- verification/delivery authority separation;
+- protected-secret transport boundary;
+- Software Delivery specialization;
+- Agnir continuity dependency;
+- executable provider/reference evidence.
 
-Capability Adapter operation names are implementation/profile-extensible. Each declared operation must map to a Core semantic effect (`resolve`, `inspect`, `mutate`, `identify`, `verify`, `actuate`, `observe`, `authorize`, `recover`, or `checkpoint`) so orchestration and repair do not depend on provider-specific verbs.
+Evidence provenance remains important because Svif must keep the subject that was changed, verified, delivered, observed, and checkpointed coherent across the three sides.
 
-Concrete executable adapter fixtures cover workspace/SCM, verification, delivery/provider, and observation boundaries. They enforce semantic-effect mappings, authority and retry classes, portable failure classes, Evidence record I/O declarations, verification/delivery authority separation, protected credential references without secret-value transport, provenance mismatch reporting, and independent observation semantics.
+Capability Adapter semantic effects remain:
+
+`resolve`, `inspect`, `mutate`, `identify`, `verify`, `actuate`, `observe`, `authorize`, `recover`, `checkpoint`.
+
+They should be treated as Svif runtime capability boundaries rather than evidence that Svif is primarily a standards/protocol repository.
+
+## Current identity/structure drift
+
+The current `main` over-rotated from execution-surface/provider neutrality into protocol/specification identity.
+
+Symptoms:
+
+- `README.md` and `spec/CORE.md` currently define Svif as an execution-environment-independent Project operation protocol.
+- The repository is dominated by `spec/`, `profiles/`, `schemas/`, and `conformance/`.
+- There is no real Svif orchestration runtime that loads continuity, materializes execution context, selects/invokes capabilities, enforces authority/provenance, reconciles results, and checkpoints state.
+- ChatGPT-specific canonical state was correctly removed, but the active product also lost an explicit ChatGPT execution-surface integration layer.
+- Reusable Cloudflare behavior remains mostly in `iorLab/svif-cloudflare-reference` rather than in a Svif-owned capability implementation consumed by the reference.
+- `SVIF.yaml` currently behaves mainly as repository self-description; its future role as a Project binding/configuration manifest remains unresolved.
+- `conformance/check_svif_0_2.py` currently mixes specification-repository integrity with portable conformance semantics.
+
+This is an architecture/product-identity drift, not a reason to discard the portable contracts already developed.
+
+## Intended product architecture
+
+Before expanding conformance breadth, Svif should freeze a Product Architecture with four first-class components:
+
+1. **Orchestrator** — load continuity, construct execution context, plan/execute operations, select capabilities, enforce authority/provenance, observe results, reconcile state, checkpoint continuity.
+2. **Continuity Provider interface** — first implementation: Agnir.
+3. **Execution Surface interface** — first integration: ChatGPT; future surfaces may include CLI, IDE, CI, or other executors.
+4. **Capability Provider interface** — first provider family: Cloudflare; future providers may include other deployment/external systems.
+
+Target dependency direction:
+
+`Plugin/distribution -> execution-surface integration -> Svif orchestrator -> continuity + capability providers`
+
+Project canonical truth remains execution-surface-neutral even when the Svif product integrates deeply with ChatGPT.
 
 ## Branch governance
 
-- `main`: authoritative active Svif line.
+- `main`: authoritative active Svif product line.
 - `legacy/zerolocal-v0.1`: authoritative predecessor boundary.
 - Incidental branches remain non-authoritative until explicitly promoted; cleanup is deferred until the new version is substantially complete.
-
-## Current implementation status
-
-The active main line contains direct Svif 0.2 Core, Capability Adapter, Evidence, Software Delivery Profile, schemas, Agnir continuity, and executable conformance. Historical ZeroLocal files remain recoverable from the legacy branch.
-
-The former execution-surface-specific bootstrap shim has been removed from active `main`; repository cold start begins directly with `AGNIR.yaml`.
-
-On 2026-08-27, evidence-chain conformance landed in commit `853ea4bf05679ab2b03864aeaa01e8aae9350542`; Svif conformance run `33090238664` completed successfully.
-
-On 2026-08-27, concrete Capability Adapter fixtures landed in commit `67c7b4e93e0130d37c01c40a261b55fba381f786`; Svif conformance run `33090480399` completed successfully.
-
-On 2026-08-28, execution-surface bootstrap removal landed in commit `2cf537e7a1612599ab26e6a331d0b1ffe45b88fd`; Svif conformance run `33096542705` completed successfully.
 
 ## Canonical repositories
 
 - Agnir: `iorLab/agnir`
 - Svif: `iorLab/svif`
-- Cloudflare executable reference: `iorLab/svif-cloudflare-reference`
+- Cloudflare executable reference/testbed: `iorLab/svif-cloudflare-reference`
 
-Legacy branch names remain unchanged because they intentionally preserve predecessor identity. Repository redirects from predecessor names are compatibility behavior only.
+Legacy branch names remain unchanged because they intentionally preserve predecessor identity.
 
-## Cloudflare reference implementation evidence
+## Cloudflare reference role and evidence
 
-`iorLab/svif-cloudflare-reference` is now a Svif/Agnir-native executable reference implementation rather than a ZeroLocal-era starter fixture.
+`iorLab/svif-cloudflare-reference` remains separate, but its mature role is a controlled executable integration reference/testbed for Svif Software Delivery + Cloudflare behavior, not a second Svif specification repository and not a user starter/template.
 
-- The predecessor fixture is preserved on `legacy/zerolocal-v0.1`.
-- Active `main` uses `AGNIR.yaml`, `.agnir/`, `SVIF.yaml`, and a concrete `cloudflare.workers` Capability Adapter descriptor; active `.chatgpt/` and `ZEROLOCAL.yaml` were removed.
+As Svif product implementation matures, reusable Cloudflare capability behavior should move into or be owned by Svif, while the reference repository increasingly consumes/tests that capability as E2E validation.
+
+Existing evidence remains valid:
+
 - Migration commit `819495b9e708960a613285bb9f37ee859de1652f` passed CI run `33096884459`.
-- Deploy run `33096910154` preserved the exact verified SHA through the delivery boundary but failed at provider actuation because `CLOUDFLARE_API_TOKEN` was unavailable. This is classified as `CREDENTIAL_UNAVAILABLE`; observation was skipped and no live delivery success is claimed.
-- Automatic delivery is explicitly separated from verification authority through the non-secret gate `SVIF_ENABLE_PRODUCTION_DELIVERY=true`.
-- Authority-gate commit `45730121d60a6b8e03e1d5924b257be27ed73a9c` passed CI run `33097281596`; its Deploy run `33097306221` was correctly `skipped` with production delivery disabled.
-
-The reference therefore provides executable provider/profile evidence for static conformance, provenance, verification/delivery authority separation, and disabled-authority behavior. Successful live Cloudflare delivery + independent `/health` observation remains an explicit unproven boundary until protected authority is enabled.
+- Deploy run `33096910154` preserved the exact verified SHA but stopped at `CREDENTIAL_UNAVAILABLE`; observation was skipped and no live delivery success is claimed.
+- Automatic delivery remains separately gated by `SVIF_ENABLE_PRODUCTION_DELIVERY=true`.
+- Authority-gate commit `45730121d60a6b8e03e1d5924b257be27ed73a9c` passed CI run `33097281596`; Deploy run `33097306221` was correctly skipped with delivery disabled.
 
 ## Validation Project #2 evidence
 
-`mattamior/cloud-mail` has a Svif/Agnir-native non-founding validation ref `svif/cloudflare-validation`, derived from predecessor ref `zerolocal/cloudflare-validation` while keeping production `main` outside the validation mutation boundary.
+`mattamior/cloud-mail@svif/cloudflare-validation` remains the non-founding real-Project validation case while production `main` stays outside the validation mutation boundary.
 
-- Migration commit `250e5173f3cb0258e865097f9f9cd632aabe95f0` replaced active `.chatgpt/`, `ZEROLOCAL.yaml`, predecessor workflow/script/config names with `AGNIR.yaml`, `.agnir/`, `SVIF.yaml`, a Cloudflare validation Capability Adapter, explicit success criteria, and a Svif validation workflow.
-- Production `.github/workflows/deploy-cloudflare.yml` was not changed by the migration.
-- Initial Svif Validation run `33098133983` failed in conformance because the checker overfit to literal `checks.assets`; protected delivery was skipped and no provider actuation occurred.
-- Checker fix commit `dde68f0b2c55224ba5e36bc6d7c30671ff311b25` relaxed that implementation-form assumption without weakening the semantic health contract.
-- Immutable candidate `5b32462f3725327805f0dd696475a16f07b666aa` then completed Svif Validation run `33102032043` successfully.
-- Verify job `98621961739` succeeded across immutable candidate resolution/checkout, Agnir/Svif conformance, frozen Worker/frontend dependency installs, frontend build, non-secret validation-config render, and Wrangler bundle/bindings dry-run.
-- Delivery job `98622215176` was `skipped`, proving the delivery authority gate remained closed while `SVIF_ENABLE_VALIDATION_DELIVERY` was not enabled.
-- Credential-free static validation for Validation Project #2 is therefore **proven**. Live Cloudflare actuation plus independent `/api/health` and frontend observation remain **unproven** and require explicit protected authority.
-- Cloud Mail records the durable evidence in `.agnir/evidence/static-verification-2026-08-28.md`; evidence/state synchronization commit is `9c670f4d74921e180734699b6429263bff717b28`.
+Credential-free static verification is proven:
 
-## Known gaps
+- immutable candidate `5b32462f3725327805f0dd696475a16f07b666aa`;
+- Svif Validation run `33102032043` succeeded;
+- verify job `98621961739` succeeded;
+- delivery job `98622215176` was skipped;
+- Cloud Mail durable evidence synchronization commit `9c670f4d74921e180734699b6429263bff717b28`.
 
-- Complete a successful protected Cloudflare delivery + independent observation only when live authority is explicitly enabled; do not treat live provider access as a prerequisite for provider-neutral Core work.
-- Add at least one materially different execution/storage arrangement from the founding GitHub + Cloudflare path before making strong neutrality claims.
-- Add multi-project workspace isolation conformance after Agnir's corresponding fixture is ready.
-- Freeze the exact Agnir compatibility expression only after Agnir 0.1 release criteria are concrete.
+Live provider delivery/observation remains unproven and requires explicit protected authority.
+
+## Current architectural gaps
+
+Before further neutrality/conformance expansion, resolve:
+
+- minimal Svif Orchestrator/runtime responsibilities;
+- Continuity Provider, Execution Surface, and Capability Provider interfaces;
+- the role of `SVIF.yaml` as repository self-description versus Project binding/configuration manifest;
+- separation of specification-repository integrity checks from portable product/contract conformance;
+- which Cloudflare reference behaviors become reusable Svif-owned capabilities;
+- the first distributable ChatGPT surface on the path from product capability to final Plugin;
+- how existing Core/Evidence/Capability Adapter/Software Delivery material maps into the product architecture without turning Svif back into a pure protocol project.
+
+The previously planned materially non-GitHub/Cloudflare conformance case is paused until this product architecture correction is resolved.

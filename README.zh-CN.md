@@ -6,6 +6,23 @@ Svif 是一个 **Project orchestration（项目编排）产品**，负责协调�
 
 > Project 持续存在；Executor 和执行环境可以变化。
 
+## Agnir Project Instructions
+
+把这个仓库根目录视为 Svif Project 的已授权 Project Entry Point。开始任何实质性 Project 工作之前：
+
+1. 先读取根目录 `AGNIR.yaml`，校验声明的 Agnir Core / profile compatibility 与 Project identity。
+2. 按 `AGNIR.yaml` 声明的位置加载 Current State 与 Next Actions。
+3. 当 Decisions 与 Evidence 会约束本次操作时，再加载相关内容。
+4. 默认以 Project 自己持久化的 Agnir truth 为准；只有更新的 Principal 指令或直接观察到的当前 Project 事实才能覆盖它，不要把聊天记录或 Executor 私有记忆当 canonical truth。
+5. 对 Svif 本身进行开发时，再读取 `SVIF.yaml` 与本次变更相关的当前规格。
+6. 保存进度或结束工作时，把重要的 state、next-action、decision 与 evidence 变化写回 checkpoint，并确认 locator chain 对全新的 Executor 仍能解析。
+
+根目录 `AGENTS.md` 只负责把 Agent 引导到本节，不得成为第二份 Project state 或 Agnir procedure。期望的激活路径是：
+
+`Project root -> AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml -> declared durable memory`
+
+如果 activation locator、Project identity、必需 memory locator 或 compatibility 校验任一失败，应在获得授权时修复最早出错的层；不得凭空补 Project state，也不得静默退回聊天历史、兄弟仓库或 retired layout。
+
 ## 架构图（Architecture Diagram）
 
 ```mermaid
@@ -125,10 +142,11 @@ svif/
 │
 ├── .agnir/                           # 这个 Svif Project 自己的 canonical state / next actions / decisions / evidence
 ├── .github/workflows/                # CI：运行 repository、runtime 和 conformance 检查
+├── AGENTS.md                         # 最小 Agnir 激活 locator，指向英文 README 的 Project Instructions
 ├── AGNIR.yaml                        # 在当前 filesystem profile 下定位本 Project 的 Agnir continuity
 ├── SVIF.yaml                         # 本 Project 的 Svif Project Binding 的 repository/filesystem 表达
 ├── ARCHITECTURE.md                   # 更详细的产品架构、依赖方向和边界说明
-├── README.md                         # 英文项目入口
+├── README.md                         # 英文项目入口，并承载 canonical Agnir Project Instructions
 ├── README.zh-CN.md                   # 简体中文项目入口
 └── VERSION                           # 当前 Svif development version
 ```

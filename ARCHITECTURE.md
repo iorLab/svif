@@ -21,7 +21,7 @@ Agnir, ChatGPT, and Cloudflare are the founding bindings for those interfaces. N
 
 The active product topology is intentionally two repositories:
 
-- `iorLab/svif` owns the entire Svif product, including provider implementations, execution-surface integrations, E2E fixtures, portable contracts, and packaging work;
+- `iorLab/svif` owns the entire Svif product, including provider implementations, execution-surface integrations, E2E fixtures, portable contracts, Plugin packaging, and tests;
 - `iorLab/agnir` remains independent because it is a separately useful continuity protocol.
 
 Provider-specific Svif behavior does **not** get its own canonical project merely because it needs executable fixtures. Cloudflare reference behavior therefore lives under `iorLab/svif`.
@@ -91,19 +91,38 @@ These are internal product contracts, not separate products.
 
 ## 9. Distribution
 
-The mature Svif product/distribution target remains an **installable Plugin**. This is a durable product goal inherited from the predecessor roadmap and is distinct from any one execution-surface packaging mechanism.
+Svif now ships an **installable Plugin MVP** under `plugin/` using the portable **Agent Plugins 1.0.0** package format.
 
-Current ChatGPT app/MCP packaging is the founding ChatGPT **Execution Surface integration**. It is one integration path packaged by Svif; it does not redefine Svif itself as a ChatGPT-only product and does not replace the mature Plugin target.
+The current package is intentionally Skill-first:
 
-Distribution dependency direction is:
+```text
+plugin/
+├── plugin.json
+├── README.md
+└── skills/
+    └── svif/
+        └── SKILL.md
+```
+
+- `plugin/plugin.json` is the portable Plugin manifest.
+- `plugin/skills/svif/SKILL.md` is the first installable workflow component.
+- The Plugin guides compatible execution surfaces through Agnir discovery, Svif lifecycle execution, provenance/authority guards, independent observation, and durable checkpointing.
+- The Plugin is a distribution layer and does not reimplement `src/svif/runtime.py`.
+
+A Skill-only Plugin is a valid and useful first product increment. An optional `mcp.json` will be added when the concrete remote Svif MCP/App surface is ready; MCP completion is not a prerequisite for testing and iterating the Plugin workflow itself.
+
+Current ChatGPT app/MCP work remains the founding ChatGPT **Execution Surface integration**. It can be packaged into the Plugin later without redefining Svif as ChatGPT-only and without moving canonical Project truth out of the configured Continuity Provider.
+
+Distribution dependency direction remains:
 
 `Plugin / distribution -> Execution Surface integration -> Orchestrator -> Continuity + Capability Providers`
 
-A distribution may bundle provider adapters and onboarding, but canonical Project truth remains with the configured Continuity Provider.
+For the current Skill-first MVP, the Plugin can also guide an execution surface directly through the portable Project workflow while the remote MCP wrapper is still being hardened.
 
 ## 10. Verification layers
 
-- repository integrity verifies the Svif repository itself;
+- repository integrity verifies the Svif repository itself and registers Plugin package artifacts;
+- `tests/test_plugin_package.py` validates the Plugin manifest, Skill content guards, and the rule that Plugin packaging must not shadow the runtime;
 - portable conformance validates reusable contracts;
 - runtime tests validate Orchestrator/provider/surface behavior;
 - E2E fixtures validate concrete founding compositions.
@@ -112,4 +131,6 @@ A provider fixture does not justify a separate canonical repository.
 
 ## 11. Near-term target
 
-The generic Orchestrator, Agnir Continuity Provider, ChatGPT bridge, Svif-owned Cloudflare Capability Provider, and credential-free founding E2E now belong to one product tree. The next target is hardening the ChatGPT app/MCP packaging around the existing bridge, followed by broader non-founding neutrality evidence and eventual Plugin packaging/graduation without duplicating kernel semantics.
+The generic Orchestrator, Agnir Continuity Provider, ChatGPT bridge, Svif-owned Cloudflare Capability Provider, credential-free founding E2E, and installable Skill-first Plugin MVP now belong to one product tree.
+
+The next target is **test-driven Plugin iteration**: install/use the Skill-first package on real Project work, harden its workflow guidance from failures, and add the remote ChatGPT MCP/App component when it can reuse the existing `Orchestrator.begin()` / `Orchestrator.complete()` boundary without duplicating kernel semantics or weakening authority separation.

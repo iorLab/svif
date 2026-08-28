@@ -18,9 +18,16 @@ def require_text(text: str, needles: list[str], label: str) -> None:
             fail(f"{label} missing required product-architecture marker: {needle}")
 
 
+def require_readme_diagrams(path: str, headings: tuple[str, str]) -> None:
+    text = (ROOT / path).read_text(encoding="utf-8")
+    if text.count("```mermaid") < 2:
+        fail(f"{path} must contain at least two Mermaid diagrams")
+    require_text(text, list(headings), path)
+
+
 def main() -> None:
     required = [
-        "ARCHITECTURE.md", "SVIF.yaml", "AGNIR.yaml",
+        "ARCHITECTURE.md", "SVIF.yaml", "AGNIR.yaml", "README.md", "README.zh-CN.md",
         ".agnir/state.md", ".agnir/next-actions.md", ".agnir/decisions.md",
         "src/svif/runtime.py", "src/svif/continuity/agnir.py", "src/svif/execution/chatgpt.py",
         "src/svif/capabilities/cloudflare.py",
@@ -50,6 +57,8 @@ def main() -> None:
         "Capability Provider", "iorLab/svif", "iorLab/agnir",
         "src/svif/capabilities/cloudflare.py",
     ], "README.md")
+    require_readme_diagrams("README.md", ("## Architecture Diagram", "## Runtime / Operation Flow"))
+    require_readme_diagrams("README.zh-CN.md", ("## 架构图", "## 运行流程"))
 
     architecture = (ROOT / "ARCHITECTURE.md").read_text(encoding="utf-8")
     require_text(architecture, [
@@ -83,6 +92,7 @@ def main() -> None:
     require_text(state, [
         "Project orchestration product", "Continuity Provider", "Execution Surface", "Capability Provider",
         "former `iorLab/svif-cloudflare-reference` project is retired",
+        "README.zh-CN.md",
     ], "Agnir state")
 
     print("PASS: Svif product repository integrity and single-repository architecture baseline")

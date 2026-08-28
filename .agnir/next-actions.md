@@ -7,6 +7,10 @@
 5. Keep live Cloudflare delivery disabled unless explicitly authorized. If authorized later, preserve exact verified-subject delivery and require independent observation before success claims.
 6. Keep incidental branch cleanup deferred until the new Svif version is substantially complete; preserve `legacy/zerolocal-v0.1` unchanged.
 
+## Documentation maintenance rule
+
+Architecture/runtime changes are incomplete until the corresponding diagrams in both `README.md` and `README.zh-CN.md` are updated in the same change set. This is an ongoing maintenance invariant, not a one-time documentation task.
+
 ## Repository-retirement note
 
 `iorLab/svif-cloudflare-reference` is no longer an active Svif project or dependency. Its useful product behavior is now owned inside `iorLab/svif`; historical evidence is preserved in `history/CLOUDFLARE_REFERENCE.md`. The GitHub repository may be physically deleted after retirement/tombstone handling; no future Svif work should target it.
@@ -18,4 +22,5 @@
 - Concrete Agnir repository/filesystem Continuity Provider implemented.
 - ChatGPT structured Execution Surface bridge implemented with `begin()` / `complete()` handoff.
 - Cloudflare provider ownership consolidated into `src/svif/capabilities/cloudflare.py` and `integrations/cloudflare/`; the separate Cloudflare reference project is retired from the active architecture.
+- English and Simplified Chinese README entry points now include synchronized Architecture and Runtime / Operation Flow diagrams, with repository checks enforcing the documentation structure.
 - Validation Project #2 retains proven credential-free static verification; protected delivery remains unproven and disabled.

@@ -49,6 +49,17 @@ Cloudflare authority remains enforced outside untrusted model payloads. External
 
 The Cloudflare provider transport intentionally does not embed credentials or freeze GitHub Actions/Wrangler as product dependencies.
 
+## README architecture documentation
+
+The repository has parallel English and Simplified Chinese entry points: `README.md` and `README.zh-CN.md`.
+
+Both READMEs MUST contain:
+
+- an **Architecture Diagram** showing the current component/binding topology;
+- a **Runtime / Operation Flow** diagram showing the current orchestration loop.
+
+Architecture, component ownership, dependency direction, authority/provenance boundaries, or runtime-flow changes require the affected diagrams in both language versions to be updated in the same change set. Repository integrity checks enforce the presence of both localized READMEs and both Mermaid diagram classes without treating prose as a byte-for-byte contract.
+
 ## Historical Cloudflare evidence
 
 The retired standalone reference supplied useful migration evidence but no live success claim. Preserved details are in `history/CLOUDFLARE_REFERENCE.md`.

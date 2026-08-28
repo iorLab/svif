@@ -34,3 +34,11 @@
 - Svif owns the Cloudflare Workers Capability Provider at `src/svif/capabilities/cloudflare.py` and its descriptor/integration boundary under `integrations/cloudflare/`.
 - Cloudflare transport is injected so provider I/O/credentials can vary without making GitHub Actions, Wrangler, or a standalone repository part of the product architecture.
 - The old repository may be physically deleted after tombstoning; no active Svif behavior is allowed to depend on it.
+
+## 2026-08-28 — README architecture diagrams and localization
+
+- `README.md` is the English project entry point and `README.zh-CN.md` is the Simplified Chinese entry point.
+- Both language versions MUST show the current **Architecture Diagram** and **Runtime / Operation Flow** using Mermaid so the repository explains both static component topology and dynamic operation semantics without requiring a reader to reconstruct them from specifications.
+- Architecture, component ownership, dependency direction, authority/provenance boundaries, or runtime-flow changes MUST update the affected diagrams in both README language versions in the same change set.
+- Localized READMEs describe the same canonical architecture. Translation may adapt explanatory prose, but it must not introduce a separate product model.
+- Repository checks enforce diagram/locale structure rather than exact prose wording.

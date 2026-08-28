@@ -80,6 +80,7 @@ src/svif/capabilities/cloudflare.py    # Svif-owned Cloudflare Capability Provid
 integrations/chatgpt/                  # ChatGPT app/MCP packaging boundary
 integrations/cloudflare/               # Cloudflare provider descriptor and integration notes
 
+tests/test_founding_e2e.py             # founding Agnir + ChatGPT + Cloudflare product loop
 tests/                                # runtime/provider/surface behavior
 conformance/                          # portable contract conformance
 spec/                                 # internal portable contracts
@@ -95,8 +96,11 @@ Python is the current executable reference vehicle; it does not freeze the event
 - Agnir repository/filesystem continuity adapter exists.
 - ChatGPT structured execution bridge supports externally driven `Orchestrator.begin()` / `Orchestrator.complete()` handoff.
 - Cloudflare provider logic is owned by Svif and uses an injected transport boundary, so tests do not require live credentials.
+- `tests/test_founding_e2e.py` now composes all three through the real Orchestrator boundary: continuity is loaded from an Agnir Project, the ChatGPT bridge materializes and parses the structured operation, trusted integration authority is supplied at completion, Cloudflare delivery is actuated and independently observed through fake non-secret transport, and the resulting state/evidence is checkpointed back through Agnir.
 - Protected authority remains outside untrusted model/result payloads.
 - External success requires exact verified-subject delivery plus independent observation before checkpoint.
+
+The founding E2E is intentionally credential-free. It proves the Svif product loop and provider boundaries, not live Cloudflare production delivery.
 
 ## Project binding
 
@@ -116,4 +120,4 @@ PYTHONPATH=src python -m unittest discover -s tests -v
 
 ## Next
 
-The next milestone is one in-repository founding E2E scenario wiring Agnir + ChatGPT + Cloudflare through the Orchestrator. After that: ChatGPT packaging hardening, broader neutrality evidence, and release compatibility work.
+The next milestone is hardening the concrete ChatGPT app/MCP packaging around the now-executable founding product loop. After that: broader neutrality evidence, multi-project isolation with Agnir, and release compatibility work. Live Cloudflare actuation remains separately gated and is not required for the credential-free founding E2E.

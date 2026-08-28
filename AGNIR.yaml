@@ -20,4 +20,3 @@ extensions:
   agnir/repository:
     canonical: "iorLab/svif"
     authoritative_ref: "main"
-    predecessor_ref: "legacy/zerolocal-v0.1"

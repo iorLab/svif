@@ -103,7 +103,6 @@ def main() -> None:
     require_text(
         core,
         [
-            "portable orchestration contract inside the active Svif `0.2` product line",
             "Svif Core defines the portable orchestration lifecycle and invariants used by the **Svif Project orchestration product**.",
             "Continuity Provider",
             "Execution Surface",

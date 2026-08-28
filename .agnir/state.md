@@ -100,6 +100,7 @@ Historical material MAY be consulted to understand lineage or recover an idea, b
 - README/localization: `.agnir/evidence/2026-08-28-readme-diagram-localization-checkpoint.md`.
 - Founding E2E: `.agnir/evidence/2026-08-28-founding-e2e.md`, run `33143308949` success.
 - Repository documentation baseline: pre-checkpoint head `97e70f9980de36aa7e3095cf8284f40c6fbf285e`, product-check run `33146795882` success.
+- Main-only branch cleanup: `.agnir/evidence/2026-08-28-main-only-branch-cleanup-checkpoint.md`; verified cleanup baseline head `4ea2c138417fa365aac6d88a0154e693324640b2`, product-check run `33157419617` success.
 - Retired branch tips: `history/BRANCH_ARCHIVE.md`.
 
 ## Branch governance

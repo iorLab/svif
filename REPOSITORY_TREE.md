@@ -49,6 +49,13 @@ svif/                                                     # Svif 产品主仓库
 │       ├── README.md                                     # Cloudflare Capability Provider 集成说明与安全边界
 │       └── adapter.json                                  # Cloudflare adapter 的机器可读 operation / authority / failure descriptor
 │
+├── plugin/                                               # 可安装 Agent Plugins 1.0.0 分发包；当前为 Skill-first MVP
+│   ├── plugin.json                                       # portable Plugin manifest：name/version/schema/author
+│   ├── README.md                                         # Plugin 安装、smoke test、MCP 后续增强说明
+│   └── skills/
+│       └── svif/
+│           └── SKILL.md                                  # Svif 工作流 Skill：Agnir discovery、lifecycle、provenance、authority、checkpoint
+│
 ├── spec/                                                 # Svif 内部可移植产品 contracts
 │   ├── CORE.md                                           # 编排生命周期、核心 invariants 与 product-kernel 语义
 │   ├── PROJECT_BINDING.md                                # Project 如何声明 continuity / execution / capability bindings
@@ -68,7 +75,8 @@ svif/                                                     # Svif 产品主仓库
 │   ├── test_agnir_continuity.py                          # Agnir Continuity Provider adapter 的 load / checkpoint / failure 行为
 │   ├── test_chatgpt_surface.py                           # ChatGPT Execution Surface materialize / parse / identity 约束
 │   ├── test_cloudflare_capability.py                     # Cloudflare provider 的 actuation / observation / subject-target 约束
-│   └── test_founding_e2e.py                              # founding Agnir + ChatGPT + Cloudflare 完整产品闭环
+│   ├── test_founding_e2e.py                              # founding Agnir + ChatGPT + Cloudflare 完整产品闭环
+│   └── test_plugin_package.py                            # Plugin manifest/Skill/package boundary 验证；防止 distribution shadow runtime
 │
 ├── conformance/                                          # Portable contracts 的一致性验证，不等同于产品 runtime
 │   ├── svif-0.2.md                                       # 当前 Svif 0.2 conformance baseline 的人类可读说明
@@ -83,7 +91,7 @@ svif/                                                     # Svif 产品主仓库
 │           └── workspace-scm.json                        # workspace / source-control capability fixture
 │
 ├── checks/                                               # 仓库与产品结构完整性检查
-│   └── check_repository.py                               # 防止关键模块、README 结构、canonical topology 等发生无意漂移
+│   └── check_repository.py                               # 防止关键模块、README、Plugin packaging、canonical topology 等发生无意漂移
 │
 ├── history/                                              # 前身 / 已退休项目历史；仅作 lineage 与 provenance 记录
 │   ├── PREDECESSOR.md                                    # ZeroLocal 等 Svif 前身 lineage 说明；通过 commit SHA 定位
@@ -91,9 +99,9 @@ svif/                                                     # Svif 产品主仓库
 │   └── CLOUDFLARE_REFERENCE.md                           # 已退休独立 Cloudflare reference 仓库的迁移记录
 │
 ├── AGNIR.yaml                                            # 当前 repository-filesystem profile 下发现本 Project Agnir memory 的入口
-├── SVIF.yaml                                             # 本 Project 的 `project-binding/0.2` repository/filesystem serialization
+├── SVIF.yaml                                             # 本 Project 的 `project-binding/0.2` serialization，并登记 active Plugin artifacts
 ├── ARCHITECTURE.md                                       # 详细产品架构、依赖方向、provider ownership 和 distribution 边界
-├── README.md                                             # 英文项目入口：架构图、运行图、简略仓库树与当前状态
+├── README.md                                             # 英文项目入口：架构图、运行图、Plugin、简略仓库树与当前状态
 ├── README.zh-CN.md                                       # 简体中文项目入口；与英文版保持同一 canonical 产品语义
 ├── REPOSITORY_TREE.md                                    # 本文件：当前 main 的完整文件级仓库结构与职责说明
 └── VERSION                                               # 当前 Svif development version
@@ -101,6 +109,6 @@ svif/                                                     # Svif 产品主仓库
 
 ## 如何使用这张树
 
-如果只是第一次理解 Svif，优先看 README 里的简略树即可；需要定位某个具体 contract、fixture、test、evidence 或 integration 文件时，再查本页。
+如果只是第一次理解 Svif，优先看 README 里的简略树即可；需要定位某个具体 contract、fixture、test、Plugin artifact、evidence 或 integration 文件时，再查本页。
 
 本页不是第二套架构定义。**架构语义仍以 `ARCHITECTURE.md`、`spec/`、`SVIF.yaml` 和 canonical Agnir decisions/state 为准；本页负责把这些职责映射回仓库中的实际文件位置。**

@@ -55,7 +55,7 @@ def require_full_repository_tree() -> None:
         [
             "# Repository Tree",
             "src/",
-            "src/svif" if False else "└── svif/",
+            "└── svif/",
             "runtime.py",
             "integrations/",
             "adapter.json",

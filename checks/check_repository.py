@@ -25,6 +25,15 @@ def require_readme_diagrams(path: str, headings: tuple[str, str]) -> None:
     require_text(text, list(headings), path)
 
 
+def require_readme_repository_tree(path: str, heading: str) -> None:
+    text = (ROOT / path).read_text(encoding="utf-8")
+    require_text(
+        text,
+        [heading, "svif/", "├── src/", "├── integrations/", "├── spec/", "├── .agnir/"],
+        path,
+    )
+
+
 def main() -> None:
     required = [
         "ARCHITECTURE.md", "SVIF.yaml", "AGNIR.yaml", "README.md", "README.zh-CN.md",
@@ -59,6 +68,8 @@ def main() -> None:
     ], "README.md")
     require_readme_diagrams("README.md", ("## Architecture Diagram", "## Runtime / Operation Flow"))
     require_readme_diagrams("README.zh-CN.md", ("## 架构图", "## 运行流程"))
+    require_readme_repository_tree("README.md", "## Repository Structure")
+    require_readme_repository_tree("README.zh-CN.md", "## 仓库结构")
 
     architecture = (ROOT / "ARCHITECTURE.md").read_text(encoding="utf-8")
     require_text(architecture, [

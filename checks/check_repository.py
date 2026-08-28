@@ -42,14 +42,56 @@ def require_readme_repository_tree(path: str, heading: str) -> None:
             "agnir.py",
             "execution/",
             "chatgpt.py",
+            "REPOSITORY_TREE.md",
         ],
         path,
     )
 
 
+def require_full_repository_tree() -> None:
+    text = (ROOT / "REPOSITORY_TREE.md").read_text(encoding="utf-8")
+    require_text(
+        text,
+        [
+            "# Repository Tree",
+            "src/",
+            "src/svif" if False else "└── svif/",
+            "runtime.py",
+            "integrations/",
+            "adapter.json",
+            "spec/",
+            "CAPABILITY_ADAPTER.md",
+            "profiles/",
+            "SOFTWARE_DELIVERY.md",
+            "schemas/",
+            "evidence-record.schema.json",
+            "tests/",
+            "test_founding_e2e.py",
+            "conformance/",
+            "evidence-chain-provenance-mismatch.json",
+            "workspace-scm.json",
+            "checks/",
+            "check_repository.py",
+            "history/",
+            "CLOUDFLARE_REFERENCE.md",
+            ".agnir/",
+            "2026-08-28-founding-e2e.md",
+            ".github/",
+            "conformance.yml",
+            "AGNIR.yaml",
+            "SVIF.yaml",
+            "ARCHITECTURE.md",
+            "README.zh-CN.md",
+            "REPOSITORY_TREE.md",
+            "VERSION",
+        ],
+        "REPOSITORY_TREE.md",
+    )
+
+
 def main() -> None:
     required = [
-        "ARCHITECTURE.md", "SVIF.yaml", "AGNIR.yaml", "README.md", "README.zh-CN.md",
+        "ARCHITECTURE.md", "SVIF.yaml", "AGNIR.yaml", "README.md", "README.zh-CN.md", "REPOSITORY_TREE.md",
         ".agnir/state.md", ".agnir/next-actions.md", ".agnir/decisions.md",
         "src/svif/runtime.py", "src/svif/continuity/agnir.py", "src/svif/execution/chatgpt.py",
         "src/svif/capabilities/cloudflare.py",
@@ -68,7 +110,7 @@ def main() -> None:
     for forbidden in (
         ".chatgpt", "ZEROLOCAL.yaml", "SPECIFICATION.md", "SVIF_ARCHITECTURE_DRAFT.md",
         "SVIF_CAPABILITY_ADAPTER_DRAFT.md", "profiles/SOFTWARE_DELIVERY_DRAFT.md",
-        "conformance/check_v0_1.py", "conformance/v0.1.md",
+        "conformance/check_v0_1.py", "conformance/v0.1.md", "目录树.md",
     ):
         if (ROOT / forbidden).exists():
             fail(f"predecessor/execution-surface artifact remains active: {forbidden}")
@@ -82,6 +124,7 @@ def main() -> None:
     require_readme_diagrams("README.zh-CN.md", ("## 架构图", "## 运行流程"))
     require_readme_repository_tree("README.md", "## Repository Structure")
     require_readme_repository_tree("README.zh-CN.md", "## 仓库结构")
+    require_full_repository_tree()
 
     architecture = (ROOT / "ARCHITECTURE.md").read_text(encoding="utf-8")
     require_text(architecture, [

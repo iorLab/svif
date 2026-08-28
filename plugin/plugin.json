@@ -1,0 +1,10 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "svif",
+  "version": "0.2.0-dev",
+  "description": "Project orchestration workflows backed by durable continuity, explicit evidence, authority boundaries, and checkpointing.",
+  "author": {
+    "name": "iorLab",
+    "url": "https://github.com/iorLab/svif"
+  }
+}

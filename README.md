@@ -113,7 +113,7 @@ svif/
 └── VERSION                           # current Svif development version
 ```
 
-For the fully expanded file-by-file map of the current `main`, including responsibility annotations for every tracked file, see **[目录树.md](目录树.md)**.
+For the fully expanded file-by-file map of the current `main`, including responsibility annotations for every tracked file, see **[REPOSITORY_TREE.md](REPOSITORY_TREE.md)**.
 
 Python is the current executable reference vehicle; it does not freeze the eventual distribution technology. The mature distribution target remains an installable Plugin; the current ChatGPT app/MCP work is the founding Execution Surface integration, not a replacement for that product target.
 
@@ -136,7 +136,7 @@ The founding E2E is intentionally credential-free. It proves the Svif product lo
 
 `README.md` and `README.zh-CN.md` are maintained as parallel entry points. Any change to product architecture, component ownership, dependency direction, authority/provenance boundaries, or runtime flow **must update the affected README diagrams in the same change set**. The diagrams describe current architecture, not historical snapshots.
 
-The plain-text **Repository Structure** tree is maintained under the same rule as a compact navigation view. The exhaustive companion **`目录树.md`** is the file-level map of the active repository and must be updated whenever tracked files are added, removed, moved, or materially change responsibility. If that change affects the compact tree, both README language versions must update it in the same change set as well.
+The plain-text **Repository Structure** tree is maintained under the same rule as a compact navigation view. The exhaustive companion **`REPOSITORY_TREE.md`** is the file-level map of the active repository and must be updated whenever tracked files are added, removed, moved, or materially change responsibility. If that change affects the compact tree, both README language versions must update it in the same change set as well.
 
 ## Checks
 

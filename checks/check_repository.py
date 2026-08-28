@@ -32,7 +32,7 @@ def main() -> None:
         "src/svif/runtime.py", "src/svif/continuity/agnir.py", "src/svif/execution/chatgpt.py",
         "src/svif/capabilities/cloudflare.py",
         "tests/test_runtime.py", "tests/test_agnir_continuity.py", "tests/test_chatgpt_surface.py",
-        "tests/test_cloudflare_capability.py",
+        "tests/test_cloudflare_capability.py", "tests/test_founding_e2e.py",
         "integrations/chatgpt/README.md", "integrations/cloudflare/README.md", "integrations/cloudflare/adapter.json",
         "spec/CORE.md", "spec/PROJECT_BINDING.md", "spec/CAPABILITY_ADAPTER.md", "spec/EVIDENCE.md",
         "profiles/SOFTWARE_DELIVERY.md",
@@ -74,6 +74,7 @@ def main() -> None:
         'chatgpt_execution_bridge: "src/svif/execution/chatgpt.py"',
         'cloudflare_workers_capability: "src/svif/capabilities/cloudflare.py"',
         'cloudflare_capability: "tests/test_cloudflare_capability.py"',
+        'founding_e2e: "tests/test_founding_e2e.py"',
     ], "SVIF.yaml")
 
     runtime = (ROOT / "src/svif/runtime.py").read_text(encoding="utf-8")
@@ -87,6 +88,13 @@ def main() -> None:
         'provider_id = "cloudflare.workers"', "class CloudflareWorkersTransport", "class CloudflareWorkersCapabilityProvider",
         "def actuate(", "def observe(",
     ], "src/svif/capabilities/cloudflare.py")
+
+    founding = (ROOT / "tests/test_founding_e2e.py").read_text(encoding="utf-8")
+    require_text(founding, [
+        "AgnirFilesystemContinuityProvider", "ChatGPTExecutionSurface",
+        "CloudflareWorkersCapabilityProvider", "orchestrator.begin", "orchestrator.complete",
+        "authority_grants=frozenset({AUTHORITY})",
+    ], "tests/test_founding_e2e.py")
 
     state = (ROOT / ".agnir/state.md").read_text(encoding="utf-8")
     require_text(state, [

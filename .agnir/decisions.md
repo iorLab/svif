@@ -2,7 +2,7 @@
 
 ## 2026-08-27 — New main-line architecture
 
-- `main` implements Svif directly; ZeroLocal v0.1 remains predecessor evidence on `legacy/zerolocal-v0.1`.
+- `main` implements Svif directly; ZeroLocal v0.1 remains predecessor evidence in Git history.
 - Svif product line is `0.2` development.
 - Delivery gated by verification must actuate the verified subject or an independently verified replacement.
 - OBSERVE is mandatory when external effect is claimed; actuation success alone is insufficient.
@@ -69,10 +69,17 @@
 - If a documented directory is added, removed, moved, or materially changes responsibility, `README.md` and `README.zh-CN.md` MUST update the affected tree in the same change set.
 - Repository integrity checks enforce the presence of the explanatory tree and key module anchors without byte-for-byte locking the whole tree.
 
-## 2026-08-28 — Greenfield mainline; legacy is history only
+## 2026-08-28 — Greenfield mainline; history is non-authoritative
 
 - This decision supersedes any interpretation that Svif `0.2` must migrate, preserve compatibility with, or prove conformance against ZeroLocal/legacy architecture.
-- `legacy/zerolocal-v0.1` and other historical material are retained only for lineage, audit, and optional historical reference.
+- Historical material is retained only for lineage, audit, and optional historical reference.
 - Active `main` contracts, runtime, conformance, release gates, Project state, and next actions MUST NOT depend on legacy serialization, `.chatgpt/` memory layout, Skills-era structure, standalone reference repositories, or predecessor validation projects.
 - Historical ideas MAY be reconsidered, but they become active only when independently reaffirmed in current Svif architecture/decisions.
 - Current Svif architecture is intentionally greenfield: Orchestrator + Continuity Provider + Execution Surface + Capability Provider is authoritative even where it differs materially from ZeroLocal.
+
+## 2026-08-28 — Main-only branch governance
+
+- `main` is the only long-lived branch in `iorLab/svif`.
+- Legacy, feature, fix, and temporary branch refs are deleted after their final tip SHAs are recorded in `history/BRANCH_ARCHIVE.md`.
+- Historical predecessor boundaries are referenced by immutable commit SHA and Git history rather than a live `legacy/*` branch.
+- No active product behavior, conformance, release gate, or recovery path may require a retired branch ref.

@@ -17,6 +17,7 @@ svif/                                                     # Svif 产品主仓库
 │       ├── 2026-08-27-repository-rename-checkpoint.md    # 仓库更名 / canonical identity checkpoint
 │       ├── 2026-08-28-cloudflare-consolidation.md        # Cloudflare reference 并回 Svif 主仓库的证据
 │       ├── 2026-08-28-founding-e2e.md                    # Agnir + ChatGPT + Cloudflare founding E2E 证据
+│       ├── 2026-08-28-main-only-branch-cleanup-checkpoint.md # 只保留 main、历史分支改由 commit SHA 索引的 checkpoint
 │       ├── 2026-08-28-plugin-migration-audit-checkpoint.md # Plugin 产品目标迁移审计 checkpoint
 │       ├── 2026-08-28-product-architecture-runtime.md    # 产品架构与 executable runtime 基线证据
 │       ├── 2026-08-28-readme-diagram-localization-checkpoint.md # 双语 README / Mermaid 本地化 checkpoint

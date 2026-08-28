@@ -25,6 +25,9 @@ product:
   cloudflare_workers_capability: "src/svif/capabilities/cloudflare.py"
   chatgpt_integration: "integrations/chatgpt/README.md"
   cloudflare_integration: "integrations/cloudflare/README.md"
+  plugin_manifest: "plugin/plugin.json"
+  plugin_skill: "plugin/skills/svif/SKILL.md"
+  plugin_readme: "plugin/README.md"
   orchestration_contract: "spec/CORE.md"
   project_binding_contract: "spec/PROJECT_BINDING.md"
   capability_adapter_contract: "spec/CAPABILITY_ADAPTER.md"
@@ -38,6 +41,7 @@ checks:
   chatgpt_surface: "tests/test_chatgpt_surface.py"
   cloudflare_capability: "tests/test_cloudflare_capability.py"
   founding_e2e: "tests/test_founding_e2e.py"
+  plugin_package: "tests/test_plugin_package.py"
 
 extensions:
   svif/repository:

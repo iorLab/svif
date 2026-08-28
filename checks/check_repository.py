@@ -37,6 +37,7 @@ def require_readme_repository_tree(path: str, heading: str) -> None:
             "├── plugin/",
             "├── spec/",
             "├── .agnir/",
+            "AGENTS.md",
             "plugin.json",
             "SKILL.md",
             "capabilities/",
@@ -86,6 +87,7 @@ def require_full_repository_tree() -> None:
             "2026-08-28-founding-e2e.md",
             ".github/",
             "conformance.yml",
+            "AGENTS.md",
             "AGNIR.yaml",
             "SVIF.yaml",
             "ARCHITECTURE.md",
@@ -97,9 +99,49 @@ def require_full_repository_tree() -> None:
     )
 
 
+def require_agnir_activation() -> None:
+    agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+    readme = (ROOT / "README.md").read_text(encoding="utf-8")
+    agnir = (ROOT / "AGNIR.yaml").read_text(encoding="utf-8")
+    svif = (ROOT / "SVIF.yaml").read_text(encoding="utf-8")
+
+    require_text(agents, ["Agnir Project Instructions", "README.md", "AGNIR.yaml"], "AGENTS.md")
+    if ".agnir/state.md" in agents or ".agnir/next-actions.md" in agents:
+        fail("AGENTS.md must remain a locator and must not duplicate durable Project memory")
+
+    require_text(readme, [
+        "## Agnir Project Instructions",
+        "authorized Project Entry Point",
+        "AGNIR.yaml",
+        "Current State",
+        "Next Actions",
+        "Decisions",
+        "Evidence",
+        "Project root -> AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml -> declared durable memory",
+    ], "README.md Agnir activation")
+
+    require_text(agnir, [
+        'version: "0.1"',
+        'discovery_profile: "repository-filesystem/0.1"',
+        'state: ".agnir/state.md"',
+        'next_actions: ".agnir/next-actions.md"',
+        'decisions: ".agnir/decisions.md"',
+        'evidence: ".agnir/evidence/"',
+    ], "AGNIR.yaml")
+    require_text(svif, [
+        'compatibility: "0.1"',
+        'profile: "repository-filesystem/0.1"',
+        'activation: "AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml"',
+    ], "SVIF.yaml Agnir binding")
+
+    for path in (".agnir/state.md", ".agnir/next-actions.md", ".agnir/decisions.md", ".agnir/evidence"):
+        if not (ROOT / path).exists():
+            fail(f"Agnir activation target is missing: {path}")
+
+
 def main() -> None:
     required = [
-        "ARCHITECTURE.md", "SVIF.yaml", "AGNIR.yaml", "README.md", "README.zh-CN.md", "REPOSITORY_TREE.md",
+        "ARCHITECTURE.md", "SVIF.yaml", "AGNIR.yaml", "AGENTS.md", "README.md", "README.zh-CN.md", "REPOSITORY_TREE.md",
         ".agnir/state.md", ".agnir/next-actions.md", ".agnir/decisions.md",
         "src/svif/runtime.py", "src/svif/continuity/agnir.py", "src/svif/execution/chatgpt.py",
         "src/svif/capabilities/cloudflare.py",
@@ -134,6 +176,7 @@ def main() -> None:
     require_readme_repository_tree("README.md", "## Repository Structure")
     require_readme_repository_tree("README.zh-CN.md", "## 仓库结构")
     require_full_repository_tree()
+    require_agnir_activation()
 
     architecture = (ROOT / "ARCHITECTURE.md").read_text(encoding="utf-8")
     require_text(architecture, [
@@ -188,7 +231,7 @@ def main() -> None:
         "README.zh-CN.md", "Plugin MVP",
     ], "Agnir state")
 
-    print("PASS: Svif product repository integrity, Plugin packaging, and single-repository architecture baseline")
+    print("PASS: Svif product repository integrity, Agnir activation, Plugin packaging, and single-repository architecture baseline")
 
 
 if __name__ == "__main__":

@@ -16,9 +16,11 @@ A Skill-only Plugin is structurally useful without an MCP server. MCP packaging 
 
 ## Current validation status
 
-Repository CI validates the package structure, Agent Plugins 1.0.0 manifest constraints used by this package, Skill frontmatter/guardrails, and the boundary that prevents the Plugin from shadowing the Svif runtime.
+Repository CI validates the package structure, Agent Plugins 1.0.0 manifest constraints used by this package, Agent Skills frontmatter/guardrails, Plugin-root filesystem containment (including rejection pressure for escaping symlinks), and the boundary that prevents the Plugin from shadowing the Svif runtime.
 
 That is **package/conformance validation**, not proof that a particular ChatGPT, Codex, or other compatible client has installed and exercised this exact package. Client installation validation remains pending until a supported client actually installs/loads the Plugin or contained Skill and the observed behavior is recorded.
+
+Agent Plugins 1.0 treats the Plugin as a directory rooted at one filesystem location; it does not define ZIP/TAR packaging as the portable package unit. Client-specific upload/install UX is therefore separate from the portable conformance claim.
 
 ## What this MVP does
 

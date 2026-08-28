@@ -180,6 +180,37 @@ class PluginPackageTests(unittest.TestCase):
         self.assertIn('compatibility: "0.1"', svif)
         self.assertIn('profile: "repository-filesystem/0.1"', svif)
 
+    def test_svif_project_has_self_describing_agnir_cold_start_route(self) -> None:
+        agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+        readme = (ROOT / "README.md").read_text(encoding="utf-8")
+        agnir = (ROOT / "AGNIR.yaml").read_text(encoding="utf-8")
+        svif = (ROOT / "SVIF.yaml").read_text(encoding="utf-8")
+
+        self.assertIn("Agnir Project Instructions", agents)
+        self.assertIn("README.md", agents)
+        self.assertNotIn(".agnir/state.md", agents)
+        self.assertNotIn(".agnir/next-actions.md", agents)
+
+        self.assertIn("## Agnir Project Instructions", readme)
+        self.assertIn(
+            "Project root -> AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml -> declared durable memory",
+            readme,
+        )
+        for marker in ("Current State", "Next Actions", "Decisions", "Evidence"):
+            self.assertIn(marker, readme)
+
+        self.assertIn('state: ".agnir/state.md"', agnir)
+        self.assertIn('next_actions: ".agnir/next-actions.md"', agnir)
+        self.assertIn('decisions: ".agnir/decisions.md"', agnir)
+        self.assertIn('evidence: ".agnir/evidence/"', agnir)
+        self.assertIn(
+            'activation: "AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml"',
+            svif,
+        )
+
+        for path in (".agnir/state.md", ".agnir/next-actions.md", ".agnir/decisions.md", ".agnir/evidence"):
+            self.assertTrue((ROOT / path).exists(), path)
+
     def test_plugin_mvp_is_skill_only_and_does_not_shadow_runtime(self) -> None:
         self.assertFalse((PLUGIN_ROOT / "mcp.json").exists())
         self.assertFalse((PLUGIN_ROOT / "src").exists())

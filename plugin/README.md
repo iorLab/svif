@@ -16,7 +16,9 @@ A Skill-only Plugin is structurally useful without an MCP server. MCP packaging 
 
 ## Current validation status
 
-Repository CI validates the package structure, Agent Plugins 1.0.0 manifest constraints used by this package, Agent Skills frontmatter/guardrails, Plugin-root filesystem containment (including rejection pressure for escaping symlinks), and the boundary that prevents the Plugin from shadowing the Svif runtime.
+Repository CI validates the package structure, Agent Plugins 1.0.0 manifest constraints used by this package, the specification's normative manifest failure semantics, Agent Skills frontmatter/guardrails, Plugin-root filesystem containment (including rejection pressure for escaping symlinks), and the boundary that prevents the Plugin from shadowing the Svif runtime.
+
+The manifest test deliberately follows the Agent Plugins 1.0 specification text where it defines non-fatal exceptions to the closed schema: unknown top-level fields are reported and ignored, and a non-object `extensions` field is reported and ignored. A portable validator also does not validate values inside unimplemented client-extension namespaces. Other invalid permitted manifest fields remain fatal. This prevents Svif's package tests from being stricter than a conformant Agent Plugins client in ways that would reject a package the normative specification says to continue loading.
 
 That is **package/conformance validation**, not proof that a particular ChatGPT, Codex, or other compatible client has installed and exercised this exact package. Client installation validation remains pending until a supported client actually installs/loads the Plugin or contained Skill and the observed behavior is recorded.
 

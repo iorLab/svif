@@ -20,18 +20,41 @@
 - Canonical repositories are `iorLab/agnir` and `iorLab/svif`.
 - Legacy branch names are intentionally not renamed: `legacy/zerolocal-v0.1` and `legacy/ppmp-v2.0.0` preserve predecessor identity and history.
 - Repository redirects are compatibility behavior rather than canonical project identity.
-- Repository naming remains packaging/discovery metadata, not a Svif Core semantic dependency.
+- Repository naming remains packaging/discovery metadata, not a Svif semantic dependency.
 
-## 2026-08-28 — Execution-surface-neutral active Project structure
+## 2026-08-28 — Execution-surface-neutral canonical Project structure
 
-- Execution-surface bootstrap configuration belongs to the execution surface, not the canonical Svif Project structure.
+- Execution-surface bootstrap configuration belongs to the execution surface, not canonical Project truth.
 - The former `.chatgpt/project-memory.yaml` compatibility shim is removed from active `main`.
 - For this repository's Agnir repository/filesystem profile, cold start begins directly at top-level `AGNIR.yaml`.
-- Svif conformance treats active `.chatgpt/` structure as forbidden in this reference Project.
+- Removing ChatGPT-specific canonical state does **not** mean Svif should omit a ChatGPT product integration layer; execution-surface neutrality and product integrations are separate concerns.
 
 ## 2026-08-28 — Cloudflare implementation role
 
 - The Cloudflare repository is canonical at `iorLab/svif-cloudflare-reference`.
-- Its role is an executable reference implementation/conformance testbed for Svif Software Delivery + Cloudflare Provider Adapter semantics.
-- It is not a user starter/template and does not define provider-neutral Core semantics.
-- The reference must preserve exact verified-candidate delivery, protected production authority, serialized state-sensitive delivery, target discovery, and independent post-delivery observation while replacing ZeroLocal-era naming and memory layout with Svif/Agnir-native structure.
+- Its role is a controlled executable integration reference/testbed for Svif Software Delivery + Cloudflare capability behavior.
+- It is not a user starter/template and does not define provider-neutral Svif semantics.
+- It must preserve exact verified-candidate delivery, protected production authority, serialized state-sensitive delivery, target discovery, and independent post-delivery observation.
+- As the Svif product matures, reusable Cloudflare capability implementation should be owned/packaged by Svif and the reference repository should increasingly consume/test that implementation rather than permanently owning product logic.
+
+## 2026-08-28 — Svif product identity correction
+
+- Svif is a **Project orchestration product**, not a pure Project-operation protocol.
+- Agnir remains the independent continuity/memory protocol. Dependency direction remains `Svif -> Agnir`.
+- The product's stable three-sided environment is:
+  - **Continuity Provider** — current implementation: Agnir;
+  - **Execution Surface / Executor Host** — current founding integration: ChatGPT;
+  - **Capability / Effect Provider** — current founding provider: Cloudflare.
+- Svif is the orchestration layer between these sides. It loads continuity, constructs execution context, coordinates work/capabilities, enforces authority and provenance, observes/reconciles effects, and checkpoints durable truth.
+- Existing lifecycle, Evidence, Capability Adapter, authority, and Software Delivery material is retained as portable **internal product contracts** and design foundations. It must not be used to redefine the whole Svif product as a standards/protocol repository.
+- Project canonical truth must remain execution-surface-neutral, while Svif itself may and should ship integrations for concrete execution surfaces such as ChatGPT.
+- Svif's intended mature distribution remains an installable Plugin/product surface. Specification/contracts are a subset of the product, not the product identity.
+- The active repository has drifted too far toward `spec/` + `schemas/` + `conformance/` and lacks the actual Svif orchestration/runtime layer; this is now an explicit architecture correction item.
+- Before adding more neutrality/conformance breadth, freeze a Product Architecture around four first-class components:
+  1. Orchestrator;
+  2. Continuity Provider interface (first: Agnir);
+  3. Execution Surface interface (first: ChatGPT);
+  4. Capability Provider interface (first provider family: Cloudflare).
+- `SVIF.yaml` must be re-evaluated. A likely product-facing direction is a Project binding/configuration manifest that declares continuity, execution-surface, capability/provider, authority, and applicable profile bindings; exact semantics are not yet frozen.
+- Specification-repository integrity checks must be distinguished from portable Svif product/contract conformance. `conformance/check_svif_0_2.py` currently mixes these concerns.
+- The previously first-priority materially non-GitHub/Cloudflare conformance case is paused until the Product Architecture correction is resolved.

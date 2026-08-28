@@ -29,7 +29,20 @@ def require_readme_repository_tree(path: str, heading: str) -> None:
     text = (ROOT / path).read_text(encoding="utf-8")
     require_text(
         text,
-        [heading, "svif/", "├── src/", "├── integrations/", "├── spec/", "├── .agnir/"],
+        [
+            heading,
+            "svif/",
+            "├── src/",
+            "├── integrations/",
+            "├── spec/",
+            "├── .agnir/",
+            "capabilities/",
+            "cloudflare.py",
+            "continuity/",
+            "agnir.py",
+            "execution/",
+            "chatgpt.py",
+        ],
         path,
     )
 
@@ -64,7 +77,6 @@ def main() -> None:
     require_text(readme, [
         "Project orchestration product", "Continuity Provider", "Execution Surface",
         "Capability Provider", "iorLab/svif", "iorLab/agnir",
-        "src/svif/capabilities/cloudflare.py",
     ], "README.md")
     require_readme_diagrams("README.md", ("## Architecture Diagram", "## Runtime / Operation Flow"))
     require_readme_diagrams("README.zh-CN.md", ("## 架构图", "## 运行流程"))

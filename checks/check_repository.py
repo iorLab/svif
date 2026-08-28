@@ -23,12 +23,14 @@ def main() -> None:
         "ARCHITECTURE.md", "SVIF.yaml", "AGNIR.yaml",
         ".agnir/state.md", ".agnir/next-actions.md", ".agnir/decisions.md",
         "src/svif/runtime.py", "src/svif/continuity/agnir.py", "src/svif/execution/chatgpt.py",
+        "src/svif/capabilities/cloudflare.py",
         "tests/test_runtime.py", "tests/test_agnir_continuity.py", "tests/test_chatgpt_surface.py",
-        "integrations/chatgpt/README.md",
+        "tests/test_cloudflare_capability.py",
+        "integrations/chatgpt/README.md", "integrations/cloudflare/README.md", "integrations/cloudflare/adapter.json",
         "spec/CORE.md", "spec/PROJECT_BINDING.md", "spec/CAPABILITY_ADAPTER.md", "spec/EVIDENCE.md",
         "profiles/SOFTWARE_DELIVERY.md",
         "schemas/project-binding.schema.json", "schemas/capability-adapter.schema.json", "schemas/evidence-record.schema.json",
-        "conformance/check_contracts.py", "history/PREDECESSOR.md",
+        "conformance/check_contracts.py", "history/PREDECESSOR.md", "history/CLOUDFLARE_REFERENCE.md",
     ]
     for path in required:
         if not (ROOT / path).exists():
@@ -42,18 +44,18 @@ def main() -> None:
         if (ROOT / forbidden).exists():
             fail(f"predecessor/execution-surface artifact remains active: {forbidden}")
 
-    # Prose is documentation, not a byte-for-byte contract. Check only stable
-    # architecture identities here; executable semantics are covered elsewhere.
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     require_text(readme, [
         "Project orchestration product", "Continuity Provider", "Execution Surface",
-        "Capability Provider", "Plugin",
+        "Capability Provider", "iorLab/svif", "iorLab/agnir",
+        "src/svif/capabilities/cloudflare.py",
     ], "README.md")
 
     architecture = (ROOT / "ARCHITECTURE.md").read_text(encoding="utf-8")
     require_text(architecture, [
         "Project orchestration product", "Orchestrator", "Continuity Provider",
         "Execution Surface", "Capability Provider", "Orchestrator.begin()", "Orchestrator.complete()",
+        "Provider-specific Svif behavior does **not** get its own canonical project",
     ], "ARCHITECTURE.md")
 
     svif = (ROOT / "SVIF.yaml").read_text(encoding="utf-8")
@@ -61,7 +63,8 @@ def main() -> None:
         'manifest: "project-binding/0.2"', 'provider: "agnir"', 'runtime: "src/svif/runtime.py"',
         'agnir_repository_filesystem_adapter: "src/svif/continuity/agnir.py"',
         'chatgpt_execution_bridge: "src/svif/execution/chatgpt.py"',
-        'chatgpt_surface: "tests/test_chatgpt_surface.py"',
+        'cloudflare_workers_capability: "src/svif/capabilities/cloudflare.py"',
+        'cloudflare_capability: "tests/test_cloudflare_capability.py"',
     ], "SVIF.yaml")
 
     runtime = (ROOT / "src/svif/runtime.py").read_text(encoding="utf-8")
@@ -70,21 +73,19 @@ def main() -> None:
         "external actuation requires successful verification evidence for the exact subject",
     ], "src/svif/runtime.py")
 
-    agnir = (ROOT / "src/svif/continuity/agnir.py").read_text(encoding="utf-8")
-    require_text(agnir, [
-        'provider_id = "agnir"', '"AGNIR_DISCOVERY_PROJECT_MISMATCH"',
-        '"AGNIR_DISCOVERY_UNSUPPORTED_VERSION"', "def checkpoint(self, outcome: OperationOutcome)",
-    ], "src/svif/continuity/agnir.py")
-
-    chatgpt = (ROOT / "src/svif/execution/chatgpt.py").read_text(encoding="utf-8")
-    require_text(chatgpt, [
-        'surface_id = "chatgpt"', "def materialize(", "def parse_result(",
-    ], "src/svif/execution/chatgpt.py")
+    cloudflare = (ROOT / "src/svif/capabilities/cloudflare.py").read_text(encoding="utf-8")
+    require_text(cloudflare, [
+        'provider_id = "cloudflare.workers"', "class CloudflareWorkersTransport", "class CloudflareWorkersCapabilityProvider",
+        "def actuate(", "def observe(",
+    ], "src/svif/capabilities/cloudflare.py")
 
     state = (ROOT / ".agnir/state.md").read_text(encoding="utf-8")
-    require_text(state, ["Project orchestration product", "Continuity Provider", "Execution Surface", "Capability / Effect Provider"], "Agnir state")
+    require_text(state, [
+        "Project orchestration product", "Continuity Provider", "Execution Surface", "Capability Provider",
+        "former `iorLab/svif-cloudflare-reference` project is retired",
+    ], "Agnir state")
 
-    print("PASS: Svif product repository integrity and product-architecture baseline")
+    print("PASS: Svif product repository integrity and single-repository architecture baseline")
 
 
 if __name__ == "__main__":

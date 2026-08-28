@@ -22,7 +22,9 @@ product:
   runtime: "src/svif/runtime.py"
   agnir_repository_filesystem_adapter: "src/svif/continuity/agnir.py"
   chatgpt_execution_bridge: "src/svif/execution/chatgpt.py"
+  cloudflare_workers_capability: "src/svif/capabilities/cloudflare.py"
   chatgpt_integration: "integrations/chatgpt/README.md"
+  cloudflare_integration: "integrations/cloudflare/README.md"
   orchestration_contract: "spec/CORE.md"
   project_binding_contract: "spec/PROJECT_BINDING.md"
   capability_adapter_contract: "spec/CAPABILITY_ADAPTER.md"
@@ -34,6 +36,7 @@ checks:
   runtime_kernel: "tests/test_runtime.py"
   agnir_continuity: "tests/test_agnir_continuity.py"
   chatgpt_surface: "tests/test_chatgpt_surface.py"
+  cloudflare_capability: "tests/test_cloudflare_capability.py"
 
 extensions:
   svif/repository:

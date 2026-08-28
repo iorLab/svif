@@ -69,27 +69,51 @@ The default internal lifecycle is:
 
 `REPAIR` returns to the earliest violated invariant. For externally driven surfaces such as ChatGPT, `Orchestrator.begin()` creates the bound operation/session and `Orchestrator.complete()` reconciles the returned result. Untrusted model/result payloads cannot self-grant protected authority.
 
-## Repository layout
+## Repository Structure
+
+This tree is the practical map of the repository. It is intentionally selective: it shows the directories and key files that explain where each product responsibility lives, rather than listing every fixture or evidence file.
 
 ```text
-src/svif/runtime.py                    # Orchestrator kernel
-src/svif/continuity/agnir.py           # Agnir Continuity Provider
-src/svif/execution/chatgpt.py          # ChatGPT Execution Surface bridge
-src/svif/capabilities/cloudflare.py    # Svif-owned Cloudflare Capability Provider
-
-integrations/chatgpt/                  # ChatGPT app/MCP packaging boundary
-integrations/cloudflare/               # Cloudflare provider descriptor and integration notes
-
-tests/test_founding_e2e.py             # founding Agnir + ChatGPT + Cloudflare product loop
-tests/                                # runtime/provider/surface behavior
-conformance/                          # portable contract conformance
-spec/                                 # internal portable contracts
-profiles/                             # specializations
-schemas/                              # machine-readable contracts
-history/                              # predecessor/retired-project evidence only
+svif/
+├── src/                              # executable Svif product code
+│   └── svif/
+│       ├── runtime.py                # Orchestrator kernel: begin/run/complete, verification, authority, reconciliation
+│       ├── continuity/               # Continuity Provider implementations/adapters
+│       │   └── agnir.py              # founding Agnir repository/filesystem Continuity Provider
+│       ├── execution/                # Execution Surface bridges
+│       │   └── chatgpt.py            # founding ChatGPT structured Execution Surface bridge
+│       └── capabilities/             # Capability Providers that inspect or affect external systems
+│           └── cloudflare.py         # founding Cloudflare Workers Capability Provider
+│
+├── integrations/                     # platform/provider packaging and integration boundaries
+│   ├── chatgpt/                      # ChatGPT app/MCP integration material around the execution bridge
+│   └── cloudflare/                   # Cloudflare descriptor, transport boundary, and integration notes
+│
+├── spec/                             # portable product contracts used by the Orchestrator and integrations
+│   ├── CORE.md                       # orchestration lifecycle and kernel invariants
+│   ├── PROJECT_BINDING.md            # how a Project selects continuity/execution/capability bindings
+│   ├── EVIDENCE.md                   # evidence and provenance semantics
+│   └── CAPABILITY_ADAPTER.md         # Capability Provider contract
+│
+├── profiles/                         # specialized behavior layered on the portable contracts
+│   └── SOFTWARE_DELIVERY.md          # current software-delivery specialization
+├── schemas/                          # machine-readable serializations of Svif contracts
+├── tests/                            # runtime, provider, surface, continuity, and founding E2E tests
+├── conformance/                      # portable-contract conformance checks and fixtures
+├── checks/                           # repository/product-integrity checks
+├── history/                          # predecessor and retired-project evidence; not active runtime dependencies
+│
+├── .agnir/                           # this Svif Project's canonical state, next actions, decisions, and evidence
+├── .github/workflows/                # CI that runs repository, runtime, and conformance checks
+├── AGNIR.yaml                        # locates this Project's Agnir continuity under the current filesystem profile
+├── SVIF.yaml                         # repository/filesystem serialization of this Project's Svif binding
+├── ARCHITECTURE.md                   # detailed product architecture and dependency boundaries
+├── README.md                         # English project entry point
+├── README.zh-CN.md                   # Simplified Chinese project entry point
+└── VERSION                           # current Svif development version
 ```
 
-Python is the current executable reference vehicle; it does not freeze the eventual distribution technology.
+Python is the current executable reference vehicle; it does not freeze the eventual distribution technology. The mature distribution target remains an installable Plugin; the current ChatGPT app/MCP work is the founding Execution Surface integration, not a replacement for that product target.
 
 ## Current founding path
 
@@ -109,6 +133,8 @@ The founding E2E is intentionally credential-free. It proves the Svif product lo
 ## Documentation synchronization
 
 `README.md` and `README.zh-CN.md` are maintained as parallel entry points. Any change to product architecture, component ownership, dependency direction, authority/provenance boundaries, or runtime flow **must update the affected README diagrams in the same change set**. The diagrams describe current architecture, not historical snapshots.
+
+The plain-text **Repository Structure** tree is maintained under the same rule. If a documented directory is added, removed, moved, or changes responsibility, both language versions must update the affected tree in the same change set. The tree is explanatory rather than exhaustive: it should stay small enough to help a new reader navigate the repository.
 
 ## Checks
 

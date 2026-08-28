@@ -15,6 +15,10 @@ ALLOWED_MANIFEST_KEYS = {
 }
 ALLOWED_AUTHOR_KEYS = {"name", "email", "url"}
 NAME_PATTERN = re.compile(r"^(?!.*(?:--|\.\.))[a-z0-9](?:[a-z0-9.-]*[a-z0-9])?$")
+SKILL_NAME_PATTERN = re.compile(r"^(?!.*--)[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$")
+ALLOWED_SKILL_FRONTMATTER_KEYS = {
+    "name", "description", "license", "compatibility", "metadata", "allowed-tools",
+}
 
 
 def validate_agent_plugins_1_0_manifest(manifest: object) -> list[str]:
@@ -63,6 +67,64 @@ def validate_agent_plugins_1_0_manifest(manifest: object) -> list[str]:
     return errors
 
 
+def parse_skill_frontmatter(text: str) -> tuple[dict[str, str], str, list[str]]:
+    errors: list[str] = []
+    if not text.startswith("---\n"):
+        return {}, text, ["SKILL.md must start with YAML frontmatter"]
+
+    closing = text.find("\n---\n", 4)
+    if closing == -1:
+        return {}, text, ["SKILL.md frontmatter must have a closing delimiter"]
+
+    raw_frontmatter = text[4:closing]
+    body = text[closing + 5:]
+    fields: dict[str, str] = {}
+    for line in raw_frontmatter.splitlines():
+        if not line.strip():
+            continue
+        if line.startswith((" ", "\t")) or ":" not in line:
+            errors.append("test validator supports only flat scalar frontmatter used by this Skill")
+            continue
+        key, value = line.split(":", 1)
+        key = key.strip()
+        value = value.strip()
+        if key in fields:
+            errors.append(f"duplicate frontmatter key: {key}")
+        fields[key] = value
+
+    return fields, body, errors
+
+
+def validate_agent_skill(skill_dir: Path, text: str) -> list[str]:
+    fields, body, errors = parse_skill_frontmatter(text)
+    unknown = set(fields) - ALLOWED_SKILL_FRONTMATTER_KEYS
+    if unknown:
+        errors.append(f"unsupported Agent Skills frontmatter fields: {sorted(unknown)}")
+
+    name = fields.get("name", "")
+    if not name:
+        errors.append("skill name is required")
+    elif len(name) > 64 or not SKILL_NAME_PATTERN.fullmatch(name):
+        errors.append("skill name violates Agent Skills naming constraints")
+    elif name != skill_dir.name:
+        errors.append("skill name must match its parent directory name")
+
+    description = fields.get("description", "")
+    if not description:
+        errors.append("skill description is required")
+    elif len(description) > 1024:
+        errors.append("skill description exceeds 1024 characters")
+
+    compatibility = fields.get("compatibility")
+    if compatibility is not None and not 1 <= len(compatibility) <= 500:
+        errors.append("skill compatibility must be 1-500 characters when present")
+
+    if not body.strip():
+        errors.append("SKILL.md must contain instruction body content")
+
+    return errors
+
+
 class PluginPackageTests(unittest.TestCase):
     def test_manifest_conforms_to_agent_plugins_1_0_schema_constraints(self) -> None:
         manifest = json.loads((PLUGIN_ROOT / "plugin.json").read_text(encoding="utf-8"))
@@ -79,10 +141,19 @@ class PluginPackageTests(unittest.TestCase):
         self.assertTrue(any("additional properties" in error for error in errors))
         self.assertTrue(any("name violates" in error for error in errors))
 
-    def test_svif_skill_has_required_frontmatter_and_core_guards(self) -> None:
+    def test_svif_skill_conforms_to_agent_skills_frontmatter_contract(self) -> None:
+        skill_dir = PLUGIN_ROOT / "skills" / "svif"
+        text = (skill_dir / "SKILL.md").read_text(encoding="utf-8")
+        self.assertEqual(validate_agent_skill(skill_dir, text), [])
+
+    def test_skill_validator_rejects_name_directory_mismatch_and_long_description(self) -> None:
+        invalid = "---\nname: other-skill\ndescription: " + ("x" * 1025) + "\n---\n\nDo work.\n"
+        errors = validate_agent_skill(PLUGIN_ROOT / "skills" / "svif", invalid)
+        self.assertTrue(any("parent directory" in error for error in errors))
+        self.assertTrue(any("1024" in error for error in errors))
+
+    def test_svif_skill_has_required_core_guards(self) -> None:
         text = (PLUGIN_ROOT / "skills" / "svif" / "SKILL.md").read_text(encoding="utf-8")
-        self.assertTrue(text.startswith("---\nname: svif\n"))
-        self.assertIn("description:", text)
         for marker in (
             "Project root -> AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml",
             "repository-filesystem/0.1",

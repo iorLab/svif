@@ -55,11 +55,11 @@
 
 ## 2026-08-28 — Mature distribution target preserved
 
-- The mature Svif product/distribution target remains an **installable Plugin**, preserving the predecessor roadmap's long-term product form.
+- The mature Svif product/distribution target is an **installable Plugin**.
+- This is a current Svif decision. Historical ZeroLocal material is not its authority and is not required for the target to remain valid.
 - ChatGPT app/MCP packaging is the founding/current ChatGPT Execution Surface integration and MUST NOT be treated as a replacement for the mature Plugin target.
 - Distribution may package integrations/providers/onboarding, but it MUST NOT duplicate Orchestrator semantics or move canonical Project truth out of the configured Continuity Provider.
 - Dependency direction is `Plugin / distribution -> Execution Surface integration -> Orchestrator -> Continuity + Capability Providers`.
-- This durable target was explicitly restored after predecessor-migration review found that the current Agnir state/decisions had accidentally stopped stating it even though it remained part of the accepted product direction.
 
 ## 2026-08-28 — README repository structure tree
 
@@ -68,3 +68,11 @@
 - Each documented directory or key file SHOULD include a short responsibility explanation directly in the tree.
 - If a documented directory is added, removed, moved, or materially changes responsibility, `README.md` and `README.zh-CN.md` MUST update the affected tree in the same change set.
 - Repository integrity checks enforce the presence of the explanatory tree and key module anchors without byte-for-byte locking the whole tree.
+
+## 2026-08-28 — Greenfield mainline; legacy is history only
+
+- This decision supersedes any interpretation that Svif `0.2` must migrate, preserve compatibility with, or prove conformance against ZeroLocal/legacy architecture.
+- `legacy/zerolocal-v0.1` and other historical material are retained only for lineage, audit, and optional historical reference.
+- Active `main` contracts, runtime, conformance, release gates, Project state, and next actions MUST NOT depend on legacy serialization, `.chatgpt/` memory layout, Skills-era structure, standalone reference repositories, or predecessor validation projects.
+- Historical ideas MAY be reconsidered, but they become active only when independently reaffirmed in current Svif architecture/decisions.
+- Current Svif architecture is intentionally greenfield: Orchestrator + Continuity Provider + Execution Surface + Capability Provider is authoritative even where it differs materially from ZeroLocal.

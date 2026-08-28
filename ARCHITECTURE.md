@@ -91,9 +91,13 @@ These are internal product contracts, not separate products.
 
 ## 9. Distribution
 
+The mature Svif product/distribution target remains an **installable Plugin**. This is a durable product goal inherited from the predecessor roadmap and is distinct from any one execution-surface packaging mechanism.
+
+Current ChatGPT app/MCP packaging is the founding ChatGPT **Execution Surface integration**. It is one integration path packaged by Svif; it does not redefine Svif itself as a ChatGPT-only product and does not replace the mature Plugin target.
+
 Distribution dependency direction is:
 
-`distribution -> Execution Surface integration -> Orchestrator -> Continuity + Capability Providers`
+`Plugin / distribution -> Execution Surface integration -> Orchestrator -> Continuity + Capability Providers`
 
 A distribution may bundle provider adapters and onboarding, but canonical Project truth remains with the configured Continuity Provider.
 
@@ -108,4 +112,4 @@ A provider fixture does not justify a separate canonical repository.
 
 ## 11. Near-term target
 
-The generic Orchestrator, Agnir Continuity Provider, ChatGPT bridge, and Svif-owned Cloudflare Capability Provider now belong to one product tree. The next target is one in-repository founding E2E path across Agnir + ChatGPT + Cloudflare, followed by distribution packaging and broader non-founding neutrality evidence.
+The generic Orchestrator, Agnir Continuity Provider, ChatGPT bridge, Svif-owned Cloudflare Capability Provider, and credential-free founding E2E now belong to one product tree. The next target is hardening the ChatGPT app/MCP packaging around the existing bridge, followed by broader non-founding neutrality evidence and eventual Plugin packaging/graduation without duplicating kernel semantics.

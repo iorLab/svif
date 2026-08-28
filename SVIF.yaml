@@ -37,6 +37,7 @@ checks:
   agnir_continuity: "tests/test_agnir_continuity.py"
   chatgpt_surface: "tests/test_chatgpt_surface.py"
   cloudflare_capability: "tests/test_cloudflare_capability.py"
+  founding_e2e: "tests/test_founding_e2e.py"
 
 extensions:
   svif/repository:

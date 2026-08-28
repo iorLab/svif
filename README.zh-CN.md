@@ -113,7 +113,7 @@ svif/
 └── VERSION                           # 当前 Svif development version
 ```
 
-需要查看当前 `main` 的**完整文件级展开**（包含每个 tracked 文件及其职责说明），请看 **[目录树.md](目录树.md)**。
+需要查看当前 `main` 的**完整文件级展开**（包含每个 tracked 文件及其职责说明），请看 **[完整目录树：REPOSITORY_TREE.md](REPOSITORY_TREE.md)**。
 
 Python 目前只是可执行 reference vehicle，并不冻结未来的分发技术。Svif 成熟产品的分发目标仍然是 **installable Plugin**；当前 ChatGPT app/MCP 工作是首个 Execution Surface integration，不是对 Plugin 产品目标的替代。
 
@@ -136,7 +136,7 @@ Python 目前只是可执行 reference vehicle，并不冻结未来的分发技�
 
 `README.md` 与 `README.zh-CN.md` 是并行维护的项目入口。只要产品架构、组件归属、依赖方向、authority/provenance boundary 或运行流程发生变化，**同一个 change set 必须同步更新受影响的 README 架构图和运行流程图**。这些图描述的是当前架构，而不是历史快照。
 
-纯文本的**仓库结构树**继续作为快速导航，保持简洁；完整文件级结构则由 **`目录树.md`** 维护。只要 tracked 文件被新增、删除、移动，或者职责发生实质变化，必须在同一个 change set 中更新 `目录树.md`；如果变化也影响 README 的简略树，则中英文 README 必须同时更新。
+纯文本的**仓库结构树**继续作为快速导航，保持简洁；完整文件级结构则由 **`REPOSITORY_TREE.md`** 维护。只要 tracked 文件被新增、删除、移动，或者职责发生实质变化，必须在同一个 change set 中更新 `REPOSITORY_TREE.md`；如果变化也影响 README 的简略树，则中英文 README 必须同时更新。
 
 中文版图表继续遵循理解优先原则：**节点必须优先让中文读者直接看懂“这个东西是什么、负责什么”，英文术语只作为括注或代码/API 名称保留，不得用生硬直译替代解释。**
 

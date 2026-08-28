@@ -76,6 +76,7 @@ svif/                                                     # Svif 产品主仓库
 │   ├── test_chatgpt_surface.py                           # ChatGPT Execution Surface materialize / parse / identity 约束
 │   ├── test_cloudflare_capability.py                     # Cloudflare provider 的 actuation / observation / subject-target 约束
 │   ├── test_founding_e2e.py                              # founding Agnir + ChatGPT + Cloudflare 完整产品闭环
+│   ├── test_plugin_component_discovery.py                # Agent Plugins 固定组件位置、直接子 Skill 发现与 MCP failure isolation 回归测试
 │   └── test_plugin_package.py                            # Plugin manifest/Skill/package、filesystem failure isolation 与 Agnir activation boundary 验证
 │
 ├── conformance/                                          # Portable contracts 的一致性验证，不等同于产品 runtime

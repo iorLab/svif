@@ -1,28 +1,73 @@
 # Svif
 
+**English** | [简体中文](README.zh-CN.md)
+
 Svif is a **Project orchestration product** coordinating durable Project continuity, execution surfaces, and capability providers.
 
 > The Project persists; Executors and execution environments may change.
 
-## Canonical repositories
+## Architecture Diagram
 
-Svif now uses a deliberately small repository topology:
+```mermaid
+flowchart LR
+    P[Principal / User] --> E[Execution Surface\nChatGPT today]
+
+    subgraph S[iorLab/svif]
+        O[Svif Orchestrator]
+        X[Execution integration\nsrc/svif/execution]
+        K[Capability Providers\nsrc/svif/capabilities]
+        R[Portable contracts\nEvidence · Authority · Profiles]
+        O --- R
+        X <--> O
+        O <--> K
+    end
+
+    E <--> X
+    O <--> C[Continuity Provider\nAgnir today]
+    K <--> F[External systems\nCloudflare today]
+
+    C -. independent protocol .-> A[iorLab/agnir]
+```
+
+Svif owns the coordination boundary. The Orchestrator does not permanently depend on Agnir, ChatGPT, or Cloudflare; they are the founding/current bindings for the Continuity Provider, Execution Surface, and Capability Provider roles.
+
+The active canonical repository topology is deliberately small:
 
 - `iorLab/svif` — the complete Svif product: Orchestrator, integrations, capability providers, contracts, tests, and E2E fixtures;
-- `iorLab/agnir` — the independent Agnir continuity protocol consumed by Svif.
+- `iorLab/agnir` — the independent Agnir continuity protocol consumed through Svif's Continuity Provider interface.
 
-There is no separate Cloudflare reference project in the active architecture. Cloudflare is a Svif Capability Provider and its reference/E2E material lives in this repository.
+Provider-specific Svif behavior stays in `iorLab/svif` unless it becomes an independently useful product or protocol in its own right.
 
-## Product architecture
+## Runtime / Operation Flow
 
-The four first-class components are:
+```mermaid
+flowchart TD
+    I[Principal intent] --> B[Orchestrator.begin\nresolve Project binding]
+    B --> L[Load durable continuity]
+    L <--> A[Agnir Continuity Provider]
+    L --> M[Materialize Project-scoped execution context]
+    M --> E[Execution Surface / Executor\nChatGPT today]
+    E --> W[Structured WorkResult\nsubject + evidence + requested effect]
+    W --> V{Exact subject verified?}
+    V -- No --> STOP[Stop / repair\nno false checkpoint]
+    V -- Yes --> Q{External effect requested?}
+    Q -- No --> C[Reconcile + checkpoint]
+    Q -- Yes --> U{Required authority granted?}
+    U -- No --> STOP
+    U -- Yes --> D[Capability Provider actuates\nCloudflare today]
+    D --> O[Independent observation]
+    O --> R{Observed subject / target match?}
+    R -- No --> STOP
+    R -- Yes --> C
+    C --> A
+    C --> N[Durable Project truth ready\nfor the next Executor]
+```
 
-1. **Orchestrator** — cross-boundary coordination and invariants;
-2. **Continuity Provider** — durable Project truth; founding provider: Agnir;
-3. **Execution Surface** — where an Executor performs work; founding surface: ChatGPT;
-4. **Capability Provider** — inspectable/effectful external capabilities; founding provider family: Cloudflare.
+The default internal lifecycle is:
 
-The internal lifecycle remains `DISCOVER -> PLAN -> CHANGE -> VERIFY -> DELIVER -> OBSERVE -> CHECKPOINT`, with `REPAIR` returning to the earliest violated invariant.
+`DISCOVER -> PLAN -> CHANGE -> VERIFY -> DELIVER -> OBSERVE -> CHECKPOINT`
+
+`REPAIR` returns to the earliest violated invariant. For externally driven surfaces such as ChatGPT, `Orchestrator.begin()` creates the bound operation/session and `Orchestrator.complete()` reconciles the returned result. Untrusted model/result payloads cannot self-grant protected authority.
 
 ## Repository layout
 
@@ -48,14 +93,18 @@ Python is the current executable reference vehicle; it does not freeze the event
 ## Current founding path
 
 - Agnir repository/filesystem continuity adapter exists.
-- ChatGPT structured execution bridge exists and supports externally driven `Orchestrator.begin()` / `Orchestrator.complete()` handoff.
-- Cloudflare provider logic is now owned by Svif and is transport-injected so tests do not require live credentials.
+- ChatGPT structured execution bridge supports externally driven `Orchestrator.begin()` / `Orchestrator.complete()` handoff.
+- Cloudflare provider logic is owned by Svif and uses an injected transport boundary, so tests do not require live credentials.
 - Protected authority remains outside untrusted model/result payloads.
-- External success still requires exact verified-subject delivery plus independent observation before checkpoint.
+- External success requires exact verified-subject delivery plus independent observation before checkpoint.
 
 ## Project binding
 
-`SVIF.yaml` is the repository/filesystem serialization of `project-binding/0.2` for this Project. It describes product-owned implementation artifacts while keeping execution and capability bindings replaceable.
+`SVIF.yaml` is the repository/filesystem serialization of `project-binding/0.2` for this Project. It describes product-owned implementation artifacts while keeping continuity, execution, and capability bindings replaceable.
+
+## Documentation synchronization
+
+`README.md` and `README.zh-CN.md` are maintained as parallel entry points. Any change to product architecture, component ownership, dependency direction, authority/provenance boundaries, or runtime flow **must update the affected README diagrams in the same change set**. The diagrams describe current architecture, not historical snapshots.
 
 ## Checks
 

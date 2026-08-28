@@ -52,3 +52,11 @@
 - A successful founding E2E proves the orchestration loop, boundary contracts, exact-subject verification, independent observation, and Agnir checkpoint/resume behavior.
 - Credential-free founding E2E success does **not** constitute evidence of live Cloudflare production actuation. Live provider delivery remains separately authorized and separately evidenced.
 - Product-check run `33143308949` succeeded with repository-integrity, runtime-kernel, and portable-contracts jobs; durable evidence is `.agnir/evidence/2026-08-28-founding-e2e.md`.
+
+## 2026-08-28 — Mature distribution target preserved
+
+- The mature Svif product/distribution target remains an **installable Plugin**, preserving the predecessor roadmap's long-term product form.
+- ChatGPT app/MCP packaging is the founding/current ChatGPT Execution Surface integration and MUST NOT be treated as a replacement for the mature Plugin target.
+- Distribution may package integrations/providers/onboarding, but it MUST NOT duplicate Orchestrator semantics or move canonical Project truth out of the configured Continuity Provider.
+- Dependency direction is `Plugin / distribution -> Execution Surface integration -> Orchestrator -> Continuity + Capability Providers`.
+- This durable target was explicitly restored after predecessor-migration review found that the current Agnir state/decisions had accidentally stopped stating it even though it remained part of the accepted product direction.

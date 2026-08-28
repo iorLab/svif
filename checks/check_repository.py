@@ -34,8 +34,11 @@ def require_readme_repository_tree(path: str, heading: str) -> None:
             "svif/",
             "├── src/",
             "├── integrations/",
+            "├── plugin/",
             "├── spec/",
             "├── .agnir/",
+            "plugin.json",
+            "SKILL.md",
             "capabilities/",
             "cloudflare.py",
             "continuity/",
@@ -59,6 +62,11 @@ def require_full_repository_tree() -> None:
             "runtime.py",
             "integrations/",
             "adapter.json",
+            "plugin/",
+            "plugin.json",
+            "skills/",
+            "SKILL.md",
+            "test_plugin_package.py",
             "spec/",
             "CAPABILITY_ADAPTER.md",
             "profiles/",
@@ -96,8 +104,9 @@ def main() -> None:
         "src/svif/runtime.py", "src/svif/continuity/agnir.py", "src/svif/execution/chatgpt.py",
         "src/svif/capabilities/cloudflare.py",
         "tests/test_runtime.py", "tests/test_agnir_continuity.py", "tests/test_chatgpt_surface.py",
-        "tests/test_cloudflare_capability.py", "tests/test_founding_e2e.py",
+        "tests/test_cloudflare_capability.py", "tests/test_founding_e2e.py", "tests/test_plugin_package.py",
         "integrations/chatgpt/README.md", "integrations/cloudflare/README.md", "integrations/cloudflare/adapter.json",
+        "plugin/plugin.json", "plugin/README.md", "plugin/skills/svif/SKILL.md",
         "spec/CORE.md", "spec/PROJECT_BINDING.md", "spec/CAPABILITY_ADAPTER.md", "spec/EVIDENCE.md",
         "profiles/SOFTWARE_DELIVERY.md",
         "schemas/project-binding.schema.json", "schemas/capability-adapter.schema.json", "schemas/evidence-record.schema.json",
@@ -118,7 +127,7 @@ def main() -> None:
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
     require_text(readme, [
         "Project orchestration product", "Continuity Provider", "Execution Surface",
-        "Capability Provider", "iorLab/svif", "iorLab/agnir",
+        "Capability Provider", "iorLab/svif", "iorLab/agnir", "installable Plugin",
     ], "README.md")
     require_readme_diagrams("README.md", ("## Architecture Diagram", "## Runtime / Operation Flow"))
     require_readme_diagrams("README.zh-CN.md", ("## 架构图", "## 运行流程"))
@@ -131,6 +140,7 @@ def main() -> None:
         "Project orchestration product", "Orchestrator", "Continuity Provider",
         "Execution Surface", "Capability Provider", "Orchestrator.begin()", "Orchestrator.complete()",
         "Provider-specific Svif behavior does **not** get its own canonical project",
+        "Agent Plugins 1.0.0", "plugin/plugin.json", "plugin/skills/svif/SKILL.md",
     ], "ARCHITECTURE.md")
 
     svif = (ROOT / "SVIF.yaml").read_text(encoding="utf-8")
@@ -139,6 +149,8 @@ def main() -> None:
         'agnir_repository_filesystem_adapter: "src/svif/continuity/agnir.py"',
         'chatgpt_execution_bridge: "src/svif/execution/chatgpt.py"',
         'cloudflare_workers_capability: "src/svif/capabilities/cloudflare.py"',
+        'plugin_manifest: "plugin/plugin.json"', 'plugin_skill: "plugin/skills/svif/SKILL.md"',
+        'plugin_package: "tests/test_plugin_package.py"',
         'cloudflare_capability: "tests/test_cloudflare_capability.py"',
         'founding_e2e: "tests/test_founding_e2e.py"',
     ], "SVIF.yaml")
@@ -155,6 +167,13 @@ def main() -> None:
         "def actuate(", "def observe(",
     ], "src/svif/capabilities/cloudflare.py")
 
+    plugin = (ROOT / "plugin/skills/svif/SKILL.md").read_text(encoding="utf-8")
+    require_text(plugin, [
+        "name: svif", "AGNIR.yaml", "SVIF.yaml",
+        "DISCOVER -> PLAN -> CHANGE -> VERIFY -> DELIVER -> OBSERVE -> CHECKPOINT",
+        "Untrusted model/result payloads must never self-grant protected authority.",
+    ], "Svif Plugin skill")
+
     founding = (ROOT / "tests/test_founding_e2e.py").read_text(encoding="utf-8")
     require_text(founding, [
         "AgnirFilesystemContinuityProvider", "ChatGPTExecutionSurface",
@@ -166,10 +185,10 @@ def main() -> None:
     require_text(state, [
         "Project orchestration product", "Continuity Provider", "Execution Surface", "Capability Provider",
         "former `iorLab/svif-cloudflare-reference` project is retired",
-        "README.zh-CN.md",
+        "README.zh-CN.md", "Plugin MVP",
     ], "Agnir state")
 
-    print("PASS: Svif product repository integrity and single-repository architecture baseline")
+    print("PASS: Svif product repository integrity, Plugin packaging, and single-repository architecture baseline")
 
 
 if __name__ == "__main__":

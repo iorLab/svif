@@ -12,6 +12,8 @@ Svif is a **Project orchestration product** coordinating durable Project continu
 flowchart LR
     P[Principal / User] --> E[Execution Surface\nChatGPT today]
 
+    D[Installable Plugin\nAgent Plugins 1.0\nSkill-first MVP] --> E
+
     subgraph S[iorLab/svif]
         O[Svif Orchestrator]
         X[Execution integration\nsrc/svif/execution]
@@ -33,7 +35,7 @@ Svif owns the coordination boundary. The Orchestrator does not permanently depen
 
 The active canonical repository topology is deliberately small:
 
-- `iorLab/svif` — the complete Svif product: Orchestrator, integrations, capability providers, contracts, tests, and E2E fixtures;
+- `iorLab/svif` — the complete Svif product: Orchestrator, integrations, capability providers, installable Plugin packaging, contracts, tests, and E2E fixtures;
 - `iorLab/agnir` — the independent Agnir continuity protocol consumed through Svif's Continuity Provider interface.
 
 Provider-specific Svif behavior stays in `iorLab/svif` unless it becomes an independently useful product or protocol in its own right.
@@ -42,7 +44,8 @@ Provider-specific Svif behavior stays in `iorLab/svif` unless it becomes an inde
 
 ```mermaid
 flowchart TD
-    I[Principal intent] --> B[Orchestrator.begin\nresolve Project binding]
+    I[Principal intent] --> P[Plugin / Execution Surface workflow\ndiscover Project and durable state]
+    P --> B[Orchestrator.begin\nresolve Project binding]
     B --> L[Load durable continuity]
     L <--> A[Agnir Continuity Provider]
     L --> M[Materialize Project-scoped execution context]
@@ -69,6 +72,25 @@ The default internal lifecycle is:
 
 `REPAIR` returns to the earliest violated invariant. For externally driven surfaces such as ChatGPT, `Orchestrator.begin()` creates the bound operation/session and `Orchestrator.complete()` reconciles the returned result. Untrusted model/result payloads cannot self-grant protected authority.
 
+## Installable Plugin MVP
+
+Svif now ships a **Skill-first installable Plugin MVP** under `plugin/`, using the portable Agent Plugins 1.0.0 package layout.
+
+```text
+plugin/
+├── plugin.json
+├── README.md
+└── skills/
+    └── svif/
+        └── SKILL.md
+```
+
+The Plugin can be tested immediately in compatible clients. It guides the executor to discover Agnir first, run real Project work through the Svif lifecycle, preserve verification/provenance and trusted authority boundaries, independently observe external effects, and checkpoint durable truth. It does not duplicate the Orchestrator and does not make an execution surface canonical memory.
+
+The first release is deliberately Skill-only. `mcp.json` will be added when the remote Svif MCP/App component is ready to reuse the existing `Orchestrator.begin()` / `Orchestrator.complete()` boundary. MCP is an enhancement, not a gate for beginning Plugin testing and iteration.
+
+See [`plugin/README.md`](plugin/README.md) for the install/smoke-test path.
+
 ## Repository Structure
 
 This tree is the practical map of the repository. It is intentionally selective: it shows the directories and key files that explain where each product responsibility lives, rather than listing every fixture or evidence file.
@@ -85,20 +107,19 @@ svif/
 │       └── capabilities/             # Capability Providers that inspect or affect external systems
 │           └── cloudflare.py         # founding Cloudflare Workers Capability Provider
 │
-├── integrations/                     # platform/provider packaging and integration boundaries
-│   ├── chatgpt/                      # ChatGPT app/MCP integration material around the execution bridge
+├── integrations/                     # platform/provider integration boundaries
+│   ├── chatgpt/                      # ChatGPT app/MCP integration around the execution bridge
 │   └── cloudflare/                   # Cloudflare descriptor, transport boundary, and integration notes
 │
-├── spec/                             # portable product contracts used by the Orchestrator and integrations
-│   ├── CORE.md                       # orchestration lifecycle and kernel invariants
-│   ├── PROJECT_BINDING.md            # how a Project selects continuity/execution/capability bindings
-│   ├── EVIDENCE.md                   # evidence and provenance semantics
-│   └── CAPABILITY_ADAPTER.md         # Capability Provider contract
+├── plugin/                           # installable Agent Plugins 1.0 distribution package
+│   ├── plugin.json                   # portable Plugin manifest
+│   ├── README.md                     # install, smoke-test, and packaging notes
+│   └── skills/svif/SKILL.md          # Svif Project-orchestration workflow Skill
 │
-├── profiles/                         # specialized behavior layered on the portable contracts
-│   └── SOFTWARE_DELIVERY.md          # current software-delivery specialization
+├── spec/                             # portable product contracts used by the Orchestrator and integrations
+├── profiles/                         # specialized behavior layered on portable contracts
 ├── schemas/                          # machine-readable serializations of Svif contracts
-├── tests/                            # runtime, provider, surface, continuity, and founding E2E tests
+├── tests/                            # runtime, provider, surface, continuity, Plugin, and E2E tests
 ├── conformance/                      # portable-contract conformance checks and fixtures
 ├── checks/                           # repository/product-integrity checks
 ├── history/                          # predecessor and retired-project evidence; not active runtime dependencies
@@ -115,14 +136,16 @@ svif/
 
 For the fully expanded file-by-file map of the current `main`, including responsibility annotations for every tracked file, see **[REPOSITORY_TREE.md](REPOSITORY_TREE.md)**.
 
-Python is the current executable reference vehicle; it does not freeze the eventual distribution technology. The mature distribution target remains an installable Plugin; the current ChatGPT app/MCP work is the founding Execution Surface integration, not a replacement for that product target.
+Python is the current executable reference vehicle; it does not freeze the eventual distribution technology. The installable Plugin is now an active product artifact rather than a future-only target.
 
 ## Current founding path
 
 - Agnir repository/filesystem continuity adapter exists.
 - ChatGPT structured execution bridge supports externally driven `Orchestrator.begin()` / `Orchestrator.complete()` handoff.
 - Cloudflare provider logic is owned by Svif and uses an injected transport boundary, so tests do not require live credentials.
-- `tests/test_founding_e2e.py` now composes all three through the real Orchestrator boundary: continuity is loaded from an Agnir Project, the ChatGPT bridge materializes and parses the structured operation, trusted integration authority is supplied at completion, Cloudflare delivery is actuated and independently observed through fake non-secret transport, and the resulting state/evidence is checkpointed back through Agnir.
+- `tests/test_founding_e2e.py` composes all three through the real Orchestrator boundary.
+- `plugin/plugin.json` + `plugin/skills/svif/SKILL.md` now form the first installable Plugin MVP.
+- `tests/test_plugin_package.py` verifies the package baseline and ensures the distribution layer does not shadow the runtime.
 - Protected authority remains outside untrusted model/result payloads.
 - External success requires exact verified-subject delivery plus independent observation before checkpoint.
 
@@ -130,13 +153,13 @@ The founding E2E is intentionally credential-free. It proves the Svif product lo
 
 ## Project binding
 
-`SVIF.yaml` is the repository/filesystem serialization of `project-binding/0.2` for this Project. It describes product-owned implementation artifacts while keeping continuity, execution, and capability bindings replaceable.
+`SVIF.yaml` is the repository/filesystem serialization of `project-binding/0.2` for this Project. It also registers the current product-owned Plugin artifacts while keeping continuity, execution, and capability bindings replaceable.
 
 ## Documentation synchronization
 
-`README.md` and `README.zh-CN.md` are maintained as parallel entry points. Any change to product architecture, component ownership, dependency direction, authority/provenance boundaries, or runtime flow **must update the affected README diagrams in the same change set**. The diagrams describe current architecture, not historical snapshots.
+`README.md` and `README.zh-CN.md` are maintained as parallel entry points. Any change to product architecture, component ownership, dependency direction, authority/provenance boundaries, runtime flow, or documented repository structure **must update both language versions in the same change set**.
 
-The plain-text **Repository Structure** tree is maintained under the same rule as a compact navigation view. The exhaustive companion **`REPOSITORY_TREE.md`** is the file-level map of the active repository and must be updated whenever tracked files are added, removed, moved, or materially change responsibility. If that change affects the compact tree, both README language versions must update it in the same change set as well.
+The exhaustive companion **`REPOSITORY_TREE.md`** is the file-level map of the active repository and must be updated whenever tracked files are added, removed, moved, or materially change responsibility.
 
 ## Checks
 
@@ -148,4 +171,4 @@ PYTHONPATH=src python -m unittest discover -s tests -v
 
 ## Next
 
-The next milestone is hardening the concrete ChatGPT app/MCP packaging around the now-executable founding product loop. After that: broader neutrality evidence, multi-project isolation with Agnir, and release compatibility work. Live Cloudflare actuation remains separately gated and is not required for the credential-free founding E2E.
+The next milestone is no longer “prepare for Plugin packaging.” The Plugin exists. Next is **install/use/repair iteration**: test the Skill-first Plugin on real Projects, tighten the workflow from observed failures, and then add the remote ChatGPT MCP/App component without duplicating kernel semantics. Live Cloudflare actuation remains separately gated.

@@ -21,6 +21,7 @@ def validate_agent_plugins_1_0_manifest(manifest: object) -> list[str]:
     errors: list[str] = []
     if not isinstance(manifest, dict):
         return ["manifest must be an object"]
+
     unknown = set(manifest) - ALLOWED_MANIFEST_KEYS
     if unknown:
         errors.append(f"additional properties are forbidden: {sorted(unknown)}")
@@ -32,9 +33,11 @@ def validate_agent_plugins_1_0_manifest(manifest: object) -> list[str]:
         name = manifest["name"]
         if not isinstance(name, str) or not 1 <= len(name) <= 64 or not NAME_PATTERN.fullmatch(name):
             errors.append("name violates Agent Plugins 1.0.0 constraints")
+
     for key in ("version", "description", "homepage", "repository", "license"):
         if key in manifest and not isinstance(manifest[key], str):
             errors.append(f"{key} must be a string")
+
     if "author" in manifest:
         author = manifest["author"]
         if not isinstance(author, dict):
@@ -46,14 +49,17 @@ def validate_agent_plugins_1_0_manifest(manifest: object) -> list[str]:
             for key, value in author.items():
                 if not isinstance(value, str):
                     errors.append(f"author.{key} must be a string")
+
     if "keywords" in manifest:
         keywords = manifest["keywords"]
         if not isinstance(keywords, list) or any(not isinstance(item, str) for item in keywords):
             errors.append("keywords must be an array of strings")
+
     if "extensions" in manifest:
         extensions = manifest["extensions"]
         if not isinstance(extensions, dict) or any(not isinstance(value, dict) for value in extensions.values()):
             errors.append("extensions must be an object whose values are objects")
+
     return errors
 
 
@@ -79,20 +85,29 @@ class PluginPackageTests(unittest.TestCase):
         self.assertIn("description:", text)
         for marker in (
             "Project root -> AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml",
-            "repository-filesystem/0.1", "AGNIR.yaml", "SVIF.yaml",
+            "repository-filesystem/0.1",
+            "AGNIR.yaml",
+            "SVIF.yaml",
             "DISCOVER -> PLAN -> CHANGE -> VERIFY -> DELIVER -> OBSERVE -> CHECKPOINT",
             "Untrusted model/result payloads must never self-grant protected authority.",
-            "Checkpoint durable truth", "REPOSITORY_TREE.md", "do not claim installation validation",
+            "Checkpoint durable truth",
+            "REPOSITORY_TREE.md",
+            "do not claim installation validation",
         ):
             self.assertIn(marker, text)
 
-    def test_svif_binding_uses_current_agnir_profile_without_live_legacy_ref(self) -> None:
-        text = (ROOT / "SVIF.yaml").read_text(encoding="utf-8")
-        self.assertIn('compatibility: "0.1"', text)
-        self.assertIn('profile: "repository-filesystem/0.1"', text)
-        self.assertIn('activation: "AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml"', text)
-        self.assertNotIn("predecessor_ref", text)
-        self.assertNotIn("legacy/zerolocal-v0.1", text)
+    def test_current_agnir_binding_has_no_live_predecessor_ref(self) -> None:
+        agnir = (ROOT / "AGNIR.yaml").read_text(encoding="utf-8")
+        svif = (ROOT / "SVIF.yaml").read_text(encoding="utf-8")
+
+        for text in (agnir, svif):
+            self.assertNotIn("predecessor_ref:", text)
+            self.assertNotIn("legacy/zerolocal-v0.1", text)
+
+        self.assertIn('discovery_profile: "repository-filesystem/0.1"', agnir)
+        self.assertIn('provider: "agnir"', svif)
+        self.assertIn('compatibility: "0.1"', svif)
+        self.assertIn('profile: "repository-filesystem/0.1"', svif)
 
     def test_plugin_mvp_is_skill_only_and_does_not_shadow_runtime(self) -> None:
         self.assertFalse((PLUGIN_ROOT / "mcp.json").exists())

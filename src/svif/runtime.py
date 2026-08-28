@@ -59,8 +59,8 @@ class ContinuitySnapshot:
 class ContinuityUpdate:
     """Provider-neutral durable-truth update returned by an Execution Surface.
 
-    Values are intentionally opaque to the Orchestrator. A concrete Continuity
-    Provider validates and serializes the values it supports.
+    Values are opaque to the Orchestrator. A concrete Continuity Provider
+    validates and serializes the values it supports.
     """
 
     state: object | None = None
@@ -110,6 +110,15 @@ class OperationOutcome:
     continuity_update: ContinuityUpdate = ContinuityUpdate()
 
 
+@dataclass(frozen=True)
+class OperationSession:
+    """Bound, continuity-loaded operation awaiting execution completion."""
+
+    binding: ProjectBinding
+    request: OperationRequest
+    context: ExecutionContext
+
+
 class ContinuityProvider(Protocol):
     provider_id: str
 
@@ -119,9 +128,13 @@ class ContinuityProvider(Protocol):
 
 
 class ExecutionSurface(Protocol):
-    surface_id: str
+    """Stable identity for a surface integration.
 
-    def execute(self, context: ExecutionContext, request: OperationRequest) -> WorkResult: ...
+    A surface may be synchronous (`execute`) or externally driven
+    (`begin`/materialize/`complete`) such as a ChatGPT MCP app.
+    """
+
+    surface_id: str
 
 
 class CapabilityProvider(Protocol):
@@ -135,9 +148,9 @@ class CapabilityProvider(Protocol):
 class Orchestrator:
     """Minimal executable Svif product kernel.
 
-    The kernel coordinates replaceable Continuity Providers, Execution Surfaces,
-    and Capability Providers. Concrete Agnir, ChatGPT, and Cloudflare bindings
-    live outside this class.
+    `run()` supports synchronous Execution Surfaces. `begin()` + `complete()`
+    support externally driven surfaces where the host (for example ChatGPT via
+    an MCP/App integration) calls into Svif rather than being invoked by Svif.
     """
 
     def __init__(
@@ -162,6 +175,18 @@ class Orchestrator:
                 raise BindingError(f"duplicate {label} identity: {identity}")
             result[identity] = item
         return result
+
+    def _continuity_for(self, binding: ProjectBinding) -> object:
+        provider = self._continuity.get(binding.continuity.provider)
+        if provider is None:
+            raise BindingError(f"unavailable Continuity Provider: {binding.continuity.provider}")
+        return provider
+
+    def _surface_for(self, binding: ProjectBinding) -> object:
+        surface = self._surfaces.get(binding.execution_surface)
+        if surface is None:
+            raise BindingError(f"unavailable Execution Surface: {binding.execution_surface}")
+        return surface
 
     @staticmethod
     def _successful_verification(evidence: tuple[EvidenceRecord, ...], subject: str) -> bool:
@@ -202,14 +227,11 @@ class Orchestrator:
                 "observation does not match the successfully delivered subject/target"
             )
 
-    def run(self, binding: ProjectBinding, request: OperationRequest) -> OperationOutcome:
-        continuity = self._continuity.get(binding.continuity.provider)
-        if continuity is None:
-            raise BindingError(f"unavailable Continuity Provider: {binding.continuity.provider}")
+    def begin(self, binding: ProjectBinding, request: OperationRequest) -> OperationSession:
+        """Load durable continuity and bind an operation before surface execution."""
 
-        surface = self._surfaces.get(binding.execution_surface)
-        if surface is None:
-            raise BindingError(f"unavailable Execution Surface: {binding.execution_surface}")
+        continuity = self._continuity_for(binding)
+        self._surface_for(binding)
 
         snapshot = continuity.load(binding.project_identity)
         if snapshot.project_identity != binding.project_identity:
@@ -220,12 +242,31 @@ class Orchestrator:
             operation_id=request.operation_id,
             continuity=snapshot,
         )
-        work = surface.execute(context, request)
+        return OperationSession(binding=binding, request=request, context=context)
+
+    def complete(
+        self,
+        session: OperationSession,
+        work: WorkResult,
+        *,
+        authority_grants: frozenset[str] = frozenset(),
+    ) -> OperationOutcome:
+        """Reconcile an externally/synchronously produced WorkResult and checkpoint.
+
+        `authority_grants` is supplied by a trusted integration layer. An
+        untrusted model/result payload cannot grant itself protected authority.
+        """
+
+        binding = session.binding
+        request = session.request
+        continuity = self._continuity_for(binding)
+
         if not work.subject_identity:
             raise ProvenanceMismatch("Execution Surface returned no stable subject identity")
 
         evidence = list(work.evidence)
         externally_effectful = False
+        effective_authority = request.authority_grants | authority_grants
 
         capability_request = work.capability_request
         if capability_request is not None:
@@ -255,7 +296,7 @@ class Orchestrator:
                 )
 
             required_authority = capability_request.authority_class
-            if required_authority and required_authority not in request.authority_grants:
+            if required_authority and required_authority not in effective_authority:
                 raise AuthorityRequired(
                     f"external actuation requires authority class: {required_authority}"
                 )
@@ -283,3 +324,17 @@ class Orchestrator:
 
         continuity.checkpoint(outcome)
         return outcome
+
+    def run(self, binding: ProjectBinding, request: OperationRequest) -> OperationOutcome:
+        """Convenience path for an Execution Surface that supports synchronous execute()."""
+
+        session = self.begin(binding, request)
+        surface = self._surface_for(binding)
+        execute = getattr(surface, "execute", None)
+        if not callable(execute):
+            raise BindingError(
+                f"Execution Surface {binding.execution_surface!r} is externally driven; "
+                "use begin()/complete() through its integration bridge"
+            )
+        work = execute(session.context, request)
+        return self.complete(session, work)

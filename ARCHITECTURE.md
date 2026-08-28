@@ -17,116 +17,66 @@ A Svif-managed operation has four first-class product components:
 3. **Execution Surface**
 4. **Capability Provider**
 
-The Principal supplies intent, policy, approval, authority, and risk acceptance where required. Distribution forms such as Skill, Plugin, CLI, SDK, or IDE integration package these components but do not become canonical Project truth.
-
-```text
-                         Principal
-                            |
-                            v
-                    +----------------+
-                    |      Svif      |
-                    |  Orchestrator  |
-                    +----------------+
-                      /      |      \
-                     /       |       \
-                    v        v        v
-          Continuity     Execution   Capability
-           Provider       Surface     Provider
-              |               |          |
-            Agnir          ChatGPT    Cloudflare
-          (current)       (current)    (current)
-```
+The Principal supplies intent, policy, approval, authority, and risk acceptance where required. Distribution forms such as Skill, Plugin, ChatGPT App, CLI, SDK, or IDE integration package these components but do not become canonical Project truth.
 
 Agnir, ChatGPT, and Cloudflare are the founding/current bindings. None is the permanent definition of Svif.
 
 ## 2. Orchestrator
 
-The Orchestrator is the Svif product kernel. For a material operation it is responsible for the cross-boundary coherence that no provider or surface can guarantee alone.
+The Orchestrator is the Svif product kernel. It owns cross-boundary coherence that no Continuity Provider, Execution Surface, or Capability Provider can guarantee alone.
 
-It MUST be able to:
+It MUST be able to resolve Project/bindings, load continuity, materialize execution context, establish verification/authority/effect requirements, preserve provenance, invoke applicable capabilities, require independent observation for external success, reconcile resulting state, and checkpoint durable truth.
 
-- resolve the Project identity and applicable Svif bindings;
-- load durable continuity from the configured Continuity Provider;
-- materialize the minimum execution context needed by the active Execution Surface;
-- establish operation scope, required verification, authority boundaries, and effect/observation requirements before material mutation;
-- select and invoke Project/capability operations through declared adapters or equivalent bindings;
-- preserve stable subject identity and provenance across change, verification, actuation, observation, and checkpoint;
-- prevent verification authority from silently becoming protected actuation authority;
-- require independent observation before claiming an external effect succeeded;
-- reconcile observed/resulting state with intended state;
-- checkpoint resulting durable truth through the configured Continuity Provider.
-
-The existing lifecycle is the default internal orchestration contract:
+The default internal lifecycle remains:
 
 `DISCOVER -> PLAN -> CHANGE -> VERIFY -> DELIVER -> OBSERVE -> CHECKPOINT`
 
 `REPAIR` returns to the earliest violated invariant.
 
+### Execution handoff modes
+
+Execution Surfaces may use different directions of control.
+
+- **Synchronous surface:** Svif can call a surface `execute()` implementation and use `Orchestrator.run()`.
+- **Externally driven surface:** the host calls into Svif. Svif uses `Orchestrator.begin()` to load continuity/create an `OperationSession`, the surface integration materializes that session, and a later trusted integration call returns a structured `WorkResult` to `Orchestrator.complete()`.
+
+ChatGPT's current Apps SDK/MCP model is externally driven, so the founding ChatGPT integration uses the second form. This prevents the product architecture from pretending ChatGPT is a synchronous function invoked by the kernel.
+
+Trusted integration authority may be added at completion time (for example after a platform-mediated write confirmation). Untrusted model/result payloads MUST NOT self-grant protected authority.
+
 ## 3. Continuity Provider interface
 
 A Continuity Provider supplies durable Project truth and resumability. The Svif kernel depends on this **interface**, not permanently on Agnir.
 
-A compatible provider MUST make it possible for Svif to:
+A compatible provider must allow Svif to resolve/load current state, next actions, decisions/evidence as required, preserve Project identity, checkpoint resulting truth, and distinguish unavailable/unauthorized/broken continuity from an empty/new state.
 
-- discover or resolve the continuity source from an authorized Project entry point or binding;
-- load current durable state, decisions, next actions, and evidence references needed for the operation;
-- associate continuity with the correct Project identity;
-- checkpoint/reconcile resulting Project truth durably;
-- distinguish unavailable/unauthorized/broken continuity from an empty or new Project state.
-
-The active `0.2` repository binding uses **Agnir Core 0.1** as the first Continuity Provider. Agnir remains an independent protocol/project. Agnir-specific filesystem layout, Git, GitHub, or ChatGPT assumptions MUST NOT leak into the Svif kernel.
+The active founding provider is Agnir Core `0.1`. `src/svif/continuity/agnir.py` implements the current `repository-filesystem/0.1` profile without promoting filesystem/Git/repository assumptions into the kernel.
 
 ## 4. Execution Surface interface
 
 An Execution Surface hosts or exposes the Executor that interprets intent and performs work. It is replaceable and MUST NOT become authoritative merely because execution occurred there.
 
-A compatible surface MUST allow the Svif integration to:
+A compatible integration must preserve Project/operation identity, receive only the Project-scoped context needed for work, surface Principal authority transitions through trusted channels, return inspectable results/evidence/continuity updates, and avoid treating surface-private conversation as sole durable Project truth.
 
-- receive Project/operation-scoped context materialized by the Orchestrator;
-- preserve Project and operation identity while work is in progress;
-- surface Principal intent, approval, or authority transitions when required;
-- invoke or route Svif capabilities available to that surface;
-- return outputs/evidence references needed for reconciliation and checkpoint;
-- avoid treating surface-private conversation/context as the sole durable Project truth.
-
-**ChatGPT** is the founding Execution Surface integration. A future CLI, IDE, CI runner, local agent, or other host may implement the same product boundary.
-
-Canonical Project state remains execution-surface-neutral even when a concrete Svif distribution integrates deeply with ChatGPT.
+**ChatGPT** is the founding Execution Surface. `src/svif/execution/chatgpt.py` is the first structured bridge; `integrations/chatgpt/` tracks concrete app/MCP packaging. Future CLI, IDE, CI, local-agent, or other surfaces may implement the same boundary.
 
 ## 5. Capability Provider interface
 
 A Capability Provider exposes inspectable or effectful operations used by Svif. Providers may cover workspace, SCM, verification, delivery, external APIs, observation, authority, or other Project capabilities.
 
-Provider operations SHOULD be described through the existing Capability Adapter contract and MUST preserve, where applicable:
+Provider operations SHOULD use the Capability Adapter contract and preserve portable semantic effect, authority class, retry/idempotency behavior, portable failure mapping, Evidence inputs/outputs, stable subject/target identity, and protected credential references without plaintext secret transport.
 
-- a portable semantic effect (`resolve`, `inspect`, `mutate`, `identify`, `verify`, `actuate`, `observe`, `authorize`, `recover`, `checkpoint`);
-- authority class;
-- retry/idempotency behavior;
-- portable failure classification;
-- evidence inputs/outputs and stable subject/target identity;
-- protected credential references without plaintext secret transport.
-
-**Cloudflare** is the founding external effect/delivery provider family. It is not the definition of delivery or of Capability Providers generally.
+**Cloudflare** is the founding external effect/delivery provider family. It is not the definition of delivery or Capability Providers generally.
 
 ## 6. Project Binding Manifest
 
-Svif needs a Project-facing binding/configuration contract that identifies which providers/surfaces apply to a Project.
+`project-binding/0.2` binds a Project to one Continuity Provider, zero or more Execution Surfaces, zero or more Capability Providers, applicable profiles, and optional product/repository metadata.
 
-`project-binding/0.2` is the active development contract. The repository/filesystem serialization used by current Svif Projects is `SVIF.yaml`; the filename itself is not a universal product requirement when another execution environment supplies an equivalent binding object.
-
-A binding identifies at minimum:
-
-- Svif product/manifest version;
-- Project identity;
-- Continuity Provider binding;
-- zero or more Execution Surface bindings;
-- zero or more Capability Provider bindings;
-- applicable profiles;
-- optional product/repository metadata.
+Current repository/filesystem integrations serialize this as `SVIF.yaml`; the filename is not a universal kernel requirement when another installation/execution environment supplies an equivalent binding object.
 
 Bindings MAY carry provider identifiers, locators, adapter references, authority classes, and non-secret configuration. They MUST NOT require plaintext protected secrets.
 
-The normative contract is `spec/PROJECT_BINDING.md`; the reference machine-readable schema is `schemas/project-binding.schema.json`.
+Normative contract: `spec/PROJECT_BINDING.md`. Reference schema: `schemas/project-binding.schema.json`.
 
 ## 7. Internal portable contracts
 
@@ -138,11 +88,9 @@ The following are product-internal portable contracts, not the complete product 
 - `profiles/SOFTWARE_DELIVERY.md` — software-delivery specialization;
 - `schemas/` — reference serializations.
 
-They exist so different integrations/providers can interoperate with the Orchestrator without promoting founding implementation details into the product kernel.
-
 ## 8. Distribution and integrations
 
-The intended mature distribution remains an installable **Plugin**. Skill packaging may remain an earlier/contained distribution step where useful.
+The intended mature distribution remains an installable **Plugin**. Current ChatGPT packaging should follow the current Apps SDK/MCP app model rather than revive deprecated assumptions about historical plugin mechanics.
 
 Distribution dependency direction is:
 
@@ -152,23 +100,12 @@ A distribution MAY bundle provider adapters and surface-specific onboarding, but
 
 ## 9. Cloudflare reference role
 
-`iorLab/svif-cloudflare-reference` remains a separate controlled executable testbed.
+`iorLab/svif-cloudflare-reference` remains a separate controlled executable testbed. As product implementation matures, reusable Cloudflare capability behavior should be owned by Svif and consumed/tested by the reference repository, making the reference primarily an E2E integration/pressure test rather than a second source of product logic.
 
-During early development it may contain reference behavior that has not yet been packaged by Svif. As the product implementation matures, reusable Cloudflare capability behavior should be owned by Svif and consumed by the reference repository, so the reference becomes primarily an E2E integration/pressure test rather than a second source of product logic.
+## 10. Checks
 
-## 10. Conformance and repository integrity
+Repository integrity, portable contract conformance, and runtime/integration behavior are distinct verification layers. Repository integrity is not evidence that an arbitrary Project is Svif-conformant.
 
-Two different checks are required:
+## 11. Near-term target
 
-- **Repository integrity** verifies that `iorLab/svif` itself contains a coherent product architecture, contracts, continuity state, and active-line structure.
-- **Portable contract conformance** validates evidence/provenance and adapter semantics that can apply outside this repository.
-
-Repository integrity is not evidence that an arbitrary Project is Svif-conformant.
-
-## 11. Near-term implementation target
-
-With this architecture frozen, the next implementation milestone is a minimal executable Svif kernel/integration path that demonstrates:
-
-`load continuity -> materialize execution context -> execute/verify -> invoke optional capability -> observe/reconcile -> checkpoint`
-
-using the founding bindings Agnir + ChatGPT + Cloudflare without making any of them permanent kernel dependencies.
+The generic Orchestrator, Agnir Continuity Provider, and ChatGPT structured Execution Surface bridge now exist. The next major implementation is a Svif-owned Cloudflare Capability Provider followed by a founding end-to-end path across Agnir + ChatGPT + Cloudflare. Remote ChatGPT Apps SDK/MCP packaging can then wrap the same bridge without duplicating kernel semantics.

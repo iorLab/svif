@@ -21,6 +21,8 @@ product:
   architecture: "ARCHITECTURE.md"
   runtime: "src/svif/runtime.py"
   agnir_repository_filesystem_adapter: "src/svif/continuity/agnir.py"
+  chatgpt_execution_bridge: "src/svif/execution/chatgpt.py"
+  chatgpt_integration: "integrations/chatgpt/README.md"
   orchestration_contract: "spec/CORE.md"
   project_binding_contract: "spec/PROJECT_BINDING.md"
   capability_adapter_contract: "spec/CAPABILITY_ADAPTER.md"
@@ -31,6 +33,7 @@ checks:
   portable_contracts: "conformance/check_contracts.py"
   runtime_kernel: "tests/test_runtime.py"
   agnir_continuity: "tests/test_agnir_continuity.py"
+  chatgpt_surface: "tests/test_chatgpt_surface.py"
 
 extensions:
   svif/repository:

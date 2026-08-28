@@ -1,101 +1,69 @@
 # Svif
 
-Svif is a **Project orchestration product**.
-
-It coordinates durable Project continuity, the execution surface in which work is interpreted/performed, and capability providers that inspect or change Project/external state. Its stable rule is:
+Svif is a **Project orchestration product** coordinating durable Project continuity, execution surfaces, and capability/effect providers.
 
 > The Project persists; Executors and execution environments may change.
 
-The active founding bindings are:
-
-- Continuity Provider: **Agnir**;
-- Execution Surface: **ChatGPT**;
-- Capability / Effect Provider: **Cloudflare**.
-
-These are current integrations, not permanent product dependencies.
-
-## Active line
-
-`main` is the Svif `0.2` development line. ZeroLocal v0.1 is preserved as predecessor history on `legacy/zerolocal-v0.1`.
+Founding/current bindings are Agnir (Continuity Provider), ChatGPT (Execution Surface), and Cloudflare (Capability / Effect Provider). They are integrations, not permanent kernel dependencies.
 
 ## Product architecture
 
-The active architecture has four first-class components: **Orchestrator**, **Continuity Provider**, **Execution Surface**, and **Capability Provider**. See `ARCHITECTURE.md`.
+The four first-class components are **Orchestrator**, **Continuity Provider**, **Execution Surface**, and **Capability Provider**. See `ARCHITECTURE.md`.
 
-The internal lifecycle remains:
+The internal lifecycle remains `DISCOVER -> PLAN -> CHANGE -> VERIFY -> DELIVER -> OBSERVE -> CHECKPOINT`, with `REPAIR` returning to the earliest violated invariant.
 
-`DISCOVER -> PLAN -> CHANGE -> VERIFY -> DELIVER -> OBSERVE -> CHECKPOINT`
-
-`REPAIR` returns to the earliest violated invariant. These lifecycle semantics are internal portable product contracts; they do not make Svif itself a standalone protocol.
-
-## Current structure
+## Executable product foundation
 
 ```text
-ARCHITECTURE.md                     # product architecture
-SVIF.yaml                           # Project binding for this repository/filesystem integration
-AGNIR.yaml                          # current Agnir discovery anchor for this Project
-.agnir/                             # this repository's durable continuity
-
-src/svif/runtime.py                 # minimal executable Orchestrator kernel
+src/svif/runtime.py                 # Orchestrator kernel
 src/svif/continuity/agnir.py        # Agnir repository/filesystem Continuity Provider
-tests/                              # runtime + provider integration tests
+src/svif/execution/chatgpt.py       # ChatGPT structured Execution Surface bridge
+integrations/chatgpt/               # current ChatGPT app/MCP packaging direction
 
+tests/                              # runtime/provider/surface behavior
 spec/                               # portable internal product contracts
 profiles/                           # specializations
 schemas/                            # reference machine-readable contracts
 checks/                             # repository integrity
 conformance/                        # portable contract conformance
-history/                            # predecessor locator
 ```
 
-Python is the current executable reference vehicle for the kernel; it does not freeze the eventual Plugin technology stack.
+Python is the current executable reference vehicle; it does not freeze the eventual Plugin technology stack.
 
-## Executable kernel
+## Orchestrator execution modes
 
-`src/svif/runtime.py` implements the first Orchestrator loop across replaceable Continuity Provider, Execution Surface, and Capability Provider interfaces.
+Svif now supports two directions of control:
 
-It enforces stable subject identity, exact-subject verification before actuation, explicit authority for protected effects, subject/target preservation through delivery, independent observation before external success, and checkpoint only after applicable invariants succeed.
+- synchronous surfaces use `Orchestrator.run()` and expose `execute()`;
+- externally driven surfaces use `Orchestrator.begin()` to load/bind Project continuity and `Orchestrator.complete()` after the surface returns a structured result.
 
-Execution Surfaces now return an explicit provider-neutral `ContinuityUpdate`. The Orchestrator carries this durable-truth update without interpreting provider serialization; the active Continuity Provider validates and persists it.
+The second form exists specifically so ChatGPT Apps/MCP integration reflects the real platform direction: ChatGPT calls the app, rather than the Svif kernel pretending it can synchronously invoke ChatGPT as a function.
+
+Trusted integration layers may supply authority grants to `complete()` after platform-mediated approval. Model/result payloads cannot self-grant protected authority.
 
 ## Agnir Continuity Provider
 
-`src/svif/continuity/agnir.py` is the first concrete Continuity Provider integration. It implements Agnir `repository-filesystem/0.1` for an authorized Project root while keeping that profile out of the generic Orchestrator.
+`src/svif/continuity/agnir.py` implements Agnir `repository-filesystem/0.1` for an authorized Project root. It validates Agnir version/profile and Project identity, resolves root-bound memory locators, preserves semantic discovery failures, loads state/next/decisions/evidence, checkpoints explicit durable-truth updates, writes operation evidence, and re-validates discovery after checkpoint.
 
-It:
+This is a profile adapter; the generic Orchestrator remains Continuity-Provider-neutral.
 
-- resolves `AGNIR.yaml` from the Project Entry Point;
-- validates Agnir Core `0.1` and `repository-filesystem/0.1`;
-- rejects Project identity mismatch;
-- resolves Current State / Next Actions / optional Decisions / Evidence locators relative to the Project root;
-- rejects locators that escape the authorized Project root;
-- preserves Agnir failure classes for unsupported version, Project mismatch, not-found/unresolvable/inconsistent discovery;
-- loads durable continuity into the Execution Context;
-- checkpoints explicit Current State / Next Actions / Decisions updates without inventing content;
-- writes a deterministic Svif operation-evidence record when an Agnir evidence directory is configured;
-- re-runs discovery after checkpoint before resumability is considered established.
+## ChatGPT Execution Surface
 
-This is deliberately an **Agnir profile adapter**, not a hard-coded Orchestrator dependency.
+`src/svif/execution/chatgpt.py` implements the first ChatGPT bridge. It materializes an `OperationSession` into a JSON-serializable Project context and validates a later structured ChatGPT result into `WorkResult`.
+
+As of 2026-08-28, the current OpenAI custom ChatGPT app path is Apps SDK + MCP. The bridge deliberately has no OpenAI network client so platform packaging can evolve without duplicating Svif kernel semantics. `integrations/chatgpt/README.md` records the current packaging boundary.
+
+The mature Svif distribution target remains an installable **Plugin**; the ChatGPT app/MCP integration is a surface that can be packaged by that product.
+
+## Cloudflare
+
+Cloudflare remains the founding external effect/delivery provider family. `iorLab/svif-cloudflare-reference` is the controlled executable reference/E2E pressure test. Reusable Cloudflare capability behavior should move under Svif ownership and be consumed/tested by the reference.
 
 ## Project binding
 
-`SVIF.yaml` implements the repository/filesystem serialization of `project-binding/0.2`. It binds this Project to Agnir `0.1`; execution and external capability bindings remain intentionally unbound in this repository's canonical manifest.
-
-`SVIF.yaml` is not a universal filename when another installation/execution environment supplies an equivalent binding object.
-
-## Execution surfaces and distribution
-
-Canonical Project truth remains execution-surface-neutral. ChatGPT is the founding Execution Surface integration and primary near-term distribution target.
-
-The mature distribution target remains an installable Plugin; Skill packaging may be an earlier product surface where useful.
-
-## Capability providers
-
-Cloudflare is the founding external effect/delivery provider family. `iorLab/svif-cloudflare-reference` remains the executable reference/E2E pressure test. Reusable Cloudflare product behavior should increasingly be owned by Svif and consumed/tested by that repository.
+`SVIF.yaml` is the repository/filesystem serialization of `project-binding/0.2`. It binds this Project to Agnir `0.1`; execution and capability bindings remain intentionally empty for this repository itself.
 
 ## Checks
-
-Run:
 
 ```bash
 python checks/check_repository.py
@@ -103,13 +71,8 @@ python conformance/check_contracts.py
 PYTHONPATH=src python -m unittest discover -s tests -v
 ```
 
-Repository integrity, portable contracts, and executable runtime/provider behavior are distinct checks. Passing repository integrity alone is not universal Svif conformance evidence.
+Repository integrity, portable contracts, and runtime/integration behavior are distinct checks.
 
-## Near-term implementation direction
+## Next
 
-The generic Orchestrator and first concrete Continuity Provider now exist. Next:
-
-1. first explicit ChatGPT Execution Surface integration/product surface;
-2. reusable Svif-owned Cloudflare Capability Provider implementation;
-3. end-to-end founding scenario wiring Agnir + ChatGPT + Cloudflare through the Orchestrator;
-4. then broader non-founding neutrality cases.
+The generic kernel, Agnir provider, and ChatGPT bridge exist. The next major implementation is a Svif-owned Cloudflare Capability Provider, then a founding end-to-end Agnir + ChatGPT + Cloudflare scenario, followed by the remote Apps SDK/MCP packaging layer and broader non-founding neutrality evidence.

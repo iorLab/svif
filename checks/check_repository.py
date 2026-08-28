@@ -20,161 +20,70 @@ def require_text(text: str, needles: list[str], label: str) -> None:
 
 def main() -> None:
     required = [
-        "ARCHITECTURE.md",
-        "SVIF.yaml",
-        "AGNIR.yaml",
-        ".agnir/state.md",
-        ".agnir/next-actions.md",
-        ".agnir/decisions.md",
-        "src/svif/__init__.py",
-        "src/svif/runtime.py",
-        "src/svif/continuity/__init__.py",
-        "src/svif/continuity/agnir.py",
-        "tests/test_runtime.py",
-        "tests/test_agnir_continuity.py",
-        "spec/CORE.md",
-        "spec/PROJECT_BINDING.md",
-        "spec/CAPABILITY_ADAPTER.md",
-        "spec/EVIDENCE.md",
+        "ARCHITECTURE.md", "SVIF.yaml", "AGNIR.yaml",
+        ".agnir/state.md", ".agnir/next-actions.md", ".agnir/decisions.md",
+        "src/svif/runtime.py", "src/svif/continuity/agnir.py", "src/svif/execution/chatgpt.py",
+        "tests/test_runtime.py", "tests/test_agnir_continuity.py", "tests/test_chatgpt_surface.py",
+        "integrations/chatgpt/README.md",
+        "spec/CORE.md", "spec/PROJECT_BINDING.md", "spec/CAPABILITY_ADAPTER.md", "spec/EVIDENCE.md",
         "profiles/SOFTWARE_DELIVERY.md",
-        "schemas/project-binding.schema.json",
-        "schemas/capability-adapter.schema.json",
-        "schemas/evidence-record.schema.json",
-        "conformance/check_contracts.py",
-        "history/PREDECESSOR.md",
+        "schemas/project-binding.schema.json", "schemas/capability-adapter.schema.json", "schemas/evidence-record.schema.json",
+        "conformance/check_contracts.py", "history/PREDECESSOR.md",
     ]
     for path in required:
         if not (ROOT / path).exists():
             fail(f"missing active Svif product artifact: {path}")
 
     for forbidden in (
-        ".chatgpt",
-        "ZEROLOCAL.yaml",
-        "SPECIFICATION.md",
-        "SVIF_ARCHITECTURE_DRAFT.md",
-        "SVIF_CAPABILITY_ADAPTER_DRAFT.md",
-        "profiles/SOFTWARE_DELIVERY_DRAFT.md",
-        "conformance/check_v0_1.py",
-        "conformance/v0.1.md",
+        ".chatgpt", "ZEROLOCAL.yaml", "SPECIFICATION.md", "SVIF_ARCHITECTURE_DRAFT.md",
+        "SVIF_CAPABILITY_ADAPTER_DRAFT.md", "profiles/SOFTWARE_DELIVERY_DRAFT.md",
+        "conformance/check_v0_1.py", "conformance/v0.1.md",
     ):
         if (ROOT / forbidden).exists():
             fail(f"predecessor/execution-surface artifact remains active: {forbidden}")
 
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
-    require_text(
-        readme,
-        [
-            "Svif is a **Project orchestration product**.",
-            "Continuity Provider",
-            "Execution Surface",
-            "Capability Provider",
-            "mature distribution target remains an installable Plugin",
-        ],
-        "README.md",
-    )
+    require_text(readme, [
+        "Svif is a **Project orchestration product**.", "Continuity Provider", "Execution Surface",
+        "Capability Provider", "mature distribution target remains an installable Plugin",
+    ], "README.md")
 
     architecture = (ROOT / "ARCHITECTURE.md").read_text(encoding="utf-8")
-    require_text(
-        architecture,
-        [
-            "Svif is a **Project orchestration product**.",
-            "**Orchestrator**",
-            "**Continuity Provider**",
-            "**Execution Surface**",
-            "**Capability Provider**",
-            "Agnir, ChatGPT, and Cloudflare are the founding/current bindings.",
-            "project-binding/0.2",
-            "Repository integrity is not evidence that an arbitrary Project is Svif-conformant.",
-        ],
-        "ARCHITECTURE.md",
-    )
+    require_text(architecture, [
+        "Svif is a **Project orchestration product**.", "**Orchestrator**", "**Continuity Provider**",
+        "**Execution Surface**", "**Capability Provider**", "Orchestrator.begin()", "Orchestrator.complete()",
+        "Untrusted model/result payloads MUST NOT self-grant protected authority.",
+    ], "ARCHITECTURE.md")
 
     svif = (ROOT / "SVIF.yaml").read_text(encoding="utf-8")
-    require_text(
-        svif,
-        [
-            'version: "0.2"',
-            'manifest: "project-binding/0.2"',
-            'identity: "urn:svif:project:svif-core"',
-            'provider: "agnir"',
-            'compatibility: "0.1"',
-            'discovery: "AGNIR.yaml"',
-            'runtime: "src/svif/runtime.py"',
-            'agnir_repository_filesystem_adapter: "src/svif/continuity/agnir.py"',
-            'repository_integrity: "checks/check_repository.py"',
-            'portable_contracts: "conformance/check_contracts.py"',
-            'runtime_kernel: "tests/test_runtime.py"',
-            'agnir_continuity: "tests/test_agnir_continuity.py"',
-        ],
-        "SVIF.yaml",
-    )
+    require_text(svif, [
+        'manifest: "project-binding/0.2"', 'provider: "agnir"', 'runtime: "src/svif/runtime.py"',
+        'agnir_repository_filesystem_adapter: "src/svif/continuity/agnir.py"',
+        'chatgpt_execution_bridge: "src/svif/execution/chatgpt.py"',
+        'chatgpt_surface: "tests/test_chatgpt_surface.py"',
+    ], "SVIF.yaml")
 
     runtime = (ROOT / "src/svif/runtime.py").read_text(encoding="utf-8")
-    require_text(
-        runtime,
-        [
-            "class Orchestrator:",
-            "class ContinuityProvider(Protocol):",
-            "class ExecutionSurface(Protocol):",
-            "class CapabilityProvider(Protocol):",
-            "class ContinuityUpdate:",
-            "external actuation requires successful verification evidence for the exact subject",
-            "observation does not match the successfully delivered subject/target",
-        ],
-        "src/svif/runtime.py",
-    )
+    require_text(runtime, [
+        "class Orchestrator:", "class OperationSession:", "def begin(", "def complete(",
+        "untrusted model/result payload cannot grant itself protected authority",
+        "external actuation requires successful verification evidence for the exact subject",
+    ], "src/svif/runtime.py")
 
     agnir = (ROOT / "src/svif/continuity/agnir.py").read_text(encoding="utf-8")
-    require_text(
-        agnir,
-        [
-            'provider_id = "agnir"',
-            '"AGNIR_DISCOVERY_UNSUPPORTED_VERSION"',
-            '"AGNIR_DISCOVERY_PROJECT_MISMATCH"',
-            '"AGNIR_DISCOVERY_UNRESOLVABLE"',
-            "def checkpoint(self, outcome: OperationOutcome)",
-        ],
-        "src/svif/continuity/agnir.py",
-    )
+    require_text(agnir, [
+        'provider_id = "agnir"', '"AGNIR_DISCOVERY_PROJECT_MISMATCH"',
+        '"AGNIR_DISCOVERY_UNSUPPORTED_VERSION"', "def checkpoint(self, outcome: OperationOutcome)",
+    ], "src/svif/continuity/agnir.py")
 
-    core = (ROOT / "spec/CORE.md").read_text(encoding="utf-8")
-    require_text(
-        core,
-        [
-            "Svif Core defines the portable orchestration lifecycle and invariants used by the **Svif Project orchestration product**.",
-            "Continuity Provider",
-            "Execution Surface",
-            "Capability Provider",
-            "DISCOVER -> PLAN -> CHANGE -> VERIFY -> DELIVER -> OBSERVE -> CHECKPOINT",
-            "The mature product target remains a Plugin.",
-        ],
-        "spec/CORE.md",
-    )
-
-    binding = (ROOT / "spec/PROJECT_BINDING.md").read_text(encoding="utf-8")
-    require_text(
-        binding,
-        [
-            "**Identifier:** `project-binding/0.2`",
-            "one Continuity Provider binding",
-            "zero or more Execution Surfaces",
-            "zero or more Capability Providers",
-            "MUST NOT require plaintext protected secret values",
-        ],
-        "spec/PROJECT_BINDING.md",
-    )
+    chatgpt = (ROOT / "src/svif/execution/chatgpt.py").read_text(encoding="utf-8")
+    require_text(chatgpt, [
+        'surface_id = "chatgpt"', "def materialize(", "def parse_result(",
+        "Authority grants are intentionally not accepted from this payload.",
+    ], "src/svif/execution/chatgpt.py")
 
     state = (ROOT / ".agnir/state.md").read_text(encoding="utf-8")
-    require_text(
-        state,
-        [
-            "Project orchestration product",
-            "Continuity Provider",
-            "Execution Surface",
-            "Capability / Effect Provider",
-        ],
-        "Agnir state",
-    )
+    require_text(state, ["Project orchestration product", "Continuity Provider", "Execution Surface", "Capability / Effect Provider"], "Agnir state")
 
     print("PASS: Svif product repository integrity and product-architecture baseline")
 

@@ -84,8 +84,9 @@ svif/                                                     # Svif 产品主仓库
 ├── checks/                                               # 仓库与产品结构完整性检查
 │   └── check_repository.py                               # 防止关键模块、README 结构、canonical topology 等发生无意漂移
 │
-├── history/                                              # 前身 / 已退休项目历史；仅作迁移与 provenance 证据
-│   ├── PREDECESSOR.md                                    # ZeroLocal 等 Svif 前身 lineage 说明
+├── history/                                              # 前身 / 已退休项目历史；仅作 lineage 与 provenance 记录
+│   ├── PREDECESSOR.md                                    # ZeroLocal 等 Svif 前身 lineage 说明；通过 commit SHA 定位
+│   ├── BRANCH_ARCHIVE.md                                 # 已删除分支及最终 tip SHA 的历史索引；main-only 治理记录
 │   └── CLOUDFLARE_REFERENCE.md                           # 已退休独立 Cloudflare reference 仓库的迁移记录
 │
 ├── AGNIR.yaml                                            # 当前 repository-filesystem profile 下发现本 Project Agnir memory 的入口

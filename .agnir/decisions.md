@@ -60,3 +60,11 @@
 - Distribution may package integrations/providers/onboarding, but it MUST NOT duplicate Orchestrator semantics or move canonical Project truth out of the configured Continuity Provider.
 - Dependency direction is `Plugin / distribution -> Execution Surface integration -> Orchestrator -> Continuity + Capability Providers`.
 - This durable target was explicitly restored after predecessor-migration review found that the current Agnir state/decisions had accidentally stopped stating it even though it remained part of the accepted product direction.
+
+## 2026-08-28 — README repository structure tree
+
+- The README repository explanation uses a **plain-text tree**, not a third Mermaid architecture diagram and not a separate abstract repository map.
+- The tree MUST follow the actual repository structure closely enough to show where major product responsibilities live, while remaining selective rather than exhaustively listing every fixture/evidence file.
+- Each documented directory or key file SHOULD include a short responsibility explanation directly in the tree.
+- If a documented directory is added, removed, moved, or materially changes responsibility, `README.md` and `README.zh-CN.md` MUST update the affected tree in the same change set.
+- Repository integrity checks enforce the presence of the explanatory tree and key module anchors without byte-for-byte locking the whole tree.

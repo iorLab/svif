@@ -6,6 +6,23 @@ Svif is a **Project orchestration product** coordinating durable Project continu
 
 > The Project persists; Executors and execution environments may change.
 
+## Agnir Project Instructions
+
+Treat this repository root as the authorized Project Entry Point for the Svif Project. Before substantive Project work:
+
+1. Read top-level `AGNIR.yaml` and validate the declared Agnir Core/profile compatibility and Project identity.
+2. Load Current State and Next Actions from the durable memory locations declared by `AGNIR.yaml`.
+3. Load Decisions and Evidence when they materially constrain the current operation.
+4. Prefer durable Agnir Project truth over chat history or private executor memory unless superseded by a newer Principal instruction or a directly observed current Project fact.
+5. For Svif work, then read `SVIF.yaml` and the relevant current specifications before changing product behavior.
+6. Checkpoint material state, next-action, decision, and evidence changes when saving progress or finishing work, and verify that the locator chain still resolves for a fresh executor.
+
+Root `AGENTS.md` is only the activation locator to this section; it must not become a second copy of Project state or the Agnir procedure. The expected activation route is:
+
+`Project root -> AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml -> declared durable memory`
+
+If any activation locator, identity, required memory locator, or compatibility check fails, repair the earliest faulty layer when authorized. Do not invent Project state or silently fall back to chat history, sibling repositories, or retired layouts.
+
 ## Architecture Diagram
 
 ```mermaid
@@ -126,10 +143,11 @@ svif/
 │
 ├── .agnir/                           # this Svif Project's canonical state, next actions, decisions, and evidence
 ├── .github/workflows/                # CI that runs repository, runtime, and conformance checks
+├── AGENTS.md                         # minimal Agnir activation locator to this README's Project Instructions
 ├── AGNIR.yaml                        # locates this Project's Agnir continuity under the current filesystem profile
 ├── SVIF.yaml                         # repository/filesystem serialization of this Project's Svif binding
 ├── ARCHITECTURE.md                   # detailed product architecture and dependency boundaries
-├── README.md                         # English project entry point
+├── README.md                         # English project entry point and canonical Agnir Project Instructions
 ├── README.zh-CN.md                   # Simplified Chinese project entry point
 └── VERSION                           # current Svif development version
 ```

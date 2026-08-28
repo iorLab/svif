@@ -1,6 +1,6 @@
 # Svif Current State
 
-Svif is the authoritative active **Project orchestration product** on `main`. ZeroLocal v0.1 remains predecessor history on `legacy/zerolocal-v0.1`.
+Svif is the authoritative active **Project orchestration product** on `main`. ZeroLocal v0.1 is preserved only as predecessor history on `legacy/zerolocal-v0.1`.
 
 ## Canonical repository topology
 
@@ -9,7 +9,7 @@ The active architecture has only two canonical projects/repositories:
 - Svif: `iorLab/svif`;
 - Agnir: `iorLab/agnir`.
 
-The former `iorLab/svif-cloudflare-reference` project is retired. Cloudflare implementation, provider descriptors, fixtures, tests, and future E2E validation belong inside `iorLab/svif`. The retired repository is historical evidence only and is not an active dependency.
+The former `iorLab/svif-cloudflare-reference` project is retired. Cloudflare implementation, provider descriptors, fixtures, tests, and future E2E validation belong inside `iorLab/svif`. Historical repositories and legacy branches are evidence only; they are not active dependencies, compatibility obligations, or release gates.
 
 ## Product architecture
 
@@ -28,7 +28,7 @@ No execution environment becomes authoritative merely because execution occurred
 
 ## Distribution target
 
-The mature Svif distribution target is an **installable Plugin**. This target is durable product intent inherited from the ZeroLocal predecessor and was re-established after migration audit found that it had been generalized away during the architecture rewrite.
+The mature Svif distribution target is an **installable Plugin**. This is a current, explicitly reaffirmed Svif product decision. Historical predecessor material may show earlier versions of the same idea, but the active authority for this target is the current Svif architecture and decisions, not legacy compatibility.
 
 Current ChatGPT Apps SDK / MCP work is the concrete packaging/integration path for the founding ChatGPT Execution Surface. It does **not** replace the Plugin product target or become canonical Project truth.
 
@@ -36,7 +36,7 @@ Distribution dependency direction remains:
 
 `Plugin / distribution -> Execution Surface integration -> Orchestrator -> Continuity + Capability Providers`
 
-The Plugin target is now synchronized in `ARCHITECTURE.md`, `.agnir/decisions.md`, this state file, `README.md`, and `README.zh-CN.md`.
+The Plugin target is synchronized in `ARCHITECTURE.md`, `.agnir/decisions.md`, this state file, `README.md`, and `README.zh-CN.md`.
 
 ## Active contracts
 
@@ -68,51 +68,42 @@ Founding E2E success is not evidence of live Cloudflare production delivery; liv
 
 The repository has parallel English and Simplified Chinese entry points: `README.md` and `README.zh-CN.md`.
 
-Both READMEs contain:
+Both READMEs contain a current Architecture Diagram, Runtime / Operation Flow diagram, and compact plain-text repository tree. Localized Mermaid diagrams are comprehension-first rather than literal translations.
 
-- a current Architecture Diagram;
-- a current Runtime / Operation Flow diagram;
-- a compact plain-text repository tree that maps major directories and key files to responsibilities.
+`REPOSITORY_TREE.md` is the exhaustive tracked-file map. Architecture/runtime changes update both README language versions; tracked file additions/removals/moves or material responsibility changes update `REPOSITORY_TREE.md` in the same change set, and both compact README trees when affected.
 
-Localized Mermaid diagrams are comprehension-first rather than literal translations. Simplified Chinese nodes explain both what a component is and what it does.
+## Legacy isolation boundary
 
-A separate `REPOSITORY_TREE.md` is the exhaustive file-level repository map. It expands the current tracked `main` tree and annotates the responsibility of each tracked file. README trees remain compact navigation views; `REPOSITORY_TREE.md` is the detailed map.
+`legacy/zerolocal-v0.1` and historical ZeroLocal artifacts exist only to preserve lineage and audit history.
 
-Maintenance invariant:
+They MUST NOT become:
 
-- architecture/runtime changes update both README language versions in the same change set;
-- tracked file additions/removals/moves or material responsibility changes update `REPOSITORY_TREE.md` in the same change set;
-- if such a change also affects the compact README tree, both README language versions update in the same change set.
+- active Svif runtime dependencies;
+- current contract inputs;
+- compatibility requirements for Svif `0.2`;
+- conformance fixtures required for current architecture correctness;
+- release gates for Svif or Agnir;
+- a reason to reintroduce `.chatgpt/`, Skills-era, or standalone-reference-repository structure into active `main`.
 
-Repository integrity checks enforce the bilingual diagram/tree anchors, the `REPOSITORY_TREE.md` link, and representative deep-file coverage without byte-for-byte locking documentation prose.
-
-The pre-checkpoint repository-documentation head `97e70f9980de36aa7e3095cf8284f40c6fbf285e` passed Svif product-check run `33146795882`.
-
-## Predecessor migration audit
-
-`iorLab/svif@legacy/zerolocal-v0.1` is a real predecessor Project. Its `.chatgpt/project-memory.yaml` and predecessor state are suitable for validating predecessor-memory -> current Svif/Agnir semantic migration.
-
-The audit found one material durable-knowledge regression: predecessor state explicitly preserved `installable-plugin` as the long-term product form, while current Svif had generalized that intent to `distribution` and omitted it from canonical Project state. The Plugin target has now been restored and synchronized across canonical architecture/state/decisions and both READMEs.
-
-The ZeroLocal predecessor serialization is an earlier v1/RPM-era form, **not PPMP v2.0.0**. It must not be relabeled as exact PPMP v2 evidence. A qualifying second external PPMP v2 Project was not found during this audit.
+Historical material MAY be consulted to understand lineage or recover an idea, but any idea that remains part of Svif must be independently accepted and stated in the current architecture/decisions. Current `main` is a greenfield architecture, not a compatibility-preserving continuation of ZeroLocal.
 
 ## Current implementation gap / resume point
 
-1. Complete a durable ZeroLocal predecessor -> current Svif/Agnir migration evidence envelope, explicitly separating genuine v1/RPM-era predecessor evidence from the missing exact external PPMP v2 fixture.
-2. Harden concrete ChatGPT app/MCP packaging around the existing externally driven bridge without duplicating Orchestrator/kernel semantics.
-3. Add broader neutrality pressure using Agnir's proven storage-neutral and multi-project isolation fixtures.
-4. Freeze exact Agnir compatibility/release expression only after Agnir Core `0.1` release criteria are reconciled.
-5. Keep live Cloudflare delivery disabled unless explicitly authorized; any future success claim still requires exact verified-subject delivery plus independent observation.
+1. **Harden concrete ChatGPT Apps SDK / MCP packaging** around the existing `ChatGPTExecutionSurface` and `Orchestrator.begin()` / `complete()` lifecycle, without duplicating kernel semantics or moving protected authority into untrusted payloads.
+2. **Add broader neutrality pressure** using Agnir's storage-neutral and multi-project isolation cases; prove Svif composition does not require GitHub, Cloudflare, or ChatGPT as universal kernel dependencies.
+3. **Advance the installable Plugin product surface** only on top of validated kernel/integration behavior; do not reimplement orchestration in the distribution layer.
+4. Bind Svif to the current Agnir Core compatibility line as a Continuity Provider contract, not to Agnir legacy lineage or repository layout.
+5. Keep live Cloudflare delivery disabled unless explicitly authorized; any future success claim requires exact verified-subject delivery plus independent observation.
+6. Keep incidental branch cleanup deferred until the new Svif version is substantially complete.
 
 ## Evidence checkpoints
 
 - README/localization: `.agnir/evidence/2026-08-28-readme-diagram-localization-checkpoint.md`.
 - Founding E2E: `.agnir/evidence/2026-08-28-founding-e2e.md`, run `33143308949` success.
-- Plugin / predecessor-migration audit: `.agnir/evidence/2026-08-28-plugin-migration-audit-checkpoint.md`.
 - Repository documentation baseline: pre-checkpoint head `97e70f9980de36aa7e3095cf8284f40c6fbf285e`, product-check run `33146795882` success.
 
 ## Branch governance
 
 - `main`: authoritative active Svif product line;
-- `legacy/zerolocal-v0.1`: predecessor history;
+- `legacy/zerolocal-v0.1`: immutable predecessor history only;
 - incidental branch cleanup remains deferred until the new version is substantially complete.

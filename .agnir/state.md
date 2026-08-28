@@ -26,17 +26,24 @@ Stable rule:
 
 No execution environment becomes authoritative merely because execution occurred there.
 
-## Distribution target
+## Distribution status
 
-The mature Svif distribution target is an **installable Plugin**. This is a current, explicitly reaffirmed Svif product decision. Historical predecessor material may show earlier versions of the same idea, but the active authority for this target is the current Svif architecture and decisions, not legacy compatibility.
+Svif now has an active **Plugin MVP**, not merely a future Plugin target.
 
-Current ChatGPT Apps SDK / MCP work is the concrete packaging/integration path for the founding ChatGPT Execution Surface. It does **not** replace the Plugin product target or become canonical Project truth.
+The first installable package lives under `plugin/` and targets the portable Agent Plugins `1.0.0` package format:
 
-Distribution dependency direction remains:
+- `plugin/plugin.json` — Plugin manifest;
+- `plugin/skills/svif/SKILL.md` — installable Svif Project-orchestration Skill;
+- `plugin/README.md` — installation/smoke-test and packaging guidance;
+- `tests/test_plugin_package.py` — package/boundary regression tests.
+
+This first increment is intentionally Skill-only so real usage can begin immediately. MCP/App packaging is now an enhancement path, not a prerequisite for starting Plugin testing and iteration.
+
+The Plugin remains a distribution/workflow layer. It MUST NOT duplicate Orchestrator semantics, move canonical Project truth out of the Continuity Provider, or permit untrusted model/result payloads to self-grant protected authority.
+
+Current ChatGPT Apps SDK / MCP work remains the concrete integration path for the founding ChatGPT Execution Surface and can later be packaged into the Plugin while preserving the dependency direction:
 
 `Plugin / distribution -> Execution Surface integration -> Orchestrator -> Continuity + Capability Providers`
-
-The Plugin target is synchronized in `ARCHITECTURE.md`, `.agnir/decisions.md`, this state file, `README.md`, and `README.zh-CN.md`.
 
 ## Active contracts
 
@@ -46,6 +53,7 @@ The Plugin target is synchronized in `ARCHITECTURE.md`, `.agnir/decisions.md`, t
 - Capability Adapter: `capability-adapter/0.2`.
 - Evidence record: `evidence-record/0.2`.
 - Repository/filesystem binding serialization: `SVIF.yaml`.
+- Plugin package format: Agent Plugins `1.0.0`.
 
 ## Executable product foundation
 
@@ -56,7 +64,8 @@ Implemented under Svif ownership:
 - ChatGPT structured Execution Surface bridge;
 - Cloudflare Workers Capability Provider with injected transport boundary;
 - founding credential-free E2E scenario at `tests/test_founding_e2e.py`;
-- runtime/provider/surface tests and portable contract conformance.
+- Skill-first installable Plugin MVP at `plugin/`;
+- runtime/provider/surface/Plugin tests and portable contract conformance.
 
 The founding E2E proves the complete credential-free product loop through the real interfaces: Agnir continuity load -> `Orchestrator.begin()` -> ChatGPT context materialization/result parsing -> trusted authority at `Orchestrator.complete()` -> exact-subject Cloudflare actuation through injected fake transport -> independent observation -> Agnir checkpoint -> continuity reload/resume.
 
@@ -68,9 +77,9 @@ Founding E2E success is not evidence of live Cloudflare production delivery; liv
 
 The repository has parallel English and Simplified Chinese entry points: `README.md` and `README.zh-CN.md`.
 
-Both READMEs contain a current Architecture Diagram, Runtime / Operation Flow diagram, and compact plain-text repository tree. Localized Mermaid diagrams are comprehension-first rather than literal translations.
+Both READMEs contain a current Architecture Diagram, Runtime / Operation Flow diagram, current Plugin status, and compact plain-text repository tree. Localized Mermaid diagrams are comprehension-first rather than literal translations.
 
-`REPOSITORY_TREE.md` is the exhaustive tracked-file map. Architecture/runtime changes update both README language versions; tracked file additions/removals/moves or material responsibility changes update `REPOSITORY_TREE.md` in the same change set, and both compact README trees when affected.
+`REPOSITORY_TREE.md` is the exhaustive tracked-file map. Architecture/runtime/distribution changes update both README language versions; tracked file additions/removals/moves or material responsibility changes update `REPOSITORY_TREE.md` in the same change set, and both compact README trees when affected.
 
 ## Historical isolation boundary
 
@@ -89,9 +98,9 @@ Historical material MAY be consulted to understand lineage or recover an idea, b
 
 ## Current implementation gap / resume point
 
-1. **Harden concrete ChatGPT Apps SDK / MCP packaging** around the existing `ChatGPTExecutionSurface` and `Orchestrator.begin()` / `complete()` lifecycle, without duplicating kernel semantics or moving protected authority into untrusted payloads.
-2. **Add broader neutrality pressure** using Agnir's storage-neutral and multi-project isolation cases; prove Svif composition does not require GitHub, Cloudflare, or ChatGPT as universal kernel dependencies.
-3. **Advance the installable Plugin product surface** only on top of validated kernel/integration behavior; do not reimplement orchestration in the distribution layer.
+1. **Install and use the Plugin MVP on real Project work**, treating failures and friction as direct inputs to Skill/packaging iteration.
+2. **Add the remote ChatGPT MCP/App component** only when it reuses the existing `ChatGPTExecutionSurface` and `Orchestrator.begin()` / `complete()` lifecycle without duplicating kernel semantics or weakening the authority boundary.
+3. **Add broader neutrality evidence** using Agnir's storage-neutral and multi-project isolation cases; prove Svif composition does not require GitHub, Cloudflare, or ChatGPT as universal kernel dependencies.
 4. Bind Svif to the current Agnir Core compatibility line as a Continuity Provider contract, not to Agnir historical lineage or repository layout.
 5. Keep live Cloudflare delivery disabled unless explicitly authorized; any future success claim requires exact verified-subject delivery plus independent observation.
 

@@ -9,8 +9,10 @@ bindings:
   continuity:
     provider: "agnir"
     compatibility: "0.1"
+    profile: "repository-filesystem/0.1"
     config:
       discovery: "AGNIR.yaml"
+      activation: "AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml"
   execution: []
   capabilities: []
 
@@ -47,4 +49,3 @@ extensions:
   svif/repository:
     canonical: "iorLab/svif"
     authoritative_ref: "main"
-    predecessor_ref: "legacy/zerolocal-v0.1"

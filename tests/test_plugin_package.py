@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import re
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -63,6 +64,40 @@ def validate_agent_plugins_1_0_manifest(manifest: object) -> list[str]:
         extensions = manifest["extensions"]
         if not isinstance(extensions, dict) or any(not isinstance(value, dict) for value in extensions.values()):
             errors.append("extensions must be an object whose values are objects")
+
+    return errors
+
+
+def validate_plugin_filesystem(plugin_root: Path) -> list[str]:
+    errors: list[str] = []
+    try:
+        resolved_root = plugin_root.resolve(strict=True)
+    except FileNotFoundError:
+        return ["plugin root does not exist"]
+
+    manifest = plugin_root / "plugin.json"
+    if not manifest.is_file():
+        errors.append("plugin.json must be a regular file at the plugin root")
+
+    for path in plugin_root.rglob("*"):
+        try:
+            resolved = path.resolve(strict=True)
+        except FileNotFoundError:
+            errors.append(f"package path does not resolve: {path.relative_to(plugin_root)}")
+            continue
+        if not resolved.is_relative_to(resolved_root):
+            errors.append(f"package path escapes plugin root: {path.relative_to(plugin_root)}")
+
+    skills = plugin_root / "skills"
+    if skills.exists() and not skills.is_dir():
+        errors.append("skills fixed component location must be a directory when present")
+    elif skills.is_dir():
+        for skill_dir in skills.iterdir():
+            if not skill_dir.is_dir():
+                continue
+            skill_file = skill_dir / "SKILL.md"
+            if skill_file.exists() and not skill_file.is_file():
+                errors.append(f"discovered SKILL.md must be a regular file: {skill_file.relative_to(plugin_root)}")
 
     return errors
 
@@ -140,6 +175,23 @@ class PluginPackageTests(unittest.TestCase):
         self.assertTrue(errors)
         self.assertTrue(any("additional properties" in error for error in errors))
         self.assertTrue(any("name violates" in error for error in errors))
+
+    def test_plugin_package_paths_are_contained_within_plugin_root(self) -> None:
+        self.assertEqual(validate_plugin_filesystem(PLUGIN_ROOT), [])
+
+    def test_plugin_filesystem_validator_rejects_escape_symlink(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            base = Path(temporary)
+            plugin_root = base / "plugin"
+            skill_dir = plugin_root / "skills" / "svif"
+            skill_dir.mkdir(parents=True)
+            (plugin_root / "plugin.json").write_text('{"$schema": "x", "name": "svif"}', encoding="utf-8")
+            outside = base / "outside.md"
+            outside.write_text("outside", encoding="utf-8")
+            (skill_dir / "SKILL.md").symlink_to(outside)
+
+            errors = validate_plugin_filesystem(plugin_root)
+            self.assertTrue(any("escapes plugin root" in error for error in errors))
 
     def test_svif_skill_conforms_to_agent_skills_frontmatter_contract(self) -> None:
         skill_dir = PLUGIN_ROOT / "skills" / "svif"

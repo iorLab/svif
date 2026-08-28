@@ -1,6 +1,6 @@
 # Svif Current State
 
-Svif is the authoritative active **Project orchestration product** on `main`. ZeroLocal v0.1 is preserved only as predecessor history on `legacy/zerolocal-v0.1`.
+Svif is the authoritative active **Project orchestration product** on `main`. Repository branch governance is main-only: predecessor and retired branch history are preserved by commit SHA and `history/`, not by live branch refs.
 
 ## Canonical repository topology
 
@@ -9,7 +9,7 @@ The active architecture has only two canonical projects/repositories:
 - Svif: `iorLab/svif`;
 - Agnir: `iorLab/agnir`.
 
-The former `iorLab/svif-cloudflare-reference` project is retired. Cloudflare implementation, provider descriptors, fixtures, tests, and future E2E validation belong inside `iorLab/svif`. Historical repositories and legacy branches are evidence only; they are not active dependencies, compatibility obligations, or release gates.
+The former `iorLab/svif-cloudflare-reference` project is retired. Cloudflare implementation, provider descriptors, fixtures, tests, and future E2E validation belong inside `iorLab/svif`. Historical repositories and retired branches are evidence only; they are not active dependencies, compatibility obligations, or release gates.
 
 ## Product architecture
 
@@ -72,9 +72,9 @@ Both READMEs contain a current Architecture Diagram, Runtime / Operation Flow di
 
 `REPOSITORY_TREE.md` is the exhaustive tracked-file map. Architecture/runtime changes update both README language versions; tracked file additions/removals/moves or material responsibility changes update `REPOSITORY_TREE.md` in the same change set, and both compact README trees when affected.
 
-## Legacy isolation boundary
+## Historical isolation boundary
 
-`legacy/zerolocal-v0.1` and historical ZeroLocal artifacts exist only to preserve lineage and audit history.
+ZeroLocal and other retired branch material exist only as lineage and audit history referenced by immutable commit SHA and `history/BRANCH_ARCHIVE.md`.
 
 They MUST NOT become:
 
@@ -92,18 +92,18 @@ Historical material MAY be consulted to understand lineage or recover an idea, b
 1. **Harden concrete ChatGPT Apps SDK / MCP packaging** around the existing `ChatGPTExecutionSurface` and `Orchestrator.begin()` / `complete()` lifecycle, without duplicating kernel semantics or moving protected authority into untrusted payloads.
 2. **Add broader neutrality pressure** using Agnir's storage-neutral and multi-project isolation cases; prove Svif composition does not require GitHub, Cloudflare, or ChatGPT as universal kernel dependencies.
 3. **Advance the installable Plugin product surface** only on top of validated kernel/integration behavior; do not reimplement orchestration in the distribution layer.
-4. Bind Svif to the current Agnir Core compatibility line as a Continuity Provider contract, not to Agnir legacy lineage or repository layout.
+4. Bind Svif to the current Agnir Core compatibility line as a Continuity Provider contract, not to Agnir historical lineage or repository layout.
 5. Keep live Cloudflare delivery disabled unless explicitly authorized; any future success claim requires exact verified-subject delivery plus independent observation.
-6. Keep incidental branch cleanup deferred until the new Svif version is substantially complete.
 
 ## Evidence checkpoints
 
 - README/localization: `.agnir/evidence/2026-08-28-readme-diagram-localization-checkpoint.md`.
 - Founding E2E: `.agnir/evidence/2026-08-28-founding-e2e.md`, run `33143308949` success.
 - Repository documentation baseline: pre-checkpoint head `97e70f9980de36aa7e3095cf8284f40c6fbf285e`, product-check run `33146795882` success.
+- Retired branch tips: `history/BRANCH_ARCHIVE.md`.
 
 ## Branch governance
 
-- `main`: authoritative active Svif product line;
-- `legacy/zerolocal-v0.1`: immutable predecessor history only;
-- incidental branch cleanup remains deferred until the new version is substantially complete.
+- `main` is the only long-lived branch and the only authoritative active Svif product line.
+- All former legacy, feature, fix, and temporary branch refs are retired after their final tip SHAs are recorded in `history/BRANCH_ARCHIVE.md`.
+- Historical recovery uses commit SHAs and Git history, not live branch refs.

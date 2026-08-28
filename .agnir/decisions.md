@@ -39,7 +39,7 @@
 
 - `README.md` is the English project entry point and `README.zh-CN.md` is the Simplified Chinese entry point.
 - Both language versions MUST show the current **Architecture Diagram** and **Runtime / Operation Flow** using Mermaid so the repository explains both static component topology and dynamic operation semantics without requiring a reader to reconstruct them from specifications.
-- Architecture, component ownership, dependency direction, authority/provenance boundaries, or runtime-flow changes MUST update the affected diagrams in both README language versions in the same change set.
+- Architecture, component ownership, dependency direction, authority/provenance boundaries, runtime-flow, or distribution changes MUST update the affected diagrams in both README language versions in the same change set.
 - Localized READMEs describe the same canonical architecture. Translation may adapt explanatory prose, but it must not introduce a separate product model.
 - Localized diagrams are comprehension-first, not literal translations. In the Simplified Chinese README, important nodes must communicate both role and responsibility so the diagram remains understandable without prior knowledge of the English term; English terminology may remain as a secondary label.
 - Repository checks enforce diagram/locale structure rather than exact prose wording.
@@ -83,3 +83,13 @@
 - Legacy, feature, fix, and temporary branch refs are deleted after their final tip SHAs are recorded in `history/BRANCH_ARCHIVE.md`.
 - Historical predecessor boundaries are referenced by immutable commit SHA and Git history rather than a live `legacy/*` branch.
 - No active product behavior, conformance, release gate, or recovery path may require a retired branch ref.
+
+## 2026-08-29 — Plugin-first delivery and iteration
+
+- Svif MUST stop treating Plugin packaging as a future graduation gate. The first installable Plugin is now an active `0.2` product artifact and real usage begins before remote MCP packaging is complete.
+- The Plugin package targets **Agent Plugins 1.0.0** and lives under `plugin/` with `plugin/plugin.json` as the manifest and `plugin/skills/svif/SKILL.md` as the first workflow component.
+- The first increment is intentionally **Skill-first**. A Plugin may be useful and testable without an MCP server; therefore `mcp.json` is not a prerequisite for beginning Plugin testing.
+- The Plugin Skill operationalizes current Svif behavior: Agnir-first discovery, Project-scoped context recovery, executable lifecycle discipline, exact-subject verification/provenance, trusted authority separation, independent observation, and durable checkpointing.
+- Plugin/distribution code and instructions MUST NOT reimplement the Orchestrator, shadow `src/svif/runtime.py`, make an Execution Surface canonical Project truth, or allow model-controlled payloads to self-grant protected authority.
+- The remote ChatGPT MCP/App surface remains the next additive packaging component. It is accepted only when it reuses `ChatGPTExecutionSurface` and the existing `Orchestrator.begin()` / `Orchestrator.complete()` boundary cleanly.
+- Plugin quality is now driven primarily by **install -> real Project use -> observe failure/friction -> repair -> repeat**, with contracts tightened as implementation pressure reveals actual needs.

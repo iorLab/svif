@@ -41,4 +41,5 @@
 - Both language versions MUST show the current **Architecture Diagram** and **Runtime / Operation Flow** using Mermaid so the repository explains both static component topology and dynamic operation semantics without requiring a reader to reconstruct them from specifications.
 - Architecture, component ownership, dependency direction, authority/provenance boundaries, or runtime-flow changes MUST update the affected diagrams in both README language versions in the same change set.
 - Localized READMEs describe the same canonical architecture. Translation may adapt explanatory prose, but it must not introduce a separate product model.
+- Localized diagrams are **comprehension-first, not literal translations**. In `README.zh-CN.md`, each node SHOULD explain in Chinese both what the component is and what role it plays; English terminology is secondary annotation or an exact code/API identifier.
 - Repository checks enforce diagram/locale structure rather than exact prose wording.

@@ -66,19 +66,21 @@ class PluginInstallationDocumentationTests(unittest.TestCase):
         ):
             self.assertIn(marker, text)
 
-    def test_next_mcp_increment_preserves_agent_plugins_fixed_core_path(self) -> None:
+    def test_next_mcp_increment_keeps_portable_and_openai_paths_distinct(self) -> None:
         text = PLUGIN_README.read_text(encoding="utf-8")
 
         for marker in (
-            "optional portable root `mcp.json` component",
-            "`mcp.json` is the fixed core path",
+            "under Agent Plugins 1.0, portable MCP configuration lives at the Plugin root as `mcp.json`",
             "contains the `mcpServers` object",
-            "do not rename it to a client-native path",
-            "declare MCP configuration inline in `plugin.json`",
+            "OpenAI/Codex product manifest",
+            "product-specific root `.mcp.json` component",
+            "`.codex-plugin/plugin.json` through its `mcpServers` field",
+            "OpenAI `.mcp.json` path is not a portable Agent Plugins replacement",
+            "portable `mcp.json` must not be renamed or inlined into portable `plugin.json`",
         ):
             self.assertIn(marker, text)
 
-        self.assertNotIn("optional `.mcp.json`", text)
+        self.assertNotIn("do not rename it to a client-native path", text)
 
     def test_root_readmes_do_not_overclaim_real_client_validation(self) -> None:
         english = ROOT_README.read_text(encoding="utf-8")

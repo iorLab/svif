@@ -15,7 +15,18 @@ For an Agnir-initialized repository/filesystem Project, follow the current Agnir
 
 `AGENTS.md` is only a locator; the target Project README owns the full Agnir Project Instructions. Preserve unrelated existing `AGENTS.md` instructions and never silently override a material conflict.
 
-When `AGNIR.yaml` is available, read it before substantive work. Treat the Project-managed Agnir state as durable authority for current state, next actions, decisions, and referenced evidence. Do not treat chat history, an executor's private context, Git, GitHub, ChatGPT, or any other execution surface as canonical merely because work happened there.
+When `AGNIR.yaml` is available, read it before substantive work. Before loading any declared durable memory:
+
+1. validate `agnir.version` against the Agnir Core compatibility supported by the current Project binding;
+2. validate `agnir.discovery_profile` against the selected discovery profile;
+3. verify that `project.identity` matches the Project selected by the authorized Project Entry Point or trusted binding context;
+4. resolve the required memory locators only after those compatibility and identity checks pass.
+
+For the current Svif repository binding, the expected values are Agnir Core `0.1`, profile `repository-filesystem/0.1`, and Project identity `urn:svif:project:svif-core`. Treat these as Project-binding facts, not universal Agnir constants.
+
+Do not load state and then retroactively decide whether it belonged to the selected Project. Unsupported Core/profile compatibility must surface an explicit discovery failure such as `AGNIR_DISCOVERY_UNSUPPORTED_VERSION`; a selected-root identity mismatch must surface `AGNIR_DISCOVERY_PROJECT_MISMATCH`. A broken required locator must remain a discovery failure rather than permission to search sibling repositories, parent/child Projects, home directories, chat history, or retired layouts for substitute state.
+
+After validation, treat the Project-managed Agnir state as durable authority for current state, next actions, decisions, and referenced evidence. Do not treat chat history, an executor's private context, Git, GitHub, ChatGPT, or any other execution surface as canonical merely because work happened there.
 
 When `SVIF.yaml` is available, read it after Agnir discovery and use it to understand the Project's Svif bindings and active product contracts.
 

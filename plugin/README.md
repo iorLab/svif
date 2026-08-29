@@ -16,13 +16,15 @@ A Skill-only Plugin is structurally useful without an MCP server. MCP packaging 
 
 ## Current validation status
 
-Repository CI validates the package structure, Agent Plugins 1.0.0 manifest constraints used by this package, the specification's normative manifest failure semantics, Agent Skills frontmatter/guardrails, Plugin-root filesystem containment and its required failure-isolation boundaries, fixed component discovery semantics for both `skills/` and the currently absent `mcp.json`, installation-documentation guardrails, and the boundary that prevents the Plugin from shadowing the Svif runtime.
+Repository CI validates the package structure, Agent Plugins 1.0.0 manifest constraints used by this package, the specification's normative manifest failure semantics, Agent Skills frontmatter/guardrails, Plugin-root filesystem containment and its required failure-isolation boundaries, fixed component discovery semantics for both `skills/` and the currently absent `mcp.json`, Agnir pre-load compatibility/identity discovery guards, installation-documentation guardrails, and the boundary that prevents the Plugin from shadowing the Svif runtime.
 
 The manifest test deliberately follows the Agent Plugins 1.0 specification text where it defines non-fatal exceptions to the closed schema: unknown top-level fields are reported and ignored, and a non-object `extensions` field is reported and ignored. A portable validator also does not validate values inside unimplemented client-extension namespaces. Other invalid permitted manifest fields remain fatal. This prevents Svif's package tests from being stricter than a conformant Agent Plugins client in ways that would reject a package the normative specification says to continue loading.
 
 Filesystem containment is modeled at the specification's narrow failure boundaries rather than as one all-or-nothing package check: an escaping root `plugin.json` rejects the Plugin; an invalid or escaping fixed `skills/` location invalidates only that component type; an escaping discovered `SKILL.md` skips only that Skill; and unrelated escaping package paths are denied without falsely turning those narrower failures into whole-Plugin rejection.
 
 Fixed-location discovery is checked separately. Skills are discovered only from immediate child directories of `skills/` that contain a regular `SKILL.md`; nested descendants are not recursively promoted to Skills. Missing fixed locations are valid absence. The root `mcp.json` location is also modeled now even though this MVP intentionally does not ship it: if that path later exists with the wrong filesystem kind or escapes the Plugin root, only the MCP component is invalidated while independently valid Skills remain loadable. This locks the Agent Plugins v1 component-isolation rule before the remote MCP increment is introduced.
+
+Agnir discovery is also guarded before durable memory is trusted. The Skill must validate Core compatibility, selected discovery profile, and selected-Project identity before resolving and loading the declared continuity locators. Unsupported compatibility and Project mismatch remain explicit discovery failures rather than triggers to search chat history, sibling repositories, parent/child Projects, or retired layouts for substitute state. For the current Svif binding the expected values are Core `0.1`, profile `repository-filesystem/0.1`, and Project identity `urn:svif:project:svif-core`; these are Project-binding facts, not universal Agnir constants.
 
 That is **package/conformance validation**, not proof that a particular ChatGPT, Codex, or other compatible client has installed and exercised this exact package. Portable package success does not prove an OpenAI product installation path, directory listing, workspace policy, import flow, or invocation path worked for this revision.
 
@@ -33,6 +35,8 @@ Agent Plugins 1.0 treats the Plugin as a directory rooted at one filesystem loca
 The bundled `svif` Skill guides a compatible execution surface to:
 
 - follow the current Agnir activation route: `AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml -> durable memory` when those surfaces exist;
+- validate Agnir Core/profile compatibility and selected-Project identity before loading durable memory;
+- surface unsupported-version, Project-mismatch, and broken-locator discovery failures instead of silently falling back to unrelated state;
 - load current state and next actions first, then only relevant decisions/evidence;
 - distinguish Agnir Core `0.1`, profile `repository-filesystem/0.1`, and repository release SemVer `0.1.0`;
 - execute the Svif lifecycle rather than merely describe it;
@@ -64,8 +68,8 @@ For a real supported-client exercise:
 2. Install/select the Plugin through the product-supported route available on that surface: Plugin Directory when published there, or the surface's supported import/upload/administrator path for a local or workspace-specific Plugin.
 3. If the Plugin appears in ChatGPT, invoke it using the supported plugin controls such as an **@ mention** or the available `+` / More flow.
 4. In a supported Codex task view, open **Sources**, choose the plugin option exposed by that client, then select the installed Plugin.
-5. Run the workflow request above against a real Agnir-initialized Project and observe whether activation reaches `AGNIR.yaml` and the declared durable memory without relying on private conversation state.
-6. Record the **exact Plugin or Skill revision**, **observed activation path**, **verification performed**, and **checkpoint result**, plus any client/workspace friction or failure.
+5. Run the workflow request above against a real Agnir-initialized Project and observe whether activation reaches `AGNIR.yaml`, validates the expected compatibility and Project identity, and only then reaches the declared durable memory without relying on private conversation state.
+6. Record the **exact Plugin or Skill revision**, **observed activation path**, **compatibility/identity checks**, **verification performed**, and **checkpoint result**, plus any client/workspace friction or failure.
 
 Only that observed client exercise can establish installation evidence for the tested surface and revision. Repository package/conformance validation does not prove client installation.
 

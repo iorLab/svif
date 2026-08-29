@@ -93,3 +93,11 @@
 - Plugin/distribution code and instructions MUST NOT reimplement the Orchestrator, shadow `src/svif/runtime.py`, make an Execution Surface canonical Project truth, or allow model-controlled payloads to self-grant protected authority.
 - The remote ChatGPT MCP/App surface remains the next additive packaging component. It is accepted only when it reuses `ChatGPTExecutionSurface` and the existing `Orchestrator.begin()` / `Orchestrator.complete()` boundary cleanly.
 - Plugin quality is now driven primarily by **install -> real Project use -> observe failure/friction -> repair -> repeat**, with contracts tightened as implementation pressure reveals actual needs.
+
+## 2026-08-29 — OpenAI repository distribution is additive
+
+- The portable Plugin contract remains `plugin/plugin.json` plus shared components under `plugin/`; OpenAI/Codex product distribution metadata does not supersede Agent Plugins 1.0 semantics.
+- `.agents/plugins/marketplace.json` is the repository-level OpenAI/Codex GitHub marketplace entry and maps to local `./plugin`.
+- `plugin/.codex-plugin/plugin.json` is an additive product-specific manifest that reuses the same `plugin/skills/` implementation; it MUST NOT introduce a second Orchestrator, continuity store, authority model, or execution kernel.
+- Shared identity metadata between the portable and Codex manifests is kept synchronized by tests.
+- Repository package/conformance/distribution validation is not installation evidence. A successful real-client claim requires an observed workspace/client import and invocation of the exact revision, followed by the existing Agnir activation, exact-subject verification, authority, independent-observation, and checkpoint rules.

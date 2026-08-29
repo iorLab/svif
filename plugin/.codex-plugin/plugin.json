@@ -23,6 +23,7 @@
     "category": "Developer Tools",
     "capabilities": [
       "Interactive",
+      "Read",
       "Write"
     ],
     "websiteURL": "https://github.com/iorLab/svif",

@@ -90,7 +90,7 @@ flowchart TD
 
 ## 可安装 Plugin MVP
 
-Svif 现在已经不是“以后再做 Plugin”，而是在 `plugin/` 中提供了第一版**可安装、可马上开始真实测试的 Skill-first Plugin MVP**，采用 Agent Plugins 1.0.0 的可移植目录格式：
+Svif 现在已经不是“以后再做 Plugin”，而是在 `plugin/` 中提供了第一版 **Skill-first Plugin MVP**，采用 Agent Plugins 1.0.0 的可移植目录格式。这个 package 已经可以进入真实客户端 installation exercise，但**当前还没有任何 ChatGPT 或 Codex 客户端安装被记录为本 revision 的已验证证据**：
 
 ```text
 plugin/
@@ -101,11 +101,13 @@ plugin/
         └── SKILL.md
 ```
 
+只有在具体受支持的 client/surface 上实际观察到 Plugin 可用性、workspace policy、import/directory access、调用路径、Agnir activation、verification 与 checkpoint 行为后，才能把该 surface/revision 的安装称为已验证。
+
 这版 Plugin 会要求 Executor 先发现 Agnir，再进入真实 Project 工作；执行过程中遵守 Svif lifecycle、exact-subject verification、provenance、可信权限边界、外部效果独立观察以及 durable checkpoint。Plugin 只是分发/工作流层，不会复制 Orchestrator，也不会把 ChatGPT 或其他执行环境变成 canonical memory。
 
-第一版故意先不等 `mcp.json`。Skill-only Plugin 本身就可以立即安装、测试、迭代；等远程 Svif MCP/App 边界可以正确复用 `Orchestrator.begin()` / `Orchestrator.complete()` 时，再把 MCP 作为增强组件并入，而不是继续把它当发布阻塞项。
+第一版故意先不等 `mcp.json`。Skill-only package 可以先完成 portable conformance 并进入真实客户端 exercise；等远程 Svif MCP/App 边界可以正确复用 `Orchestrator.begin()` / `Orchestrator.complete()` 时，再把 MCP 作为增强组件并入，而不是继续把它当 package validation 或真实客户端 exercise 的前置条件。
 
-安装与 smoke test 见 [`plugin/README.md`](plugin/README.md)。
+portable package 检查、client-dependent installation exercise 与 evidence boundary 见 [`plugin/README.md`](plugin/README.md)。
 
 ## 仓库结构
 
@@ -129,7 +131,7 @@ svif/
 │
 ├── plugin/                           # 可安装 Agent Plugins 1.0 分发包
 │   ├── plugin.json                   # 可移植 Plugin manifest
-│   ├── README.md                     # 安装、smoke test 与后续包装说明
+│   ├── README.md                     # package conformance、client exercise 与 evidence boundary 说明
 │   └── skills/svif/SKILL.md          # Svif Project orchestration 工作流 Skill
 │
 ├── spec/                             # Orchestrator 与 integrations 共同遵守的可移植产品 contracts
@@ -161,7 +163,7 @@ Python 目前只是可执行 reference vehicle，并不冻结未来的分发技�
 - 已有 ChatGPT structured execution bridge，支持 externally driven 的 `Orchestrator.begin()` / `Orchestrator.complete()` handoff。
 - Cloudflare provider 已归 Svif 自己所有，并使用 injected transport boundary，因此测试不需要 live credentials。
 - `tests/test_founding_e2e.py` 已把三者通过真实 Orchestrator 边界串起来。
-- `plugin/plugin.json` + `plugin/skills/svif/SKILL.md` 已形成第一版可安装 Plugin MVP。
+- `plugin/plugin.json` + `plugin/skills/svif/SKILL.md` 已形成第一版可安装 Plugin MVP package；真实 ChatGPT/Codex installation evidence 仍待补齐。
 - `tests/test_plugin_package.py` 检查 Plugin packaging baseline，并确保 distribution 层没有复制 runtime。
 - Protected authority 不来自不可信的 model/result payload。
 - 外部成功必须满足 exact verified-subject delivery，并经过 independent observation 后才能 checkpoint。
@@ -190,4 +192,4 @@ PYTHONPATH=src python -m unittest discover -s tests -v
 
 ## 下一步
 
-下一里程碑已经不是“准备 Plugin packaging”。**Plugin 已经存在。** 接下来直接进入“安装 → 真项目使用 → 暴露问题 → 修复 Plugin”的迭代；远程 ChatGPT MCP/App 组件随后再并入，但不得复制 kernel semantics 或削弱权限边界。真实 Cloudflare actuation 仍然单独受权限门控。
+下一里程碑已经不是“准备 Plugin packaging”。**Plugin 已经存在。** 接下来进入“在真实受支持客户端安装/调用 → 对真实 Project 观察 Agnir activation、verification 与 checkpoint → 记录 evidence → 修复暴露的问题”的迭代；远程 ChatGPT MCP/App 组件随后再并入，但不得复制 kernel semantics 或削弱权限边界。真实 Cloudflare actuation 仍然单独受权限门控。

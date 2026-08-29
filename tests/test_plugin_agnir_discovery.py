@@ -27,6 +27,18 @@ class PluginAgnirDiscoveryTests(unittest.TestCase):
             text,
         )
 
+    def test_skill_resolves_one_record_and_detects_chain_conflicts_before_compatibility(self) -> None:
+        text = SKILL.read_text(encoding="utf-8")
+
+        record = text.index("resolve exactly one authoritative Discovery Record")
+        not_found = text.index("AGNIR_DISCOVERY_NOT_FOUND")
+        chain_checks = text.index("Detect Locator Chain cycles and conflicting candidate records")
+        compatibility = text.index("validate `agnir.version`")
+
+        self.assertLess(record, not_found)
+        self.assertLess(not_found, chain_checks)
+        self.assertLess(chain_checks, compatibility)
+
     def test_skill_validates_compatibility_and_identity_before_loading_memory(self) -> None:
         text = SKILL.read_text(encoding="utf-8")
 
@@ -41,15 +53,19 @@ class PluginAgnirDiscoveryTests(unittest.TestCase):
         self.assertLess(identity, locator)
         self.assertLess(locator, load)
 
-    def test_skill_surfaces_current_agnir_discovery_failures_without_fallback_search(self) -> None:
+    def test_skill_surfaces_all_named_agnir_discovery_failures_without_fallback_search(self) -> None:
         text = SKILL.read_text(encoding="utf-8")
 
         for marker in (
+            "AGNIR_DISCOVERY_NOT_FOUND",
             "AGNIR_DISCOVERY_AMBIGUOUS",
             "AGNIR_DISCOVERY_UNSUPPORTED_VERSION",
             "AGNIR_DISCOVERY_PROJECT_MISMATCH",
-            "AGNIR_DISCOVERY_UNAUTHORIZED",
             "AGNIR_DISCOVERY_UNRESOLVABLE",
+            "AGNIR_DISCOVERY_UNAUTHORIZED",
+            "AGNIR_DISCOVERY_CYCLE",
+            "AGNIR_DISCOVERY_STALE",
+            "AGNIR_DISCOVERY_INCONSISTENT",
             "sibling repositories",
             "parent/child Projects",
             "chat history",

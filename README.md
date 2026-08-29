@@ -102,11 +102,13 @@ plugin/
         └── SKILL.md
 ```
 
-The Plugin can be tested immediately in compatible clients. It guides the executor to discover Agnir first, run real Project work through the Svif lifecycle, preserve verification/provenance and trusted authority boundaries, independently observe external effects, and checkpoint durable truth. It does not duplicate the Orchestrator and does not make an execution surface canonical memory.
+The portable package is ready for supported-client installation exercises, but **no ChatGPT or Codex client installation has yet been recorded as validated evidence for this revision**. Client/surface availability, workspace policy, import or directory access, invocation, Agnir activation, verification, and checkpoint behavior must be observed on the actual product surface before installation is called validated.
 
-The first release is deliberately Skill-only. `mcp.json` will be added when the remote Svif MCP/App component is ready to reuse the existing `Orchestrator.begin()` / `Orchestrator.complete()` boundary. MCP is an enhancement, not a gate for beginning Plugin testing and iteration.
+The Plugin guides the executor to discover Agnir first, run real Project work through the Svif lifecycle, preserve verification/provenance and trusted authority boundaries, independently observe external effects, and checkpoint durable truth. It does not duplicate the Orchestrator and does not make an execution surface canonical memory.
 
-See [`plugin/README.md`](plugin/README.md) for the install/smoke-test path.
+The first release is deliberately Skill-only. `mcp.json` will be added when the remote Svif MCP/App component is ready to reuse the existing `Orchestrator.begin()` / `Orchestrator.complete()` boundary. MCP is an enhancement, not a gate for beginning Plugin package validation and real-client exercises.
+
+See [`plugin/README.md`](plugin/README.md) for the portable package checks, client-dependent installation exercise, and evidence boundary.
 
 ## Repository Structure
 
@@ -130,7 +132,7 @@ svif/
 │
 ├── plugin/                           # installable Agent Plugins 1.0 distribution package
 │   ├── plugin.json                   # portable Plugin manifest
-│   ├── README.md                     # install, smoke-test, and packaging notes
+│   ├── README.md                     # package conformance, client exercise, and evidence-boundary notes
 │   └── skills/svif/SKILL.md          # Svif Project-orchestration workflow Skill
 │
 ├── spec/                             # portable product contracts used by the Orchestrator and integrations
@@ -162,7 +164,7 @@ Python is the current executable reference vehicle; it does not freeze the event
 - ChatGPT structured execution bridge supports externally driven `Orchestrator.begin()` / `Orchestrator.complete()` handoff.
 - Cloudflare provider logic is owned by Svif and uses an injected transport boundary, so tests do not require live credentials.
 - `tests/test_founding_e2e.py` composes all three through the real Orchestrator boundary.
-- `plugin/plugin.json` + `plugin/skills/svif/SKILL.md` now form the first installable Plugin MVP.
+- `plugin/plugin.json` + `plugin/skills/svif/SKILL.md` now form the first installable Plugin MVP package; real ChatGPT/Codex installation evidence is still pending.
 - `tests/test_plugin_package.py` verifies the package baseline and ensures the distribution layer does not shadow the runtime.
 - Protected authority remains outside untrusted model/result payloads.
 - External success requires exact verified-subject delivery plus independent observation before checkpoint.
@@ -189,4 +191,4 @@ PYTHONPATH=src python -m unittest discover -s tests -v
 
 ## Next
 
-The next milestone is no longer “prepare for Plugin packaging.” The Plugin exists. Next is **install/use/repair iteration**: test the Skill-first Plugin on real Projects, tighten the workflow from observed failures, and then add the remote ChatGPT MCP/App component without duplicating kernel semantics. Live Cloudflare actuation remains separately gated.
+The next milestone is no longer “prepare for Plugin packaging.” The Plugin exists. Next is **install/use/repair iteration**: exercise the Skill-first Plugin on an actual supported client and real Project, record the exact surface/revision and observed Agnir activation/verification/checkpoint evidence, repair observed friction, and then add the remote ChatGPT MCP/App component without duplicating kernel semantics. Live Cloudflare actuation remains separately gated.

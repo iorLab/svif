@@ -16,22 +16,38 @@ class PluginInstallationDocumentationTests(unittest.TestCase):
 
         self.assertIn("## OpenAI client installation exercise", text)
         self.assertIn("Plugin Directory", text)
-        self.assertIn("import, upload, or administrator", text)
         self.assertIn("@ mention", text)
-        self.assertIn("Sources", text)
-        self.assertIn("package/conformance validation", text)
-        self.assertIn("does not prove", text)
+        self.assertIn("Sources -> Use plugins", text)
+        self.assertIn("package/conformance/distribution validation", text)
+        self.assertIn("does not prove client installation", text)
 
         self.assertNotIn(
             "Use `plugin/` as the plugin root in a client that explicitly supports Agent Plugins 1.0.0",
             text,
         )
 
+    def test_github_marketplace_route_is_concrete_but_not_overclaimed(self) -> None:
+        text = PLUGIN_README.read_text(encoding="utf-8")
+
+        for marker in (
+            "## OpenAI GitHub marketplace distribution",
+            ".agents/plugins/marketplace.json",
+            "plugin/.codex-plugin/plugin.json",
+            "https://github.com/iorLab/svif",
+            "Workspace settings -> Plugins -> Add -> Import marketplace",
+            "prepared for the documented GitHub marketplace route",
+        ):
+            self.assertIn(marker, text)
+
+        self.assertIn("not client-installation evidence", text)
+        self.assertIn("actual workspace import report", text)
+
     def test_installation_validation_requires_observed_client_evidence(self) -> None:
         text = PLUGIN_README.read_text(encoding="utf-8")
         for marker in (
             "exact client/surface",
             "exact Plugin or Skill revision",
+            "marketplace import result",
             "observed activation path",
             "verification performed",
             "checkpoint result",

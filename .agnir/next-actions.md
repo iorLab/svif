@@ -1,7 +1,7 @@
 # Svif Next Actions
 
-1. **Perform the first real client installation/exercise of the Skill-first Plugin MVP.** Package/conformance CI is not installation evidence. Record the actual client/surface, exact Plugin/Skill revision, Agnir activation/discovery path, verification performed, and resulting durable checkpoint.
-2. **Repair Plugin workflow friction from that real exercise.** The Skill now has deterministic failure/stop/checkpoint branches; tighten them only from observed ambiguity, missed activation, bad tool selection, weak verification, or resume failures.
+1. **Perform the first real supported-client/workspace installation exercise through the repository-backed OpenAI GitHub marketplace path.** Package/conformance/distribution CI is not installation evidence. Import `https://github.com/iorLab/svif` from an eligible workspace, pin or record the exact commit, capture the marketplace import report, then invoke the installed Plugin on a real Agnir-initialized Project and record the exact surface, Agnir activation/discovery path, verification performed, and resulting durable checkpoint.
+2. **Repair Plugin workflow or distribution friction from that real exercise.** The repository now carries `.agents/plugins/marketplace.json`, `plugin/.codex-plugin/plugin.json`, and the portable Agent Plugins manifest; tighten them only from observed import errors, bad discovery, missed activation, bad tool selection, weak verification, or resume failures.
 3. **Harden the concrete ChatGPT Apps SDK / MCP packaging** as the next additive Plugin component around `integrations/chatgpt/` and the existing `ChatGPTExecutionSurface` bridge. Preserve the externally driven `Orchestrator.begin()` / `Orchestrator.complete()` control direction, keep protected authority outside untrusted model/result payloads, and do not duplicate kernel semantics in the packaging layer.
 4. **Add broader neutrality evidence** using Agnir's proven non-repository continuity and multi-project isolation cases as pressure inputs. Do not make GitHub, Cloudflare, or ChatGPT universal Svif dependencies.
 5. Keep live Cloudflare delivery disabled unless explicitly authorized. If authorized later, preserve exact verified-subject delivery and require independent observation before success claims.
@@ -17,9 +17,10 @@
 ## Plugin-first iteration rule
 
 - `plugin/` is an active product surface.
-- The current Plugin targets Agent Plugins `1.0.0` and is intentionally Skill-first.
-- Repository CI validates package/conformance properties; do not call client installation validated until an actual supported client has loaded/exercised it.
-- Plugin changes SHOULD be driven by real execution failures or usability pressure whenever possible.
+- The portable package targets Agent Plugins `1.0.0` and is intentionally Skill-first.
+- `.agents/plugins/marketplace.json` plus `plugin/.codex-plugin/plugin.json` are additive OpenAI/Codex distribution surfaces; they do not supersede portable `plugin/plugin.json` and do not move runtime or continuity authority into distribution metadata.
+- Repository CI validates package/conformance/distribution properties; do not call client installation validated until an actual supported client/workspace has imported and exercised the exact revision.
+- Plugin changes SHOULD be driven by real execution or import failures and usability pressure whenever possible.
 - Distribution MUST NOT reimplement `src/svif/runtime.py`, move Project truth out of the Continuity Provider, or grant protected authority through model-controlled payloads.
 - The future `mcp.json` component is additive and becomes part of the Plugin only when it can reuse existing Svif boundaries cleanly.
 
@@ -45,6 +46,7 @@
 - English and Simplified Chinese README entry points include synchronized Architecture and Runtime / Operation Flow diagrams.
 - Founding credential-free E2E implemented at `tests/test_founding_e2e.py`.
 - Skill-first Plugin MVP exists under `plugin/` using Agent Plugins `1.0.0` packaging.
+- OpenAI/Codex GitHub marketplace distribution metadata now maps the repository to the same Skill-first Plugin root without duplicating runtime semantics.
 - Plugin manifest metadata, schema-constraint tests, deterministic Skill workflow branches, and current Agnir activation/profile references have been hardened after review.
 - Main-only branch governance is complete.
 

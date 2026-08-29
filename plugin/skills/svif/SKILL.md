@@ -15,6 +15,8 @@ For an Agnir-initialized repository/filesystem Project, follow the current Agnir
 
 `AGENTS.md` is only a locator; the target Project README owns the full Agnir Project Instructions. Preserve unrelated existing `AGENTS.md` instructions and never silently override a material conflict.
 
+Before following that route, require the authorized Project Entry Point or trusted binding context to select exactly one Project root. If multiple candidate Project roots exist and no authority rule selects one, surface `AGNIR_DISCOVERY_AMBIGUOUS` rather than choosing the most convenient candidate. Once one root is authoritatively selected, a parent or child Project with its own `AGNIR.yaml` does not make that selected root ambiguous and MUST NOT be searched as a replacement.
+
 When `AGNIR.yaml` is available, read it before substantive work. Before loading any declared durable memory:
 
 1. validate `agnir.version` against the Agnir Core compatibility supported by the current Project binding;
@@ -24,13 +26,13 @@ When `AGNIR.yaml` is available, read it before substantive work. Before loading 
 
 For the current Svif repository binding, the expected values are Agnir Core `0.1`, profile `repository-filesystem/0.1`, and Project identity `urn:svif:project:svif-core`. Treat these as Project-binding facts, not universal Agnir constants.
 
-Do not load state and then retroactively decide whether it belonged to the selected Project. Unsupported Core/profile compatibility must surface an explicit discovery failure such as `AGNIR_DISCOVERY_UNSUPPORTED_VERSION`; a selected-root identity mismatch must surface `AGNIR_DISCOVERY_PROJECT_MISMATCH`. A broken required locator must remain a discovery failure rather than permission to search sibling repositories, parent/child Projects, home directories, chat history, or retired layouts for substitute state.
+Do not load state and then retroactively decide whether it belonged to the selected Project. Unsupported Core/profile compatibility must surface an explicit discovery failure such as `AGNIR_DISCOVERY_UNSUPPORTED_VERSION`; a selected-root identity mismatch must surface `AGNIR_DISCOVERY_PROJECT_MISMATCH`. A known required locator whose authorization is absent or denied must remain `AGNIR_DISCOVERY_UNAUTHORIZED` when that distinction can safely be made; a required locator that cannot resolve to durable state must remain `AGNIR_DISCOVERY_UNRESOLVABLE`. Neither case grants permission to search sibling repositories, parent/child Projects, home directories, chat history, or retired layouts for substitute state.
 
 After validation, treat the Project-managed Agnir state as durable authority for current state, next actions, decisions, and referenced evidence. Do not treat chat history, an executor's private context, Git, GitHub, ChatGPT, or any other execution surface as canonical merely because work happened there.
 
 When `SVIF.yaml` is available, read it after Agnir discovery and use it to understand the Project's Svif bindings and active product contracts.
 
-If Agnir is expected but discovery or activation fails, do not invent Project state. Identify the failed locator/discovery step, repair it when authorized, otherwise surface the blocker and stop before making state-dependent changes.
+If Agnir is expected but discovery or activation fails, do not invent Project state. Identify the failed locator/discovery step, repair the earliest violated discovery invariant when authorized, then rerun discovery from the original authorized Project Entry Point; otherwise surface the blocker and stop before making state-dependent changes.
 
 If more than one Project is involved, keep each Project's durable state isolated. Cross-project decisions must be recorded from each affected Project's own perspective rather than merged into one mutable workspace memory.
 

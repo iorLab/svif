@@ -44,6 +44,7 @@ checks:
   cloudflare_capability: "tests/test_cloudflare_capability.py"
   founding_e2e: "tests/test_founding_e2e.py"
   plugin_package: "tests/test_plugin_package.py"
+  plugin_component_discovery: "tests/test_plugin_component_discovery.py"
 
 extensions:
   svif/repository:

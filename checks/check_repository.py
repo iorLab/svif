@@ -68,6 +68,7 @@ def require_full_repository_tree() -> None:
             "skills/",
             "SKILL.md",
             "test_plugin_package.py",
+            "test_plugin_component_discovery.py",
             "spec/",
             "CAPABILITY_ADAPTER.md",
             "profiles/",
@@ -147,6 +148,7 @@ def main() -> None:
         "src/svif/capabilities/cloudflare.py",
         "tests/test_runtime.py", "tests/test_agnir_continuity.py", "tests/test_chatgpt_surface.py",
         "tests/test_cloudflare_capability.py", "tests/test_founding_e2e.py", "tests/test_plugin_package.py",
+        "tests/test_plugin_component_discovery.py",
         "integrations/chatgpt/README.md", "integrations/cloudflare/README.md", "integrations/cloudflare/adapter.json",
         "plugin/plugin.json", "plugin/README.md", "plugin/skills/svif/SKILL.md",
         "spec/CORE.md", "spec/PROJECT_BINDING.md", "spec/CAPABILITY_ADAPTER.md", "spec/EVIDENCE.md",
@@ -194,6 +196,7 @@ def main() -> None:
         'cloudflare_workers_capability: "src/svif/capabilities/cloudflare.py"',
         'plugin_manifest: "plugin/plugin.json"', 'plugin_skill: "plugin/skills/svif/SKILL.md"',
         'plugin_package: "tests/test_plugin_package.py"',
+        'plugin_component_discovery: "tests/test_plugin_component_discovery.py"',
         'cloudflare_capability: "tests/test_cloudflare_capability.py"',
         'founding_e2e: "tests/test_founding_e2e.py"',
     ], "SVIF.yaml")

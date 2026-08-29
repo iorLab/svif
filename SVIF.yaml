@@ -46,6 +46,7 @@ checks:
   plugin_package: "tests/test_plugin_package.py"
   plugin_component_discovery: "tests/test_plugin_component_discovery.py"
   plugin_installation_docs: "tests/test_plugin_installation_docs.py"
+  plugin_agnir_discovery: "tests/test_plugin_agnir_discovery.py"
 
 extensions:
   svif/repository:

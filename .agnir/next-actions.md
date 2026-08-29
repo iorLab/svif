@@ -2,7 +2,7 @@
 
 1. **Perform the first real supported-client/workspace installation exercise through the repository-backed OpenAI GitHub marketplace path.** Package/conformance/distribution CI is not installation evidence. Import `https://github.com/iorLab/svif` from an eligible workspace, pin or record the exact commit, capture the marketplace import report, then invoke the installed Plugin on a real Agnir-initialized Project and record the exact surface, Agnir activation/discovery path, verification performed, and resulting durable checkpoint.
 2. **Repair Plugin workflow or distribution friction from that real exercise.** The repository now carries `.agents/plugins/marketplace.json`, `plugin/.codex-plugin/plugin.json`, and the portable Agent Plugins manifest; tighten them only from observed import errors, bad discovery, missed activation, bad tool selection, weak verification, or resume failures.
-3. **Harden the concrete ChatGPT Apps SDK / MCP packaging** as the next additive Plugin component around `integrations/chatgpt/` and the existing `ChatGPTExecutionSurface` bridge. Preserve the externally driven `Orchestrator.begin()` / `Orchestrator.complete()` control direction, keep protected authority outside untrusted model/result payloads, and do not duplicate kernel semantics in the packaging layer.
+3. **Harden the concrete ChatGPT Apps SDK / MCP packaging only after checking its real surface-availability cost.** Reuse `integrations/chatgpt/` and the existing `ChatGPTExecutionSurface` bridge around the externally driven `Orchestrator.begin()` / `Orchestrator.complete()` direction, keep protected authority outside untrusted model/result payloads, and do not duplicate kernel semantics. Current OpenAI workspace behavior may mark Plugins declaring `mcp.json` or `.mcp.json` as Desktop only even for remote HTTPS MCP; do not merge that increment until the target ChatGPT/Codex surfaces have been exercised and any loss of ChatGPT web availability is an explicit, evidenced product choice rather than an accidental packaging side effect.
 4. **Add broader neutrality evidence** using Agnir's proven non-repository continuity and multi-project isolation cases as pressure inputs. Do not make GitHub, Cloudflare, or ChatGPT universal Svif dependencies.
 5. Keep live Cloudflare delivery disabled unless explicitly authorized. If authorized later, preserve exact verified-subject delivery and require independent observation before success claims.
 
@@ -22,7 +22,7 @@
 - Repository CI validates package/conformance/distribution properties; do not call client installation validated until an actual supported client/workspace has imported and exercised the exact revision.
 - Plugin changes SHOULD be driven by real execution or import failures and usability pressure whenever possible.
 - Distribution MUST NOT reimplement `src/svif/runtime.py`, move Project truth out of the Continuity Provider, or grant protected authority through model-controlled payloads.
-- The future `mcp.json` component is additive and becomes part of the Plugin only when it can reuse existing Svif boundaries cleanly.
+- The future MCP component is additive only if the target product surfaces remain intentionally usable. Current OpenAI packaging can make an MCP-declaring Plugin Desktop only; validate that consequence on the real target surface before adding `mcp.json` / `.mcp.json`, and do not treat conformance success as evidence that web/client availability is preserved.
 
 ## Documentation maintenance rule
 

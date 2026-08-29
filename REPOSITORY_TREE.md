@@ -51,10 +51,10 @@ svif/                                                     # Svif 产品主仓库
 │
 ├── plugin/                                               # 可安装 Agent Plugins 1.0.0 分发包；当前为 Skill-first MVP
 │   ├── plugin.json                                       # portable Plugin manifest：name/version/schema/author/repository metadata
-│   ├── README.md                                         # portable conformance、真实 OpenAI client exercise 与安装证据边界、MCP 后续增强说明
+│   ├── README.md                                         # portable conformance、Agnir pre-load discovery guards、真实 OpenAI client exercise 与安装证据边界
 │   └── skills/
 │       └── svif/
-│           └── SKILL.md                                  # Svif 工作流 Skill：Agnir discovery、lifecycle、provenance、authority、checkpoint
+│           └── SKILL.md                                  # Svif 工作流 Skill：Agnir compatibility/profile/identity validation、lifecycle、provenance、authority、checkpoint
 │
 ├── spec/                                                 # Svif 内部可移植产品 contracts
 │   ├── CORE.md                                           # 编排生命周期、核心 invariants 与 product-kernel 语义
@@ -76,6 +76,7 @@ svif/                                                     # Svif 产品主仓库
 │   ├── test_chatgpt_surface.py                           # ChatGPT Execution Surface materialize / parse / identity 约束
 │   ├── test_cloudflare_capability.py                     # Cloudflare provider 的 actuation / observation / subject-target 约束
 │   ├── test_founding_e2e.py                              # founding Agnir + ChatGPT + Cloudflare 完整产品闭环
+│   ├── test_plugin_agnir_discovery.py                    # Plugin Skill 在加载 continuity 前执行 Agnir compatibility/profile/Project identity 校验并锁定 discovery failure 语义
 │   ├── test_plugin_component_discovery.py                # Agent Plugins 固定组件位置、直接子 Skill 发现与 MCP failure isolation 回归测试
 │   ├── test_plugin_installation_docs.py                  # 双语入口与 Plugin README 的安装证据边界 guardrail，防止 package conformance 被误写成 client validation
 │   └── test_plugin_package.py                            # Plugin manifest/Skill/package、filesystem failure isolation 与 Agnir activation boundary 验证

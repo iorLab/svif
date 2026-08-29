@@ -45,6 +45,7 @@ checks:
   founding_e2e: "tests/test_founding_e2e.py"
   plugin_package: "tests/test_plugin_package.py"
   plugin_component_discovery: "tests/test_plugin_component_discovery.py"
+  plugin_installation_docs: "tests/test_plugin_installation_docs.py"
 
 extensions:
   svif/repository:

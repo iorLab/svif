@@ -34,16 +34,17 @@ Current package and conformance coverage includes:
 
 - `plugin/plugin.json` — Plugin manifest;
 - `plugin/skills/svif/SKILL.md` — installable Svif Project-orchestration Skill;
-- `plugin/README.md` — portable package guidance plus explicit OpenAI client installation/exercise evidence boundaries;
+- `plugin/README.md` — portable package guidance plus explicit Agnir pre-load discovery and OpenAI client installation/exercise evidence boundaries;
 - `tests/test_plugin_package.py` — manifest, Agent Skills frontmatter, filesystem-containment/failure-isolation, Agnir activation, and runtime-shadowing regression tests;
 - `tests/test_plugin_component_discovery.py` — fixed component locations, immediate-child Skill discovery, and MCP component-isolation regression tests;
-- `tests/test_plugin_installation_docs.py` — documentation guardrails that prevent portable package/conformance validation from being presented as ChatGPT/Codex client installation evidence.
+- `tests/test_plugin_installation_docs.py` — documentation guardrails that prevent portable package/conformance validation from being presented as ChatGPT/Codex client installation evidence;
+- `tests/test_plugin_agnir_discovery.py` — guards the Agnir repository/filesystem discovery order: Core/profile compatibility and selected-Project identity must validate before continuity locators are resolved/loaded, with unsupported-version and Project-mismatch failures surfaced rather than fallback search.
 
-`SVIF.yaml` registers all three Plugin validation test surfaces explicitly, and repository-integrity checks require that registration so newly added Plugin checks cannot silently drift outside the Project binding.
+`SVIF.yaml` registers all four Plugin validation test surfaces explicitly. The new Agnir discovery guard also self-checks its registration, so the Plugin's current compatibility/identity pre-load semantics cannot silently drift outside the Project binding.
 
 This first increment is intentionally Skill-only. Missing `mcp.json` is valid for the current package; MCP/App packaging remains an additive enhancement rather than a prerequisite for beginning Plugin testing and iteration.
 
-Repository CI proves package/conformance, installation-documentation boundaries, and product-boundary properties only. **No supported ChatGPT/Codex client installation has yet been recorded as validated evidence**, so client installation must not be claimed complete.
+Repository CI proves package/conformance, Agnir discovery guardrails, installation-documentation boundaries, and product-boundary properties only. **No supported ChatGPT/Codex client installation has yet been recorded as validated evidence**, so client installation must not be claimed complete.
 
 The Plugin remains a distribution/workflow layer. It MUST NOT duplicate Orchestrator semantics, move canonical Project truth out of the Continuity Provider, or permit untrusted model/result payloads to self-grant protected authority.
 
@@ -72,7 +73,7 @@ Implemented under Svif ownership:
 - Cloudflare Workers Capability Provider with injected transport boundary;
 - founding credential-free E2E scenario at `tests/test_founding_e2e.py`;
 - Skill-first installable Plugin MVP at `plugin/`;
-- Plugin package, fixed-component discovery, and installation-documentation conformance/guardrail tests;
+- Plugin package, fixed-component discovery, Agnir pre-load discovery, and installation-documentation conformance/guardrail tests;
 - runtime/provider/surface tests and portable contract conformance.
 
 The founding E2E proves the complete credential-free product loop through the real interfaces: Agnir continuity load -> `Orchestrator.begin()` -> ChatGPT context materialization/result parsing -> trusted authority at `Orchestrator.complete()` -> exact-subject Cloudflare actuation through injected fake transport -> independent observation -> Agnir checkpoint -> continuity reload/resume.
@@ -110,8 +111,8 @@ Historical material MAY be consulted to understand lineage or recover an idea, b
 
 ## Current implementation gap / resume point
 
-1. **Perform the first real supported-client installation/exercise of the Plugin MVP.** Record the exact client/surface, Plugin/Skill revision, Agnir activation/discovery path, verification performed, observed failures/friction, and resulting durable checkpoint. Package/conformance CI and installation-documentation guardrails are not installation evidence.
-2. **Repair Plugin workflow friction from that real exercise.** Avoid speculative complexity now that manifest, Skill frontmatter, filesystem containment/failure isolation, fixed-component discovery, Agnir activation, and client-installation claim boundaries are covered.
+1. **Perform the first real supported-client installation/exercise of the Plugin MVP.** Record the exact client/surface, Plugin/Skill revision, Agnir activation/discovery path, compatibility/profile/Project-identity checks, verification performed, observed failures/friction, and resulting durable checkpoint. Package/conformance CI and installation-documentation guardrails are not installation evidence.
+2. **Repair Plugin workflow friction from that real exercise.** Avoid speculative complexity now that manifest, Skill frontmatter, filesystem containment/failure isolation, fixed-component discovery, Agnir activation plus pre-load compatibility/identity validation, and client-installation claim boundaries are covered.
 3. **Add the remote ChatGPT MCP/App component** only when it reuses the existing `ChatGPTExecutionSurface` and `Orchestrator.begin()` / `complete()` lifecycle without duplicating kernel semantics or weakening the authority boundary.
 4. **Add broader neutrality evidence** using Agnir's storage-neutral and multi-project isolation cases; prove Svif composition does not require GitHub, Cloudflare, or ChatGPT as universal kernel dependencies.
 5. Keep live Cloudflare delivery disabled unless explicitly authorized; any future success claim requires exact verified-subject delivery plus independent observation.

@@ -28,16 +28,21 @@ No execution environment becomes authoritative merely because execution occurred
 
 ## Distribution status
 
-Svif now has an active **Plugin MVP**, not merely a future Plugin target.
+Svif has an active **Plugin MVP** under `plugin/`, targeting the portable Agent Plugins `1.0.0` package format.
 
-The first installable package lives under `plugin/` and targets the portable Agent Plugins `1.0.0` package format:
+Current package and conformance coverage includes:
 
 - `plugin/plugin.json` — Plugin manifest;
 - `plugin/skills/svif/SKILL.md` — installable Svif Project-orchestration Skill;
 - `plugin/README.md` — installation/smoke-test and packaging guidance;
-- `tests/test_plugin_package.py` — package/boundary regression tests.
+- `tests/test_plugin_package.py` — manifest, Agent Skills frontmatter, filesystem-containment/failure-isolation, Agnir activation, and runtime-shadowing regression tests;
+- `tests/test_plugin_component_discovery.py` — fixed component locations, immediate-child Skill discovery, and MCP component-isolation regression tests.
 
-This first increment is intentionally Skill-only so real usage can begin immediately. MCP/App packaging is now an enhancement path, not a prerequisite for starting Plugin testing and iteration.
+`SVIF.yaml` registers both Plugin conformance test surfaces explicitly, and repository-integrity checks require that registration so newly added Plugin checks cannot silently drift outside the Project binding.
+
+This first increment is intentionally Skill-only. Missing `mcp.json` is valid for the current package; MCP/App packaging remains an additive enhancement rather than a prerequisite for beginning Plugin testing and iteration.
+
+Repository CI proves package/conformance and product-boundary properties only. **No supported ChatGPT/Codex client installation has yet been recorded as validated evidence**, so client installation must not be claimed complete.
 
 The Plugin remains a distribution/workflow layer. It MUST NOT duplicate Orchestrator semantics, move canonical Project truth out of the Continuity Provider, or permit untrusted model/result payloads to self-grant protected authority.
 
@@ -54,6 +59,7 @@ Current ChatGPT Apps SDK / MCP work remains the concrete integration path for th
 - Evidence record: `evidence-record/0.2`.
 - Repository/filesystem binding serialization: `SVIF.yaml`.
 - Plugin package format: Agent Plugins `1.0.0`.
+- Agnir Core compatibility: `0.1` with `repository-filesystem/0.1` as the current profile binding.
 
 ## Executable product foundation
 
@@ -65,7 +71,8 @@ Implemented under Svif ownership:
 - Cloudflare Workers Capability Provider with injected transport boundary;
 - founding credential-free E2E scenario at `tests/test_founding_e2e.py`;
 - Skill-first installable Plugin MVP at `plugin/`;
-- runtime/provider/surface/Plugin tests and portable contract conformance.
+- Plugin package and fixed-component discovery conformance tests;
+- runtime/provider/surface tests and portable contract conformance.
 
 The founding E2E proves the complete credential-free product loop through the real interfaces: Agnir continuity load -> `Orchestrator.begin()` -> ChatGPT context materialization/result parsing -> trusted authority at `Orchestrator.complete()` -> exact-subject Cloudflare actuation through injected fake transport -> independent observation -> Agnir checkpoint -> continuity reload/resume.
 
@@ -77,7 +84,11 @@ Founding E2E success is not evidence of live Cloudflare production delivery; liv
 
 The repository has parallel English and Simplified Chinese entry points: `README.md` and `README.zh-CN.md`.
 
-Both READMEs contain a current Architecture Diagram, Runtime / Operation Flow diagram, current Plugin status, and compact plain-text repository tree. Localized Mermaid diagrams are comprehension-first rather than literal translations.
+Both READMEs contain a current Architecture Diagram, Runtime / Operation Flow diagram, current Plugin status, Agnir Project Instructions, and compact plain-text repository tree. Localized Mermaid diagrams are comprehension-first rather than literal translations.
+
+The active Agnir activation route is:
+
+`Project root -> AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml -> declared durable memory`
 
 `REPOSITORY_TREE.md` is the exhaustive tracked-file map. Architecture/runtime/distribution changes update both README language versions; tracked file additions/removals/moves or material responsibility changes update `REPOSITORY_TREE.md` in the same change set, and both compact README trees when affected.
 
@@ -98,10 +109,10 @@ Historical material MAY be consulted to understand lineage or recover an idea, b
 
 ## Current implementation gap / resume point
 
-1. **Install and use the Plugin MVP on real Project work**, treating failures and friction as direct inputs to Skill/packaging iteration.
-2. **Add the remote ChatGPT MCP/App component** only when it reuses the existing `ChatGPTExecutionSurface` and `Orchestrator.begin()` / `complete()` lifecycle without duplicating kernel semantics or weakening the authority boundary.
-3. **Add broader neutrality evidence** using Agnir's storage-neutral and multi-project isolation cases; prove Svif composition does not require GitHub, Cloudflare, or ChatGPT as universal kernel dependencies.
-4. Bind Svif to the current Agnir Core compatibility line as a Continuity Provider contract, not to Agnir historical lineage or repository layout.
+1. **Perform the first real supported-client installation/exercise of the Plugin MVP.** Record the exact client/surface, Plugin/Skill revision, Agnir activation/discovery path, verification performed, observed failures/friction, and resulting durable checkpoint. Package/conformance CI is not installation evidence.
+2. **Repair Plugin workflow friction from that real exercise.** Avoid speculative complexity now that manifest, Skill frontmatter, filesystem containment/failure isolation, fixed-component discovery, and Agnir activation checks are covered.
+3. **Add the remote ChatGPT MCP/App component** only when it reuses the existing `ChatGPTExecutionSurface` and `Orchestrator.begin()` / `complete()` lifecycle without duplicating kernel semantics or weakening the authority boundary.
+4. **Add broader neutrality evidence** using Agnir's storage-neutral and multi-project isolation cases; prove Svif composition does not require GitHub, Cloudflare, or ChatGPT as universal kernel dependencies.
 5. Keep live Cloudflare delivery disabled unless explicitly authorized; any future success claim requires exact verified-subject delivery plus independent observation.
 
 ## Evidence checkpoints

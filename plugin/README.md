@@ -110,4 +110,4 @@ Only that observed client exercise can establish installation evidence for the t
 
 ## Next packaging increment
 
-Add an optional `.mcp.json` / `mcpServers` component only when the remote Svif MCP/App surface is ready to expose concrete `begin` / `complete` tools. The MCP component must reuse the existing Orchestrator and ChatGPT execution bridge and must preserve trusted authority outside model-controlled payloads.
+Add the optional portable root `mcp.json` component only when the remote Svif MCP/App surface is ready to expose concrete `begin` / `complete` tools. Under Agent Plugins 1.0, `mcp.json` is the fixed core path and contains the `mcpServers` object; do not rename it to a client-native path or declare MCP configuration inline in `plugin.json`. Client-specific metadata may adapt the portable MCP component for a supported product surface, but it must reuse the existing Orchestrator and ChatGPT execution bridge and preserve trusted authority outside model-controlled payloads.

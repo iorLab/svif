@@ -71,6 +71,18 @@ class PluginInstallationDocumentationTests(unittest.TestCase):
             text,
         )
 
+    def test_codex_directory_refresh_lag_is_not_misclassified_as_package_failure(self) -> None:
+        text = PLUGIN_README.read_text(encoding="utf-8")
+
+        for marker in (
+            "directory propagation as a distinct observation",
+            "can take up to **6 hours** to refresh",
+            "record the elapsed propagation state",
+            "re-check the directory rather than rewriting package metadata",
+            "temporarily stale Codex directory",
+        ):
+            self.assertIn(marker, text)
+
     def test_installation_validation_requires_observed_client_or_workspace_evidence(self) -> None:
         text = PLUGIN_README.read_text(encoding="utf-8")
         for marker in (

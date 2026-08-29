@@ -33,6 +33,16 @@ class PluginOpenAIDistributionTests(unittest.TestCase):
         self.assertFalse((ROOT / "plugin" / "src").exists())
         self.assertTrue((ROOT / "plugin" / "skills" / "svif" / "SKILL.md").is_file())
 
+    def test_codex_interface_declares_workflow_capabilities_without_granting_authority(self) -> None:
+        data = json.loads(CODEX_MANIFEST.read_text(encoding="utf-8"))
+        interface = data["interface"]
+
+        # The Skill necessarily reads Project-owned Agnir/Svif state before it can act,
+        # and may write authorized Project changes/checkpoints. These are discoverability/UI
+        # declarations only; protected authority remains enforced by the Svif lifecycle.
+        self.assertEqual(interface["capabilities"], ["Interactive", "Read", "Write"])
+        self.assertEqual(interface["category"], "Developer Tools")
+
     def test_codex_and_portable_manifests_keep_identity_metadata_in_sync(self) -> None:
         portable = json.loads(PORTABLE_MANIFEST.read_text(encoding="utf-8"))
         codex = json.loads(CODEX_MANIFEST.read_text(encoding="utf-8"))

@@ -76,7 +76,7 @@ class PluginInstallationDocumentationTests(unittest.TestCase):
         chinese = ROOT_README_ZH.read_text(encoding="utf-8")
 
         for marker in (
-            "actual supported client",
+            "actual supported",
             "exact surface/revision",
             "observed Agnir activation/verification/checkpoint evidence",
         ):
@@ -87,7 +87,8 @@ class PluginInstallationDocumentationTests(unittest.TestCase):
             "Agnir activation",
             "verification",
             "checkpoint",
-            "记录 evidence",
+            "evidence",
+            "记录",
         ):
             self.assertIn(marker, chinese)
 

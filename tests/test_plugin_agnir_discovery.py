@@ -27,6 +27,25 @@ class PluginAgnirDiscoveryTests(unittest.TestCase):
             text,
         )
 
+    def test_skill_selects_trusted_profile_before_resolving_discovery_record(self) -> None:
+        text = SKILL.read_text(encoding="utf-8")
+
+        root_selection = text.index("select exactly one Project root")
+        profile_selection = text.index("select the discovery profile/adapter convention")
+        trusted_context = text.index("trusted integration or binding context")
+        record = text.index("resolve exactly one authoritative Discovery Record")
+        profile_validation = text.index("validate `agnir.discovery_profile`")
+
+        self.assertLess(root_selection, profile_selection)
+        self.assertLess(profile_selection, trusted_context)
+        self.assertLess(trusted_context, record)
+        self.assertLess(record, profile_validation)
+        self.assertIn(
+            "MUST NOT bootstrap authority by choosing the adapter/convention used to discover or interpret itself",
+            text,
+        )
+        self.assertIn("against the already selected discovery profile", text)
+
     def test_skill_resolves_one_record_and_detects_chain_conflicts_before_compatibility(self) -> None:
         text = SKILL.read_text(encoding="utf-8")
 

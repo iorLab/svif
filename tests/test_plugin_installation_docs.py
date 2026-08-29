@@ -82,6 +82,18 @@ class PluginInstallationDocumentationTests(unittest.TestCase):
 
         self.assertNotIn("do not rename it to a client-native path", text)
 
+    def test_next_mcp_increment_records_current_openai_surface_availability_risk(self) -> None:
+        text = PLUGIN_README.read_text(encoding="utf-8")
+
+        for marker in (
+            "Desktop only",
+            "declares MCP servers via `mcp.json` or `.mcp.json`",
+            "including remote HTTPS servers",
+            "losing ChatGPT web availability",
+            "record the observed availability consequence separately from package/conformance success",
+        ):
+            self.assertIn(marker, text)
+
     def test_root_readmes_do_not_overclaim_real_client_validation(self) -> None:
         english = ROOT_README.read_text(encoding="utf-8")
         chinese = ROOT_README_ZH.read_text(encoding="utf-8")

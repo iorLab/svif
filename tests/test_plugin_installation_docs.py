@@ -17,7 +17,6 @@ class PluginInstallationDocumentationTests(unittest.TestCase):
         self.assertIn("## OpenAI client installation exercise", text)
         self.assertIn("Plugin Directory", text)
         self.assertIn("@ mention", text)
-        self.assertIn("Sources -> Use plugins", text)
         self.assertIn("package/conformance/distribution validation", text)
         self.assertIn("does not prove client installation", text)
 
@@ -26,28 +25,31 @@ class PluginInstallationDocumentationTests(unittest.TestCase):
             text,
         )
 
-    def test_github_marketplace_route_is_concrete_but_not_overclaimed(self) -> None:
+    def test_github_marketplace_route_matches_current_repo_marketplace_docs_without_overclaim(self) -> None:
         text = PLUGIN_README.read_text(encoding="utf-8")
 
         for marker in (
-            "## OpenAI GitHub marketplace distribution",
+            "## OpenAI repository marketplace distribution",
             ".agents/plugins/marketplace.json",
             "plugin/.codex-plugin/plugin.json",
-            "https://github.com/iorLab/svif",
-            "Workspace settings -> Plugins -> Add -> Import marketplace",
-            "prepared for the documented GitHub marketplace route",
+            "codex plugin marketplace add iorLab/svif",
+            "codex plugin marketplace add iorLab/svif --ref",
+            "ChatGPT desktop app",
+            "Plugins Directory",
+            "prepared for the documented repository marketplace route",
         ):
             self.assertIn(marker, text)
 
         self.assertIn("not client-installation evidence", text)
-        self.assertIn("actual workspace import report", text)
+        self.assertIn("observed installation", text)
+        self.assertNotIn("Workspace settings -> Plugins -> Add -> Import marketplace", text)
 
     def test_installation_validation_requires_observed_client_evidence(self) -> None:
         text = PLUGIN_README.read_text(encoding="utf-8")
         for marker in (
             "exact client/surface",
             "exact Plugin or Skill revision",
-            "marketplace import result",
+            "marketplace source result",
             "observed activation path",
             "verification performed",
             "checkpoint result",

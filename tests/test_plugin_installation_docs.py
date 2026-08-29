@@ -6,6 +6,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 PLUGIN_README = ROOT / "plugin" / "README.md"
+ROOT_README = ROOT / "README.md"
+ROOT_README_ZH = ROOT / "README.zh-CN.md"
 
 
 class PluginInstallationDocumentationTests(unittest.TestCase):
@@ -35,6 +37,43 @@ class PluginInstallationDocumentationTests(unittest.TestCase):
             "checkpoint result",
         ):
             self.assertIn(marker, text)
+
+    def test_root_readmes_do_not_overclaim_real_client_validation(self) -> None:
+        english = ROOT_README.read_text(encoding="utf-8")
+        chinese = ROOT_README_ZH.read_text(encoding="utf-8")
+
+        self.assertIn(
+            "no ChatGPT or Codex client installation has yet been recorded as validated evidence",
+            english,
+        )
+        self.assertIn("真实 ChatGPT/Codex installation evidence 仍待补齐", chinese)
+
+        for forbidden in (
+            "The Plugin can be tested immediately in compatible clients.",
+            "Skill-only Plugin 本身就可以立即安装、测试、迭代",
+            "可安装、可马上开始真实测试的 Skill-first Plugin MVP",
+        ):
+            self.assertNotIn(forbidden, english + chinese)
+
+    def test_installation_validation_requires_real_surface_observation_in_both_entry_points(self) -> None:
+        english = ROOT_README.read_text(encoding="utf-8")
+        chinese = ROOT_README_ZH.read_text(encoding="utf-8")
+
+        for marker in (
+            "actual supported client",
+            "exact surface/revision",
+            "observed Agnir activation/verification/checkpoint evidence",
+        ):
+            self.assertIn(marker, english)
+
+        for marker in (
+            "真实受支持客户端",
+            "Agnir activation",
+            "verification",
+            "checkpoint",
+            "记录 evidence",
+        ):
+            self.assertIn(marker, chinese)
 
     def test_installation_documentation_test_is_registered_in_project_binding(self) -> None:
         svif = (ROOT / "SVIF.yaml").read_text(encoding="utf-8")

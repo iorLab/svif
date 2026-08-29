@@ -51,7 +51,7 @@ svif/                                                     # Svif 产品主仓库
 │
 ├── plugin/                                               # 可安装 Agent Plugins 1.0.0 分发包；当前为 Skill-first MVP
 │   ├── plugin.json                                       # portable Plugin manifest：name/version/schema/author/repository metadata
-│   ├── README.md                                         # Plugin 安装、conformance/failure-isolation、smoke test、MCP 后续增强说明
+│   ├── README.md                                         # portable conformance 与 OpenAI 客户端安装/调用验证边界、smoke exercise、MCP 后续增强说明
 │   └── skills/
 │       └── svif/
 │           └── SKILL.md                                  # Svif 工作流 Skill：Agnir discovery、lifecycle、provenance、authority、checkpoint
@@ -77,6 +77,7 @@ svif/                                                     # Svif 产品主仓库
 │   ├── test_cloudflare_capability.py                     # Cloudflare provider 的 actuation / observation / subject-target 约束
 │   ├── test_founding_e2e.py                              # founding Agnir + ChatGPT + Cloudflare 完整产品闭环
 │   ├── test_plugin_component_discovery.py                # Agent Plugins 固定组件位置、直接子 Skill 发现与 MCP failure isolation 回归测试
+│   ├── test_plugin_installation_docs.py                  # 防止 portable package conformance 被误写成 ChatGPT/Codex 客户端安装验证
 │   └── test_plugin_package.py                            # Plugin manifest/Skill/package、filesystem failure isolation 与 Agnir activation boundary 验证
 │
 ├── conformance/                                          # Portable contracts 的一致性验证，不等同于产品 runtime

@@ -1,0 +1,33 @@
+{
+  "name": "svif",
+  "version": "0.2.0-dev",
+  "description": "Project orchestration workflows backed by durable continuity, explicit evidence, authority boundaries, and checkpointing.",
+  "author": {
+    "name": "iorLab",
+    "url": "https://github.com/iorLab/svif"
+  },
+  "homepage": "https://github.com/iorLab/svif",
+  "repository": "https://github.com/iorLab/svif",
+  "keywords": [
+    "project-orchestration",
+    "continuity",
+    "agnir",
+    "agent-skill"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Svif",
+    "shortDescription": "Project orchestration with Agnir continuity",
+    "longDescription": "Continue a durable Svif Project through Agnir continuity, explicit verification, trusted authority boundaries, independent observation, and resumable checkpointing without moving canonical Project truth into the execution surface.",
+    "developerName": "iorLab",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/iorLab/svif",
+    "defaultPrompt": [
+      "Continue this Svif Project and implement the next concrete action. Use the Project's canonical durable state and checkpoint when finished."
+    ]
+  }
+}

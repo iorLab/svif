@@ -17,12 +17,14 @@ For an Agnir-initialized repository/filesystem Project, follow the current Agnir
 
 Before following that route, require the authorized Project Entry Point or trusted binding context to select exactly one Project root. If multiple candidate Project roots exist and no authority rule selects one, surface `AGNIR_DISCOVERY_AMBIGUOUS` rather than choosing the most convenient candidate. Once one root is authoritatively selected, a parent or child Project with its own `AGNIR.yaml` does not make that selected root ambiguous and MUST NOT be searched as a replacement.
 
-Under the active discovery convention, resolve exactly one authoritative Discovery Record before loading continuity. If no Discovery Record can be resolved, surface `AGNIR_DISCOVERY_NOT_FOUND`. Detect Locator Chain cycles and conflicting candidate records before compatibility or identity validation rather than following a cycle, guessing among conflicting records, or silently adopting another candidate.
+Before resolving a Discovery Record, select the discovery profile/adapter convention applicable to the authorized Project Entry Point from trusted integration or binding context. The Discovery Record may declare its profile for compatibility checking, but it MUST NOT bootstrap authority by choosing the adapter/convention used to discover or interpret itself. If no applicable profile can be selected safely, surface the discovery/compatibility blocker rather than guessing from nearby files or model memory.
+
+Under the selected discovery convention, resolve exactly one authoritative Discovery Record before loading continuity. If no Discovery Record can be resolved, surface `AGNIR_DISCOVERY_NOT_FOUND`. Detect Locator Chain cycles and conflicting candidate records before compatibility or identity validation rather than following a cycle, guessing among conflicting records, or silently adopting another candidate.
 
 When `AGNIR.yaml` is available, read it before substantive work. Before loading any declared durable memory:
 
 1. validate `agnir.version` against the Agnir Core compatibility supported by the current Project binding;
-2. validate `agnir.discovery_profile` against the selected discovery profile;
+2. validate `agnir.discovery_profile` against the already selected discovery profile;
 3. verify that `project.identity` matches the Project selected by the authorized Project Entry Point or trusted binding context;
 4. resolve the required memory locators only after those compatibility and identity checks pass.
 

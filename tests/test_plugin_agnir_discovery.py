@@ -9,6 +9,24 @@ SKILL = ROOT / "plugin" / "skills" / "svif" / "SKILL.md"
 
 
 class PluginAgnirDiscoveryTests(unittest.TestCase):
+    def test_skill_requires_authority_to_select_one_project_root_before_discovery(self) -> None:
+        text = SKILL.read_text(encoding="utf-8")
+
+        root_selection = text.index("select exactly one Project root")
+        ambiguity = text.index("AGNIR_DISCOVERY_AMBIGUOUS")
+        manifest = text.index("When `AGNIR.yaml` is available")
+
+        self.assertLess(root_selection, ambiguity)
+        self.assertLess(ambiguity, manifest)
+        self.assertIn(
+            "a parent or child Project with its own `AGNIR.yaml` does not make that selected root ambiguous",
+            text,
+        )
+        self.assertIn(
+            "MUST NOT be searched as a replacement",
+            text,
+        )
+
     def test_skill_validates_compatibility_and_identity_before_loading_memory(self) -> None:
         text = SKILL.read_text(encoding="utf-8")
 
@@ -27,15 +45,20 @@ class PluginAgnirDiscoveryTests(unittest.TestCase):
         text = SKILL.read_text(encoding="utf-8")
 
         for marker in (
+            "AGNIR_DISCOVERY_AMBIGUOUS",
             "AGNIR_DISCOVERY_UNSUPPORTED_VERSION",
             "AGNIR_DISCOVERY_PROJECT_MISMATCH",
-            "broken required locator",
+            "AGNIR_DISCOVERY_UNAUTHORIZED",
+            "AGNIR_DISCOVERY_UNRESOLVABLE",
             "sibling repositories",
             "parent/child Projects",
             "chat history",
             "retired layouts",
         ):
             self.assertIn(marker, text)
+
+        self.assertIn("repair the earliest violated discovery invariant", text)
+        self.assertIn("original authorized Project Entry Point", text)
 
     def test_svif_binding_and_skill_agree_on_current_agnir_identity_and_compatibility(self) -> None:
         skill = SKILL.read_text(encoding="utf-8")

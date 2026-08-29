@@ -28,6 +28,8 @@ product:
   chatgpt_integration: "integrations/chatgpt/README.md"
   cloudflare_integration: "integrations/cloudflare/README.md"
   plugin_manifest: "plugin/plugin.json"
+  plugin_codex_manifest: "plugin/.codex-plugin/plugin.json"
+  plugin_openai_marketplace: ".agents/plugins/marketplace.json"
   plugin_skill: "plugin/skills/svif/SKILL.md"
   plugin_readme: "plugin/README.md"
   orchestration_contract: "spec/CORE.md"
@@ -47,6 +49,7 @@ checks:
   plugin_component_discovery: "tests/test_plugin_component_discovery.py"
   plugin_installation_docs: "tests/test_plugin_installation_docs.py"
   plugin_agnir_discovery: "tests/test_plugin_agnir_discovery.py"
+  plugin_openai_distribution: "tests/test_plugin_openai_distribution.py"
 
 extensions:
   svif/repository:

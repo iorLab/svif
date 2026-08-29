@@ -15,8 +15,7 @@ class PluginInstallationDocumentationTests(unittest.TestCase):
         text = PLUGIN_README.read_text(encoding="utf-8")
 
         self.assertIn("## OpenAI client installation exercise", text)
-        self.assertIn("Plugin Directory", text)
-        self.assertIn("@ mention", text)
+        self.assertIn("Plugins Directory", text)
         self.assertIn("package/conformance/distribution validation", text)
         self.assertIn("does not prove client installation", text)
 

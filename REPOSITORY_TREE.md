@@ -8,6 +8,10 @@
 
 ```text
 svif/                                                     # Svif 产品主仓库
+├── .agents/                                              # OpenAI/Codex workspace GitHub marketplace 入口
+│   └── plugins/
+│       └── marketplace.json                             # 将 marketplace import 映射到本仓库的 local ./plugin
+│
 ├── .agnir/                                               # 本 Svif Project 的 canonical durable memory
 │   ├── state.md                                          # 当前 Project 状态：已经做到哪里、哪些事实当前成立
 │   ├── next-actions.md                                   # 下一次恢复时应该继续推进的工作
@@ -49,9 +53,11 @@ svif/                                                     # Svif 产品主仓库
 │       ├── README.md                                     # Cloudflare Capability Provider 集成说明与安全边界
 │       └── adapter.json                                  # Cloudflare adapter 的机器可读 operation / authority / failure descriptor
 │
-├── plugin/                                               # 可安装 Agent Plugins 1.0.0 分发包；当前为 Skill-first MVP
+├── plugin/                                               # Agent Plugins 1.0 portable 分发包；当前为 Skill-first MVP
 │   ├── plugin.json                                       # portable Plugin manifest：name/version/schema/author/repository metadata
-│   ├── README.md                                         # portable conformance、Agnir pre-load discovery guards、真实 OpenAI client exercise 与安装证据边界
+│   ├── .codex-plugin/
+│   │   └── plugin.json                                   # OpenAI/Codex 产品侧附加 manifest；复用同一 skills/，不复制 runtime
+│   ├── README.md                                         # portable/package/distribution 校验、GitHub marketplace 路径、真实 client exercise 与证据边界
 │   └── skills/
 │       └── svif/
 │           └── SKILL.md                                  # Svif 工作流 Skill：Agnir compatibility/profile/identity validation、lifecycle、provenance、authority、checkpoint
@@ -78,7 +84,8 @@ svif/                                                     # Svif 产品主仓库
 │   ├── test_founding_e2e.py                              # founding Agnir + ChatGPT + Cloudflare 完整产品闭环
 │   ├── test_plugin_agnir_discovery.py                    # Plugin Skill 在加载 continuity 前执行 Agnir compatibility/profile/Project identity 校验并锁定 discovery failure 语义
 │   ├── test_plugin_component_discovery.py                # Agent Plugins 固定组件位置、直接子 Skill 发现与 MCP failure isolation 回归测试
-│   ├── test_plugin_installation_docs.py                  # 双语入口与 Plugin README 的安装证据边界 guardrail，防止 package conformance 被误写成 client validation
+│   ├── test_plugin_installation_docs.py                  # 双语入口与 Plugin README 的安装证据边界 guardrail，含 GitHub marketplace 路径但禁止把 repository validation 写成 client validation
+│   ├── test_plugin_openai_distribution.py                # OpenAI/Codex marketplace source、Codex manifest 与 portable identity metadata 一致性测试
 │   └── test_plugin_package.py                            # Plugin manifest/Skill/package、filesystem failure isolation 与 Agnir activation boundary 验证
 │
 ├── conformance/                                          # Portable contracts 的一致性验证，不等同于产品 runtime

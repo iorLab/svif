@@ -96,6 +96,8 @@ A validation run that needs exact immutable provenance should record the resolve
 
 For a workspace-managed exercise, enter the repository URL only (`https://github.com/iorLab/svif`) as Source, leave Path empty because the marketplace manifest is at the repository root, and use the optional Branch/tag/commit field to pin the exact revision when immutable provenance matters. Review the saved Import results before treating the marketplace as usable.
 
+Workspace-managed marketplaces sync automatically each day when a moving branch/default-branch source is selected, while a fixed commit remains at that revision. For an evidence-grade installation exercise, prefer a **fixed commit**. If a moving branch is intentionally used, re-check the saved marketplace/sync result immediately before invocation and record the revision then resolved plus sync status; do not attribute activation, verification, or checkpoint evidence to an earlier imported SHA after the marketplace has synchronized to a different revision.
+
 Repository marketplace `policy` values are **not workspace authority**. OpenAI workspace import/sync does not apply repository policy values such as `AVAILABLE` or `ON_USE`; workspace settings control installation and authentication there. The policy block in this repository may still inform marketplace presentation/behavior on other supported surfaces, but it MUST NOT be interpreted as granting installation, authentication, app access, protected Svif authority, or execution permission inside a workspace.
 
 This repository shape materially improves installability, but it still is **not client-installation evidence**. Until a supported surface actually imports/adds the marketplace, reports the Plugin as available, installs or enables it under the surface's real policy controls, and invokes the exact revision, Svif must say only that the repository is prepared for the documented repository marketplace routes.
@@ -107,13 +109,13 @@ Current OpenAI product installation is client/surface dependent. Use the support
 For a real supported-client/workspace exercise:
 
 1. Identify the **exact client/surface** and role being tested and confirm repository marketplace import/add plus Plugin installation are available there.
-2. Select the exact source revision. For workspace import, use the optional Branch/tag/commit field; for Codex-local use an explicit `--ref` when appropriate. Record the immutable commit SHA that the exercise actually resolves to.
-3. Import/add the marketplace and record the **marketplace source result**: workspace Import results or `codex plugin marketplace list`, including source identity and any reported errors.
+2. Select the exact source revision. For workspace validation, prefer a fixed commit in the optional Branch/tag/commit field so daily marketplace sync cannot change the tested revision between import and invocation; for Codex-local use an explicit `--ref` when appropriate. If a moving ref is intentionally used, re-resolve it at invocation time. Record the immutable commit SHA that the exercise actually invokes.
+3. Import/add the marketplace and record the **marketplace source result**: workspace Import results or `codex plugin marketplace list`, including source identity, sync status where applicable, resolved revision, and any reported errors.
 4. Apply the surface's real installation/authentication controls. For workspace import, configure these in Workspace settings because repository `policy` values do not override workspace policy. Confirm the Plugin is actually available/installed or enabled rather than inferring success from source import alone.
 5. Invoke the installed Plugin on a real Agnir-initialized Project using the invocation affordance actually exposed by that surface.
 6. Observe whether activation reaches `AGNIR.yaml`, validates the expected Core compatibility, profile, and Project identity, and only then resolves the declared durable memory without relying on private conversation state.
 7. Execute a concrete Svif lifecycle action while preserving trusted authority outside model-controlled payloads, exact-subject verification for any external effect, and independent observation before claiming external success.
-8. Record the **exact Plugin or Skill revision**, **marketplace source result**, **observed installation**, **observed activation path**, **compatibility/identity checks**, **verification performed**, and **checkpoint result**, plus any client/workspace friction or failure.
+8. Record the **exact Plugin or Skill revision actually invoked**, **marketplace source result and sync status**, **observed installation**, **observed activation path**, **compatibility/identity checks**, **verification performed**, and **checkpoint result**, plus any client/workspace friction or failure.
 
 Only that observed client/workspace exercise can establish installation evidence for the tested surface and revision. Repository package/conformance/distribution validation does not prove client installation.
 

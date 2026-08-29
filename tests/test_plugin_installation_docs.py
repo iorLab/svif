@@ -14,8 +14,7 @@ class PluginInstallationDocumentationTests(unittest.TestCase):
     def test_openai_client_installation_is_not_presented_as_portable_directory_loading(self) -> None:
         text = PLUGIN_README.read_text(encoding="utf-8")
 
-        self.assertIn("## OpenAI client installation exercise", text)
-        self.assertIn("Plugins Directory", text)
+        self.assertIn("## OpenAI client/workspace installation exercise", text)
         self.assertIn("package/conformance/distribution validation", text)
         self.assertIn("does not prove client installation", text)
 
@@ -24,26 +23,37 @@ class PluginInstallationDocumentationTests(unittest.TestCase):
             text,
         )
 
-    def test_github_marketplace_route_matches_current_repo_marketplace_docs_without_overclaim(self) -> None:
+    def test_repository_marketplace_docs_cover_both_current_openai_routes_without_overclaim(self) -> None:
         text = PLUGIN_README.read_text(encoding="utf-8")
 
         for marker in (
             "## OpenAI repository marketplace distribution",
             ".agents/plugins/marketplace.json",
             "plugin/.codex-plugin/plugin.json",
+            "Workspace settings > Plugins > Add > Import marketplace",
             "codex plugin marketplace add iorLab/svif",
             "codex plugin marketplace add iorLab/svif --ref",
-            "ChatGPT desktop app",
-            "Plugins Directory",
-            "prepared for the documented repository marketplace route",
+            "workspace Import results",
+            "prepared for the documented repository marketplace routes",
         ):
             self.assertIn(marker, text)
 
         self.assertIn("not client-installation evidence", text)
         self.assertIn("observed installation", text)
-        self.assertNotIn("Workspace settings -> Plugins -> Add -> Import marketplace", text)
+        self.assertNotIn("rather than an inferred workspace-import UI", text)
 
-    def test_installation_validation_requires_observed_client_evidence(self) -> None:
+    def test_workspace_import_does_not_treat_repository_policy_as_workspace_authority(self) -> None:
+        text = PLUGIN_README.read_text(encoding="utf-8")
+
+        for marker in (
+            "Repository marketplace `policy` values are **not workspace authority**",
+            "does not apply repository policy values such as `AVAILABLE` or `ON_USE`",
+            "workspace settings control installation and authentication",
+            "MUST NOT be interpreted as granting installation, authentication, app access, protected Svif authority, or execution permission",
+        ):
+            self.assertIn(marker, text)
+
+    def test_installation_validation_requires_observed_client_or_workspace_evidence(self) -> None:
         text = PLUGIN_README.read_text(encoding="utf-8")
         for marker in (
             "exact client/surface",
@@ -52,6 +62,7 @@ class PluginInstallationDocumentationTests(unittest.TestCase):
             "observed activation path",
             "verification performed",
             "checkpoint result",
+            "immutable commit SHA",
         ):
             self.assertIn(marker, text)
 

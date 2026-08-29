@@ -23,7 +23,7 @@ A Skill-only Plugin is structurally useful without an MCP server. MCP packaging 
 
 Repository CI validates the portable package structure, Agent Plugins 1.0.0 manifest constraints used by this package, the specification's normative manifest failure semantics, Agent Skills frontmatter/guardrails, Plugin-root filesystem containment and its required failure-isolation boundaries, fixed component discovery semantics for both `skills/` and the currently absent `mcp.json`, Agnir pre-load compatibility/identity discovery guards, installation-documentation guardrails, the OpenAI/Codex repository-marketplace distribution mapping, and the boundary that prevents the Plugin from shadowing the Svif runtime.
 
-The OpenAI-specific distribution test verifies that `.agents/plugins/marketplace.json` resolves the local `./plugin` root, that `.codex-plugin/plugin.json` reuses `./skills/`, and that identity metadata shared with the portable manifest remains synchronized. This is a repository-side distribution invariant; it does not prove that a client actually added the marketplace source, installed the Plugin, or invoked it.
+The OpenAI-specific distribution test verifies that `.agents/plugins/marketplace.json` resolves the local `./plugin` root, that `.codex-plugin/plugin.json` reuses `./skills/`, and that identity metadata shared with the portable manifest remains synchronized. This is a repository-side distribution invariant; it does not prove that a client or workspace actually imported the marketplace, installed the Plugin, or invoked it.
 
 The portable manifest test deliberately follows the Agent Plugins 1.0 specification text where it defines non-fatal exceptions to the closed schema: unknown top-level fields are reported and ignored, and a non-object `extensions` field is reported and ignored. A portable validator also does not validate values inside unimplemented client-extension namespaces. Other invalid permitted manifest fields remain fatal. This prevents Svif's package tests from being stricter than a conformant Agent Plugins client in ways that would reject a package the normative specification says to continue loading.
 
@@ -33,7 +33,7 @@ Fixed-location discovery is checked separately. Skills are discovered only from 
 
 Agnir discovery is also guarded before durable memory is trusted. The Skill must validate Core compatibility, selected discovery profile, and selected-Project identity before resolving and loading the declared continuity locators. Unsupported compatibility and Project mismatch remain explicit discovery failures rather than triggers to search chat history, sibling repositories, parent/child Projects, or retired layouts for substitute state. For the current Svif binding the expected values are Core `0.1`, profile `repository-filesystem/0.1`, and Project identity `urn:svif:project:svif-core`; these are Project-binding facts, not universal Agnir constants.
 
-That is **package/conformance/distribution validation**, not proof that a particular ChatGPT, Codex, or other compatible client has installed and exercised this exact revision. Repository success does not prove a marketplace source was added, that the Plugin appeared in a Plugins Directory, that installation succeeded, that invocation worked, or that a real Project exercise reached the expected checkpoint.
+That is **package/conformance/distribution validation**, not proof that a particular ChatGPT, Codex, or other compatible client/workspace has installed and exercised this exact revision. Repository success does not prove a marketplace source was imported, that the Plugin appeared in a Plugins Directory, that installation succeeded, that invocation worked, or that a real Project exercise reached the expected checkpoint.
 
 Agent Plugins 1.0 treats the portable Plugin as a directory rooted at one filesystem location; it does not define ZIP/TAR packaging as the portable package unit. Product-specific marketplace setup, installation, publication, workspace administration, and invocation UX are separate from the portable conformance claim.
 
@@ -67,7 +67,12 @@ Expected behavior: the executor follows Project-owned Agnir activation/discovery
 
 ## OpenAI repository marketplace distribution
 
-OpenAI's current packaging documentation defines repository marketplaces as authoring, testing, and team-distribution sources separate from the universal public Plugins Directory. Svif carries the documented repo-scoped marketplace location and points it at the same Plugin root:
+OpenAI currently exposes two distinct repository-marketplace paths that can exercise the same `.agents/plugins/marketplace.json` source:
+
+- **Workspace-managed import:** an eligible workspace admin/owner can use `Workspace settings > Plugins > Add > Import marketplace`, provide the repository URL, optionally select a branch/tag/commit, review Import results, and configure workspace installation/authentication policy.
+- **Codex-local marketplace:** Codex can add and track the repository with `codex plugin marketplace add`, then expose the Plugin through its marketplace/plugin UI on supported surfaces.
+
+Both paths consume the same repository distribution shape:
 
 - repository: `https://github.com/iorLab/svif`;
 - marketplace manifest: `.agents/plugins/marketplace.json`;
@@ -75,38 +80,42 @@ OpenAI's current packaging documentation defines repository marketplaces as auth
 - required OpenAI/Codex Plugin manifest: `plugin/.codex-plugin/plugin.json`;
 - shared Skill implementation: `plugin/skills/svif/SKILL.md`.
 
-The documented CLI route for adding the repository marketplace is:
+The documented Codex CLI route is:
 
 ```text
 codex plugin marketplace add iorLab/svif
 ```
 
-For a revision-sensitive exercise, use a ref explicitly, for example:
+For a revision-sensitive Codex-local exercise, use a ref explicitly, for example:
 
 ```text
 codex plugin marketplace add iorLab/svif --ref main
 ```
 
-A validation run that needs exact immutable provenance should record the resolved commit SHA even when `--ref main` is used. After adding the source, `codex plugin marketplace list` should show the marketplace Codex is considering and the root path it resolves from. The current OpenAI documentation then directs local Plugin installation/testing to the **ChatGPT desktop app**: restart the app, open the **Plugins Directory**, select the marketplace source, install `svif`, and test it in a new chat.
+A validation run that needs exact immutable provenance should record the resolved commit SHA even when `--ref main` is used. After adding the source, `codex plugin marketplace list` should show the marketplace Codex is considering and the root path it resolves from.
 
-This repository shape materially improves installability, but it still is **not client-installation evidence**. Until the marketplace source is actually added, the Plugin is observed in a supported Plugins Directory, installation succeeds, and the exact revision is subsequently invoked, Svif must say only that the repository is prepared for the documented repository marketplace route.
+For a workspace-managed exercise, enter the repository URL only (`https://github.com/iorLab/svif`) as Source, leave Path empty because the marketplace manifest is at the repository root, and use the optional Branch/tag/commit field to pin the exact revision when immutable provenance matters. Review the saved Import results before treating the marketplace as usable.
 
-## OpenAI client installation exercise
+Repository marketplace `policy` values are **not workspace authority**. OpenAI workspace import/sync does not apply repository policy values such as `AVAILABLE` or `ON_USE`; workspace settings control installation and authentication there. The policy block in this repository may still inform marketplace presentation/behavior on other supported surfaces, but it MUST NOT be interpreted as granting installation, authentication, app access, protected Svif authority, or execution permission inside a workspace.
 
-Current OpenAI product installation is client/surface dependent. The universal Plugins Directory is the public distribution surface once a Plugin is published. Repo and local marketplaces are separate development/team-distribution sources, and their availability varies by surface. For the current Svif MVP, the highest-value concrete exercise is therefore the documented repo marketplace flow above rather than an inferred workspace-import UI.
+This repository shape materially improves installability, but it still is **not client-installation evidence**. Until a supported surface actually imports/adds the marketplace, reports the Plugin as available, installs or enables it under the surface's real policy controls, and invokes the exact revision, Svif must say only that the repository is prepared for the documented repository marketplace routes.
 
-For a real supported-client exercise:
+## OpenAI client/workspace installation exercise
 
-1. Identify the **exact client/surface** being tested and confirm repository marketplaces and Plugin installation are available there.
-2. Add this repository as a marketplace source with `codex plugin marketplace add iorLab/svif`; for a controlled run, select and record the intended ref and resolved commit SHA.
-3. Run `codex plugin marketplace list` and record the **marketplace source result**, including the resolved root/source identity. Treat source-resolution errors as installation friction, not as package-success overrides.
-4. Restart the ChatGPT desktop app, open the **Plugins Directory**, select the Svif marketplace, and install `svif`. Confirm the installed Plugin exposes the shared `svif` Skill from the exact revision under test.
-5. Invoke the installed Plugin on a real Agnir-initialized Project using the invocation affordance actually exposed by that surface; do not infer success from marketplace listing alone.
+Current OpenAI product installation is client/surface dependent. Use the supported route actually available to the environment under test; do not substitute one surface's configuration semantics for another.
+
+For a real supported-client/workspace exercise:
+
+1. Identify the **exact client/surface** and role being tested and confirm repository marketplace import/add plus Plugin installation are available there.
+2. Select the exact source revision. For workspace import, use the optional Branch/tag/commit field; for Codex-local use an explicit `--ref` when appropriate. Record the immutable commit SHA that the exercise actually resolves to.
+3. Import/add the marketplace and record the **marketplace source result**: workspace Import results or `codex plugin marketplace list`, including source identity and any reported errors.
+4. Apply the surface's real installation/authentication controls. For workspace import, configure these in Workspace settings because repository `policy` values do not override workspace policy. Confirm the Plugin is actually available/installed or enabled rather than inferring success from source import alone.
+5. Invoke the installed Plugin on a real Agnir-initialized Project using the invocation affordance actually exposed by that surface.
 6. Observe whether activation reaches `AGNIR.yaml`, validates the expected Core compatibility, profile, and Project identity, and only then resolves the declared durable memory without relying on private conversation state.
 7. Execute a concrete Svif lifecycle action while preserving trusted authority outside model-controlled payloads, exact-subject verification for any external effect, and independent observation before claiming external success.
-8. Record the **exact Plugin or Skill revision**, **marketplace source result**, **observed installation**, **observed activation path**, **compatibility/identity checks**, **verification performed**, and **checkpoint result**, plus any client friction or failure.
+8. Record the **exact Plugin or Skill revision**, **marketplace source result**, **observed installation**, **observed activation path**, **compatibility/identity checks**, **verification performed**, and **checkpoint result**, plus any client/workspace friction or failure.
 
-Only that observed client exercise can establish installation evidence for the tested surface and revision. Repository package/conformance/distribution validation does not prove client installation.
+Only that observed client/workspace exercise can establish installation evidence for the tested surface and revision. Repository package/conformance/distribution validation does not prove client installation.
 
 ## Next packaging increment
 

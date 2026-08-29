@@ -101,7 +101,8 @@ class PluginInstallationDocumentationTests(unittest.TestCase):
 
         for marker in (
             "under Agent Plugins 1.0, portable MCP configuration lives at the Plugin root as `mcp.json`",
-            "contains the `mcpServers` object",
+            "required `$schema` and `mcpServers` top-level fields",
+            "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
             "OpenAI/Codex product manifest",
             "product-specific root `.mcp.json` component",
             "`.codex-plugin/plugin.json` through its `mcpServers` field",

@@ -53,6 +53,24 @@ class PluginInstallationDocumentationTests(unittest.TestCase):
         ):
             self.assertIn(marker, text)
 
+    def test_workspace_installation_evidence_is_stable_against_marketplace_sync(self) -> None:
+        text = PLUGIN_README.read_text(encoding="utf-8")
+
+        for marker in (
+            "sync automatically each day",
+            "fixed commit remains at that revision",
+            "prefer a **fixed commit**",
+            "re-check the saved marketplace/sync result immediately before invocation",
+            "Record the immutable commit SHA that the exercise actually invokes",
+            "marketplace source result and sync status",
+        ):
+            self.assertIn(marker, text)
+
+        self.assertIn(
+            "do not attribute activation, verification, or checkpoint evidence to an earlier imported SHA",
+            text,
+        )
+
     def test_installation_validation_requires_observed_client_or_workspace_evidence(self) -> None:
         text = PLUGIN_README.read_text(encoding="utf-8")
         for marker in (

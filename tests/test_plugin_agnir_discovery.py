@@ -72,6 +72,24 @@ class PluginAgnirDiscoveryTests(unittest.TestCase):
         self.assertLess(identity, locator)
         self.assertLess(locator, load)
 
+    def test_skill_confines_relative_locators_to_selected_root_unless_external_binding_is_authorized(self) -> None:
+        text = SKILL.read_text(encoding="utf-8")
+
+        identity = text.index("verify that `project.identity`")
+        locator = text.index("resolve the required memory locators")
+        confinement = text.index("relative memory locators remain scoped to the selected Project root")
+        external = text.index("explicit durable authorized binding/Locator Chain")
+        load = text.index("After validation, treat the Project-managed Agnir state")
+
+        self.assertLess(identity, locator)
+        self.assertLess(locator, confinement)
+        self.assertLess(confinement, external)
+        self.assertLess(external, load)
+        self.assertIn("symlink or other indirection outside that root", text)
+        self.assertIn("MUST NOT become an implicitly authorized external Locator Chain", text)
+        self.assertIn("merely because the target is readable", text)
+        self.assertIn("AGNIR_DISCOVERY_UNAUTHORIZED", text)
+
     def test_skill_preserves_agnir_truth_reconciliation_precedence_without_granting_authority(self) -> None:
         text = SKILL.read_text(encoding="utf-8")
 

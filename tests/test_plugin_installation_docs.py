@@ -9,6 +9,7 @@ PLUGIN_README = ROOT / "plugin" / "README.md"
 ROOT_README = ROOT / "README.md"
 ROOT_README_ZH = ROOT / "README.zh-CN.md"
 SKILL = ROOT / "plugin" / "skills" / "svif" / "SKILL.md"
+NEXT_ACTIONS = ROOT / ".agnir" / "next-actions.md"
 
 
 class PluginInstallationDocumentationTests(unittest.TestCase):
@@ -104,6 +105,24 @@ class PluginInstallationDocumentationTests(unittest.TestCase):
             "moving repository ref is not sufficient evidence",
         ):
             self.assertIn(marker, text)
+
+    def test_durable_next_action_keeps_moving_ref_provenance_client_grounded(self) -> None:
+        text = NEXT_ACTIONS.read_text(encoding="utf-8")
+
+        for marker in (
+            "Package/conformance/distribution CI is not installation evidence",
+            "record the immutable commit SHA actually invoked when the client exposes enough evidence to establish it",
+            "repository ref's current SHA only as a comparison point",
+            "saved client import/sync result",
+            "client-exposed accepted-version signal",
+            "preserve exact revision provenance as unconfirmed",
+        ):
+            self.assertIn(marker, text)
+
+        self.assertNotIn(
+            "re-resolve and record revision immediately before invocation rather than attributing later evidence to an earlier imported SHA",
+            text,
+        )
 
     def test_codex_directory_refresh_lag_is_not_misclassified_as_package_failure(self) -> None:
         text = PLUGIN_README.read_text(encoding="utf-8")

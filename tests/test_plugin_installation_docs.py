@@ -8,6 +8,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PLUGIN_README = ROOT / "plugin" / "README.md"
 ROOT_README = ROOT / "README.md"
 ROOT_README_ZH = ROOT / "README.zh-CN.md"
+SKILL = ROOT / "plugin" / "skills" / "svif" / "SKILL.md"
 
 
 class PluginInstallationDocumentationTests(unittest.TestCase):
@@ -22,6 +23,25 @@ class PluginInstallationDocumentationTests(unittest.TestCase):
             "Use `plugin/` as the plugin root in a client that explicitly supports Agent Plugins 1.0.0",
             text,
         )
+
+    def test_plugin_readme_and_skill_keep_agent_activation_mandatory(self) -> None:
+        readme = PLUGIN_README.read_text(encoding="utf-8")
+        skill = SKILL.read_text(encoding="utf-8")
+
+        for text in (readme, skill):
+            self.assertNotIn("when those surfaces exist", text)
+
+        for marker in (
+            "Agent-operable Agnir Project",
+            "repository-filesystem/0.1",
+            "Project root -> AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml -> durable memory",
+            "before normal Project work",
+            "direct readability of `AGNIR.yaml` is not a substitute",
+        ):
+            self.assertIn(marker, readme)
+
+        self.assertIn("the durable activation route is mandatory before normal Project work", skill)
+        self.assertIn("current Agent can directly open `AGNIR.yaml`", skill)
 
     def test_repository_marketplace_docs_cover_both_current_openai_routes_without_overclaim(self) -> None:
         text = PLUGIN_README.read_text(encoding="utf-8")

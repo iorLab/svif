@@ -87,9 +87,23 @@ class PluginInstallationDocumentationTests(unittest.TestCase):
             self.assertIn(marker, text)
 
         self.assertIn(
-            "do not attribute activation, verification, or checkpoint evidence to an earlier imported SHA",
+            "do not attribute activation, verification, or checkpoint evidence",
             text,
         )
+
+    def test_moving_ref_does_not_override_retained_installed_revision(self) -> None:
+        text = PLUGIN_README.read_text(encoding="utf-8")
+
+        for marker in (
+            "retains the last working imported version",
+            "not from repository HEAD alone",
+            "do not equate that ref's current SHA with the installed Plugin revision",
+            "client may retain the last working imported Plugin",
+            "mark exact revision provenance unconfirmed",
+            "substituting repository HEAD",
+            "moving repository ref is not sufficient evidence",
+        ):
+            self.assertIn(marker, text)
 
     def test_codex_directory_refresh_lag_is_not_misclassified_as_package_failure(self) -> None:
         text = PLUGIN_README.read_text(encoding="utf-8")

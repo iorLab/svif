@@ -12,16 +12,19 @@ class PluginAgnirDiscoveryTests(unittest.TestCase):
     def test_skill_requires_durable_agent_activation_route_before_discovery(self) -> None:
         text = SKILL.read_text(encoding="utf-8")
 
+        mandatory = text.index("the durable activation route is mandatory before normal Project work")
         activation = text.index("Agnir Agent activation and Core discovery are distinct layers")
         route = text.index("durable `AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml` route")
         direct = text.index("current Agent can directly open `AGNIR.yaml`")
         non_agent = text.index("A non-Agent Executor or trusted adapter")
         root_selection = text.index("select exactly one Project root")
 
+        self.assertLess(mandatory, activation)
         self.assertLess(activation, route)
         self.assertLess(route, direct)
         self.assertLess(direct, non_agent)
         self.assertLess(non_agent, root_selection)
+        self.assertNotIn("when those surfaces exist", text)
         for marker in (
             "part of the Project activation contract, not as an optional convenience",
             "points to the canonical README Agnir section",

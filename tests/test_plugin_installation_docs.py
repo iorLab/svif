@@ -106,6 +106,23 @@ class PluginInstallationDocumentationTests(unittest.TestCase):
         ):
             self.assertIn(marker, text)
 
+    def test_codex_ref_example_does_not_call_repository_resolution_install_evidence(self) -> None:
+        text = PLUGIN_README.read_text(encoding="utf-8")
+
+        for marker in (
+            "`--ref main` only selects a moving repository ref",
+            "resolved SHA is repository-side comparison evidence, not installed-revision evidence",
+            "Codex's saved marketplace/add state",
+            "another client-exposed signal binds the accepted Plugin to that commit",
+            "otherwise mark the exact installed revision unconfirmed",
+        ):
+            self.assertIn(marker, text)
+
+        self.assertNotIn(
+            "A validation run that needs exact immutable provenance should record the resolved commit SHA even when `--ref main` is used.",
+            text,
+        )
+
     def test_durable_next_action_keeps_moving_ref_provenance_client_grounded(self) -> None:
         text = NEXT_ACTIONS.read_text(encoding="utf-8")
 

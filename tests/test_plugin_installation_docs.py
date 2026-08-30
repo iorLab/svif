@@ -105,6 +105,20 @@ class PluginInstallationDocumentationTests(unittest.TestCase):
             text,
         )
 
+    def test_workspace_sync_controls_are_not_confused_with_display_refresh_or_source_removal(self) -> None:
+        text = PLUGIN_README.read_text(encoding="utf-8")
+
+        for marker in (
+            "`Sync now` on the saved GitHub marketplace requests a source update",
+            "`Refresh plugin list` only reloads the displayed list",
+            "MUST NOT be recorded as a GitHub sync or revision-acceptance event",
+            "marks that copy `No longer in source`",
+            "workspace copy's observed status and the marketplace source/sync state",
+            "is not sync evidence",
+            "rather than inferring deletion from source absence",
+        ):
+            self.assertIn(marker, text)
+
     def test_moving_ref_does_not_override_retained_installed_revision(self) -> None:
         text = PLUGIN_README.read_text(encoding="utf-8")
 

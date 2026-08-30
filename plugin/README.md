@@ -41,7 +41,7 @@ Agent Plugins 1.0 treats the portable Plugin as a directory rooted at one filesy
 
 The bundled `svif` Skill guides a compatible execution surface to:
 
-- follow the current Agnir activation route: `AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml -> durable memory` when those surfaces exist;
+- for an Agent-operable Agnir Project using `repository-filesystem/0.1`, require the durable activation route `Project root -> AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml -> durable memory` before normal Project work; direct readability of `AGNIR.yaml` is not a substitute for a healthy Agent activation route;
 - validate Agnir Core/profile compatibility and selected-Project identity before loading durable memory;
 - surface unsupported-version, Project-mismatch, and broken-locator discovery failures instead of silently falling back to unrelated state;
 - load current state and next actions first, then only relevant decisions/evidence;

@@ -9,6 +9,31 @@ SKILL = ROOT / "plugin" / "skills" / "svif" / "SKILL.md"
 
 
 class PluginAgnirDiscoveryTests(unittest.TestCase):
+    def test_skill_requires_durable_agent_activation_route_before_discovery(self) -> None:
+        text = SKILL.read_text(encoding="utf-8")
+
+        activation = text.index("Agnir Agent activation and Core discovery are distinct layers")
+        route = text.index("durable `AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml` route")
+        direct = text.index("current Agent can directly open `AGNIR.yaml`")
+        non_agent = text.index("A non-Agent Executor or trusted adapter")
+        root_selection = text.index("select exactly one Project root")
+
+        self.assertLess(activation, route)
+        self.assertLess(route, direct)
+        self.assertLess(direct, non_agent)
+        self.assertLess(non_agent, root_selection)
+        for marker in (
+            "part of the Project activation contract, not as an optional convenience",
+            "points to the canonical README Agnir section",
+            "unresolved material instruction conflict",
+            "MUST NOT be used to bypass a missing, stale, contradictory, or predecessor-private activation route",
+            "fresh Agent can resume from the Project root",
+            "does not silently convert this Agent Skill into a non-Agent activation context",
+            "surface the activation blocker",
+            "accidental direct readability of `AGNIR.yaml`",
+        ):
+            self.assertIn(marker, text)
+
     def test_skill_requires_authority_to_select_one_project_root_before_discovery(self) -> None:
         text = SKILL.read_text(encoding="utf-8")
 

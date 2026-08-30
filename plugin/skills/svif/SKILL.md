@@ -105,7 +105,9 @@ Write the checkpoint through the Project's declared Agnir memory locations. Upda
 - Decisions: only durable choices made or superseded during the operation;
 - Evidence: verification/observation identifiers, relevant commit/run/target identity, and uncertainty needed for audit or recovery.
 
-Before finishing a checkpoint, re-read the durable state needed to ensure it does not contradict the operation just completed. A fresh executor should be able to resume from Project-owned surfaces without private conversation context.
+Before finishing a checkpoint, re-read the durable state needed to ensure it does not contradict the operation just completed. Then verify that the resulting authoritative memory remains cold-start discoverable from the original authorized Project Entry Point: re-resolve the Discovery Record and Locator Chain and confirm that required Current State and Next Actions can be loaded without Executor-private context. If the checkpoint changed the Discovery Record, required memory locators, durable repository/ref binding, or other discovery-critical state, rerun the full cold-start discovery path rather than validating only the files just written. A checkpoint MUST NOT claim resumability when the resulting authoritative Locator Chain is missing, stale, ambiguous, cyclic, unauthorized, inconsistent, or otherwise unresolved.
+
+A fresh executor should be able to resume from Project-owned surfaces without private conversation context.
 
 Do not checkpoint a failed or uncertain external effect as successful. Record the uncertainty and the next repair action instead.
 

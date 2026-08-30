@@ -63,6 +63,28 @@ class PluginAgnirDiscoveryTests(unittest.TestCase):
         ):
             self.assertIn(marker, text)
 
+    def test_skill_repairs_existing_agents_locator_without_rewriting_project_instructions(self) -> None:
+        text = SKILL.read_text(encoding="utf-8")
+
+        locator = text.index("`AGENTS.md` is only a locator")
+        merge = text.index("make the smallest locator-only merge")
+        idempotent = text.index("If an equivalent Agnir locator already exists")
+        conflict = text.index("If resolving a material conflict would require deleting, overriding, or reinterpreting")
+        root_selection = text.index("select exactly one Project root")
+
+        self.assertLess(locator, merge)
+        self.assertLess(merge, idempotent)
+        self.assertLess(idempotent, conflict)
+        self.assertLess(conflict, root_selection)
+        for marker in (
+            "do not delete, reorder, normalize, summarize, or otherwise rewrite unrelated Project-owned instructions",
+            "merely to install or repair Agnir",
+            "keep the operation idempotent rather than adding another copy",
+            "surface the conflict to the Principal",
+            "do not report Agent activation healthy until it is explicitly resolved and a fresh activation test passes",
+        ):
+            self.assertIn(marker, text)
+
     def test_skill_requires_authority_to_select_one_project_root_before_discovery(self) -> None:
         text = SKILL.read_text(encoding="utf-8")
 

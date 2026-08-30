@@ -9,7 +9,7 @@ Use Svif as an execution discipline for real Project work. Prefer completing con
 
 ## 1. Discover and activate the Project before acting
 
-For an Agnir-initialized repository/filesystem Project, follow the current Agnir activation route when those surfaces exist:
+For an Agent-operable Agnir Project using `repository-filesystem/0.1`, the durable activation route is mandatory before normal Project work:
 
 `Project root -> AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml -> declared durable memory`
 

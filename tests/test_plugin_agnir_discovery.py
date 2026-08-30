@@ -15,6 +15,7 @@ class PluginAgnirDiscoveryTests(unittest.TestCase):
         mandatory = text.index("the durable activation route is mandatory before normal Project work")
         activation = text.index("Agnir Agent activation and Core discovery are distinct layers")
         route = text.index("durable `AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml` route")
+        contract = text.index("Do not validate activation by heading/link presence alone")
         direct = text.index("current Agent can directly open `AGNIR.yaml`")
         non_agent = text.index("A non-Agent Executor or trusted adapter")
         root_selection = text.index("select exactly one Project root")
@@ -22,7 +23,8 @@ class PluginAgnirDiscoveryTests(unittest.TestCase):
         self.assertLess(mandatory, activation)
         self.assertLess(activation, route)
         self.assertLess(route, direct)
-        self.assertLess(direct, non_agent)
+        self.assertLess(direct, contract)
+        self.assertLess(contract, non_agent)
         self.assertLess(non_agent, root_selection)
         self.assertNotIn("when those surfaces exist", text)
         for marker in (
@@ -34,6 +36,30 @@ class PluginAgnirDiscoveryTests(unittest.TestCase):
             "does not silently convert this Agent Skill into a non-Agent activation context",
             "surface the activation blocker",
             "accidental direct readability of `AGNIR.yaml`",
+        ):
+            self.assertIn(marker, text)
+
+    def test_skill_validates_canonical_readme_activation_contract_not_only_locator_shape(self) -> None:
+        text = SKILL.read_text(encoding="utf-8")
+
+        contract = text.index("Do not validate activation by heading/link presence alone")
+        non_agent = text.index("A non-Agent Executor or trusted adapter")
+        self.assertLess(contract, non_agent)
+
+        for marker in (
+            "canonical README `## Agnir Project Instructions` section itself MUST satisfy the current profile activation contract",
+            "Project uses Agnir for durable continuity",
+            "Project root as the authorized Project Entry Point",
+            "read top-level `AGNIR.yaml`",
+            "load Current State and Next Actions",
+            "load Decisions and Evidence when relevant",
+            "prefer durable Agnir Project truth over chat/private Agent memory",
+            "newer Principal instruction",
+            "directly observed current Project fact",
+            "checkpoint material continuity changes at an intentional save/finish boundary",
+            "missing, materially weakened, or contradicted",
+            "activation is not healthy even when `AGENTS.md` reaches the correct heading",
+            "rerun activation from the Project root",
         ):
             self.assertIn(marker, text)
 

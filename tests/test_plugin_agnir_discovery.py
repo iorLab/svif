@@ -90,6 +90,30 @@ class PluginAgnirDiscoveryTests(unittest.TestCase):
         self.assertIn("merely because the target is readable", text)
         self.assertIn("AGNIR_DISCOVERY_UNAUTHORIZED", text)
 
+    def test_skill_rejects_ephemeral_environment_values_as_locator_authority(self) -> None:
+        text = SKILL.read_text(encoding="utf-8")
+
+        external = text.index("explicit durable authorized binding/Locator Chain")
+        environment = text.index("environment binding only when that binding is stable and durably associated with the selected Project")
+        fresh_executor = text.index("how a fresh Executor can recover the same locator")
+        load = text.index("After validation, treat the Project-managed Agnir state")
+
+        self.assertLess(external, environment)
+        self.assertLess(environment, fresh_executor)
+        self.assertLess(fresh_executor, load)
+        for marker in (
+            "current process environment",
+            "temporary workspace metadata",
+            "prior conversation",
+            "private model memory",
+            "prompt-provided secret",
+            "without predecessor-private context",
+            "MUST NOT become continuity authority",
+            "applicable discovery failure",
+            "ephemeral successful resolution",
+        ):
+            self.assertIn(marker, text)
+
     def test_skill_respects_declared_canonical_repository_and_authoritative_ref_for_checkpointing(self) -> None:
         text = SKILL.read_text(encoding="utf-8")
         agnir = (ROOT / "AGNIR.yaml").read_text(encoding="utf-8")

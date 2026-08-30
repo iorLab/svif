@@ -92,7 +92,7 @@ For a revision-sensitive Codex-local exercise, use a ref explicitly, for example
 codex plugin marketplace add iorLab/svif --ref main
 ```
 
-A validation run that needs exact immutable provenance should record the resolved commit SHA even when `--ref main` is used. After adding the source, `codex plugin marketplace list` should show the marketplace Codex is considering and the root path it resolves from.
+`--ref main` only selects a moving repository ref; its resolved SHA is repository-side comparison evidence, not installed-revision evidence. For exact immutable provenance, record a commit SHA only when Codex's saved marketplace/add state or another client-exposed signal binds the accepted Plugin to that commit; otherwise mark the exact installed revision unconfirmed. After adding the source, `codex plugin marketplace list` should show the marketplace Codex is considering and the root path it resolves from.
 
 For a workspace-managed exercise, enter the repository URL only (`https://github.com/iorLab/svif`) as Source, leave Path empty because the marketplace manifest is at the repository root, and use the optional Branch/tag/commit field to pin the exact revision when immutable provenance matters. Review the saved Import results before treating the marketplace as usable.
 

@@ -132,6 +132,33 @@ class PluginAgnirDiscoveryTests(unittest.TestCase):
         self.assertIn("exact-subject verification", text)
         self.assertIn("independent post-effect observation", text)
 
+    def test_skill_verifies_post_checkpoint_cold_start_resumability(self) -> None:
+        text = SKILL.read_text(encoding="utf-8")
+
+        checkpoint = text.index("## 6. Checkpoint durable truth")
+        reread = text.index("re-read the durable state needed", checkpoint)
+        cold_start = text.index("cold-start discoverable from the original authorized Project Entry Point", checkpoint)
+        reresolve = text.index("re-resolve the Discovery Record and Locator Chain", checkpoint)
+        full_rerun = text.index("rerun the full cold-start discovery path", checkpoint)
+        no_claim = text.index("A checkpoint MUST NOT claim resumability", checkpoint)
+
+        self.assertLess(reread, cold_start)
+        self.assertLess(cold_start, reresolve)
+        self.assertLess(reresolve, full_rerun)
+        self.assertLess(full_rerun, no_claim)
+        self.assertIn("required Current State and Next Actions can be loaded without Executor-private context", text)
+        self.assertIn("changed the Discovery Record, required memory locators, durable repository/ref binding", text)
+        for marker in (
+            "missing",
+            "stale",
+            "ambiguous",
+            "cyclic",
+            "unauthorized",
+            "inconsistent",
+            "otherwise unresolved",
+        ):
+            self.assertIn(marker, text[no_claim : no_claim + 300])
+
     def test_skill_surfaces_all_named_agnir_discovery_failures_without_fallback_search(self) -> None:
         text = SKILL.read_text(encoding="utf-8")
 

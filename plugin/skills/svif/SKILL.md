@@ -13,6 +13,10 @@ For an Agnir-initialized repository/filesystem Project, follow the current Agnir
 
 `Project root -> AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml -> declared durable memory`
 
+Agnir Agent activation and Core discovery are distinct layers. When this Skill is operating an Agent-operable Project under `repository-filesystem/0.1`, treat the durable `AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml` route as part of the Project activation contract, not as an optional convenience. Validate that the route is present, points to the canonical README Agnir section, and contains no unresolved material instruction conflict before treating Agent activation as healthy. The fact that the current Agent can directly open `AGNIR.yaml` MUST NOT be used to bypass a missing, stale, contradictory, or predecessor-private activation route or to claim that a fresh Agent can resume from the Project root.
+
+A non-Agent Executor or trusted adapter that is already given the applicable profile implementation may begin discovery at `AGNIR.yaml` as the profile permits. That exception does not silently convert this Agent Skill into a non-Agent activation context. If the Project is intended to be Agent-operable and its durable activation route is broken, surface the activation blocker and repair that earliest invariant when authorized; do not relabel the accidental direct readability of `AGNIR.yaml` as successful Agent activation.
+
 `AGENTS.md` is only a locator; the target Project README owns the full Agnir Project Instructions. Preserve unrelated existing `AGENTS.md` instructions and never silently override a material conflict.
 
 Before following that route, require the authorized Project Entry Point or trusted binding context to select exactly one Project root. If multiple candidate Project roots exist and no authority rule selects one, surface `AGNIR_DISCOVERY_AMBIGUOUS` rather than choosing the most convenient candidate. Once one root is authoritatively selected, a parent or child Project with its own `AGNIR.yaml` does not make that selected root ambiguous and MUST NOT be searched as a replacement.

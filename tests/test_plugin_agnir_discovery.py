@@ -72,6 +72,29 @@ class PluginAgnirDiscoveryTests(unittest.TestCase):
         self.assertLess(identity, locator)
         self.assertLess(locator, load)
 
+    def test_skill_preserves_agnir_truth_reconciliation_precedence_without_granting_authority(self) -> None:
+        text = SKILL.read_text(encoding="utf-8")
+
+        observed = text.index("directly observed current Project or relevant external-system state first")
+        principal = text.index("explicit current Principal instruction or policy second")
+        durable = text.index("current durable Agnir state third")
+        evidence = text.index("older checkpoint/evidence fourth")
+        private = text.index("Executor-private context last")
+
+        self.assertLess(observed, principal)
+        self.assertLess(principal, durable)
+        self.assertLess(durable, evidence)
+        self.assertLess(evidence, private)
+        self.assertIn("Material unresolved uncertainty must be surfaced rather than guessed", text)
+        self.assertIn(
+            "must be reconciled back into the Project-owned checkpoint instead of remaining only in transient execution context",
+            text,
+        )
+        self.assertIn("does not grant protected execution authority", text)
+        self.assertIn("trusted integration boundary", text)
+        self.assertIn("exact-subject verification", text)
+        self.assertIn("independent post-effect observation", text)
+
     def test_skill_surfaces_all_named_agnir_discovery_failures_without_fallback_search(self) -> None:
         text = SKILL.read_text(encoding="utf-8")
 

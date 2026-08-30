@@ -63,6 +63,19 @@ class PluginInstallationDocumentationTests(unittest.TestCase):
         self.assertIn("observed installation", text)
         self.assertNotIn("rather than an inferred workspace-import UI", text)
 
+    def test_workspace_marketplace_import_fields_match_supported_ui_contract(self) -> None:
+        text = PLUGIN_README.read_text(encoding="utf-8")
+
+        for marker in (
+            "enter the repository URL only (`https://github.com/iorLab/svif`) as Source",
+            "do not put a branch URL or folder URL in Source",
+            "Leave Path empty because the marketplace manifest is at the repository root",
+            "Path must contain only that directory",
+            "not `.agents/plugins/marketplace.json` or another manifest filename",
+            "optional Branch/tag/commit field",
+        ):
+            self.assertIn(marker, text)
+
     def test_workspace_import_does_not_treat_repository_policy_as_workspace_authority(self) -> None:
         text = PLUGIN_README.read_text(encoding="utf-8")
 

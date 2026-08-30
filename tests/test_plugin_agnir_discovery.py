@@ -90,6 +90,25 @@ class PluginAgnirDiscoveryTests(unittest.TestCase):
         self.assertIn("merely because the target is readable", text)
         self.assertIn("AGNIR_DISCOVERY_UNAUTHORIZED", text)
 
+    def test_skill_respects_declared_canonical_repository_and_authoritative_ref_for_checkpointing(self) -> None:
+        text = SKILL.read_text(encoding="utf-8")
+        agnir = (ROOT / "AGNIR.yaml").read_text(encoding="utf-8")
+
+        self.assertIn("canonical: \"iorLab/svif\"", agnir)
+        self.assertIn("authoritative_ref: \"main\"", agnir)
+
+        repository_binding = text.index("extensions.agnir/repository.canonical")
+        checkpoint_guard = text.index("Before a state-dependent write or checkpoint")
+        non_authoritative = text.index("detached commit, pull-request checkout, temporary branch, fork, mirror")
+        reconcile = text.index("Reconcile accepted changes back to the declared authoritative ref")
+
+        self.assertLess(repository_binding, checkpoint_guard)
+        self.assertLess(checkpoint_guard, non_authoritative)
+        self.assertLess(non_authoritative, reconcile)
+        self.assertIn("MUST NOT silently become the canonical continuity write target", text)
+        self.assertIn("leave the canonical checkpoint unchanged", text)
+        self.assertIn("Package revision identity and target-Project authoritative-ref identity are separate facts", text)
+
     def test_skill_preserves_agnir_truth_reconciliation_precedence_without_granting_authority(self) -> None:
         text = SKILL.read_text(encoding="utf-8")
 

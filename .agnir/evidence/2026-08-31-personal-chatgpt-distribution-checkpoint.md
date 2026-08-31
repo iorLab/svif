@@ -58,17 +58,19 @@ Key implementation commits in this sequence include:
 - `27b74fde368647e3cfb459262e6c83f14e093ffc` — public-directory metadata tests;
 - `9453ea3c1b37800de1bfc1996ed639612ae00874` — public Skills-only submission guidance and review cases;
 - `c9867c0c5e76b8a7bebed8437846c66dcf8529d5` / `e5f22f407b02ef565aaa82ede1d4ea58da2cadb6` — synchronized English/Chinese personal ChatGPT onboarding;
-- `15f249968dcbcd35e97d9d4b90234bd04a6502ac` — documentation tests updated to the public-directory contract.
+- `15f249968dcbcd35e97d9d4b90234bd04a6502ac` and `6f577a1856ec2d935cc19517a1df6dc46f884636` — installation-documentation contract migrated from workspace-first wording to public-directory semantics and stabilized.
 
-## Earlier checkpoint validation
+## Validation
 
-The initial personal-user distribution correction was validated at commit `c87e209049ead2e67056d688e853c3be9b7883a3` by `Svif product checks` run `33372657758`:
+The repository-side public-submission-readiness baseline at commit `6f577a1856ec2d935cc19517a1df6dc46f884636` passed `Svif product checks` run `33373725911`:
 
 - `repository-integrity`: success;
 - `runtime-kernel`: success;
 - `portable-contracts`: success.
 
-The validation also confirmed that the repository's Agnir activation chain remains readable from root `AGENTS.md` through `README.md` and `AGNIR.yaml` to the declared durable state and next-action locations.
+The earlier personal-user distribution correction was also validated at commit `c87e209049ead2e67056d688e853c3be9b7883a3` by run `33372657758`, with the same three jobs successful.
+
+The Agnir activation chain remains readable from root `AGENTS.md` through `README.md` and `AGNIR.yaml` to the declared durable state and next-action locations.
 
 ## Current external boundary
 
@@ -81,5 +83,3 @@ Until the portal submission is actually performed, Svif must not claim:
 - public publication;
 - universal Plugins Directory availability;
 - personal ChatGPT installation or invocation success.
-
-After the repository checks for this submission-readiness sequence are green, their exact commit/run should be appended here before treating this preparation phase as closed.

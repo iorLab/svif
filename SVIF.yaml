@@ -49,6 +49,7 @@ checks:
   plugin_component_discovery: "tests/test_plugin_component_discovery.py"
   plugin_installation_docs: "tests/test_plugin_installation_docs.py"
   plugin_agnir_discovery: "tests/test_plugin_agnir_discovery.py"
+  plugin_first_use_bootstrap: "tests/test_plugin_first_use_bootstrap.py"
   plugin_openai_distribution: "tests/test_plugin_openai_distribution.py"
 
 extensions:

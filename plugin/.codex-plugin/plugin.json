@@ -17,7 +17,7 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Svif",
-    "shortDescription": "Project orchestration with Agnir continuity",
+    "shortDescription": "Durable project orchestration",
     "longDescription": "Continue a durable Svif Project through Agnir continuity, explicit verification, trusted authority boundaries, independent observation, and resumable checkpointing without moving canonical Project truth into the execution surface.",
     "developerName": "iorLab",
     "category": "Developer Tools",
@@ -28,7 +28,7 @@
     ],
     "websiteURL": "https://github.com/iorLab/svif",
     "defaultPrompt": [
-      "Continue this Svif Project and implement the next concrete action. Use the Project's canonical durable state and checkpoint when finished."
+      "Continue this Project using its durable state, implement the next action, verify the result, and checkpoint when finished."
     ]
   }
 }

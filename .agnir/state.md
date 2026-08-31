@@ -47,35 +47,46 @@ Svif has an active **Skill-first Plugin MVP** under `plugin/`:
 
 - `plugin/plugin.json` — portable Agent Plugins `1.0.0` manifest;
 - `plugin/skills/svif/SKILL.md` — shared Svif Project-orchestration Skill;
-- `.agents/plugins/marketplace.json` — repository-backed OpenAI/Codex GitHub marketplace catalog mapping to `./plugin`;
-- `plugin/.codex-plugin/plugin.json` — additive OpenAI/Codex metadata that reuses the shared Skill;
-- `plugin/README.md` — package/distribution/install-validation guidance.
+- `plugin/.codex-plugin/plugin.json` — OpenAI/Codex manifest that reuses the shared Skill and carries public-listing metadata;
+- `.agents/plugins/marketplace.json` — auxiliary repository-backed OpenAI/Codex marketplace catalog mapping to `./plugin`;
+- `plugin/README.md` — public submission, package/distribution, installation, review-case, and evidence-boundary guidance.
 
-Repository CI proves package/conformance, runtime, repository integrity, Agnir discovery guardrails, distribution metadata consistency, and documentation claim boundaries. It does **not** prove installation or invocation on a particular consumer surface.
+Repository CI proves package/conformance, runtime, repository integrity, Agnir discovery guardrails, distribution metadata consistency, and documentation claim boundaries. It does **not** prove OpenAI review, publication, directory appearance, installation, or invocation on a consumer surface.
 
-The bilingual root READMEs were simplified to an Agnir-style one-line installation intent in commits `95a95423d74c19a3fb63c027a6be8e8bcc232b5a` and `2a6829834799e4afc291ace370412bb6b9ec2cc7`; `Svif product checks` run `33356222213` completed successfully.
+## Personal ChatGPT public distribution status
 
-## Primary ChatGPT audience and corrected distribution direction
+The Principal's primary ChatGPT audience is **individual/personal ChatGPT users**. The mature consumer path is:
 
-The Principal has clarified that Svif is being built primarily for **individual/personal ChatGPT users**, not managed-workspace administrators.
+`individual ChatGPT user -> universal Plugins Directory -> install -> invoke Svif in normal ChatGPT use`
 
-Therefore the mature ChatGPT consumer path is now targeted as:
+The exact current OpenAI publication path has now been verified against current OpenAI developer documentation:
 
-`individual ChatGPT user -> public Plugins Directory listing -> install -> invoke Svif in normal ChatGPT use`
+- public Plugin submission may be **Skills only**;
+- Skills-only publication uses the OpenAI Plugin manifest plus the bundled `skills/` tree and does not require MCP/App packaging;
+- submission requires an OpenAI Platform organization where the submitter has **Apps Management: Write** and a verified individual developer or business identity;
+- the developer creates a **Skills only** submission, uploads the final tested bundle, supplies listing metadata/review cases/availability/release notes/attestations, and submits for review;
+- approval does not publish automatically; the approved version must be explicitly published;
+- after publication the Plugin can appear in the universal Plugins Directory shared by ChatGPT and Codex.
 
-The repository-backed GitHub marketplace path remains useful for development, Codex, managed-workspace administration, and validation, but it is **auxiliary rather than the primary consumer onboarding route**.
+The repository has been aligned to this route:
 
-ChatGPT Web is a first-class target. Packaging that makes Svif Desktop-only is a material regression unless explicitly accepted by the Principal after observed evidence. The exact current OpenAI publication/submission mechanism needed to obtain a public Plugins Directory listing still requires verification against current OpenAI developer documentation; no public/personal ChatGPT installability claim has yet been established.
+- `.codex-plugin/plugin.json` listing metadata was tightened to current public-directory limits;
+- the starter prompt and short description were shortened to submission-safe lengths;
+- `plugin/README.md` now contains public submission prerequisites, proposed listing metadata, five positive and three negative review cases, and evidence boundaries;
+- `README.md` and `README.zh-CN.md` now make personal ChatGPT / universal Plugins Directory the primary consumer onboarding model and clearly state that Svif is not publicly listed yet;
+- repository marketplace import remains auxiliary for development, Codex, managed workspaces, and secondary validation.
+
+ChatGPT Web remains a first-class target. MCP/App packaging is a later capability increment, not a release gate. No public/personal ChatGPT installation claim has yet been established.
 
 Evidence and rationale are recorded in `.agnir/evidence/2026-08-31-personal-chatgpt-distribution-checkpoint.md`.
 
 ## Current implementation gap / resume point
 
-1. Verify the exact current OpenAI developer publication path that results in a public/personal Plugins Directory listing and identify the required Svif artifacts without assuming managed-workspace import is sufficient.
-2. Align `README.md`, `README.zh-CN.md`, and advanced package guidance with that personal-user route while preserving the minimal one-line user-intent philosophy.
-3. Implement only the missing public ChatGPT distribution surface, reusing `ChatGPTExecutionSurface` and the existing Orchestrator lifecycle; preserve ChatGPT Web availability.
-4. Run the first real **personal ChatGPT Web** installation/invocation exercise on a real Agnir-initialized Project and record installation, invocation, activation/discovery, verification, authority, observation, and checkpoint evidence.
-5. Repair observed friction, then expand evidence to ChatGPT Desktop, Codex, and Cursor while keeping the shared Skill/runtime single-sourced.
+1. Use a publisher OpenAI Platform organization with **Apps Management: Write** plus verified individual/business identity to create a `Skills only` Plugin submission using the exact tested Svif package.
+2. Record automated skill-scan and review evidence; repair only observed submission friction.
+3. After approval, explicitly Publish and verify the exact Svif listing in the universal Plugins Directory.
+4. Run the first real **personal ChatGPT Web** installation/invocation exercise on a real Agnir-initialized Project and record installation, invocation, activation/discovery, verification, authority, observation, checkpoint, and fresh-context resume evidence.
+5. Repair observed personal-user friction, then expand evidence to ChatGPT Desktop, Codex, and Cursor while keeping the shared Skill/runtime single-sourced.
 6. Add broader execution/storage neutrality evidence without turning any current platform/provider into a universal kernel dependency.
 7. Keep live Cloudflare delivery disabled unless explicitly authorized.
 

@@ -11,7 +11,7 @@ Use Svif as an execution discipline for real Project work. Prefer completing con
 
 ### Bootstrap a Project that has no continuity binding
 
-Do not require the user to initialize Agnir separately before Svif can operate an ordinary Project. Before treating a missing Agnir Discovery Record as `AGNIR_DISCOVERY_NOT_FOUND`, first distinguish a genuinely uninitialized Project from a Project whose intended continuity setup is broken.
+Do not require the user to initialize Agnir separately before Svif can operate an ordinary Project. Before treating a missing Agnir Discovery Record as a discovery failure, first distinguish a genuinely uninitialized Project from a Project whose intended continuity setup is broken.
 
 Select exactly one authorized Project root, then inspect the Project-owned surfaces that can establish intent or an existing binding, including `SVIF.yaml`, `AGNIR.yaml`, root `AGENTS.md`, the README, and `.agnir/` when present. If the selected Project has no `SVIF.yaml` continuity binding, no `AGNIR.yaml`, no Agnir activation route or declared Agnir memory, and no Project instruction or durable configuration selecting another Continuity Provider, classify it as a **first-use bootstrap** rather than a discovery failure.
 

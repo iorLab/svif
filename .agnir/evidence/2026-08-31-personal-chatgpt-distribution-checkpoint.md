@@ -102,6 +102,16 @@ Until that gate is resolved through an official OpenAI-supported path or a legit
 
 Do not respond to this account-level gate by weakening the Skills-only package, inventing billing identity, or adding MCP/App packaging merely to seek a different publication path. Preserve the submission-ready ChatGPT package and continue independent Codex/Cursor installation evidence while the external gate remains unresolved.
 
+## Publisher-gate checkpoint validation
+
+The durable blocker checkpoint across `.agnir/state.md`, `.agnir/next-actions.md`, and this evidence record reached commit `b7b455423a15fdcc22aaa18559e80494277ca18f` and passed `Svif product checks` run `33381131010`:
+
+- `repository-integrity`: success;
+- `runtime-kernel`: success;
+- `portable-contracts`: success.
+
+This validates repository consistency only. It does not resolve the external OpenAI publisher/payment gate.
+
 ## Resume pressure
 
 1. seek official OpenAI support clarification or use a legitimately accepted payment method when one becomes available;

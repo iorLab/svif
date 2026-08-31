@@ -2,7 +2,7 @@
 
 This directory is the portable Svif Plugin package.
 
-It targets **Agent Plugins 1.0.0** and intentionally starts with a Skill-only MVP. The repository now also carries an additive OpenAI/Codex distribution manifest without replacing the portable package contract:
+It targets **Agent Plugins 1.0.0** and intentionally starts with a Skill-only MVP. The repository also carries OpenAI/Codex distribution metadata without replacing the portable package contract:
 
 ```text
 svif/
@@ -15,37 +15,24 @@ svif/
             └── SKILL.md
 ```
 
-`plugin/plugin.json` remains the Agent Plugins 1.0 portable manifest. `plugin/.codex-plugin/plugin.json` is product-specific distribution metadata used by current Codex/OpenAI marketplace flows and points at the same `skills/` component. Neither file is allowed to introduce a second Orchestrator or a second continuity source of truth.
+`plugin/plugin.json` remains the Agent Plugins 1.0 portable manifest. `plugin/.codex-plugin/plugin.json` is product-specific OpenAI/Codex distribution metadata and points at the same `skills/` component. Neither file is allowed to introduce a second Orchestrator or a second continuity source of truth.
 
 A Skill-only Plugin is structurally useful without an MCP server. MCP packaging can be added later without changing the Svif product kernel or durable Project-continuity model.
 
 ## Current validation status
 
-Repository CI validates the portable package structure, Agent Plugins 1.0.0 manifest constraints used by this package, the specification's normative manifest failure semantics, Agent Skills frontmatter/guardrails, Plugin-root filesystem containment and its required failure-isolation boundaries, fixed component discovery semantics for both `skills/` and the currently absent `mcp.json`, Agnir pre-load compatibility/identity discovery guards, installation-documentation guardrails, the OpenAI/Codex repository-marketplace distribution mapping, and the boundary that prevents the Plugin from shadowing the Svif runtime.
+Repository CI validates the portable package structure, Agent Plugins 1.0.0 manifest constraints used by this package, Agent Skills frontmatter/guardrails, Plugin-root filesystem containment and component isolation, Agnir activation/discovery guards, OpenAI/Codex distribution metadata, public-directory listing limits represented in `.codex-plugin/plugin.json`, and the boundary that prevents the Plugin from shadowing the Svif runtime.
 
-The OpenAI-specific distribution test verifies that `.agents/plugins/marketplace.json` resolves the local `./plugin` root, that `.codex-plugin/plugin.json` reuses `./skills/`, and that identity metadata shared with the portable manifest remains synchronized. This is a repository-side distribution invariant; it does not prove that a client or workspace actually imported the marketplace, installed the Plugin, or invoked it.
-
-The portable manifest test deliberately follows the Agent Plugins 1.0 specification text where it defines non-fatal exceptions to the closed schema: unknown top-level fields are reported and ignored, and a non-object `extensions` field is reported and ignored. A portable validator also does not validate values inside unimplemented client-extension namespaces. Other invalid permitted manifest fields remain fatal. This prevents Svif's package tests from being stricter than a conformant Agent Plugins client in ways that would reject a package the normative specification says to continue loading.
-
-Filesystem containment is modeled at the specification's narrow failure boundaries rather than as one all-or-nothing package check: an escaping root `plugin.json` rejects the Plugin; an invalid or escaping fixed `skills/` location invalidates only that component type; an escaping discovered `SKILL.md` skips only that Skill; and unrelated escaping package paths are denied without falsely turning those narrower failures into whole-Plugin rejection.
-
-Fixed-location discovery is checked separately. Skills are discovered only from immediate child directories of `skills/` that contain a regular `SKILL.md`; nested descendants are not recursively promoted to Skills. Missing fixed locations are valid absence. The root `mcp.json` location is also modeled now even though this MVP intentionally does not ship it: if that path later exists with the wrong filesystem kind or escapes the Plugin root, only the MCP component is invalidated while independently valid Skills remain loadable. This locks the Agent Plugins v1 component-isolation rule before the remote MCP increment is introduced.
-
-Agnir discovery is also guarded before durable memory is trusted. The Skill must validate Core compatibility, selected discovery profile, and selected-Project identity before resolving and loading the declared continuity locators. Unsupported compatibility and Project mismatch remain explicit discovery failures rather than triggers to search chat history, sibling repositories, parent/child Projects, or retired layouts for substitute state. For the current Svif binding the expected values are Core `0.1`, profile `repository-filesystem/0.1`, and Project identity `urn:svif:project:svif-core`; these are Project-binding facts, not universal Agnir constants.
-
-That is **package/conformance/distribution validation**, not proof that a particular ChatGPT, Codex, or other compatible client/workspace has installed and exercised this exact revision. Repository success does not prove a marketplace source was imported, that the Plugin appeared in a Plugins Directory, that installation succeeded, that invocation worked, or that a real Project exercise reached the expected checkpoint.
-
-Agent Plugins 1.0 treats the portable Plugin as a directory rooted at one filesystem location; it does not define ZIP/TAR packaging as the portable package unit. Product-specific marketplace setup, installation, publication, workspace administration, and invocation UX are separate from the portable conformance claim.
+That is **package/conformance/distribution validation**, not proof that a particular ChatGPT, Codex, or other compatible client has installed and exercised this exact revision. Repository success does not prove that the Plugin has passed OpenAI public review, appeared in the universal Plugins Directory, been installed by a personal ChatGPT user, or reached a real Project checkpoint.
 
 ## What this MVP does
 
 The bundled `svif` Skill guides a compatible execution surface to:
 
-- for an Agent-operable Agnir Project using `repository-filesystem/0.1`, require the durable activation route `Project root -> AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml -> durable memory` before normal Project work; direct readability of `AGNIR.yaml` is not a substitute for a healthy Agent activation route;
+- for an Agent-operable Agnir Project using `repository-filesystem/0.1`, require the durable activation route `Project root -> AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml -> durable memory` before normal Project work;
 - validate Agnir Core/profile compatibility and selected-Project identity before loading durable memory;
-- surface unsupported-version, Project-mismatch, and broken-locator discovery failures instead of silently falling back to unrelated state;
+- surface unsupported-version, Project-mismatch, authorization, locator, cycle, stale, and inconsistency failures instead of silently falling back to unrelated state;
 - load current state and next actions first, then only relevant decisions/evidence;
-- distinguish Agnir Core `0.1`, profile `repository-filesystem/0.1`, and repository release SemVer `0.1.0`;
 - execute the Svif lifecycle rather than merely describe it;
 - preserve exact-subject verification and provenance across external effects;
 - keep protected authority outside untrusted model/result payloads;
@@ -55,32 +42,80 @@ The bundled `svif` Skill guides a compatible execution surface to:
 
 The Plugin is a distribution/workflow layer. It does not reimplement `src/svif/runtime.py` and it does not make ChatGPT or another plugin client authoritative Project memory.
 
+## Public personal-ChatGPT distribution
+
+The primary ChatGPT audience for Svif is **individual/personal ChatGPT users**. The mature consumer path is therefore the **universal Plugins Directory**, not a managed-workspace GitHub marketplace import.
+
+Current OpenAI developer documentation explicitly allows a public Plugin submission to be **Skills only**. Svif does not need an MCP server or Apps SDK integration merely to qualify for public Plugin review. A skills-only public submission uses the existing OpenAI plugin manifest at `.codex-plugin/plugin.json` plus the bundled `skills/` tree. MCP remains an optional future capability increment rather than a publication prerequisite.
+
+The current public publishing flow is:
+
+1. Use an OpenAI Platform organization whose submitter has **Apps Management: Write** permission; organization owners already have the required submission permission.
+2. Complete a verified individual developer identity or verified business identity in that same OpenAI Platform organization.
+3. Open the OpenAI plugin submission portal and choose **Create plugin -> Skills only**.
+4. Upload the final Skill bundle/package rooted around the same tested `.codex-plugin/plugin.json` and `skills/` implementation. Do not add `apps`, `.app.json`, `mcpServers`, or `.mcp.json` to a Skills-only submission.
+5. Complete the public listing metadata, starter prompts, review test cases, country/region availability, release notes, and policy attestations.
+6. Submit for review. Submission is not publication.
+7. After OpenAI approves the Plugin, explicitly publish the approved version from the portal.
+8. Only after publication should Svif be expected to appear in the universal Plugins Directory shared by ChatGPT and Codex. Confirm publication by searching the exact publication name or using the directory URL exposed by the submission portal; main-page featuring is separate from publication.
+
+The current `.codex-plugin/plugin.json` is intentionally kept inside OpenAI's final-directory listing limits used by Svif: `displayName` <= 30 characters, `shortDescription` <= 30 characters, `longDescription` <= 4,000 characters, `developerName` <= 80 characters, no more than 20 capabilities, and no more than three starter prompts with each prompt <= 128 characters and no `@mention`. Repository tests guard these limits.
+
+For a Skills-only public submission, OpenAI's current directory validation treats website/support/privacy/terms URLs as optional, while a verified developer or business identity and skill safety/security scans remain required. If Svif later adds MCP, the submission type and review requirements become materially broader; do not silently treat that as the same release surface.
+
+### Proposed public listing
+
+- **Name:** Svif
+- **Package name:** `svif`
+- **Developer:** `iorLab` (subject to the verified publisher identity selected in the portal)
+- **Category:** Developer Tools
+- **Short description:** `Durable project orchestration`
+- **Long description:** `Continue a durable Svif Project through Agnir continuity, explicit verification, trusted authority boundaries, independent observation, and resumable checkpointing without moving canonical Project truth into the execution surface.`
+- **Starter prompt:** `Continue this Project using its durable state, implement the next action, verify the result, and checkpoint when finished.`
+
+### Review test cases to enter in the submission portal
+
+OpenAI currently asks for five positive and three negative review cases. These cases should be exercised against reviewer-readable fixture Projects rather than relying on private conversation context.
+
+**Positive cases**
+
+1. **Resume a valid Agnir Project.** Prompt: continue the Project and implement the next concrete action. Expected: follow `AGENTS.md -> README Agnir Project Instructions -> AGNIR.yaml`, validate compatibility/identity, load Current State + Next Actions, perform the concrete work, verify it, and checkpoint durable state.
+2. **Checkpoint a non-effectful repository change.** Expected: run DISCOVER -> PLAN -> CHANGE -> VERIFY -> CHECKPOINT without inventing DELIVER/OBSERVE evidence.
+3. **Repair a missing Agnir locator without destroying existing instructions.** Expected: preserve unrelated `AGENTS.md` content, add only the minimal locator when authorized, rerun activation, and remain idempotent on a second pass.
+4. **Resume after a prior checkpoint.** Expected: a fresh execution context reconstructs required Project truth from Project-owned durable surfaces rather than conversation memory.
+5. **Handle a verified external-effect fixture.** Expected: require exact-subject verification and trusted authority, actuate only the verified subject through the available capability boundary, independently observe the resulting target, then checkpoint success.
+
+**Negative cases**
+
+1. **Missing/ambiguous Agnir discovery.** Expected: surface the discovery blocker and stop; do not search sibling Projects or chat history for substitute state.
+2. **Project identity or compatibility mismatch.** Expected: preserve the explicit Agnir failure class and do not load/checkpoint the mismatched Project state.
+3. **External effect without trusted authority or independent observation.** Expected: do not actuate when authority is absent; if observation is unavailable or mismatched, do not checkpoint the effect as successful.
+
+These are submission materials, not evidence that OpenAI review has occurred. The portal submission, automated skill scan, reviewer outcome, approval, publication, and real personal-ChatGPT installation are all external observations that must be recorded separately.
+
 ## Portable package exercise
 
 For an Agent Plugins 1.0 implementation or local conformance harness, `plugin/` is the portable package root. This statement describes package layout only; it is not a universal installation instruction for ChatGPT or Codex.
 
 A useful workflow request after a client has actually loaded the Plugin or contained Skill is:
 
-> Continue this Svif Project and implement the next concrete action. Use the Project's canonical durable state and checkpoint when finished.
+> Continue this Project using its durable state, implement the next action, verify the result, and checkpoint when finished.
 
-Expected behavior: the executor follows Project-owned Agnir activation/discovery, performs actionable repository work with verification, distinguishes package success from external-effect success, and persists a resumable checkpoint rather than relying on conversation memory.
+Expected behavior: the executor follows Project-owned Agnir activation/discovery, performs actionable Project work with verification, distinguishes package success from external-effect success, and persists a resumable checkpoint rather than relying on conversation memory.
 
 ## OpenAI repository marketplace distribution
 
-OpenAI currently exposes two distinct repository-marketplace paths that can exercise the same `.agents/plugins/marketplace.json` source:
+The repository marketplace remains an **auxiliary development, Codex, managed-workspace, and validation route**. It is not the primary personal ChatGPT onboarding path.
 
-- **Workspace-managed import:** an eligible workspace admin/owner can use `Workspace settings > Plugins > Add > Import marketplace`, provide the repository URL, optionally select a branch/tag/commit, review Import results, and configure workspace installation/authentication policy.
-- **Codex-local marketplace:** Codex can add and track the repository with `codex plugin marketplace add`, then expose the Plugin through its marketplace/plugin UI on supported surfaces.
-
-Both paths consume the same repository distribution shape:
+OpenAI currently exposes repository-marketplace paths that can exercise `.agents/plugins/marketplace.json`, including managed-workspace import and Codex-local marketplace registration. Both reuse the same repository distribution shape:
 
 - repository: `https://github.com/iorLab/svif`;
 - marketplace manifest: `.agents/plugins/marketplace.json`;
 - marketplace source entry: local `./plugin` relative to the marketplace root;
-- required OpenAI/Codex Plugin manifest: `plugin/.codex-plugin/plugin.json`;
+- OpenAI/Codex Plugin manifest: `plugin/.codex-plugin/plugin.json`;
 - shared Skill implementation: `plugin/skills/svif/SKILL.md`.
 
-The documented Codex CLI route is:
+The Codex CLI route is:
 
 ```text
 codex plugin marketplace add iorLab/svif
@@ -92,38 +127,24 @@ For a revision-sensitive Codex-local exercise, use a ref explicitly, for example
 codex plugin marketplace add iorLab/svif --ref main
 ```
 
-`--ref main` only selects a moving repository ref; its resolved SHA is repository-side comparison evidence, not installed-revision evidence. For exact immutable provenance, record a commit SHA only when Codex's saved marketplace/add state or another client-exposed signal binds the accepted Plugin to that commit; otherwise mark the exact installed revision unconfirmed. After adding the source, `codex plugin marketplace list` should show the marketplace Codex is considering and the root path it resolves from.
+`--ref main` selects a moving repository ref. Its repository SHA is comparison evidence, not proof of the exact installed revision unless a client-exposed accepted-version signal binds the invocation to that immutable commit.
 
-For a workspace-managed exercise, enter the repository URL only (`https://github.com/iorLab/svif`) as Source: do not put a branch URL or folder URL in Source. Leave Path empty because the marketplace manifest is at the repository root; if a marketplace is ever moved under a subdirectory, Path must contain only that directory, not `.agents/plugins/marketplace.json` or another manifest filename. Use the optional Branch/tag/commit field to pin the exact revision when immutable provenance matters. Review the saved Import results before treating the marketplace as usable.
+For workspace-managed testing, use the repository URL as Source, leave Path empty because the marketplace manifest is at the repository root, and prefer a fixed commit when exact provenance matters. Workspace repository policy values are not workspace execution authority.
 
-Workspace-managed marketplaces sync automatically each day when a moving branch/default-branch source is selected, while a fixed commit remains at that revision. For an evidence-grade installation exercise, prefer a **fixed commit**. If a moving branch is intentionally used, re-check the saved marketplace/sync result immediately before invocation and record the revision the client actually accepted plus sync status. A repository branch/tag resolving to a newer SHA is not, by itself, evidence that the installed Plugin moved to that SHA: when a marketplace update is invalid, OpenAI retains the last working imported version. Therefore derive exact-revision evidence from the saved import/sync result or another client-exposed installed-version signal, not from repository HEAD alone. If the surface does not expose enough information to bind the invocation to one immutable commit, record revision provenance as unconfirmed and do not attribute activation, verification, or checkpoint evidence to the moving ref's current SHA.
+Repository marketplace success remains distinct from public-directory publication and from personal ChatGPT installation evidence.
 
-Treat workspace update controls as distinct observations. `Sync now` on the saved GitHub marketplace requests a source update and produces the sync result relevant to repository-version evidence; `Refresh plugin list` only reloads the displayed list and MUST NOT be recorded as a GitHub sync or revision-acceptance event. Likewise, removing the Svif entry from `.agents/plugins/marketplace.json` would not prove that an already imported workspace copy was deleted: OpenAI marks that copy `No longer in source`. A later installation or invocation claim must therefore identify both the workspace copy's observed status and the marketplace source/sync state instead of inferring client state from repository membership alone.
+## Installation and invocation evidence
 
-Repository marketplace `policy` values are **not workspace authority**. OpenAI workspace import/sync does not apply repository policy values such as `AVAILABLE` or `ON_USE`; workspace settings control installation and authentication there. The policy block in this repository may still inform marketplace presentation/behavior on other supported surfaces, but it MUST NOT be interpreted as granting installation, authentication, app access, protected Svif authority, or execution permission inside a workspace.
+For any real supported surface, record the exact surface, observed installation state, revision/version provenance when exposed, invocation path, Agnir activation/discovery, verification, any trusted authority use, independent observation for external effects, and resulting durable checkpoint.
 
-This repository shape materially improves installability, but it still is **not client-installation evidence**. Until a supported surface actually imports/adds the marketplace, reports the Plugin as available, installs or enables it under the surface's real policy controls, and invokes the exact revision, Svif must say only that the repository is prepared for the documented repository marketplace routes.
+For the primary consumer target, the first decisive exercise is:
 
-## OpenAI client/workspace installation exercise
+`public universal Plugins Directory -> personal ChatGPT Web -> install Svif -> invoke on a real Agnir Project -> verify -> checkpoint -> fresh-context resume`
 
-Current OpenAI product installation is client/surface dependent. Use the supported route actually available to the environment under test; do not substitute one surface's configuration semantics for another.
+Only that observed exercise establishes the personal ChatGPT Web installation baseline. Repository CI, marketplace import, public review approval, and directory publication are related but distinct evidence layers.
 
-For a real supported-client/workspace exercise:
+## Future MCP/App increment
 
-1. Identify the **exact client/surface** and role being tested and confirm repository marketplace import/add plus Plugin installation are available there.
-2. Select the exact source revision. For workspace validation, prefer a fixed commit in the optional Branch/tag/commit field so daily marketplace sync cannot change the tested revision between import and invocation; for Codex-local use an explicit `--ref` when appropriate. If a moving ref is intentionally used, re-resolve it at invocation time only as a repository-side comparison point; do not equate that ref's current SHA with the installed Plugin revision unless the client import/sync state independently confirms the same immutable commit. Record the immutable commit SHA that the exercise actually invokes when the surface exposes enough evidence to establish it; otherwise mark exact revision provenance unconfirmed.
-3. Import/add the marketplace and record the **marketplace source result**: workspace Import results or `codex plugin marketplace list`, including source identity, sync status where applicable, resolved/accepted revision when exposed, and any reported errors. For workspace refreshes, use the marketplace's `Sync now` result as the source-update observation; `Refresh plugin list` only reloads the displayed list and is not sync evidence. If an update is rejected or invalid, record that the client may retain the last working imported Plugin rather than assuming the repository's newer ref was installed. If a repository entry was removed, record any imported copy that remains `No longer in source` rather than inferring deletion from source absence.
-4. Apply the surface's real installation/authentication controls. For workspace import, configure these in Workspace settings because repository `policy` values do not override workspace policy. Confirm the Plugin is actually available/installed or enabled rather than inferring success from source import alone.
-5. If the source/import result is healthy but the Plugin is not yet visible in Codex's Plugins Directory, treat directory propagation as a distinct observation before declaring an installation defect. Current OpenAI guidance says Codex directory changes can take up to **6 hours** to refresh; record the elapsed propagation state and re-check the directory rather than rewriting package metadata to chase an unconfirmed refresh delay.
-6. Invoke the installed Plugin on a real Agnir-initialized Project using the invocation affordance actually exposed by that surface. In ChatGPT this may be an `@` mention or `+ > More`; in a supported Codex task view use `Sources > Use plugins` when those controls are available.
-7. Observe whether activation reaches `AGNIR.yaml`, validates the expected Core compatibility, profile, and Project identity, and only then resolves the declared durable memory without relying on private conversation state.
-8. Execute a concrete Svif lifecycle action while preserving trusted authority outside model-controlled payloads, exact-subject verification for any external effect, and independent observation before claiming external success.
-9. Record the **exact Plugin or Skill revision actually invoked when observable**, **marketplace source result and sync status**, **observed installation**, **directory propagation state when relevant**, **observed activation path**, **compatibility/identity checks**, **verification performed**, and **checkpoint result**, plus any client/workspace friction or failure. Where exact installed revision cannot be independently tied to an immutable commit, preserve that uncertainty instead of substituting repository HEAD.
+Add MCP/App packaging only when Svif needs concrete server-backed capabilities that the Skill-only Plugin cannot provide and the surface consequences have been tested. The increment must reuse the existing ChatGPT Execution Surface and `Orchestrator.begin()` / `Orchestrator.complete()` lifecycle, preserve protected authority outside model-controlled payloads, and avoid creating a second kernel or continuity store.
 
-Only that observed client/workspace exercise can establish installation evidence for the tested surface and revision. Repository package/conformance/distribution validation does not prove client installation. Likewise, a temporarily stale Codex directory after a healthy import is not sufficient evidence that the Plugin package itself is invalid, and a moving repository ref is not sufficient evidence that a client accepted or invoked its latest commit.
-
-## Next packaging increment
-
-Add MCP packaging only when the remote Svif MCP/App surface is ready to expose concrete `begin` / `complete` tools **and** the resulting product-surface restriction is intentional. Current OpenAI workspace import behavior can mark a Plugin **Desktop only** when it declares MCP servers via `mcp.json` or `.mcp.json`, including remote HTTPS servers. Therefore MCP is not merely an additive file-format step for this MVP: before adding it, verify on the target OpenAI surfaces whether losing ChatGPT web availability is acceptable, and record the observed availability consequence separately from package/conformance success.
-
-Keep the two packaging layers explicit: under Agent Plugins 1.0, portable MCP configuration lives at the Plugin root as `mcp.json`, MUST be a closed JSON object containing only the required `$schema` and `mcpServers` top-level fields, and for Agent Plugins 1.0.0 MUST use `$schema` value `https://agent-plugins.org/schemas/1.0.0/mcp.schema.json`; under the current OpenAI/Codex product manifest, bundled MCP configuration is a separate product-specific root `.mcp.json` component referenced by `.codex-plugin/plugin.json` through its `mcpServers` field. The OpenAI `.mcp.json` path is not a portable Agent Plugins replacement, and portable `mcp.json` must not be renamed or inlined into portable `plugin.json`. Both layers must reuse the existing Orchestrator and ChatGPT execution bridge and preserve trusted authority outside model-controlled payloads.
+Do not add MCP merely as a prerequisite for public publication: current OpenAI public submission explicitly accepts Skills-only Plugins.

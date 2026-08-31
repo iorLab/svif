@@ -6,6 +6,26 @@ Svif is a **Project orchestration product** coordinating durable Project continu
 
 > The Project persists; Executors and execution environments may change.
 
+## 30-second Quick Start
+
+### New installation
+
+Give your Agent this one-line request:
+
+```text
+Install and enable Svif for this Project: https://github.com/iorLab/svif
+```
+
+That is the **user-facing install intent**. The Agent should inspect this repository, read [`plugin/README.md`](plugin/README.md), identify the supported installation route for the current execution surface, and perform every installation step it can perform directly. The user does not need to carry Svif's marketplace paths, manifest names, CLI flags, sync rules, revision-provenance checklist, or other internal installation mechanics in the prompt.
+
+If the current surface requires an administrator/owner action or another UI-only policy step, the Agent should surface only that irreducible user action instead of turning the internal installation procedure into a user checklist. Installation is not considered validated until an actual supported surface reports the Plugin available/installed and the installed Plugin is invoked on a real Project.
+
+Svif currently uses Agnir as its founding Continuity Provider. If the selected Project is not yet Agnir-initialized, the Agent should establish the required Project continuity through the current Agnir installation/activation contract before treating Svif Project operation as ready.
+
+### Already installed
+
+**No recurring Svif installation prompt is required.** Give the execution surface access to the Agnir-initialized Project and ask for the actual Project task. If the surface requires selecting or enabling Svif through its native Plugin controls, do that once for the applicable workspace/client rather than repeating the installation procedure in every conversation.
+
 ## Agnir Project Instructions
 
 Treat this repository root as the authorized Project Entry Point for the Svif Project. Before substantive Project work:

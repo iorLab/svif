@@ -8,23 +8,33 @@ Svif is a **Project orchestration product** coordinating durable Project continu
 
 ## 30-second Quick Start
 
-### New installation
+### Personal ChatGPT
 
-Give your Agent this one-line request:
+Svif's primary ChatGPT audience is individual/personal users. The mature installation path is the **universal Plugins Directory** shared by ChatGPT and Codex:
+
+```text
+ChatGPT -> Plugins -> search "Svif" -> Install plugin
+```
+
+**Svif is not publicly listed yet.** The current repository is being prepared for the OpenAI public review/publishing flow, so a personal ChatGPT user cannot yet treat the public-directory path above as an available production install.
+
+OpenAI currently accepts **Skills-only** public Plugins, so Svif does not need an MCP server merely to qualify for public publication. After OpenAI approves the Skills-only submission and the developer explicitly publishes it, the Plugin can appear in the universal Plugins Directory. The first real consumer validation will then be installation and invocation in personal ChatGPT Web.
+
+### Development / compatible Agent environment
+
+For repository-backed development, Codex, managed-workspace testing, or another compatible Agent environment, give your Agent this one-line intent:
 
 ```text
 Install and enable Svif for this Project: https://github.com/iorLab/svif
 ```
 
-That is the **user-facing install intent**. The Agent should inspect this repository, read [`plugin/README.md`](plugin/README.md), identify the supported installation route for the current execution surface, and perform every installation step it can perform directly. The user does not need to carry Svif's marketplace paths, manifest names, CLI flags, sync rules, revision-provenance checklist, or other internal installation mechanics in the prompt.
+The Agent should inspect this repository, read [`plugin/README.md`](plugin/README.md), identify the supported route for the current execution surface, and perform every installation step it can perform directly. The user does not need to carry marketplace paths, manifest names, CLI flags, sync rules, revision-provenance checklists, or other internal mechanics in the prompt.
 
-If the current surface requires an administrator/owner action or another UI-only policy step, the Agent should surface only that irreducible user action instead of turning the internal installation procedure into a user checklist. Installation is not considered validated until an actual supported surface reports the Plugin available/installed and the installed Plugin is invoked on a real Project.
-
-Svif currently uses Agnir as its founding Continuity Provider. If the selected Project is not yet Agnir-initialized, the Agent should establish the required Project continuity through the current Agnir installation/activation contract before treating Svif Project operation as ready.
+Svif currently uses Agnir as its founding Continuity Provider. If the selected Project is not yet Agnir-initialized, establish the required Project continuity through the current Agnir installation/activation contract before treating Svif Project operation as ready.
 
 ### Already installed
 
-**No recurring Svif installation prompt is required.** Give the execution surface access to the Agnir-initialized Project and ask for the actual Project task. If the surface requires selecting or enabling Svif through its native Plugin controls, do that once for the applicable workspace/client rather than repeating the installation procedure in every conversation.
+**No recurring Svif installation prompt is required.** Give the execution surface access to the Agnir-initialized Project and ask for the actual Project task. If the surface requires selecting or enabling Svif through native Plugin controls, do that once for the applicable surface rather than repeating the installation procedure in every conversation.
 
 ## Agnir Project Instructions
 
@@ -111,7 +121,7 @@ The default internal lifecycle is:
 
 ## Installable Plugin MVP
 
-Svif now ships a **Skill-first installable Plugin MVP** under `plugin/`, using the portable Agent Plugins 1.0.0 package layout. The repository also exposes an additive OpenAI/Codex GitHub-marketplace path without replacing the portable manifest.
+Svif ships a **Skill-first installable Plugin MVP** under `plugin/`, using the portable Agent Plugins 1.0.0 package layout and an additive OpenAI/Codex manifest:
 
 ```text
 svif/
@@ -125,15 +135,13 @@ svif/
             └── SKILL.md
 ```
 
-`plugin/plugin.json` remains the portable Agent Plugins manifest. `plugin/.codex-plugin/plugin.json` is product-specific Codex/OpenAI distribution metadata and points at the same `skills/` implementation. `.agents/plugins/marketplace.json` lets an eligible OpenAI workspace import the repository through the currently documented GitHub marketplace flow.
+`plugin/plugin.json` remains the portable Agent Plugins manifest. `plugin/.codex-plugin/plugin.json` is the OpenAI/Codex manifest used for the shared Skill and public listing metadata. `.agents/plugins/marketplace.json` remains an auxiliary repository-marketplace path for development, Codex, and managed-workspace testing.
 
-The repository is now prepared for that supported GitHub marketplace route, but **no ChatGPT or Codex client installation has yet been recorded as validated evidence for this revision**. A real workspace import report, installation policy, invocation, Agnir activation, verification, and checkpoint behavior must be observed on the actual product surface before installation is called validated.
+OpenAI's current public submission flow explicitly accepts a **Skills-only** Plugin. Svif's `.codex-plugin/plugin.json` has therefore been tightened to the current final-directory metadata limits, while the existing `plugin/skills/svif/SKILL.md` remains the single shared workflow implementation. MCP/App packaging is not a prerequisite for the initial public submission and must not be added merely to satisfy publication.
 
-The Plugin guides the executor to discover Agnir first, run real Project work through the Svif lifecycle, preserve verification/provenance and trusted authority boundaries, independently observe external effects, and checkpoint durable truth. It does not duplicate the Orchestrator and does not make an execution surface canonical memory.
+There is still **no ChatGPT or Codex client installation that has yet been recorded as validated evidence** for the public personal-user release. Public review approval, publication, directory appearance, installation, invocation, Agnir activation, verification, and checkpoint are separate evidence layers. Installation validation requires an actual supported surface, exact surface/revision evidence when observable, and observed Agnir activation/verification/checkpoint evidence.
 
-The first release is deliberately Skill-only. `mcp.json` will be added when the remote Svif MCP/App component is ready to reuse the existing `Orchestrator.begin()` / `Orchestrator.complete()` boundary. MCP is an enhancement, not a gate for beginning Plugin package validation and real-client exercises.
-
-See [`plugin/README.md`](plugin/README.md) for the portable package checks, GitHub marketplace route, client-dependent installation exercise, and evidence boundary.
+See [`plugin/README.md`](plugin/README.md) for public submission prerequisites, proposed listing metadata, review test cases, repository-marketplace development routes, and evidence boundaries.
 
 ## Repository Structure
 
@@ -141,8 +149,8 @@ This tree is the practical map of the repository. It is intentionally selective:
 
 ```text
 svif/
-├── .agents/plugins/                   # OpenAI/Codex GitHub marketplace catalog
-│   └── marketplace.json              # maps the workspace import to the local ./plugin root
+├── .agents/plugins/                   # auxiliary OpenAI/Codex repository marketplace catalog
+│   └── marketplace.json              # maps development/workspace import to the local ./plugin root
 │
 ├── src/                              # executable Svif product code
 │   └── svif/
@@ -160,9 +168,9 @@ svif/
 │
 ├── plugin/                           # installable Agent Plugins 1.0 distribution package
 │   ├── plugin.json                   # portable Plugin manifest
-│   ├── .codex-plugin/plugin.json     # additive OpenAI/Codex product distribution metadata
-│   ├── README.md                     # package/distribution validation, client exercise, and evidence-boundary notes
-│   └── skills/svif/SKILL.md          # Svif Project-orchestration workflow Skill
+│   ├── .codex-plugin/plugin.json     # OpenAI/Codex + public-directory listing metadata
+│   ├── README.md                     # public submission, package validation, installation and evidence guidance
+│   └── skills/svif/SKILL.md          # shared Svif Project-orchestration workflow Skill
 │
 ├── spec/                             # portable product contracts used by the Orchestrator and integrations
 ├── profiles/                         # specialized behavior layered on portable contracts
@@ -194,8 +202,8 @@ Python is the current executable reference vehicle; it does not freeze the event
 - Cloudflare provider logic is owned by Svif and uses an injected transport boundary, so tests do not require live credentials.
 - `tests/test_founding_e2e.py` composes all three through the real Orchestrator boundary.
 - `plugin/plugin.json` + `plugin/skills/svif/SKILL.md` remain the portable Plugin MVP package.
-- `.agents/plugins/marketplace.json` + `plugin/.codex-plugin/plugin.json` provide a concrete repository-backed OpenAI/Codex GitHub marketplace route; actual supported client/workspace import evidence is still pending.
-- Plugin tests guard portable packaging, fixed-component discovery, Agnir pre-load discovery, installation claims, and OpenAI distribution metadata without shadowing the runtime.
+- `plugin/.codex-plugin/plugin.json` now also satisfies the public-directory listing limits currently guarded by repository tests.
+- `.agents/plugins/marketplace.json` remains an auxiliary repository-backed OpenAI/Codex development route, not the primary personal ChatGPT onboarding path.
 - Protected authority remains outside untrusted model/result payloads.
 - External success requires exact verified-subject delivery plus independent observation before checkpoint.
 
@@ -207,7 +215,7 @@ The founding E2E is intentionally credential-free. It proves the Svif product lo
 
 ## Documentation synchronization
 
-`README.md` and `README.zh-CN.md` are maintained as parallel entry points. Any change to product architecture, component ownership, dependency direction, authority/provenance boundaries, runtime flow, or documented repository structure **must update both language versions in the same change set**.
+`README.md` and `README.zh-CN.md` are maintained as parallel entry points. Any change to product architecture, component ownership, dependency direction, authority/provenance boundaries, runtime flow, distribution status, or documented repository structure **must update both language versions in the same change set**.
 
 The exhaustive companion **`REPOSITORY_TREE.md`** is the file-level map of the active repository and must be updated whenever tracked files are added, removed, moved, or materially change responsibility.
 
@@ -221,4 +229,4 @@ PYTHONPATH=src python -m unittest discover -s tests -v
 
 ## Next
 
-The next milestone is no longer “prepare for Plugin packaging.” The Plugin exists and the repository now has a documented OpenAI GitHub marketplace import path. Next is **import/use/repair iteration**: exercise this exact repository revision in an actual supported workspace/client, record the marketplace import result plus exact surface/revision and observed Agnir activation/verification/checkpoint evidence, repair observed friction, and then add the remote ChatGPT MCP/App component without duplicating kernel semantics. Live Cloudflare actuation remains separately gated.
+The repository-side public-distribution path is now clear: **prepare and submit the existing Skills-only Plugin through the OpenAI Platform plugin submission portal.** The remaining external publication prerequisites are an OpenAI Platform publisher with Apps Management write access and a verified individual/business identity. After portal submission, record the skill scan/review result; after approval, explicitly publish; then run the first personal ChatGPT Web install/invocation exercise from the universal Plugins Directory. MCP/App packaging remains a later capability increment, not a release gate. Live Cloudflare actuation remains separately gated.

@@ -60,7 +60,7 @@ svif/                                                     # Svif 产品主仓库
 │   ├── README.md                                         # portable/package/distribution 校验、GitHub marketplace 路径、真实 client exercise 与证据边界
 │   └── skills/
 │       └── svif/
-│           └── SKILL.md                                  # Svif 工作流 Skill：Agnir compatibility/profile/identity validation、lifecycle、provenance、authority、checkpoint
+│           └── SKILL.md                                  # Svif 工作流 Skill：首次 Project continuity bootstrap、Agnir discovery/repair、lifecycle、provenance、authority、checkpoint
 │
 ├── spec/                                                 # Svif 内部可移植产品 contracts
 │   ├── CORE.md                                           # 编排生命周期、核心 invariants 与 product-kernel 语义
@@ -84,6 +84,7 @@ svif/                                                     # Svif 产品主仓库
 │   ├── test_founding_e2e.py                              # founding Agnir + ChatGPT + Cloudflare 完整产品闭环
 │   ├── test_plugin_agnir_discovery.py                    # Plugin Skill 在加载 continuity 前执行 Agnir compatibility/profile/Project identity 校验并锁定 discovery failure 语义
 │   ├── test_plugin_component_discovery.py                # Agent Plugins 固定组件位置、直接子 Skill 发现与 MCP failure isolation 回归测试
+│   ├── test_plugin_first_use_bootstrap.py                # 普通未初始化 Project 首次启用 Svif 时自动建立 Agnir + Svif durable binding 的回归测试
 │   ├── test_plugin_installation_docs.py                  # 双语入口与 Plugin README 的安装证据边界 guardrail，含 GitHub marketplace 路径但禁止把 repository validation 写成 client validation
 │   ├── test_plugin_openai_distribution.py                # OpenAI/Codex marketplace source、Codex manifest 与 portable identity metadata 一致性测试
 │   └── test_plugin_package.py                            # Plugin manifest/Skill/package、filesystem failure isolation 与 Agnir activation boundary 验证

@@ -121,3 +121,15 @@
 - The first decisive consumer validation target is a real **personal ChatGPT Web** install from the universal Plugins Directory followed by invocation on an Agnir-initialized Project and a resumable checkpoint.
 - `.agents/plugins/marketplace.json` remains an auxiliary development/Codex/managed-workspace path. Its success cannot substitute for public-directory publication or personal-user installation evidence.
 - Future MCP/App work is driven by concrete server-backed capability needs and surface evidence, not by publication anxiety. Any such increment must preserve the existing Svif Orchestrator, authority boundaries, continuity semantics, and desired ChatGPT Web availability.
+
+## 2026-08-31 — Svif owns first-use continuity bootstrap
+
+- A consumer MUST NOT have to pre-initialize Agnir before first Svif use on an ordinary Project. Requiring that step hides a Svif onboarding defect and tests only an already-prepared environment.
+- Before normal Agnir discovery failure handling, the shared Svif Skill distinguishes a genuinely uninitialized Project from a broken existing Agnir/Svif setup and from a Project intentionally bound to another Continuity Provider.
+- On the founding repository/filesystem path, a genuinely uninitialized Project is bootstrapped with one stable Project identity shared by Agnir and Svif, Agnir Core `0.1` / `repository-filesystem/0.1` durable continuity, and a minimal `project-binding/0.2` `SVIF.yaml` whose continuity provider is Agnir.
+- The bootstrap preserves existing README and `AGENTS.md` content, uses locator-only/idempotent Agnir activation, and stops on material instruction conflict rather than overwriting Project-owned instructions.
+- Partial or contradictory Agnir/Svif artifacts are repair cases, not clean initialization cases. A durable binding that intentionally chooses another Continuity Provider MUST NOT be overwritten with Agnir.
+- First-use bootstrap is part of the Svif Plugin procedure and consumes Agnir protocol/profile semantics through the founding Continuity Provider integration. It MUST NOT make the Agnir Skill repository, a prior installation conversation, GitHub, or another execution surface a runtime prerequisite.
+- Permission to install/enable/invoke Svif for a selected Project authorizes only the non-destructive Project files needed to establish the founding Svif continuity binding, subject to stricter Project policy. It does not grant protected external-effect authority.
+- The first real Codex and personal ChatGPT consumer exercises SHOULD start from an ordinary non-Agnir Project so they validate onboarding rather than bypassing it.
+- Durable evidence is `.agnir/evidence/2026-08-31-plugin-first-use-bootstrap-fix.md`.

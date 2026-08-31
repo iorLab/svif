@@ -26,6 +26,10 @@
 - Distribution MUST NOT reimplement `src/svif/runtime.py`, move Project truth out of the Continuity Provider, or grant protected authority through model-controlled payloads.
 - ChatGPT Web availability is a product requirement for the current personal-user target. Any packaging restriction that removes Web support must be surfaced as a deliberate product decision, not hidden as an implementation detail.
 
+### Auxiliary repository-marketplace evidence rule
+
+The GitHub marketplace path remains a useful secondary validation channel, and its previous evidence guard still applies whenever that channel is exercised. **Package/conformance/distribution CI is not installation evidence.** For a revision-sensitive exercise, record the immutable commit SHA actually invoked when the client exposes enough evidence to establish it. Treat the repository ref's current SHA only as a comparison point. Derive accepted-version evidence from the saved client import/sync result or another client-exposed accepted-version signal; when the surface cannot bind the invocation to one immutable commit, preserve exact revision provenance as unconfirmed.
+
 ## Documentation maintenance rule
 
 - Architecture/runtime/distribution changes are incomplete until affected explanatory sections and diagrams in both `README.md` and `README.zh-CN.md` are updated in the same change set.

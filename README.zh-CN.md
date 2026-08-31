@@ -6,6 +6,26 @@ Svif 是一个 **Project orchestration（项目编排）产品**，负责协调�
 
 > Project 持续存在；Executor 和执行环境可以变化。
 
+## 30 秒快速开始
+
+### 新安装
+
+只需要把下面这一句话交给你的 Agent：
+
+```text
+为这个 Project 安装并启用 Svif：https://github.com/iorLab/svif
+```
+
+这句话就是**面向用户的安装意图**。Agent 应自行检查本仓库、读取 [`plugin/README.md`](plugin/README.md)，识别当前执行环境实际支持的安装路径，并直接完成它有能力完成的安装步骤。用户不需要把 marketplace 路径、manifest 文件名、CLI 参数、同步规则、revision provenance 检查表或其他内部安装细节塞进提示词里。
+
+如果当前执行环境确实要求 workspace 管理员 / owner 操作，或者存在只能通过产品 UI 完成的 policy 步骤，Agent 应只把这个无法代替用户完成的最小动作交给用户，而不是把整套内部安装 procedure 重新变成用户 checklist。只有真实受支持的 surface 已报告 Plugin 可用 / 已安装，并且安装后的 Plugin 已在真实 Project 上被实际调用，才可以把安装称为已验证。
+
+Svif 当前使用 Agnir 作为首个 Continuity Provider。如果所选 Project 还没有初始化 Agnir，Agent 应先按照当前 Agnir 安装 / 激活 contract 建立所需的 Project continuity，再把 Svif Project operation 视为可用。
+
+### 已经安装
+
+**不需要在每次对话里重复 Svif 安装提示。** 只要把已经初始化 Agnir 的 Project 提供给执行环境，然后直接提出真正的 Project 任务即可。如果当前 surface 需要通过原生 Plugin 控件选择或启用 Svif，只需要针对相应 workspace / client 完成一次，而不是每次会话都重复安装 procedure。
+
 ## Agnir Project Instructions
 
 把这个仓库根目录视为 Svif Project 的已授权 Project Entry Point。开始任何实质性 Project 工作之前：

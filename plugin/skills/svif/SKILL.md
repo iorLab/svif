@@ -9,6 +9,27 @@ Use Svif as an execution discipline for real Project work. Prefer completing con
 
 ## 1. Discover and activate the Project before acting
 
+### Bootstrap a Project that has no continuity binding
+
+Do not require the user to initialize Agnir separately before Svif can operate an ordinary Project. Before treating a missing Agnir Discovery Record as `AGNIR_DISCOVERY_NOT_FOUND`, first distinguish a genuinely uninitialized Project from a Project whose intended continuity setup is broken.
+
+Select exactly one authorized Project root, then inspect the Project-owned surfaces that can establish intent or an existing binding, including `SVIF.yaml`, `AGNIR.yaml`, root `AGENTS.md`, the README, and `.agnir/` when present. If the selected Project has no `SVIF.yaml` continuity binding, no `AGNIR.yaml`, no Agnir activation route or declared Agnir memory, and no Project instruction or durable configuration selecting another Continuity Provider, classify it as a **first-use bootstrap** rather than a discovery failure.
+
+An explicit Principal request to install/enable Svif for the selected Project, or to invoke Svif to operate that Project after the Plugin has been enabled, authorizes the non-destructive Project files required to establish Svif's founding continuity binding unless stricter Project policy says otherwise. That bootstrap authority does not grant authority for protected external effects.
+
+For the current repository/filesystem founding path, bootstrap the Project in this order:
+
+1. Establish one stable Project identity. Reuse an existing durable Project identity when one is already authoritative. Otherwise generate a new UUID-based URN such as `urn:uuid:<uuid>` and persist exactly the same identity in both the Agnir Discovery Record and the Svif Project Binding.
+2. Initialize the Agnir `repository-filesystem/0.1` continuity contract inside the selected Project root using Agnir Core `0.1`: create top-level `AGNIR.yaml`; create `.agnir/state.md`, `.agnir/next-actions.md`, `.agnir/decisions.md`, and `.agnir/evidence/`; persist concise initial Project truth and at least one initialization evidence record; create or update the canonical README `## Agnir Project Instructions`; and install only the minimal Agnir locator in root `AGENTS.md`.
+3. Preserve unrelated Project documentation and instructions. If `AGENTS.md` already exists, merge only the minimal locator without deleting, reordering, normalizing, summarizing, or rewriting unrelated instructions. If an equivalent locator exists, remain idempotent. If a material existing instruction conflicts with Agnir activation, surface the conflict to the Principal instead of silently overriding it.
+4. Create or validate a minimal repository/filesystem `SVIF.yaml` using `project-binding/0.2`. It MUST use the same stable Project identity and bind `continuity.provider: "agnir"`, compatibility `"0.1"`, profile `"repository-filesystem/0.1"`, and discovery `"AGNIR.yaml"`. Execution and capability bindings may remain empty unless the Project intentionally persists them.
+5. Run fresh activation from the selected Project root only: `Project root -> AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml -> declared durable memory`. Validate the Agnir identity/profile/version and then validate that `SVIF.yaml` identifies the same Project and continuity binding.
+6. Once bootstrap passes, continue the user's original Project task in the same operation. Do not make the user issue a separate Agnir initialization prompt and do not stop merely because the Project started without Agnir.
+
+This bootstrap behavior consumes Agnir protocol/profile semantics through Svif's founding Continuity Provider integration; it MUST NOT require the Agnir Skill repository, a previous Agnir installation conversation, GitHub, or another execution surface as a runtime prerequisite. A compatible surface may delegate to an available Agnir installer, but successful first use must remain possible from the Svif Plugin procedure itself.
+
+Do not treat partial or contradictory Agnir/Svif artifacts as a clean first-use bootstrap. If any durable surface shows that the Project already intends to use Agnir but activation/discovery is incomplete or broken, enter repair and preserve the applicable Agnir failure class. If `SVIF.yaml` or another durable binding intentionally selects a different Continuity Provider, do not overwrite it with Agnir; use the configured provider when supported or surface a binding/support blocker. If the current execution surface cannot perform the required non-destructive Project writes, report that bootstrap capability blocker rather than pretending that pre-initialization was a user prerequisite.
+
 For an Agent-operable Agnir Project using `repository-filesystem/0.1`, the durable activation route is mandatory before normal Project work:
 
 `Project root -> AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml -> declared durable memory`
@@ -25,7 +46,7 @@ Before following that route, require the authorized Project Entry Point or trust
 
 Before resolving a Discovery Record, select the discovery profile/adapter convention applicable to the authorized Project Entry Point from trusted integration or binding context. The Discovery Record may declare its profile for compatibility checking, but it MUST NOT bootstrap authority by choosing the adapter/convention used to discover or interpret itself. If no applicable profile can be selected safely, surface the discovery/compatibility blocker rather than guessing from nearby files or model memory.
 
-Under the selected discovery convention, resolve exactly one authoritative Discovery Record before loading continuity. If no Discovery Record can be resolved, surface `AGNIR_DISCOVERY_NOT_FOUND`. Detect Locator Chain cycles and conflicting candidate records before compatibility or identity validation rather than following a cycle, guessing among conflicting records, or silently adopting another candidate.
+Under the selected discovery convention, resolve exactly one authoritative Discovery Record before loading continuity. If no Discovery Record can be resolved after the first-use-bootstrap check above, surface `AGNIR_DISCOVERY_NOT_FOUND`. Detect Locator Chain cycles and conflicting candidate records before compatibility or identity validation rather than following a cycle, guessing among conflicting records, or silently adopting another candidate.
 
 When `AGNIR.yaml` is available, read it before substantive work. Before loading any declared durable memory:
 

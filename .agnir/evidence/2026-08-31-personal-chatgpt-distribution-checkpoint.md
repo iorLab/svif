@@ -44,6 +44,16 @@ Immediately before this checkpoint, the bilingual root READMEs were simplified t
 
 That one-line UX principle remains desirable, but its actual ChatGPT consumer installation route must now be aligned with public/personal Plugin distribution rather than treating managed-workspace GitHub import as the default user path.
 
+## Checkpoint validation
+
+The durable state/decision/next-action correction was validated at commit `c87e209049ead2e67056d688e853c3be9b7883a3` by `Svif product checks` run `33372657758`:
+
+- `repository-integrity`: success;
+- `runtime-kernel`: success;
+- `portable-contracts`: success.
+
+The validation also confirmed that the repository's Agnir activation chain remains readable from root `AGENTS.md` through `README.md` and `AGNIR.yaml` to the declared durable state and next-action locations.
+
 ## Resume pressure
 
 Do not spend the next iteration proving only workspace-admin import. First establish the exact current publication/install path that lets an individual ChatGPT user discover and install Svif from the Plugins Directory, preserve ChatGPT Web as a first-class target, and then run the first personal-user installation/invocation exercise on the exact published revision when the surface makes revision evidence observable.

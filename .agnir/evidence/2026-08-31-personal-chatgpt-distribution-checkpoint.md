@@ -46,11 +46,11 @@ OpenAI product and submission details can change; re-verify them before future r
 The repository has been aligned to the current Skills-only public-submission model:
 
 - `plugin/.codex-plugin/plugin.json` short description changed to `Durable project orchestration` and the starter prompt was shortened to stay within current public-listing limits;
-- `tests/test_plugin_openai_distribution.py` now checks current public-directory listing bounds and asserts that the initial public package remains Skills-only without `mcpServers` or `apps`;
-- `plugin/README.md` now documents publisher prerequisites, the Skills-only portal workflow, proposed listing metadata, five positive and three negative review cases, publication/install evidence boundaries, and the auxiliary repository-marketplace route;
-- `README.md` and `README.zh-CN.md` now present the universal Plugins Directory as the mature personal ChatGPT path, state explicitly that Svif is not publicly listed yet, and keep the one-line GitHub install intent for development/compatible Agent environments;
-- `tests/test_plugin_installation_docs.py` has been rewritten around the public-directory contract rather than the superseded workspace-marketplace-first documentation contract;
-- `.agnir/state.md`, `.agnir/next-actions.md`, and `.agnir/decisions.md` now resume at external public submission rather than repeating publication-path research.
+- `tests/test_plugin_openai_distribution.py` checks current public-directory listing bounds and asserts that the initial public package remains Skills-only without `mcpServers` or `apps`;
+- `plugin/README.md` documents publisher prerequisites, the Skills-only portal workflow, proposed listing metadata, five positive and three negative review cases, publication/install evidence boundaries, and the auxiliary repository-marketplace route;
+- `README.md` and `README.zh-CN.md` present the universal Plugins Directory as the mature personal ChatGPT path, state explicitly that Svif is not publicly listed yet, and keep the one-line GitHub install intent for development/compatible Agent environments;
+- `tests/test_plugin_installation_docs.py` is aligned around the public-directory contract rather than the superseded workspace-marketplace-first documentation contract;
+- `.agnir/state.md`, `.agnir/next-actions.md`, and `.agnir/decisions.md` resume from the public submission model rather than repeating publication-path research.
 
 Key implementation commits in this sequence include:
 
@@ -60,7 +60,7 @@ Key implementation commits in this sequence include:
 - `c9867c0c5e76b8a7bebed8437846c66dcf8529d5` / `e5f22f407b02ef565aaa82ede1d4ea58da2cadb6` — synchronized English/Chinese personal ChatGPT onboarding;
 - `15f249968dcbcd35e97d9d4b90234bd04a6502ac` and `6f577a1856ec2d935cc19517a1df6dc46f884636` — installation-documentation contract migrated from workspace-first wording to public-directory semantics and stabilized.
 
-## Validation
+## Repository-side validation
 
 The repository-side public-submission-readiness baseline at commit `6f577a1856ec2d935cc19517a1df6dc46f884636` passed `Svif product checks` run `33373725911`:
 
@@ -68,18 +68,43 @@ The repository-side public-submission-readiness baseline at commit `6f577a1856ec
 - `runtime-kernel`: success;
 - `portable-contracts`: success.
 
-The earlier personal-user distribution correction was also validated at commit `c87e209049ead2e67056d688e853c3be9b7883a3` by run `33372657758`, with the same three jobs successful.
+The checkpoint persistence commit `9820a2e19cb33c87b9c93ac0101b0da01fc0e9c0` also passed `Svif product checks` run `33373786770` with all three jobs successful.
 
 The Agnir activation chain remains readable from root `AGENTS.md` through `README.md` and `AGNIR.yaml` to the declared durable state and next-action locations.
 
-## Current external boundary
+## Observed publisher-verification exercise
 
-The next meaningful step is no longer speculative package work. It is an external publisher action in the OpenAI Platform submission portal using an organization/account with the required Apps Management permission and verified publisher identity.
+A real OpenAI Platform publisher-verification attempt was performed after the repository reached submission readiness.
 
-Until the portal submission is actually performed, Svif must not claim:
+Observed facts from the Platform UI:
 
+1. the existing Platform account already had an organization and exposed `Organization settings`;
+2. `Organization settings -> General` exposed **Individual** verification for a solo developer and **Business** verification for a registered company;
+3. selecting **Individual -> Start** did not begin identity-document verification immediately; the Platform first displayed a **Payment method required** gate stating that organization verification requires a valid payment method set as the default payment method;
+4. adding the currently available payment method resulted in a card-declined response;
+5. therefore individual developer verification did not complete, the Plugin submission portal was not reached for an actual Svif upload, and no skill scan/review/publication event exists yet.
+
+The repository intentionally does **not** persist card numbers, billing addresses, organization IDs, personal identity-document information, or other private payment/account details from this exercise.
+
+## Current external blocker and evidence boundary
+
+The active blocker is now the OpenAI publisher/account verification gate, specifically obtaining an accepted default payment method so individual developer verification can proceed. This is an **external release constraint**, not evidence of a Svif package/runtime defect.
+
+Until that gate is resolved through an official OpenAI-supported path or a legitimately accepted payment method, do not claim:
+
+- completed individual/business developer verification;
+- Plugin submission;
 - OpenAI skill scan success;
 - review approval;
 - public publication;
 - universal Plugins Directory availability;
 - personal ChatGPT installation or invocation success.
+
+Do not respond to this account-level gate by weakening the Skills-only package, inventing billing identity, or adding MCP/App packaging merely to seek a different publication path. Preserve the submission-ready ChatGPT package and continue independent Codex/Cursor installation evidence while the external gate remains unresolved.
+
+## Resume pressure
+
+1. seek official OpenAI support clarification or use a legitimately accepted payment method when one becomes available;
+2. in parallel, exercise Svif through Codex on a real Agnir Project and capture actual installation/invocation/checkpoint/resume evidence;
+3. add/test Cursor-native distribution metadata without forking the shared Skill;
+4. once publisher verification clears, immediately return to `Create plugin -> Skills only -> Submit for review` using the exact tested package.

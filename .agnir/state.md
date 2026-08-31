@@ -1,6 +1,6 @@
 # Svif Current State
 
-Svif is the authoritative active **Project orchestration product** in `iorLab/svif` on `main`. Agnir is the independent founding Continuity Provider in `iorLab/agnir`. Historical repositories, retired branches, and ZeroLocal material are evidence only; they are not active dependencies, compatibility obligations, or release gates.
+Svif is the authoritative active **Project orchestration product** in `iorLab/svif` on `main`. Agnir is the independent founding Continuity Provider in `iorLab/agnir`. The former `iorLab/svif-cloudflare-reference` project is retired. Historical repositories, retired branches, and ZeroLocal material are evidence only; they are not active dependencies, compatibility obligations, or release gates.
 
 ## Product architecture
 

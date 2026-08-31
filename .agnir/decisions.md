@@ -101,3 +101,13 @@
 - `plugin/.codex-plugin/plugin.json` is an additive product-specific manifest that reuses the same `plugin/skills/` implementation; it MUST NOT introduce a second Orchestrator, continuity store, authority model, or execution kernel.
 - Shared identity metadata between the portable and Codex manifests is kept synchronized by tests.
 - Repository package/conformance/distribution validation is not installation evidence. A successful real-client claim requires an observed workspace/client import and invocation of the exact revision, followed by the existing Agnir activation, exact-subject verification, authority, independent-observation, and checkpoint rules.
+
+## 2026-08-31 — Personal ChatGPT users are the primary ChatGPT audience
+
+- Svif's primary ChatGPT product audience is **individual/personal ChatGPT users**, not managed-workspace administrators.
+- The preferred mature consumer experience is `Plugins Directory -> discover Svif -> install -> invoke in normal ChatGPT use`, subject to the user's actual plan, region, supported surface, and current OpenAI product availability.
+- Repository-backed GitHub marketplace import remains useful for development, Codex, managed-workspace administration, and evidence exercises, but it is **auxiliary** and MUST NOT be treated as the primary consumer onboarding path.
+- ChatGPT Web is a first-class target surface for the personal-user product. A packaging change that makes Svif Desktop-only is a material product regression unless the Principal explicitly accepts that tradeoff based on observed evidence.
+- The exact OpenAI publication/submission mechanism required to obtain a public Plugins Directory listing MUST be re-verified against current OpenAI developer documentation before implementation or release claims; do not infer public installability from repository package conformance or workspace import success.
+- The user-facing installation UX should remain minimal in the Agnir style: users express install intent, while distribution-specific mechanics belong to the installation/package procedure. Where the product surface provides direct directory installation, README onboarding should prefer that product-native path over asking ordinary users to understand marketplace manifests or administrator controls.
+- Evidence for this decision is `.agnir/evidence/2026-08-31-personal-chatgpt-distribution-checkpoint.md`.

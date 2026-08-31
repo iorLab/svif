@@ -51,7 +51,24 @@ Svif has an active **Skill-first Plugin MVP** under `plugin/`:
 - `.agents/plugins/marketplace.json` — auxiliary repository-backed OpenAI/Codex marketplace catalog mapping to `./plugin`;
 - `plugin/README.md` — public submission, package/distribution, installation, review-case, and evidence-boundary guidance.
 
-Repository CI proves package/conformance, runtime, repository integrity, Agnir discovery guardrails, distribution metadata consistency, and documentation claim boundaries. It does **not** prove OpenAI review, publication, directory appearance, installation, or invocation on a consumer surface.
+Repository CI proves package/conformance, runtime, repository integrity, Agnir discovery guardrails, distribution metadata consistency, documentation claim boundaries, and first-use bootstrap regression behavior. It does **not** prove OpenAI review, publication, directory appearance, installation, or invocation on a consumer surface.
+
+### First-use onboarding baseline
+
+The shared Plugin procedure now treats continuity bootstrap as a Svif product responsibility rather than a user prerequisite.
+
+For a selected ordinary repository/filesystem Project with no existing Svif continuity binding, no `AGNIR.yaml`, no Agnir activation/memory intent, and no intentional durable selection of another Continuity Provider, Svif classifies the situation as **first-use bootstrap** before normal Agnir discovery-failure handling.
+
+The founding path:
+
+- establishes one stable Project identity, using an existing authoritative identity or generating a durable UUID-based URN;
+- creates Agnir Core `0.1` / `repository-filesystem/0.1` continuity (`AGNIR.yaml`, `.agnir/state.md`, `.agnir/next-actions.md`, `.agnir/decisions.md`, `.agnir/evidence/`, README Agnir Project Instructions, minimal non-destructive `AGENTS.md` locator);
+- creates/validates a minimal `project-binding/0.2` `SVIF.yaml` with the same Project identity and Agnir continuity binding;
+- fresh-activates from Project root and then continues the user's original Project task in the same operation.
+
+Partial/broken Agnir/Svif artifacts remain repair cases. A Project intentionally bound to another Continuity Provider is not overwritten with Agnir. Bootstrap authority does not grant protected external-effect authority. The procedure does not require the Agnir Skill repository, a prior Agnir installation conversation, GitHub, or another execution surface at runtime.
+
+Regression pressure is `tests/test_plugin_first_use_bootstrap.py`. Durable implementation/validation evidence is `.agnir/evidence/2026-08-31-plugin-first-use-bootstrap-fix.md`; final behavior commit `b90d1f8976b0e03d2c5a3b70c9bbb4b032c37724` passed `Svif product checks` run `33384858568`.
 
 ## Personal ChatGPT public distribution status
 
@@ -90,15 +107,18 @@ Evidence and rationale are recorded in `.agnir/evidence/2026-08-31-personal-chat
 ## Current implementation gap / resume point
 
 1. **Resolve or formally clarify the OpenAI publisher-verification payment-method gate.** Prefer official OpenAI support guidance or a legitimately supported payment method when available. Do not use false billing identity or unsupported circumvention. Keep the exact tested Skills-only submission package unchanged unless the portal itself reports package friction.
-2. **While the public ChatGPT submission is externally blocked, continue real surface validation instead of stalling the project.** Exercise the repository-backed Codex installation/invocation path on an Agnir-initialized Project with real checkpoint/resume evidence, then add/test Cursor-native distribution metadata while preserving the same shared `plugin/skills/svif/SKILL.md` implementation.
+2. **While the public ChatGPT submission is externally blocked, run the first real Codex client exercise from an ordinary non-Agnir Project.** Do not pre-initialize Agnir and do not pre-create `SVIF.yaml`. Exercise repository-backed Codex installation/invocation, observe first-use classification and automatic founding continuity/binding bootstrap, continue real Project work, verify, checkpoint, and then open a fresh Codex context to test resume. Preserve exact surface and installed/revision provenance when exposed. Then run an already-initialized Project resume case and add/test Cursor-native distribution metadata while preserving the same shared `plugin/skills/svif/SKILL.md` implementation.
 3. **When publisher verification becomes available, resume the public/personal ChatGPT path immediately.** Create the `Skills only` submission from the exact tested package, record automated scan/review evidence, repair only observed review friction, then explicitly Publish after approval.
-4. Verify the exact Svif listing in the universal Plugins Directory and run the first real **personal ChatGPT Web** installation/invocation exercise, including installation state, activation/discovery, verification, authority, observation, durable checkpoint, and fresh-context resume evidence.
+4. Verify the exact Svif listing in the universal Plugins Directory and run the first real **personal ChatGPT Web** installation/invocation exercise. Prefer an ordinary non-Agnir Project for the first clean consumer-onboarding case so the exercise validates installation plus first-use bootstrap; include installation state, activation/discovery, verification, authority, observation, durable checkpoint, and fresh-context resume evidence.
 5. Repair observed personal-user friction, then expand evidence across ChatGPT Desktop and other compatible execution surfaces while keeping runtime and Skill behavior single-sourced.
 6. Add broader execution/storage neutrality evidence without turning any current platform/provider into a universal kernel dependency.
 7. Keep live Cloudflare delivery disabled unless explicitly authorized.
 
 ## Evidence checkpoints
 
+- Plugin first-use bootstrap fix: `.agnir/evidence/2026-08-31-plugin-first-use-bootstrap-fix.md`.
+  - Final behavior baseline: `b90d1f8976b0e03d2c5a3b70c9bbb4b032c37724`.
+  - `Svif product checks` run `33384858568`: `completed / success`.
 - Personal ChatGPT distribution / publisher-gate checkpoint: `.agnir/evidence/2026-08-31-personal-chatgpt-distribution-checkpoint.md`.
 - Plugin MVP hardening checkpoint: `.agnir/evidence/2026-08-31-plugin-mvp-hardening-checkpoint.md`.
   - Validated implementation baseline before checkpoint persistence: `fc90263010ead4e40eb3e22c64584f5ce26f9b7d`.

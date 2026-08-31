@@ -13,252 +13,152 @@ NEXT_ACTIONS = ROOT / ".agnir" / "next-actions.md"
 
 
 class PluginInstallationDocumentationTests(unittest.TestCase):
-    def test_openai_client_installation_is_not_presented_as_portable_directory_loading(self) -> None:
+    def test_personal_chatgpt_public_directory_is_primary_distribution_path(self) -> None:
         text = PLUGIN_README.read_text(encoding="utf-8")
 
-        self.assertIn("## OpenAI client/workspace installation exercise", text)
-        self.assertIn("package/conformance/distribution validation", text)
-        self.assertIn("does not prove client installation", text)
+        for marker in (
+            "## Public personal-ChatGPT distribution",
+            "individual/personal ChatGPT users",
+            "universal Plugins Directory",
+            "Skills only",
+            "Apps Management: Write",
+            "verified individual developer identity",
+            "Create plugin -> Skills only",
+            "Submit for review",
+            "explicitly publish",
+        ):
+            self.assertIn(marker, text)
 
-        self.assertNotIn(
-            "Use `plugin/` as the plugin root in a client that explicitly supports Agent Plugins 1.0.0",
+        self.assertIn(
+            "not a managed-workspace GitHub marketplace import",
             text,
         )
+
+    def test_public_submission_is_skills_only_without_mcp_or_apps_gate(self) -> None:
+        text = PLUGIN_README.read_text(encoding="utf-8")
+        manifest = (ROOT / "plugin" / ".codex-plugin" / "plugin.json").read_text(encoding="utf-8")
+
+        for marker in (
+            "does not need an MCP server",
+            "MCP remains an optional future capability increment",
+            "Do not add MCP merely as a prerequisite for public publication",
+        ):
+            self.assertIn(marker, text)
+
+        self.assertNotIn('"mcpServers"', manifest)
+        self.assertNotIn('"apps"', manifest)
+
+    def test_public_listing_and_review_materials_are_documented(self) -> None:
+        text = PLUGIN_README.read_text(encoding="utf-8")
+
+        for marker in (
+            "### Proposed public listing",
+            "Durable project orchestration",
+            "### Review test cases to enter in the submission portal",
+            "five positive and three negative review cases",
+            "Resume a valid Agnir Project",
+            "Checkpoint a non-effectful repository change",
+            "Repair a missing Agnir locator without destroying existing instructions",
+            "Resume after a prior checkpoint",
+            "Handle a verified external-effect fixture",
+            "Missing/ambiguous Agnir discovery",
+            "Project identity or compatibility mismatch",
+            "External effect without trusted authority or independent observation",
+        ):
+            self.assertIn(marker, text)
 
     def test_plugin_readme_and_skill_keep_agent_activation_mandatory(self) -> None:
         readme = PLUGIN_README.read_text(encoding="utf-8")
         skill = SKILL.read_text(encoding="utf-8")
-
-        for text in (readme, skill):
-            self.assertNotIn("when those surfaces exist", text)
 
         for marker in (
             "Agent-operable Agnir Project",
             "repository-filesystem/0.1",
             "Project root -> AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml -> durable memory",
             "before normal Project work",
-            "direct readability of `AGNIR.yaml` is not a substitute",
         ):
             self.assertIn(marker, readme)
 
         self.assertIn("the durable activation route is mandatory before normal Project work", skill)
         self.assertIn("current Agent can directly open `AGNIR.yaml`", skill)
 
-    def test_repository_marketplace_docs_cover_both_current_openai_routes_without_overclaim(self) -> None:
+    def test_repository_marketplace_is_auxiliary_and_preserves_revision_caution(self) -> None:
         text = PLUGIN_README.read_text(encoding="utf-8")
 
         for marker in (
             "## OpenAI repository marketplace distribution",
+            "auxiliary development, Codex, managed-workspace, and validation route",
             ".agents/plugins/marketplace.json",
             "plugin/.codex-plugin/plugin.json",
-            "Workspace settings > Plugins > Add > Import marketplace",
             "codex plugin marketplace add iorLab/svif",
-            "codex plugin marketplace add iorLab/svif --ref",
-            "workspace Import results",
-            "prepared for the documented repository marketplace routes",
+            "codex plugin marketplace add iorLab/svif --ref main",
+            "moving repository ref",
+            "comparison evidence",
+            "not proof of the exact installed revision",
         ):
             self.assertIn(marker, text)
 
-        self.assertIn("not client-installation evidence", text)
-        self.assertIn("observed installation", text)
-        self.assertNotIn("rather than an inferred workspace-import UI", text)
-
-    def test_workspace_marketplace_import_fields_match_supported_ui_contract(self) -> None:
-        text = PLUGIN_README.read_text(encoding="utf-8")
-
-        for marker in (
-            "enter the repository URL only (`https://github.com/iorLab/svif`) as Source",
-            "do not put a branch URL or folder URL in Source",
-            "Leave Path empty because the marketplace manifest is at the repository root",
-            "Path must contain only that directory",
-            "not `.agents/plugins/marketplace.json` or another manifest filename",
-            "optional Branch/tag/commit field",
-        ):
-            self.assertIn(marker, text)
-
-    def test_workspace_import_does_not_treat_repository_policy_as_workspace_authority(self) -> None:
-        text = PLUGIN_README.read_text(encoding="utf-8")
-
-        for marker in (
-            "Repository marketplace `policy` values are **not workspace authority**",
-            "does not apply repository policy values such as `AVAILABLE` or `ON_USE`",
-            "workspace settings control installation and authentication",
-            "MUST NOT be interpreted as granting installation, authentication, app access, protected Svif authority, or execution permission",
-        ):
-            self.assertIn(marker, text)
-
-    def test_workspace_installation_evidence_is_stable_against_marketplace_sync(self) -> None:
-        text = PLUGIN_README.read_text(encoding="utf-8")
-
-        for marker in (
-            "sync automatically each day",
-            "fixed commit remains at that revision",
-            "prefer a **fixed commit**",
-            "re-check the saved marketplace/sync result immediately before invocation",
-            "Record the immutable commit SHA that the exercise actually invokes",
-            "marketplace source result and sync status",
-        ):
-            self.assertIn(marker, text)
-
-        self.assertIn(
-            "do not attribute activation, verification, or checkpoint evidence",
-            text,
-        )
-
-    def test_workspace_sync_controls_are_not_confused_with_display_refresh_or_source_removal(self) -> None:
-        text = PLUGIN_README.read_text(encoding="utf-8")
-
-        for marker in (
-            "`Sync now` on the saved GitHub marketplace requests a source update",
-            "`Refresh plugin list` only reloads the displayed list",
-            "MUST NOT be recorded as a GitHub sync or revision-acceptance event",
-            "marks that copy `No longer in source`",
-            "workspace copy's observed status and the marketplace source/sync state",
-            "is not sync evidence",
-            "rather than inferring deletion from source absence",
-        ):
-            self.assertIn(marker, text)
-
-    def test_moving_ref_does_not_override_retained_installed_revision(self) -> None:
-        text = PLUGIN_README.read_text(encoding="utf-8")
-
-        for marker in (
-            "retains the last working imported version",
-            "not from repository HEAD alone",
-            "do not equate that ref's current SHA with the installed Plugin revision",
-            "client may retain the last working imported Plugin",
-            "mark exact revision provenance unconfirmed",
-            "substituting repository HEAD",
-            "moving repository ref is not sufficient evidence",
-        ):
-            self.assertIn(marker, text)
-
-    def test_codex_ref_example_does_not_call_repository_resolution_install_evidence(self) -> None:
-        text = PLUGIN_README.read_text(encoding="utf-8")
-
-        for marker in (
-            "`--ref main` only selects a moving repository ref",
-            "resolved SHA is repository-side comparison evidence, not installed-revision evidence",
-            "Codex's saved marketplace/add state",
-            "another client-exposed signal binds the accepted Plugin to that commit",
-            "otherwise mark the exact installed revision unconfirmed",
-        ):
-            self.assertIn(marker, text)
-
-        self.assertNotIn(
-            "A validation run that needs exact immutable provenance should record the resolved commit SHA even when `--ref main` is used.",
-            text,
-        )
-
-    def test_durable_next_action_keeps_moving_ref_provenance_client_grounded(self) -> None:
-        text = NEXT_ACTIONS.read_text(encoding="utf-8")
-
-        for marker in (
-            "Package/conformance/distribution CI is not installation evidence",
-            "record the immutable commit SHA actually invoked when the client exposes enough evidence to establish it",
-            "repository ref's current SHA only as a comparison point",
-            "saved client import/sync result",
-            "client-exposed accepted-version signal",
-            "preserve exact revision provenance as unconfirmed",
-        ):
-            self.assertIn(marker, text)
-
-        self.assertNotIn(
-            "re-resolve and record revision immediately before invocation rather than attributing later evidence to an earlier imported SHA",
-            text,
-        )
-
-    def test_codex_directory_refresh_lag_is_not_misclassified_as_package_failure(self) -> None:
-        text = PLUGIN_README.read_text(encoding="utf-8")
-
-        for marker in (
-            "directory propagation as a distinct observation",
-            "can take up to **6 hours** to refresh",
-            "record the elapsed propagation state",
-            "re-check the directory rather than rewriting package metadata",
-            "temporarily stale Codex directory",
-        ):
-            self.assertIn(marker, text)
-
-    def test_installation_validation_requires_observed_client_or_workspace_evidence(self) -> None:
-        text = PLUGIN_README.read_text(encoding="utf-8")
-        for marker in (
-            "exact client/surface",
-            "exact Plugin or Skill revision",
-            "marketplace source result",
-            "observed activation path",
-            "verification performed",
-            "checkpoint result",
-            "immutable commit SHA",
-        ):
-            self.assertIn(marker, text)
-
-    def test_next_mcp_increment_keeps_portable_and_openai_paths_distinct(self) -> None:
-        text = PLUGIN_README.read_text(encoding="utf-8")
-
-        for marker in (
-            "under Agent Plugins 1.0, portable MCP configuration lives at the Plugin root as `mcp.json`",
-            "required `$schema` and `mcpServers` top-level fields",
-            "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
-            "OpenAI/Codex product manifest",
-            "product-specific root `.mcp.json` component",
-            "`.codex-plugin/plugin.json` through its `mcpServers` field",
-            "OpenAI `.mcp.json` path is not a portable Agent Plugins replacement",
-            "portable `mcp.json` must not be renamed or inlined into portable `plugin.json`",
-        ):
-            self.assertIn(marker, text)
-
-        self.assertNotIn("do not rename it to a client-native path", text)
-
-    def test_next_mcp_increment_records_current_openai_surface_availability_risk(self) -> None:
-        text = PLUGIN_README.read_text(encoding="utf-8")
-
-        for marker in (
-            "Desktop only",
-            "declares MCP servers via `mcp.json` or `.mcp.json`",
-            "including remote HTTPS servers",
-            "losing ChatGPT web availability",
-            "record the observed availability consequence separately from package/conformance success",
-        ):
-            self.assertIn(marker, text)
-
-    def test_root_readmes_do_not_overclaim_real_client_validation(self) -> None:
-        english = ROOT_README.read_text(encoding="utf-8")
-        chinese = ROOT_README_ZH.read_text(encoding="utf-8")
-
-        self.assertIn(
-            "no ChatGPT or Codex client installation has yet been recorded as validated evidence",
-            english,
-        )
-        self.assertIn("真实 ChatGPT/Codex installation evidence 仍待补齐", chinese)
-
-        for forbidden in (
-            "The Plugin can be tested immediately in compatible clients.",
-            "Skill-only Plugin 本身就可以立即安装、测试、迭代",
-            "可安装、可马上开始真实测试的 Skill-first Plugin MVP",
-        ):
-            self.assertNotIn(forbidden, english + chinese)
-
-    def test_installation_validation_requires_real_surface_observation_in_both_entry_points(self) -> None:
+    def test_personal_chatgpt_installation_requires_real_surface_observation(self) -> None:
+        plugin = PLUGIN_README.read_text(encoding="utf-8")
         english = ROOT_README.read_text(encoding="utf-8")
         chinese = ROOT_README_ZH.read_text(encoding="utf-8")
 
         for marker in (
-            "actual supported",
+            "public universal Plugins Directory -> personal ChatGPT Web -> install Svif",
+            "Only that observed exercise establishes the personal ChatGPT Web installation baseline",
+            "exact surface",
+            "observed installation state",
+            "Agnir activation/discovery",
+            "resulting durable checkpoint",
+        ):
+            self.assertIn(marker, plugin)
+
+        for marker in (
+            "### Personal ChatGPT",
+            "Svif is not publicly listed yet",
+            "personal ChatGPT Web",
+            "actual supported surface",
             "exact surface/revision",
             "observed Agnir activation/verification/checkpoint evidence",
         ):
             self.assertIn(marker, english)
 
         for marker in (
+            "### 个人 ChatGPT 用户",
+            "Svif 目前还没有公开上架",
+            "个人 ChatGPT Web",
             "真实受支持客户端",
             "Agnir activation",
             "verification",
             "checkpoint",
-            "evidence",
-            "记录",
         ):
             self.assertIn(marker, chinese)
+
+    def test_publication_and_installation_evidence_layers_are_not_conflated(self) -> None:
+        text = PLUGIN_README.read_text(encoding="utf-8")
+
+        for marker in (
+            "Submission is not publication",
+            "After OpenAI approves the Plugin, explicitly publish",
+            "portal submission, automated skill scan, reviewer outcome, approval, publication, and real personal-ChatGPT installation",
+            "Repository CI, marketplace import, public review approval, and directory publication are related but distinct evidence layers",
+        ):
+            self.assertIn(marker, text)
+
+    def test_durable_next_action_targets_public_submission_not_workspace_import(self) -> None:
+        text = NEXT_ACTIONS.read_text(encoding="utf-8")
+
+        for marker in (
+            "individual ChatGPT users",
+            "public Plugins Directory listing",
+            "ChatGPT Web",
+        ):
+            self.assertIn(marker, text)
+
+        self.assertNotIn(
+            "Perform the first real supported-client/workspace installation exercise through the repository-backed OpenAI GitHub marketplace path",
+            text,
+        )
 
     def test_installation_documentation_test_is_registered_in_project_binding(self) -> None:
         svif = (ROOT / "SVIF.yaml").read_text(encoding="utf-8")

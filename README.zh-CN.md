@@ -8,23 +8,33 @@ Svif 是一个 **Project orchestration（项目编排）产品**，负责协调�
 
 ## 30 秒快速开始
 
-### 新安装
+### 个人 ChatGPT 用户
 
-只需要把下面这一句话交给你的 Agent：
+Svif 面向 ChatGPT 的首要用户是个人用户。成熟安装路径应当是 ChatGPT 与 Codex 共享的 **通用 Plugins Directory**：
+
+```text
+ChatGPT -> Plugins -> 搜索 “Svif” -> Install plugin
+```
+
+**Svif 目前还没有公开上架。** 当前仓库正在按 OpenAI 的公开审核 / 发布流程准备，因此个人 ChatGPT 用户现在还不能把上面的 Plugins Directory 路径当作已经可用的正式安装方式。
+
+OpenAI 当前明确接受 **Skills-only** 的公开 Plugin，因此 Svif 不需要为了获得公开发布资格先增加 MCP server。等 OpenAI 审核通过 Skills-only submission，并由开发者在 portal 中显式 Publish 后，Plugin 才会进入通用 Plugins Directory。之后第一项真实消费者验证就是在个人 ChatGPT Web 上安装并实际调用 Svif。
+
+### 开发 / 兼容 Agent 环境
+
+对于仓库开发、Codex、managed workspace 测试或其他兼容 Agent 环境，只需要把下面这一句话交给 Agent：
 
 ```text
 为这个 Project 安装并启用 Svif：https://github.com/iorLab/svif
 ```
 
-这句话就是**面向用户的安装意图**。Agent 应自行检查本仓库、读取 [`plugin/README.md`](plugin/README.md)，识别当前执行环境实际支持的安装路径，并直接完成它有能力完成的安装步骤。用户不需要把 marketplace 路径、manifest 文件名、CLI 参数、同步规则、revision provenance 检查表或其他内部安装细节塞进提示词里。
+Agent 应自行检查本仓库、读取 [`plugin/README.md`](plugin/README.md)，识别当前执行环境实际支持的安装路径，并直接完成它有能力完成的步骤。用户不需要把 marketplace 路径、manifest 文件名、CLI 参数、同步规则、revision provenance 检查表或其他内部安装细节塞进提示词里。
 
-如果当前执行环境确实要求 workspace 管理员 / owner 操作，或者存在只能通过产品 UI 完成的 policy 步骤，Agent 应只把这个无法代替用户完成的最小动作交给用户，而不是把整套内部安装 procedure 重新变成用户 checklist。只有真实受支持的 surface 已报告 Plugin 可用 / 已安装，并且安装后的 Plugin 已在真实 Project 上被实际调用，才可以把安装称为已验证。
-
-Svif 当前使用 Agnir 作为首个 Continuity Provider。如果所选 Project 还没有初始化 Agnir，Agent 应先按照当前 Agnir 安装 / 激活 contract 建立所需的 Project continuity，再把 Svif Project operation 视为可用。
+Svif 当前使用 Agnir 作为首个 Continuity Provider。如果所选 Project 还没有初始化 Agnir，应先按照当前 Agnir 安装 / 激活 contract 建立所需的 Project continuity，再把 Svif Project operation 视为可用。
 
 ### 已经安装
 
-**不需要在每次对话里重复 Svif 安装提示。** 只要把已经初始化 Agnir 的 Project 提供给执行环境，然后直接提出真正的 Project 任务即可。如果当前 surface 需要通过原生 Plugin 控件选择或启用 Svif，只需要针对相应 workspace / client 完成一次，而不是每次会话都重复安装 procedure。
+**不需要在每次对话里重复 Svif 安装提示。** 只要把已经初始化 Agnir 的 Project 提供给执行环境，然后直接提出真正的 Project 任务即可。如果当前 surface 需要通过原生 Plugin 控件选择或启用 Svif，只需要针对相应 surface 完成一次，而不是每次会话都重复安装 procedure。
 
 ## Agnir Project Instructions
 
@@ -110,7 +120,7 @@ flowchart TD
 
 ## 可安装 Plugin MVP
 
-Svif 现在已经不是“以后再做 Plugin”，而是在 `plugin/` 中提供了第一版 **Skill-first Plugin MVP**，采用 Agent Plugins 1.0.0 的可移植目录格式；同时增加 OpenAI/Codex 专用的 GitHub marketplace 分发入口，但它不会取代 portable manifest：
+Svif 已在 `plugin/` 中提供 **Skill-first Plugin MVP**，采用 Agent Plugins 1.0.0 的可移植目录格式，并附加 OpenAI/Codex manifest：
 
 ```text
 svif/
@@ -124,15 +134,13 @@ svif/
             └── SKILL.md
 ```
 
-`plugin/plugin.json` 仍然是 Agent Plugins 1.0 portable manifest；`plugin/.codex-plugin/plugin.json` 是 OpenAI/Codex 产品侧分发 metadata，并复用同一份 `skills/`；`.agents/plugins/marketplace.json` 则把符合条件的 OpenAI workspace 的 GitHub marketplace import 映射到本仓库的 `./plugin`。
+`plugin/plugin.json` 仍然是 portable Agent Plugins manifest；`plugin/.codex-plugin/plugin.json` 是 OpenAI/Codex manifest，同时承载共享 Skill 与公开 listing metadata；`.agents/plugins/marketplace.json` 则降为开发、Codex 和 managed workspace 测试使用的辅助 repository marketplace 路径。
 
-仓库现在已经具备当前官方文档支持的 GitHub marketplace 路径，但**真实 ChatGPT/Codex installation evidence 仍待补齐**。只有在具体真实受支持客户端 / workspace 上观察到 marketplace import report、installation policy、调用路径、Agnir activation、verification 与 checkpoint 行为后，才能把该 surface/revision 的安装称为已验证。
+OpenAI 当前公开提交流程明确接受 **Skills-only Plugin**。因此 Svif 已把 `.codex-plugin/plugin.json` 收紧到当前公开目录最终提交的 metadata 限制，并继续让 `plugin/skills/svif/SKILL.md` 成为唯一共享的 workflow implementation。MCP/App packaging 不是首次公开 submission 的前置条件，不应为了“能发布”而强行加入。
 
-这版 Plugin 会要求 Executor 先发现 Agnir，再进入真实 Project 工作；执行过程中遵守 Svif lifecycle、exact-subject verification、provenance、可信权限边界、外部效果独立观察以及 durable checkpoint。Plugin 只是分发/工作流层，不会复制 Orchestrator，也不会把 ChatGPT 或其他执行环境变成 canonical memory。
+目前仍然**没有 ChatGPT 或 Codex client installation 已被记录为 validated evidence**，尤其还没有个人 ChatGPT 的公开版本。公开 review approval、显式 publication、Plugins Directory 出现、真实 installation、调用、Agnir activation、verification 和 checkpoint 都是不同的 evidence layer。安装验证必须来自真实受支持客户端，并记录 exact surface/revision（可观察时）以及 Agnir activation、verification、checkpoint 等实际 evidence。
 
-第一版故意先不等 `mcp.json`。Skill-only package 可以先完成 portable conformance 并进入真实客户端 exercise；等远程 Svif MCP/App 边界可以正确复用 `Orchestrator.begin()` / `Orchestrator.complete()` 时，再把 MCP 作为增强组件并入，而不是继续把它当 package validation 或真实客户端 exercise 的前置条件。
-
-portable package 检查、GitHub marketplace 分发路径、client-dependent installation exercise 与 evidence boundary 见 [`plugin/README.md`](plugin/README.md)。
+公开 submission 前置条件、拟定 listing metadata、review test cases、repository-marketplace 开发路径和 evidence boundary 见 [`plugin/README.md`](plugin/README.md)。
 
 ## 仓库结构
 
@@ -140,8 +148,8 @@ portable package 检查、GitHub marketplace 分发路径、client-dependent ins
 
 ```text
 svif/
-├── .agents/plugins/                   # OpenAI/Codex GitHub marketplace catalog
-│   └── marketplace.json              # 将 workspace import 映射到本仓库的 ./plugin
+├── .agents/plugins/                   # 辅助 OpenAI/Codex repository marketplace catalog
+│   └── marketplace.json              # 将开发 / workspace import 映射到本仓库的 ./plugin
 │
 ├── src/                              # Svif 可执行产品代码
 │   └── svif/
@@ -159,9 +167,9 @@ svif/
 │
 ├── plugin/                           # 可安装 Agent Plugins 1.0 分发包
 │   ├── plugin.json                   # 可移植 Plugin manifest
-│   ├── .codex-plugin/plugin.json     # OpenAI/Codex 产品侧的附加分发 metadata
-│   ├── README.md                     # package/distribution validation、client exercise 与 evidence boundary 说明
-│   └── skills/svif/SKILL.md          # Svif Project orchestration 工作流 Skill
+│   ├── .codex-plugin/plugin.json     # OpenAI/Codex + public-directory listing metadata
+│   ├── README.md                     # public submission、package validation、installation 与 evidence 说明
+│   └── skills/svif/SKILL.md          # 共享的 Svif Project orchestration 工作流 Skill
 │
 ├── spec/                             # Orchestrator 与 integrations 共同遵守的可移植产品 contracts
 ├── profiles/                         # 在通用 contracts 上叠加的专门化行为
@@ -193,8 +201,8 @@ Python 目前只是可执行 reference vehicle，并不冻结未来的分发技�
 - Cloudflare provider 已归 Svif 自己所有，并使用 injected transport boundary，因此测试不需要 live credentials。
 - `tests/test_founding_e2e.py` 已把三者通过真实 Orchestrator 边界串起来。
 - `plugin/plugin.json` + `plugin/skills/svif/SKILL.md` 继续构成 portable Plugin MVP package。
-- `.agents/plugins/marketplace.json` + `plugin/.codex-plugin/plugin.json` 提供仓库直接支持的 OpenAI/Codex GitHub marketplace 路径；真实 ChatGPT/Codex installation evidence 仍待补齐。
-- Plugin tests 现在同时约束 portable packaging、fixed-component discovery、Agnir pre-load discovery、installation claims 和 OpenAI distribution metadata，且不复制 runtime。
+- `plugin/.codex-plugin/plugin.json` 现在同时满足仓库测试约束的公开目录 listing limits。
+- `.agents/plugins/marketplace.json` 继续作为辅助的 OpenAI/Codex repository-backed 开发路径，而不是个人 ChatGPT 的主安装路径。
 - Protected authority 不来自不可信的 model/result payload。
 - 外部成功必须满足 exact verified-subject delivery，并经过 independent observation 后才能 checkpoint。
 
@@ -206,7 +214,7 @@ Python 目前只是可执行 reference vehicle，并不冻结未来的分发技�
 
 ## 文档同步规则
 
-`README.md` 与 `README.zh-CN.md` 是并行维护的项目入口。只要产品架构、组件归属、依赖方向、authority/provenance boundary、运行流程或仓库结构发生变化，**同一个 change set 必须同步更新两种语言版本**。
+`README.md` 与 `README.zh-CN.md` 是并行维护的项目入口。只要产品架构、组件归属、依赖方向、authority/provenance boundary、运行流程、分发状态或仓库结构发生变化，**同一个 change set 必须同步更新两种语言版本**。
 
 完整文件级结构由 **`REPOSITORY_TREE.md`** 维护。只要 tracked 文件被新增、删除、移动，或者职责发生实质变化，必须同步更新。
 
@@ -222,4 +230,4 @@ PYTHONPATH=src python -m unittest discover -s tests -v
 
 ## 下一步
 
-下一里程碑已经不是“准备 Plugin packaging”。**Plugin 已经存在，并且仓库现在具备官方文档支持的 GitHub marketplace import 路径。** 接下来是在真实受支持客户端 / workspace 上导入这个 exact revision，记录 marketplace import result、exact surface/revision、Agnir activation、verification、checkpoint 和 evidence，再按真实 friction 修复；远程 ChatGPT MCP/App 组件随后再并入，但不得复制 kernel semantics 或削弱权限边界。真实 Cloudflare actuation 仍然单独受权限门控。
+仓库侧的公开分发路径已经明确：**通过 OpenAI Platform plugin submission portal 提交现有的 Skills-only Plugin。** 剩余的外部发布前置条件是：OpenAI Platform 发布组织中的 submitter 具备 Apps Management: Write 权限，并完成个人开发者或企业身份验证。Portal 提交后要记录 skill scan / review 结果；审核通过后必须显式 Publish；然后再从通用 Plugins Directory 做第一次个人 ChatGPT Web 安装与调用验证。MCP/App packaging 是后续能力增量，不再是 release gate。真实 Cloudflare actuation 仍然单独受权限门控。

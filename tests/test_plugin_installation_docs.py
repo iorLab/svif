@@ -149,9 +149,10 @@ class PluginInstallationDocumentationTests(unittest.TestCase):
         text = NEXT_ACTIONS.read_text(encoding="utf-8")
 
         for marker in (
-            "individual ChatGPT users",
-            "public Plugins Directory listing",
+            "public/personal ChatGPT path",
+            "universal Plugins Directory",
             "ChatGPT Web",
+            "individual-user ChatGPT surface",
         ):
             self.assertIn(marker, text)
 

@@ -4,49 +4,65 @@
 
 The primary ChatGPT audience for Svif is **individual/personal ChatGPT users**, not managed-workspace administrators.
 
-This changes the distribution priority without changing the Svif kernel architecture: ChatGPT remains an Execution Surface, Agnir remains the founding Continuity Provider, and distribution must continue to reuse the existing Orchestrator rather than create a second execution kernel.
+This changes distribution priority without changing the Svif kernel architecture: ChatGPT remains an Execution Surface, Agnir remains the founding Continuity Provider, and distribution continues to reuse the existing Orchestrator rather than create a second execution kernel.
 
-## Current observed OpenAI product facts
+## Public consumer target
 
-OpenAI Help Center material checked on 2026-08-31 states that:
+The primary mature ChatGPT path is:
 
-- the **Plugins Directory** is the primary discovery surface for workflow capabilities across ChatGPT and Codex and is visible across ChatGPT plans, while actual install/use availability depends on plan, region, surface, workspace/account conditions, and included capabilities;
-- users can install a listed plugin from the Plugins surface when `Install plugin` is available;
-- ChatGPT invocation may use an `@` mention or `+` -> `More` where that surface exposes those controls;
-- workspace GitHub marketplace import and workspace installation policy are administrator-oriented distribution/management paths, so they are not the primary consumer onboarding route for Svif's intended personal-user audience;
-- imported plugins that declare MCP servers can be marked **Desktop only**, so ChatGPT Web availability must be treated as an explicit product constraint rather than assumed from package conformance.
+`individual ChatGPT user -> universal Plugins Directory -> install -> invoke Svif in normal ChatGPT use`
 
-Sources consulted:
+The repository-backed OpenAI/Codex GitHub marketplace remains useful for development, managed workspaces, Codex, and secondary evidence exercises, but it is additive/auxiliary rather than the primary ChatGPT consumer distribution path.
 
-- https://help.openai.com/en/articles/20001256-plugins-in-chatgpt-and-codex
-- https://help.openai.com/en/articles/11487775
-- https://help.openai.com/en/articles/20001066
+ChatGPT Web is a first-class target. A future packaging change that makes Svif Desktop-only is a material product regression unless the Principal explicitly accepts that evidenced tradeoff.
 
-These are product-surface observations, not Svif protocol requirements. OpenAI rollout details can change and must be re-verified before publication claims.
+## Verified OpenAI public-submission path
 
-## Distribution consequence
+Current OpenAI developer documentation was re-checked on 2026-08-31 and establishes that a public Plugin can be submitted as **Skills only**. Svif therefore does not need an MCP server or Apps SDK package merely to qualify for public Plugin review.
 
-The repository-backed OpenAI/Codex GitHub marketplace metadata remains useful for development, managed workspaces, Codex, and evidence exercises, but it is **additive/auxiliary rather than the primary ChatGPT consumer distribution path**.
+The verified publication sequence is:
 
-The primary ChatGPT product target is now:
+1. use an OpenAI Platform organization where the submitter has **Apps Management: Write** permission;
+2. complete a verified individual developer identity or verified business identity in that same Platform organization;
+3. use the plugin submission portal and choose **Create plugin -> Skills only**;
+4. upload the final tested Skill bundle using `.codex-plugin/plugin.json` plus the bundled `skills/` implementation and without adding MCP/App components to that Skills-only submission;
+5. supply public listing metadata, starter prompts, review test cases, country/region availability, release notes, and required attestations;
+6. submit for review and record automated skill safety/security scan plus reviewer outcome;
+7. after approval, explicitly **Publish** the approved version;
+8. only after publication verify directory appearance and then perform the real personal ChatGPT install/invocation exercise.
 
-`individual ChatGPT user -> public Plugins Directory listing -> install -> invoke Svif in normal ChatGPT use`
+Approval, publication, directory appearance, installation, invocation, and Project checkpoint are distinct evidence layers.
 
-The implementation/publication mechanism that produces that public listing must be verified against current OpenAI developer publication requirements before Svif claims personal-ChatGPT installability.
+Official sources consulted:
 
-## Documentation checkpoint
+- https://developers.openai.com/plugins/deploy/submission
+- https://developers.openai.com/plugins/deploy/submission-errors
+- https://developers.openai.com/plugins/build/plugins
 
-Immediately before this checkpoint, the bilingual root READMEs were simplified to an Agnir-style user-facing one-line install intent:
+OpenAI product and submission details can change; re-verify them before future release claims if the publication action happens substantially later.
 
-- English commit: `95a95423d74c19a3fb63c027a6be8e8bcc232b5a`;
-- Simplified Chinese synchronization commit: `2a6829834799e4afc291ace370412bb6b9ec2cc7`;
-- `Svif product checks` run `33356222213` completed successfully.
+## Repository preparation completed
 
-That one-line UX principle remains desirable, but its actual ChatGPT consumer installation route must now be aligned with public/personal Plugin distribution rather than treating managed-workspace GitHub import as the default user path.
+The repository has been aligned to the current Skills-only public-submission model:
 
-## Checkpoint validation
+- `plugin/.codex-plugin/plugin.json` short description changed to `Durable project orchestration` and the starter prompt was shortened to stay within current public-listing limits;
+- `tests/test_plugin_openai_distribution.py` now checks current public-directory listing bounds and asserts that the initial public package remains Skills-only without `mcpServers` or `apps`;
+- `plugin/README.md` now documents publisher prerequisites, the Skills-only portal workflow, proposed listing metadata, five positive and three negative review cases, publication/install evidence boundaries, and the auxiliary repository-marketplace route;
+- `README.md` and `README.zh-CN.md` now present the universal Plugins Directory as the mature personal ChatGPT path, state explicitly that Svif is not publicly listed yet, and keep the one-line GitHub install intent for development/compatible Agent environments;
+- `tests/test_plugin_installation_docs.py` has been rewritten around the public-directory contract rather than the superseded workspace-marketplace-first documentation contract;
+- `.agnir/state.md`, `.agnir/next-actions.md`, and `.agnir/decisions.md` now resume at external public submission rather than repeating publication-path research.
 
-The durable state/decision/next-action correction was validated at commit `c87e209049ead2e67056d688e853c3be9b7883a3` by `Svif product checks` run `33372657758`:
+Key implementation commits in this sequence include:
+
+- `7fd8c2bf6dd1a6120e88781f712246e563cdc1ff` — public-listing-safe OpenAI manifest metadata;
+- `27b74fde368647e3cfb459262e6c83f14e093ffc` — public-directory metadata tests;
+- `9453ea3c1b37800de1bfc1996ed639612ae00874` — public Skills-only submission guidance and review cases;
+- `c9867c0c5e76b8a7bebed8437846c66dcf8529d5` / `e5f22f407b02ef565aaa82ede1d4ea58da2cadb6` — synchronized English/Chinese personal ChatGPT onboarding;
+- `15f249968dcbcd35e97d9d4b90234bd04a6502ac` — documentation tests updated to the public-directory contract.
+
+## Earlier checkpoint validation
+
+The initial personal-user distribution correction was validated at commit `c87e209049ead2e67056d688e853c3be9b7883a3` by `Svif product checks` run `33372657758`:
 
 - `repository-integrity`: success;
 - `runtime-kernel`: success;
@@ -54,6 +70,16 @@ The durable state/decision/next-action correction was validated at commit `c87e2
 
 The validation also confirmed that the repository's Agnir activation chain remains readable from root `AGENTS.md` through `README.md` and `AGNIR.yaml` to the declared durable state and next-action locations.
 
-## Resume pressure
+## Current external boundary
 
-Do not spend the next iteration proving only workspace-admin import. First establish the exact current publication/install path that lets an individual ChatGPT user discover and install Svif from the Plugins Directory, preserve ChatGPT Web as a first-class target, and then run the first personal-user installation/invocation exercise on the exact published revision when the surface makes revision evidence observable.
+The next meaningful step is no longer speculative package work. It is an external publisher action in the OpenAI Platform submission portal using an organization/account with the required Apps Management permission and verified publisher identity.
+
+Until the portal submission is actually performed, Svif must not claim:
+
+- OpenAI skill scan success;
+- review approval;
+- public publication;
+- universal Plugins Directory availability;
+- personal ChatGPT installation or invocation success.
+
+After the repository checks for this submission-readiness sequence are green, their exact commit/run should be appended here before treating this preparation phase as closed.

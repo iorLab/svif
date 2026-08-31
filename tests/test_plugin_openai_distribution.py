@@ -43,6 +43,47 @@ class PluginOpenAIDistributionTests(unittest.TestCase):
         self.assertEqual(interface["capabilities"], ["Interactive", "Read", "Write"])
         self.assertEqual(interface["category"], "Developer Tools")
 
+    def test_codex_manifest_meets_public_directory_listing_limits(self) -> None:
+        data = json.loads(CODEX_MANIFEST.read_text(encoding="utf-8"))
+        interface = data["interface"]
+
+        self.assertLessEqual(len(data["name"]), 64)
+        self.assertRegex(data["name"], r"^[A-Za-z0-9][A-Za-z0-9_-]*$")
+        self.assertLessEqual(len(interface["displayName"]), 30)
+        self.assertLessEqual(len(interface["shortDescription"]), 30)
+        self.assertLessEqual(len(interface["longDescription"]), 4000)
+        self.assertLessEqual(len(interface["developerName"]), 80)
+        self.assertIn(
+            interface["category"],
+            {
+                "Productivity",
+                "Creativity",
+                "Developer Tools",
+                "Business & Operations",
+                "Data & Analytics",
+                "Communication",
+                "Education & Research",
+                "Security",
+                "Finance",
+                "Healthcare",
+                "Travel",
+                "Entertainment",
+                "Other",
+            },
+        )
+        self.assertLessEqual(len(interface["capabilities"]), 20)
+        self.assertLessEqual(len(interface["defaultPrompt"]), 3)
+        for prompt in interface["defaultPrompt"]:
+            self.assertLessEqual(len(prompt), 128)
+            self.assertNotIn("@", prompt)
+
+        # The current public target is deliberately Skills only. OpenAI public submission
+        # supports that shape directly; adding app/MCP configuration would change the
+        # submission type and surface requirements rather than merely enriching metadata.
+        self.assertNotIn("mcpServers", data)
+        self.assertNotIn("apps", data)
+        self.assertNotIn("screenshots", interface)
+
     def test_codex_and_portable_manifests_keep_identity_metadata_in_sync(self) -> None:
         portable = json.loads(PORTABLE_MANIFEST.read_text(encoding="utf-8"))
         codex = json.loads(CODEX_MANIFEST.read_text(encoding="utf-8"))

@@ -91,7 +91,7 @@
 - The first increment is intentionally **Skill-first**. A Plugin may be useful and testable without an MCP server; therefore `mcp.json` is not a prerequisite for beginning Plugin testing.
 - The Plugin Skill operationalizes current Svif behavior: Agnir-first discovery, Project-scoped context recovery, executable lifecycle discipline, exact-subject verification/provenance, trusted authority separation, independent observation, and durable checkpointing.
 - Plugin/distribution code and instructions MUST NOT reimplement the Orchestrator, shadow `src/svif/runtime.py`, make an Execution Surface canonical Project truth, or allow model-controlled payloads to self-grant protected authority.
-- The remote ChatGPT MCP/App surface remains the next additive packaging component. It is accepted only when it reuses `ChatGPTExecutionSurface` and the existing `Orchestrator.begin()` / `Orchestrator.complete()` boundary cleanly.
+- The remote ChatGPT MCP/App surface remains an additive capability direction. It is accepted only when it reuses `ChatGPTExecutionSurface` and the existing `Orchestrator.begin()` / `Orchestrator.complete()` boundary cleanly.
 - Plugin quality is now driven primarily by **install -> real Project use -> observe failure/friction -> repair -> repeat**, with contracts tightened as implementation pressure reveals actual needs.
 
 ## 2026-08-29 — OpenAI repository distribution is additive
@@ -100,7 +100,7 @@
 - `.agents/plugins/marketplace.json` is the repository-level OpenAI/Codex GitHub marketplace entry and maps to local `./plugin`.
 - `plugin/.codex-plugin/plugin.json` is an additive product-specific manifest that reuses the same `plugin/skills/` implementation; it MUST NOT introduce a second Orchestrator, continuity store, authority model, or execution kernel.
 - Shared identity metadata between the portable and Codex manifests is kept synchronized by tests.
-- Repository package/conformance/distribution validation is not installation evidence. A successful real-client claim requires an observed workspace/client import and invocation of the exact revision, followed by the existing Agnir activation, exact-subject verification, authority, independent-observation, and checkpoint rules.
+- Repository package/conformance/distribution validation is not installation evidence. A successful real-client claim requires observed installation and invocation on the claimed surface, followed by the existing Agnir activation, exact-subject verification, authority, independent-observation, and checkpoint rules.
 
 ## 2026-08-31 — Personal ChatGPT users are the primary ChatGPT audience
 
@@ -108,6 +108,16 @@
 - The preferred mature consumer experience is `Plugins Directory -> discover Svif -> install -> invoke in normal ChatGPT use`, subject to the user's actual plan, region, supported surface, and current OpenAI product availability.
 - Repository-backed GitHub marketplace import remains useful for development, Codex, managed-workspace administration, and evidence exercises, but it is **auxiliary** and MUST NOT be treated as the primary consumer onboarding path.
 - ChatGPT Web is a first-class target surface for the personal-user product. A packaging change that makes Svif Desktop-only is a material product regression unless the Principal explicitly accepts that tradeoff based on observed evidence.
-- The exact OpenAI publication/submission mechanism required to obtain a public Plugins Directory listing MUST be re-verified against current OpenAI developer documentation before implementation or release claims; do not infer public installability from repository package conformance or workspace import success.
 - The user-facing installation UX should remain minimal in the Agnir style: users express install intent, while distribution-specific mechanics belong to the installation/package procedure. Where the product surface provides direct directory installation, README onboarding should prefer that product-native path over asking ordinary users to understand marketplace manifests or administrator controls.
 - Evidence for this decision is `.agnir/evidence/2026-08-31-personal-chatgpt-distribution-checkpoint.md`.
+
+## 2026-08-31 — Skills-only public Plugin is the initial personal ChatGPT release path
+
+- Current OpenAI developer documentation explicitly accepts **Skills-only** Plugins for public review and publication into the universal Plugins Directory shared by ChatGPT and Codex.
+- Svif's initial public ChatGPT release therefore reuses the existing `plugin/.codex-plugin/plugin.json` plus `plugin/skills/svif/` implementation. MCP/App packaging is **not** a prerequisite for the initial public release and MUST NOT be added merely to satisfy publication.
+- Public submission requires an OpenAI Platform organization where the submitter has **Apps Management: Write** plus a verified individual developer or business identity. These are publisher/account prerequisites, not Svif runtime dependencies.
+- Submission, automated skill scan, reviewer approval, explicit publication, directory appearance, installation, invocation, and real Project checkpoint are distinct evidence layers and MUST NOT be collapsed into one success claim.
+- Approval does not itself publish the Plugin; after approval the publisher must explicitly publish the approved version before directory availability is claimed.
+- The first decisive consumer validation target is a real **personal ChatGPT Web** install from the universal Plugins Directory followed by invocation on an Agnir-initialized Project and a resumable checkpoint.
+- `.agents/plugins/marketplace.json` remains an auxiliary development/Codex/managed-workspace path. Its success cannot substitute for public-directory publication or personal-user installation evidence.
+- Future MCP/App work is driven by concrete server-backed capability needs and surface evidence, not by publication anxiety. Any such increment must preserve the existing Svif Orchestrator, authority boundaries, continuity semantics, and desired ChatGPT Web availability.

@@ -26,6 +26,7 @@ svif/                                                     # Svif 产品主仓库
 │       ├── 2026-08-28-product-architecture-runtime.md    # 产品架构与 executable runtime 基线证据
 │       ├── 2026-08-28-readme-diagram-localization-checkpoint.md # 双语 README / Mermaid 本地化 checkpoint
 │       ├── 2026-08-28-validation-2-static-success.md     # 早期 Validation 2 静态验证成功证据
+│       ├── 2026-08-31-plugin-first-use-bootstrap-fix.md  # 普通 Project 首次启用 Svif 时由 Plugin 建立 continuity/binding 的修复与 CI 证据
 │       └── checkpoint-2026-08-28-validation-2.md         # Validation 2 的持久 checkpoint 记录
 │
 ├── .github/                                              # GitHub 托管侧自动化配置

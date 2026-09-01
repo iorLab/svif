@@ -131,16 +131,16 @@ flowchart TD
     M --> E["Execution Surface / Executor<br/>ChatGPT today"]
     E --> W["Structured WorkResult<br/>subject + evidence + requested effect"]
     W --> V{"Exact subject verified?"}
-    V -- "No" --> STOP["Stop / repair<br/>no false checkpoint"]
-    V -- "Yes" --> Q{"External effect requested?"}
-    Q -- "No" --> C["Reconcile + checkpoint"]
-    Q -- "Yes" --> U{"Required authority granted?"}
-    U -- "No" --> STOP
-    U -- "Yes" --> D["Capability Provider actuates<br/>Cloudflare today"]
+    V -->|No| STOP["Stop / repair<br/>no false checkpoint"]
+    V -->|Yes| Q{"External effect requested?"}
+    Q -->|No| C["Reconcile + checkpoint"]
+    Q -->|Yes| U{"Required authority granted?"}
+    U -->|No| STOP
+    U -->|Yes| D["Capability Provider actuates<br/>Cloudflare today"]
     D --> O["Independent observation"]
     O --> R{"Observed subject / target match?"}
-    R -- "No" --> STOP
-    R -- "Yes" --> C
+    R -->|No| STOP
+    R -->|Yes| C
     C --> A
     C --> N["Durable Project truth ready<br/>for the next Executor"]
 ```

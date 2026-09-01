@@ -20,3 +20,8 @@ extensions:
   agnir/repository:
     canonical: "iorLab/svif"
     authoritative_ref: "main"
+  agnir/operations:
+    distribution: "agnir-agent-skill"
+    release: "0.1.0"
+    source: "iorLab/agnir"
+    applied_revision: "2a0cb7bf2068b11f361e315670b2f2dc497b2588"

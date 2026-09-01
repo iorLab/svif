@@ -45,11 +45,14 @@ Treat this repository root as the authorized Project Entry Point for the Svif Pr
 3. Load Decisions and Evidence when they materially constrain the current operation.
 4. Prefer durable Agnir Project truth over chat history or private executor memory unless superseded by a newer Principal instruction or a directly observed current Project fact.
 5. For Svif work, then read `SVIF.yaml` and the relevant current specifications before changing product behavior.
-6. Checkpoint material state, next-action, decision, and evidence changes when saving progress or finishing work, and verify that the locator chain still resolves for a fresh executor.
+6. At an intentional checkpoint, save-progress, finish, or repository commit boundary, reconcile only material continuity changes. If durable truth is unchanged, the checkpoint is a no-op. If material truth changed, publish one coherent candidate so a fresh resolver cannot accept mixed checkpoint generations, reject stale-base publication rather than overwriting newer truth, and verify the locator chain after publication.
+7. In repository/VCS context, treat an authorized request to `commit`, `提交`, `提交代码`, or equivalent as a checkpoint boundary: reconcile Agnir before the commit and prefer Project changes plus Agnir changes in one revision. Treat `commit and push`, `提交推送`, or equivalent as checkpoint + commit + push + verification of the declared authoritative remote/ref when available. Merely observing a commit triggers checkpoint evaluation, not an unconditional new Agnir write.
 
 Root `AGENTS.md` is only the activation locator to this section; it must not become a second copy of Project state or the Agnir procedure. The expected activation route is:
 
 `Project root -> AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml -> declared durable memory`
+
+The applied Agnir operational distribution is recorded in `AGNIR.yaml` under `extensions.agnir/operations`; this provenance does not replace Core/profile compatibility or Project identity.
 
 If any activation locator, identity, required memory locator, or compatibility check fails, repair the earliest faulty layer when authorized. Do not invent Project state or silently fall back to chat history, sibling repositories, or retired layouts.
 

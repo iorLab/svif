@@ -13,7 +13,8 @@
 
 - Agnir Core compatibility consumed by Svif: `0.1`.
 - Repository/filesystem profile: `repository-filesystem/0.1`.
-- Agnir repository release SemVer: `0.1.0` (a separate version layer; currently release-ready pending publication).
+- Agnir repository release SemVer: stable `0.1.0`, formally published as `v0.1.0`.
+- Svif Project operational provenance: `agnir-agent-skill` release `0.1.0` from `iorLab/agnir`, immutable applied revision `2a0cb7bf2068b11f361e315670b2f2dc497b2588`.
 - Current Agent-operable activation route: `Project root -> AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml -> declared durable memory`.
 - Svif depends on Agnir continuity semantics/profile compatibility, not on Agnir's repository history, GitHub, or Skill repository at runtime.
 
@@ -64,6 +65,7 @@ The GitHub marketplace path remains a useful secondary validation channel. **Pac
 - Current OpenAI public submission requirements have been re-verified: Skills-only public Plugins are accepted; the repository manifest, README guidance, listing metadata, and review-case preparation have been aligned to that route.
 - A real publisher verification attempt reached the individual-developer verification flow but was blocked at the required accepted-default-payment-method gate before verification/submission. This is recorded as an external release blocker without storing private payment/account data.
 - Svif first-use onboarding now handles an ordinary non-Agnir Project without requiring manual Agnir pre-initialization; regression pressure is `tests/test_plugin_first_use_bootstrap.py` and durable evidence is `.agnir/evidence/2026-08-31-plugin-first-use-bootstrap-fix.md`.
+- Svif's own Agnir operational baseline is upgraded compatibly to stable `v0.1.0`; `AGNIR.yaml` records immutable `agnir/operations` provenance and the canonical activation instructions are refreshed without changing Core/profile compatibility or Project identity.
 - Main-only branch governance is complete.
 
 ## Repository-retirement note

@@ -45,11 +45,14 @@ Svif 当前使用 Agnir 作为首个 Continuity Provider。如果所选 Project 
 3. 当 Decisions 与 Evidence 会约束本次操作时，再加载相关内容。
 4. 默认以 Project 自己持久化的 Agnir truth 为准；只有更新的 Principal 指令或直接观察到的当前 Project 事实才能覆盖它，不要把聊天记录或 Executor 私有记忆当 canonical truth。
 5. 对 Svif 本身进行开发时，再读取 `SVIF.yaml` 与本次变更相关的当前规格。
-6. 保存进度或结束工作时，把重要的 state、next-action、decision 与 evidence 变化写回 checkpoint，并确认 locator chain 对全新的 Executor 仍能解析。
+6. 在明确的 checkpoint、保存进度、结束工作或 repository commit boundary 上，只 reconcile 有实质变化的 continuity。Durable truth 没变化时 checkpoint 是 no-op；有变化时要先构造完整且一致的 candidate，再以不会让 fresh resolver 接受 mixed checkpoint generations 的方式发布。若 authoritative revision 已经变化，不得覆盖更新事实；应按 stale-base conflict 重新 resolve/reconcile。发布后重新验证 locator chain。
+7. 在 repository / VCS 上下文中，把已授权的 `commit`、`提交`、`提交代码` 或同义请求视为 checkpoint boundary：**先 reconcile Agnir，再 commit**，并优先把 Project 改动与 Agnir 改动放进同一个 revision。`commit and push`、`提交推送` 或同义请求表示 checkpoint + commit + push，并在声明了 authoritative remote/ref 时验证推送结果。只是观察到一个外部产生的 commit，只触发 checkpoint evaluation，不代表必须无条件再写一次 Agnir。
 
 根目录 `AGENTS.md` 只负责把 Agent 引导到本节，不得成为第二份 Project state 或 Agnir procedure。期望的激活路径是：
 
 `Project root -> AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml -> declared durable memory`
+
+本 Project 实际应用的 Agnir operational distribution 记录在 `AGNIR.yaml` 的 `extensions.agnir/operations` 中；这份 provenance 不替代 Core/profile compatibility，也不替代 Project identity。
 
 如果 activation locator、Project identity、必需 memory locator 或 compatibility 校验任一失败，应在获得授权时修复最早出错的层；不得凭空补 Project state，也不得静默退回聊天历史、兄弟仓库或 retired layout。
 
@@ -149,7 +152,7 @@ OpenAI 当前公开提交流程明确接受 **Skills-only Plugin**。因此 Svif
 ```text
 svif/
 ├── .agents/plugins/                   # 辅助 OpenAI/Codex repository marketplace catalog
-│   └── marketplace.json              # 将开发 / workspace import 映射到本仓库的 ./plugin
+│   └── marketplace.json              # 将开发 / workspace import 映射到本仓库的 ./plugin root
 │
 ├── src/                              # Svif 可执行产品代码
 │   └── svif/

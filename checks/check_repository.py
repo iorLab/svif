@@ -43,6 +43,10 @@ def require_readme_entry_guide(
         ],
         f"{path} entry guide",
     )
+    for prompt in (install_prompt, upgrade_prompt):
+        if f"```text\n{prompt}\n```" not in text:
+            fail(f"{path} must present the install/upgrade prompt as a copyable fenced text block: {prompt}")
+
     start_position = text.find(start_heading)
     agent_position = text.find("## Agnir Project Instructions")
     surface_position = text.find(surface_heading)
@@ -81,6 +85,14 @@ def require_readme_diagrams(
     for marker in runtime_forbidden_markers:
         if marker in runtime_text:
             fail(f"{path} Runtime / Operation Flow must not include installation mutation marker: {marker}")
+
+    # Keep README Mermaid syntax deliberately conservative for GitHub rendering.
+    diagram_text = architecture_text + runtime_text
+    for risky in ("<-->", ".-> T", "\\n"):
+        if risky in diagram_text:
+            fail(f"{path} Mermaid diagrams use a fragile syntax form: {risky}")
+    if "<br/>" not in diagram_text:
+        fail(f"{path} Mermaid diagrams must use quoted labels with <br/> for multiline text")
 
 
 def require_readme_repository_tree(path: str, heading: str) -> None:

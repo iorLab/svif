@@ -12,12 +12,25 @@ Svif is a **Project orchestration product** coordinating durable Project continu
 
 This section is for users. Pick the action that matches what you want to do.
 
-| Goal | What to do |
-| --- | --- |
-| Use Svif in personal ChatGPT | **Svif is not publicly listed yet.** After publication, install it from the universal Plugins Directory shared by ChatGPT and Codex. |
-| Install for development, Codex, or another compatible Agent environment | `Install and enable Svif for this Project: https://github.com/iorLab/svif` |
-| Continue with Svif already installed | **No recurring Svif installation prompt is required.** Ask for the actual Project task. |
-| Upgrade the Agnir used by this Project | `Upgrade the Agnir used by this Project to the latest stable release: https://github.com/iorLab/agnir` |
+### Use Svif in personal ChatGPT
+
+**Svif is not publicly listed yet.** After publication, install it from the universal Plugins Directory shared by ChatGPT and Codex.
+
+### Install for development, Codex, or another compatible Agent environment
+
+```text
+Install and enable Svif for this Project: https://github.com/iorLab/svif
+```
+
+### Continue with Svif already installed
+
+**No recurring Svif installation prompt is required.** Ask for the actual Project task.
+
+### Upgrade the Agnir used by this Project
+
+```text
+Upgrade the Agnir used by this Project to the latest stable release: https://github.com/iorLab/agnir
+```
 
 A genuinely uninitialized Project does **not** need Agnir to be manually initialized first. On the founding repository/filesystem path, Svif's shared Skill establishes the required Agnir continuity and matching Svif Project Binding as part of first use.
 
@@ -65,37 +78,36 @@ These are founding `repository-filesystem` onboarding artifacts, not universal S
 ## Architecture Diagram
 
 ```mermaid
-flowchart LR
-    P[Principal / User] --> E[Execution Surface\nChatGPT today]
+flowchart TB
+    P["Principal / User"] --> E["Execution Surface<br/>ChatGPT today"]
+    D["Installable Plugin<br/>Agent Plugins 1.0<br/>Skill-first MVP"] --> E
 
-    D[Installable Plugin\nAgent Plugins 1.0\nSkill-first MVP] --> E
-    D -. non-destructive first-use setup .-> T
-
-    subgraph T[Target Project surface]
-        G[AGENTS.md\nEDIT: add activation locator only]
-        H[README.md\nEDIT: add Agnir instructions only]
-        Q[AGNIR.yaml + .agnir/\nADD: founding continuity]
-        B[SVIF.yaml\nADD: Project binding]
+    subgraph T["Target Project surface — first use"]
+        G["AGENTS.md<br/>EDIT: add activation locator only"]
+        H["README.md<br/>EDIT: add Agnir instructions only"]
+        Q["AGNIR.yaml + .agnir/<br/>ADD: founding continuity"]
+        B["SVIF.yaml<br/>ADD: Project binding"]
         G --> H --> Q --> B
     end
 
-    subgraph S[iorLab/svif]
-        O[Svif Orchestrator]
-        X[Execution integration\nsrc/svif/execution]
-        K[Capability Providers\nsrc/svif/capabilities]
-        R[Portable contracts\nEvidence · Authority · Profiles]
+    D -. "non-destructive first-use setup" .-> G
+
+    subgraph S["iorLab/svif"]
+        X["Execution integration<br/>src/svif/execution"]
+        O["Svif Orchestrator"]
+        K["Capability Providers<br/>src/svif/capabilities"]
+        R["Portable contracts<br/>Evidence · Authority · Profiles"]
+        X --> O
+        O --> K
         O --- R
-        X <--> O
-        O <--> K
     end
 
-    E <--> X
-    B -. configures .-> O
-    O <--> C[Continuity Provider\nAgnir today]
-    Q -. durable continuity .-> C
-    K <--> F[External systems\nCloudflare today]
-
-    C -. independent protocol .-> A[iorLab/agnir]
+    E --> X
+    B -. "configures" .-> O
+    Q -. "durable continuity" .-> C["Continuity Provider<br/>Agnir today"]
+    O --> C
+    K --> F["External systems<br/>Cloudflare today"]
+    C -. "independent protocol" .-> A["iorLab/agnir"]
 ```
 
 The Project-surface nodes describe the **first-use onboarding boundary**; the product nodes describe Svif's replaceable runtime roles. Svif owns the coordination boundary. The Orchestrator does not permanently depend on Agnir, ChatGPT, or Cloudflare; they are the founding/current bindings for the Continuity Provider, Execution Surface, and Capability Provider roles.
@@ -111,26 +123,26 @@ Provider-specific Svif behavior stays in `iorLab/svif` unless it becomes an inde
 
 ```mermaid
 flowchart TD
-    I[Principal intent] --> P[Plugin / Execution Surface workflow\ndiscover Project and durable state]
-    P --> B[Orchestrator.begin\nresolve Project binding]
-    B --> L[Load durable continuity]
-    L <--> A[Agnir Continuity Provider]
-    L --> M[Materialize Project-scoped execution context]
-    M --> E[Execution Surface / Executor\nChatGPT today]
-    E --> W[Structured WorkResult\nsubject + evidence + requested effect]
-    W --> V{Exact subject verified?}
-    V -- No --> STOP[Stop / repair\nno false checkpoint]
-    V -- Yes --> Q{External effect requested?}
-    Q -- No --> C[Reconcile + checkpoint]
-    Q -- Yes --> U{Required authority granted?}
-    U -- No --> STOP
-    U -- Yes --> D[Capability Provider actuates\nCloudflare today]
-    D --> O[Independent observation]
-    O --> R{Observed subject / target match?}
-    R -- No --> STOP
-    R -- Yes --> C
+    I["Principal intent"] --> P["Plugin / Execution Surface workflow<br/>discover Project and durable state"]
+    P --> B["Orchestrator.begin<br/>resolve Project binding"]
+    B --> A["Agnir Continuity Provider"]
+    A --> L["Load durable continuity"]
+    L --> M["Materialize Project-scoped execution context"]
+    M --> E["Execution Surface / Executor<br/>ChatGPT today"]
+    E --> W["Structured WorkResult<br/>subject + evidence + requested effect"]
+    W --> V{"Exact subject verified?"}
+    V -- "No" --> STOP["Stop / repair<br/>no false checkpoint"]
+    V -- "Yes" --> Q{"External effect requested?"}
+    Q -- "No" --> C["Reconcile + checkpoint"]
+    Q -- "Yes" --> U{"Required authority granted?"}
+    U -- "No" --> STOP
+    U -- "Yes" --> D["Capability Provider actuates<br/>Cloudflare today"]
+    D --> O["Independent observation"]
+    O --> R{"Observed subject / target match?"}
+    R -- "No" --> STOP
+    R -- "Yes" --> C
     C --> A
-    C --> N[Durable Project truth ready\nfor the next Executor]
+    C --> N["Durable Project truth ready<br/>for the next Executor"]
 ```
 
 The default internal lifecycle is:
@@ -241,7 +253,7 @@ The founding E2E is intentionally credential-free. It proves the Svif product lo
 
 `README.md` and `README.zh-CN.md` are maintained as parallel entry points. Any change to product architecture, component ownership, dependency direction, authority/provenance boundaries, runtime flow, distribution status, or documented repository structure **must update both language versions in the same change set**.
 
-Before the Architecture Diagram, README content is deliberately limited to **Start Here** for users, the canonical **Agnir Project Instructions** for Agents, and **What Svif Adds to a Project** as the concrete first-use Project-surface explanation. The Architecture Diagram mirrors that non-destructive first-use boundary; Runtime / Operation Flow remains a post-bootstrap runtime view and does not carry installation-mutation labels. Publication workflow, Plugin packaging rationale, compatibility detail, and implementation explanation belong after the architecture entry point or in dedicated documents.
+Before the Architecture Diagram, README content is deliberately limited to **Start Here** for users, the canonical **Agnir Project Instructions** for Agents, and **What Svif Adds to a Project** as the concrete first-use Project-surface explanation. Install and Agnir-upgrade prompts are shown as standalone `text` code blocks so GitHub exposes copy controls. The Architecture Diagram mirrors that non-destructive first-use boundary; Runtime / Operation Flow remains a post-bootstrap runtime view and does not carry installation-mutation labels. Both Mermaid diagrams use conservative GitHub-compatible syntax: explicit nodes, quoted labels with `<br/>`, ordinary directed edges, and no direct edge to a subgraph. Publication workflow, Plugin packaging rationale, compatibility detail, and implementation explanation belong after the architecture entry point or in dedicated documents.
 
 The exhaustive companion **`REPOSITORY_TREE.md`** is the file-level map of the active repository and must be updated whenever tracked files are added, removed, moved, or materially change responsibility.
 

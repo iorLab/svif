@@ -27,8 +27,11 @@ No execution surface becomes canonical Project truth merely because execution oc
 - Repository/filesystem binding serialization: `SVIF.yaml`.
 - Agnir Core compatibility: `0.1`.
 - Agnir discovery profile: `repository-filesystem/0.1`.
+- Agnir operational distribution applied to this Project: stable repository release `0.1.0` from `iorLab/agnir`, immutable applied revision `2a0cb7bf2068b11f361e315670b2f2dc497b2588`, recorded in `AGNIR.yaml` under `extensions.agnir/operations`.
 - Canonical Agnir activation route for this Agent-operable Project: `Project root -> AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml -> declared durable memory`.
 - Canonical Svif repository/ref: `iorLab/svif` / `main`.
+
+The Agnir `v0.1.0` application was classified as a **compatible operational upgrade**, not a migration: Core `0.1`, `repository-filesystem/0.1`, Project identity `urn:svif:project:svif-core`, memory locators, durable continuity, and `SVIF.yaml` bindings were preserved. Upgrade revision `c7cd42b6e94556a630570a54e22c72acc97f3ecf` passed fresh activation and `Svif product checks` run `33466389590`.
 
 ## Runtime baseline
 
@@ -116,6 +119,10 @@ Evidence and rationale are recorded in `.agnir/evidence/2026-08-31-personal-chat
 
 ## Evidence checkpoints
 
+- Agnir `v0.1.0` compatible operational upgrade: `.agnir/evidence/2026-09-01-agnir-v0.1.0-compatible-upgrade.md`.
+  - Upgrade revision: `c7cd42b6e94556a630570a54e22c72acc97f3ecf`.
+  - Fresh activation: success.
+  - `Svif product checks` run `33466389590`: `completed / success`.
 - Plugin first-use bootstrap fix: `.agnir/evidence/2026-08-31-plugin-first-use-bootstrap-fix.md`.
   - Final behavior baseline: `b90d1f8976b0e03d2c5a3b70c9bbb4b032c37724`.
   - `Svif product checks` run `33384858568`: `completed / success`.

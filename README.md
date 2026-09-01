@@ -36,6 +36,16 @@ Svif currently uses Agnir as its founding Continuity Provider. If the selected P
 
 **No recurring Svif installation prompt is required.** Give the execution surface access to the Agnir-initialized Project and ask for the actual Project task. If the surface requires selecting or enabling Svif through native Plugin controls, do that once for the applicable surface rather than repeating the installation procedure in every conversation.
 
+### Upgrade the Agnir used by this Project
+
+To update the Agnir operational baseline used by an existing Svif Project—without upgrading Svif itself—give your Agent this one-line request:
+
+```text
+Upgrade the Agnir used by this Project to the latest stable release: https://github.com/iorLab/agnir
+```
+
+`latest stable` means an actually published Agnir stable tag/release, never a moving `main` branch. When the Agnir Core/profile compatibility lines remain unchanged, this is a compatible operational upgrade: preserve `SVIF.yaml`, Project identity, Agnir memory locators/content, unrelated Project instructions, and unrelated extensions. If Agnir compatibility changes, treat that as migration rather than silently rewriting the Svif continuity binding.
+
 ## Agnir Project Instructions
 
 Treat this repository root as the authorized Project Entry Point for the Svif Project. Before substantive Project work:

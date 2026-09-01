@@ -36,6 +36,16 @@ Svif 当前使用 Agnir 作为首个 Continuity Provider。如果所选 Project 
 
 **不需要在每次对话里重复 Svif 安装提示。** 只要把已经初始化 Agnir 的 Project 提供给执行环境，然后直接提出真正的 Project 任务即可。如果当前 surface 需要通过原生 Plugin 控件选择或启用 Svif，只需要针对相应 surface 完成一次，而不是每次会话都重复安装 procedure。
 
+### 升级这个 Project 使用的 Agnir
+
+如果只是更新现有 Svif Project 使用的 Agnir operational baseline，而不是升级 Svif 本身，只需要把这一句话交给 Agent：
+
+```text
+把这个 Project 使用的 Agnir 升级到最新稳定版：https://github.com/iorLab/agnir
+```
+
+`latest stable` 只指已经正式发布的 Agnir 稳定 tag / release，不能把会移动的 `main` 分支当成 stable。当 Agnir Core / profile compatibility line 没有变化时，这是 compatible operational upgrade：必须保留 `SVIF.yaml`、Project identity、Agnir memory locators / content、无关 Project instructions 和无关 extensions。如果 Agnir compatibility line 发生变化，应进入 migration，而不是静默改写 Svif continuity binding。
+
 ## Agnir Project Instructions
 
 把这个仓库根目录视为 Svif Project 的已授权 Project Entry Point。开始任何实质性 Project 工作之前：

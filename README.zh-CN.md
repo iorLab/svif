@@ -6,6 +6,8 @@ Svif 是一个 **Project orchestration（项目编排）产品**，负责协调�
 
 > Project 持续存在；Executor 和执行环境可以变化。
 
+**名字。** `Svif` 是冰岛语名词，表示“飞行、悬浮、漂浮、滑翔”等含义。同一词素也出现在冰岛语 `svifryk` 中，后者用于表示悬浮颗粒物（particulate matter）。这个名字对应 Svif 的产品模型：执行可以跨越不同 Execution Surface 与 Capability Provider 流动，而任何单一环境都不拥有 Project。它也与 Agnir 的“微粒”隐喻形成有意呼应：Agnir 命名 Project truth 的持久组成部分；Svif 命名围绕这些持久事实发生的执行流动——执行环境可以变化，而 Project continuity 继续存在。
+
 ## 从这里开始
 
 本节只面向用户。找到你现在要做的事，按对应方式操作即可。

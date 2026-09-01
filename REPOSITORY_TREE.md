@@ -28,6 +28,7 @@ svif/                                                     # Svif 产品主仓库
 │       ├── 2026-08-28-validation-2-static-success.md     # 早期 Validation 2 静态验证成功证据
 │       ├── 2026-08-31-plugin-first-use-bootstrap-fix.md  # 普通 Project 首次启用 Svif 时由 Plugin 建立 continuity/binding 的修复与 CI 证据
 │       ├── 2026-09-01-first-use-bootstrap-checkpoint.md  # first-use bootstrap 修复后的 canonical resume checkpoint 与 Codex 首测入口
+│       ├── 2026-09-01-svif-name-origin.md                # Svif 冰岛语名称来源、svifryk 关联与产品隐喻的语言学证据
 │       └── checkpoint-2026-08-28-validation-2.md         # Validation 2 的持久 checkpoint 记录
 │
 ├── .github/                                              # GitHub 托管侧自动化配置

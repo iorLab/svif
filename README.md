@@ -6,6 +6,8 @@ Svif is a **Project orchestration product** coordinating durable Project continu
 
 > The Project persists; Executors and execution environments may change.
 
+**Name.** `Svif` is an Icelandic noun meaning flight, hovering, floating, or gliding. The same lexical element appears in `svifryk`, the Icelandic term used for suspended particulate matter. The name reflects Svif's product model: execution can move across Execution Surfaces and Capability Providers without making any one environment the owner of the Project. It also deliberately echoes Agnir's particle metaphor: Agnir names the durable pieces of Project truth; Svif names the motion around them as execution changes while Project continuity persists.
+
 ## Start Here
 
 This section is for users. Pick the action that matches what you want to do.

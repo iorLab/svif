@@ -8,6 +8,15 @@
 - OBSERVE is mandatory when external effect is claimed; actuation success alone is insufficient.
 - Secret values remain in authorized protected channels/stores; Svif carries references/scopes, not plaintext values.
 
+## 2026-09-01 — Name origin and product meaning
+
+- `Svif` is an Icelandic neuter noun whose core dictionary senses include flight, hovering, floating, and gliding.
+- Icelandic environmental usage includes `svifryk` for suspended particulate matter / particulate matter. This association is intentionally recorded, but it does **not** mean that `svif` by itself means dust or particles.
+- The product metaphor maps the motion/suspension sense to Svif's architecture: Project execution may move across replaceable Execution Surfaces and Capability Providers while no single execution environment owns the Project or its durable truth.
+- The pairing with Agnir is conceptually deliberate. Agnir's name maps to the durable pieces of Project truth; Svif's name maps to motion around that persistent continuity as execution environments change.
+- This naming relationship is a product/brand metaphor, not a protocol dependency or a requirement that Agnir data physically move with every Svif execution step.
+- Linguistic and usage evidence is recorded in `.agnir/evidence/2026-09-01-svif-name-origin.md`.
+
 ## 2026-08-28 — Product Architecture 0.2
 
 - Svif is a **Project orchestration product**, not a pure protocol.
@@ -137,6 +146,7 @@
 ## 2026-09-01 — README user/Agent entry-point information architecture
 
 - Before the Architecture Diagram, both READMEs are deliberately limited to two operational audiences: **Start Here / 从这里开始** for users, followed by the canonical **Agnir Project Instructions** for Agents.
+- A short product identity/name explanation may appear before `Start Here`; it is introductory context rather than a third operational audience.
 - `Start Here` contains only the minimum current actions: personal-ChatGPT availability status, install intent for compatible Agent environments, normal continuation, and upgrade of the Agnir used by the Project.
 - `Agnir Project Instructions` remains the canonical activation heading resolved from `AGENTS.md` and is explicitly marked as Agent guidance for human readers.
 - Public-submission workflow, Plugin packaging rationale, compatibility detail, repository structure, and implementation/conformance explanation belong after the architecture entry point or in dedicated documents.

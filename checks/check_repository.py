@@ -22,10 +22,12 @@ def require_readme_entry_guide(
     path: str,
     *,
     start_heading: str,
+    surface_heading: str,
     architecture_heading: str,
     install_prompt: str,
     upgrade_prompt: str,
     normal_use_marker: str,
+    surface_markers: tuple[str, ...],
 ) -> None:
     text = (ROOT / path).read_text(encoding="utf-8")
     require_text(
@@ -36,22 +38,49 @@ def require_readme_entry_guide(
             upgrade_prompt,
             normal_use_marker,
             "## Agnir Project Instructions",
+            surface_heading,
             architecture_heading,
         ],
         f"{path} entry guide",
     )
     start_position = text.find(start_heading)
     agent_position = text.find("## Agnir Project Instructions")
+    surface_position = text.find(surface_heading)
     architecture_position = text.find(architecture_heading)
-    if not (0 <= start_position < agent_position < architecture_position):
-        fail(f"{path} must present Start Here, then Agnir Project Instructions, before architecture material")
+    if not (0 <= start_position < agent_position < surface_position < architecture_position):
+        fail(
+            f"{path} must present Start Here, then Agnir Project Instructions, "
+            "then the installed Project surface, before architecture material"
+        )
+    surface_text = text[surface_position:architecture_position]
+    for marker in surface_markers:
+        if marker not in surface_text:
+            fail(f"{path} first-use Project surface missing required marker: {marker}")
 
 
-def require_readme_diagrams(path: str, headings: tuple[str, str]) -> None:
+def require_readme_diagrams(
+    path: str,
+    headings: tuple[str, str],
+    *,
+    architecture_markers: tuple[str, ...],
+    runtime_forbidden_markers: tuple[str, ...],
+) -> None:
     text = (ROOT / path).read_text(encoding="utf-8")
     if text.count("```mermaid") < 2:
         fail(f"{path} must contain at least two Mermaid diagrams")
     require_text(text, list(headings), path)
+    architecture_start = text.find(headings[0])
+    runtime_start = text.find(headings[1])
+    if not (0 <= architecture_start < runtime_start):
+        fail(f"{path} must place architecture before runtime flow")
+    architecture_text = text[architecture_start:runtime_start]
+    for marker in architecture_markers:
+        if marker not in architecture_text:
+            fail(f"{path} Architecture Diagram missing first-use marker: {marker}")
+    runtime_text = text[runtime_start:]
+    for marker in runtime_forbidden_markers:
+        if marker in runtime_text:
+            fail(f"{path} Runtime / Operation Flow must not include installation mutation marker: {marker}")
 
 
 def require_readme_repository_tree(path: str, heading: str) -> None:
@@ -205,21 +234,67 @@ def main() -> None:
     require_readme_entry_guide(
         "README.md",
         start_heading="## Start Here",
+        surface_heading="## What Svif Adds to a Project",
         architecture_heading="## Architecture Diagram",
         install_prompt="Install and enable Svif for this Project: https://github.com/iorLab/svif",
         upgrade_prompt="Upgrade the Agnir used by this Project to the latest stable release: https://github.com/iorLab/agnir",
         normal_use_marker="No recurring Svif installation prompt is required.",
+        surface_markers=(
+            "[EDIT: add entry only]",
+            "[ADD] founding Agnir discovery anchor",
+            "[ADD] Project-owned durable continuity",
+            "[ADD] Svif Project Binding",
+            "intentionally bound to another Continuity Provider",
+        ),
     )
     require_readme_entry_guide(
         "README.zh-CN.md",
         start_heading="## 从这里开始",
+        surface_heading="## Svif 会给 Project 增加什么",
         architecture_heading="## 架构图",
         install_prompt="为这个 Project 安装并启用 Svif：https://github.com/iorLab/svif",
         upgrade_prompt="把这个 Project 使用的 Agnir 升级到最新稳定版：https://github.com/iorLab/agnir",
         normal_use_marker="不需要在每次对话里重复 Svif 安装提示。",
+        surface_markers=(
+            "[编辑：仅添加入口]",
+            "[新增] founding Agnir discovery anchor",
+            "[新增] Project 自己拥有的 durable continuity",
+            "[新增] Svif Project Binding",
+            "明确绑定其他 Continuity Provider",
+        ),
     )
-    require_readme_diagrams("README.md", ("## Architecture Diagram", "## Runtime / Operation Flow"))
-    require_readme_diagrams("README.zh-CN.md", ("## 架构图", "## 运行流程"))
+    require_readme_diagrams(
+        "README.md",
+        ("## Architecture Diagram", "## Runtime / Operation Flow"),
+        architecture_markers=(
+            "non-destructive first-use setup",
+            "EDIT: add activation locator only",
+            "EDIT: add Agnir instructions only",
+            "ADD: founding continuity",
+            "ADD: Project binding",
+            "Svif Orchestrator",
+            "Continuity Provider",
+            "Execution integration",
+            "Capability Providers",
+        ),
+        runtime_forbidden_markers=("EDIT: add", "ADD: founding", "ADD: Project binding"),
+    )
+    require_readme_diagrams(
+        "README.zh-CN.md",
+        ("## 架构图", "## 运行流程"),
+        architecture_markers=(
+            "非破坏性 first-use setup",
+            "编辑：仅添加 activation locator",
+            "编辑：仅添加 Agnir instructions",
+            "新增：founding continuity",
+            "新增：Project binding",
+            "Svif 编排器",
+            "项目连续性提供者",
+            "执行环境适配层",
+            "能力提供层",
+        ),
+        runtime_forbidden_markers=("编辑：仅添加", "新增：founding", "新增：Project binding"),
+    )
     require_readme_repository_tree("README.md", "## Repository Structure")
     require_readme_repository_tree("README.zh-CN.md", "## 仓库结构")
     require_full_repository_tree()

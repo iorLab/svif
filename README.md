@@ -41,6 +41,27 @@ The applied Agnir operational distribution is recorded in `AGNIR.yaml` under `ex
 
 If an activation locator, identity, required memory locator, or compatibility check fails, repair the earliest faulty layer when authorized. Do not invent Project state or silently fall back to chat history, sibling repositories, or retired layouts.
 
+## What Svif Adds to a Project
+
+On first use of Svif in a genuinely uninitialized repository/filesystem Project, the shared Skill establishes the founding Agnir continuity plus a matching Svif Project Binding. **Svif does not take over existing Project files.** Existing `AGENTS.md` and `README.md` receive only the activation/instruction entry they need, while unrelated content is preserved.
+
+```text
+Project/
+├── AGENTS.md                 # [EDIT: add entry only] add Agnir activation locator; preserve existing instructions
+├── README.md                 # [EDIT: add entry only] add ## Agnir Project Instructions; preserve existing content
+├── AGNIR.yaml                # [ADD] founding Agnir discovery anchor
+├── .agnir/                   # [ADD] Project-owned durable continuity
+│   ├── state.md              # [ADD] current durable Project truth
+│   ├── next-actions.md       # [ADD] outstanding ordered work for the next Executor
+│   ├── decisions.md          # [ADD] durable decisions that constrain future work
+│   └── evidence/             # [ADD] recovery/audit/material-claim evidence and checkpoints
+└── SVIF.yaml                 # [ADD] Svif Project Binding: continuity, execution, capability and profile bindings
+```
+
+If compatible Agnir/Svif artifacts already exist, the Skill validates and reuses them rather than recreating them. Partial or contradictory artifacts are a repair case, not clean initialization. A Project intentionally bound to another Continuity Provider is not silently overwritten with Agnir.
+
+These are founding `repository-filesystem` onboarding artifacts, not universal Svif kernel requirements. Svif coordinates replaceable providers and execution surfaces; it does not make Git, GitHub, Agnir, ChatGPT, or Cloudflare permanent kernel dependencies.
+
 ## Architecture Diagram
 
 ```mermaid
@@ -48,6 +69,15 @@ flowchart LR
     P[Principal / User] --> E[Execution Surface\nChatGPT today]
 
     D[Installable Plugin\nAgent Plugins 1.0\nSkill-first MVP] --> E
+    D -. non-destructive first-use setup .-> T
+
+    subgraph T[Target Project surface]
+        G[AGENTS.md\nEDIT: add activation locator only]
+        H[README.md\nEDIT: add Agnir instructions only]
+        Q[AGNIR.yaml + .agnir/\nADD: founding continuity]
+        B[SVIF.yaml\nADD: Project binding]
+        G --> H --> Q --> B
+    end
 
     subgraph S[iorLab/svif]
         O[Svif Orchestrator]
@@ -60,13 +90,15 @@ flowchart LR
     end
 
     E <--> X
+    B -. configures .-> O
     O <--> C[Continuity Provider\nAgnir today]
+    Q -. durable continuity .-> C
     K <--> F[External systems\nCloudflare today]
 
     C -. independent protocol .-> A[iorLab/agnir]
 ```
 
-Svif owns the coordination boundary. The Orchestrator does not permanently depend on Agnir, ChatGPT, or Cloudflare; they are the founding/current bindings for the Continuity Provider, Execution Surface, and Capability Provider roles.
+The Project-surface nodes describe the **first-use onboarding boundary**; the product nodes describe Svif's replaceable runtime roles. Svif owns the coordination boundary. The Orchestrator does not permanently depend on Agnir, ChatGPT, or Cloudflare; they are the founding/current bindings for the Continuity Provider, Execution Surface, and Capability Provider roles.
 
 The active canonical repository topology is deliberately small:
 
@@ -209,7 +241,7 @@ The founding E2E is intentionally credential-free. It proves the Svif product lo
 
 `README.md` and `README.zh-CN.md` are maintained as parallel entry points. Any change to product architecture, component ownership, dependency direction, authority/provenance boundaries, runtime flow, distribution status, or documented repository structure **must update both language versions in the same change set**.
 
-Before the Architecture Diagram, README content is deliberately limited to two audiences: **Start Here** for users and **Agnir Project Instructions** for Agents. Publication workflow, Plugin packaging rationale, compatibility detail, and implementation explanation belong after the architecture entry point or in dedicated documents.
+Before the Architecture Diagram, README content is deliberately limited to **Start Here** for users, the canonical **Agnir Project Instructions** for Agents, and **What Svif Adds to a Project** as the concrete first-use Project-surface explanation. The Architecture Diagram mirrors that non-destructive first-use boundary; Runtime / Operation Flow remains a post-bootstrap runtime view and does not carry installation-mutation labels. Publication workflow, Plugin packaging rationale, compatibility detail, and implementation explanation belong after the architecture entry point or in dedicated documents.
 
 The exhaustive companion **`REPOSITORY_TREE.md`** is the file-level map of the active repository and must be updated whenever tracked files are added, removed, moved, or materially change responsibility.
 

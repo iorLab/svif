@@ -145,11 +145,14 @@
 
 ## 2026-09-01 — README user/Agent entry-point information architecture
 
-- Before the Architecture Diagram, both READMEs are deliberately limited to two operational audiences: **Start Here / 从这里开始** for users, followed by the canonical **Agnir Project Instructions** for Agents.
-- A short product identity/name explanation may appear before `Start Here`; it is introductory context rather than a third operational audience.
+- Before the Architecture Diagram, both READMEs are deliberately limited to a short product identity/name explanation followed by **Start Here / 从这里开始** for users, the canonical **Agnir Project Instructions** for Agents, and **What Svif Adds to a Project / Svif 会给 Project 增加什么** as a concrete user-facing map of first-use Project changes.
 - `Start Here` contains only the minimum current actions: personal-ChatGPT availability status, install intent for compatible Agent environments, normal continuation, and upgrade of the Agnir used by the Project.
 - `Agnir Project Instructions` remains the canonical activation heading resolved from `AGENTS.md` and is explicitly marked as Agent guidance for human readers.
-- Public-submission workflow, Plugin packaging rationale, compatibility detail, repository structure, and implementation/conformance explanation belong after the architecture entry point or in dedicated documents.
+- `What Svif Adds to a Project` must make the founding repository/filesystem bootstrap visibly non-destructive: `AGENTS.md` and `README.md` are **EDIT / add-entry-only** surfaces that preserve unrelated content; `AGNIR.yaml`, the reference `.agnir/` continuity layout, and `SVIF.yaml` are **ADD** surfaces for a genuinely uninitialized Project.
+- Compatible existing Agnir/Svif artifacts are validated/reused rather than recreated; partial/contradictory artifacts are repair cases; a Project intentionally bound to another Continuity Provider is not silently overwritten with Agnir.
+- The Architecture Diagram mirrors this first-use surface without turning into a second full file tree, while still showing Orchestrator, Continuity Provider, Execution Surface, Capability Provider, and their replaceable bindings.
+- Runtime / Operation Flow remains a post-bootstrap execution view and must not acquire ADD/EDIT installation-mutation labels unless runtime semantics themselves change.
+- Public-submission workflow, Plugin packaging rationale, compatibility detail, repository structure, and deeper implementation/conformance explanation belong after the architecture entry point or in dedicated documents.
 - The user-facing README must reflect the active first-use decision: a genuinely uninitialized Project does not require manual Agnir pre-initialization; Svif owns the founding continuity bootstrap on the repository/filesystem path.
 - English and Simplified Chinese READMEs preserve the same audience split and operational meaning. Localized diagrams remain comprehension-first.
-- Repository-integrity checks enforce `Start Here -> Agnir Project Instructions -> Architecture` ordering and the canonical install/Agnir-upgrade intents so future edits do not rebuild the old mixed-audience front section.
+- Repository-integrity checks enforce `Start Here -> Agnir Project Instructions -> installed Project surface -> Architecture` ordering, the canonical install/Agnir-upgrade intents, architecture ADD/EDIT markers, and runtime-flow separation so future edits do not rebuild the old mixed-audience front section.

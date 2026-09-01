@@ -35,15 +35,17 @@ The Agnir `v0.1.0` application was a **compatible operational upgrade**, not a m
 
 ## README entry architecture
 
-The README front section is now deliberately split by audience before architecture material:
+The README front section is now deliberately layered before architecture material:
 
 1. `Start Here` / `从这里开始` — minimal user actions for personal-ChatGPT availability, installation in compatible Agent environments, normal continuation, and upgrading the Agnir used by the Project;
 2. `Agnir Project Instructions` — canonical Agent activation/operation guidance for this repository;
-3. `Architecture Diagram` / `架构图` — the start of explanatory product architecture, distribution, compatibility, repository, and implementation material.
+3. `What Svif Adds to a Project` / `Svif 会给 Project 增加什么` — concrete first-use Project surface, with `AGENTS.md` / `README.md` visibly marked as non-destructive EDIT/add-entry-only and `AGNIR.yaml` / `.agnir/` / `SVIF.yaml` as founding ADD surfaces;
+4. `Architecture Diagram` / `架构图` — static product architecture plus the first-use boundary;
+5. `Runtime / Operation Flow` / `运行流程` — post-bootstrap runtime behavior, intentionally free of install-mutation labels.
 
-This refactor also removes an old onboarding contradiction: a genuinely uninitialized Project does **not** require manual Agnir pre-initialization. The active Svif first-use contract remains that the shared Skill establishes founding Agnir continuity plus a matching minimal Svif Project Binding on the repository/filesystem path.
+A genuinely uninitialized Project does **not** require manual Agnir pre-initialization. The active Svif first-use contract remains that the shared Skill establishes founding Agnir continuity plus a matching minimal Svif Project Binding on the repository/filesystem path. Compatible existing artifacts are reused; partial/contradictory artifacts are repair cases; an intentional other Continuity Provider binding is preserved.
 
-Repository-integrity checks enforce the audience ordering and canonical user intents. Durable rationale is recorded in `.agnir/evidence/2026-09-01-readme-information-architecture.md` and `.agnir/decisions.md`. `README.md` and `README.zh-CN.md` remain synchronized entry points.
+Repository-integrity checks enforce the entry ordering, first-use ADD/EDIT distinction, architecture/runtime separation, and canonical user intents. Durable rationale is recorded in `.agnir/evidence/2026-09-01-readme-information-architecture.md` and `.agnir/decisions.md`. `README.md` and `README.zh-CN.md` remain synchronized entry points.
 
 ## Runtime baseline
 
@@ -90,7 +92,7 @@ Do not weaken the Skills-only package, add MCP merely to escape this gate, inven
 
 ## Evidence checkpoints
 
-- README audience split: `.agnir/evidence/2026-09-01-readme-information-architecture.md`.
+- README audience split / first-use Project surface: `.agnir/evidence/2026-09-01-readme-information-architecture.md`.
 - Agnir `v0.1.0` compatible operational upgrade: `.agnir/evidence/2026-09-01-agnir-v0.1.0-compatible-upgrade.md`; upgrade revision `c7cd42b6e94556a630570a54e22c72acc97f3ecf`, run `33466389590` success.
 - Plugin first-use bootstrap fix: `.agnir/evidence/2026-08-31-plugin-first-use-bootstrap-fix.md`; final behavior baseline `b90d1f8976b0e03d2c5a3b70c9bbb4b032c37724`, run `33384858568` success.
 - Personal ChatGPT distribution / publisher-gate checkpoint: `.agnir/evidence/2026-08-31-personal-chatgpt-distribution-checkpoint.md`.

@@ -41,12 +41,43 @@ Svif 是一个 **Project orchestration（项目编排）产品**，负责协调�
 
 如果 activation locator、Project identity、必需 memory locator 或 compatibility 校验失败，应在获得授权时修复最早出错的层；不得凭空补 Project state，也不得静默退回聊天历史、兄弟仓库或 retired layout。
 
+## Svif 会给 Project 增加什么
+
+当 Svif 在一个真正未初始化的 repository/filesystem Project 中首次使用时，共享 Skill 会建立 founding Agnir continuity，并加入与之匹配的 Svif Project Binding。**Svif 不会接管已有 Project 文件。** 对已有的 `AGENTS.md` 和 `README.md`，只添加激活 / 指令入口，并保留原有无关内容。
+
+```text
+Project/
+├── AGENTS.md                 # [编辑：仅添加入口] 加入 Agnir activation locator；保留原有 instructions
+├── README.md                 # [编辑：仅添加入口] 加入 ## Agnir Project Instructions；保留原有内容
+├── AGNIR.yaml                # [新增] founding Agnir discovery anchor
+├── .agnir/                   # [新增] Project 自己拥有的 durable continuity
+│   ├── state.md              # [新增] 当前仍然成立的 durable Project truth
+│   ├── next-actions.md       # [新增] 下一位 Executor 应继续推进的有序工作
+│   ├── decisions.md          # [新增] 会约束未来工作的持久决策
+│   └── evidence/             # [新增] 恢复、审计或重要事实声明所需的 Evidence / Checkpoints
+└── SVIF.yaml                 # [新增] Svif Project Binding：continuity、execution、capability 与 profile bindings
+```
+
+如果兼容的 Agnir / Svif artifacts 已经存在，Skill 会校验并复用，而不是重新创建。部分存在或互相矛盾的 artifacts 属于 repair case，不按 clean initialization 处理。已经明确绑定其他 Continuity Provider 的 Project 不会被静默改写成 Agnir。
+
+这些是 founding `repository-filesystem` onboarding artifacts，不是 Svif kernel 的普遍强制文件。Svif 协调的是可替换 provider 与 execution surface；Git、GitHub、Agnir、ChatGPT 或 Cloudflare 都不是永久 kernel dependency。
+
 ## 架构图（Architecture Diagram）
 
 ```mermaid
 flowchart LR
     P["用户 / 负责人（Principal）<br/>提出目标、审批操作并授予必要权限"] --> E["执行环境（Execution Surface）<br/>负责理解意图并完成工作<br/>当前：ChatGPT"]
+
     D["可安装 Svif Plugin<br/>Agent Plugins 1.0<br/>当前先以 Skill 直接进入真实使用"] --> E
+    D -. "非破坏性 first-use setup" .-> T
+
+    subgraph T["目标 Project surface"]
+        G["AGENTS.md<br/>编辑：仅添加 activation locator"]
+        H["README.md<br/>编辑：仅添加 Agnir instructions"]
+        Q["AGNIR.yaml + .agnir/<br/>新增：founding continuity"]
+        B["SVIF.yaml<br/>新增：Project binding"]
+        G --> H --> Q --> B
+    end
 
     subgraph S[iorLab/svif]
         O["Svif 编排器（Orchestrator）<br/>协调记忆、执行和外部能力<br/>保证整个操作形成可信闭环"]
@@ -59,13 +90,15 @@ flowchart LR
     end
 
     E <--> X
+    B -. "配置 Project binding" .-> O
     O <--> C["项目连续性提供者（Continuity Provider）<br/>保存可恢复的项目事实和后续工作<br/>当前：Agnir"]
+    Q -. "持久 continuity" .-> C
     K <--> F["外部目标系统<br/>真正发生部署、查询或状态变化的地方<br/>当前：Cloudflare"]
 
     C -. "Agnir 是独立协议" .-> A["iorLab/agnir<br/>定义 Project continuity 的持久化与发现规则"]
 ```
 
-Svif 自己负责的是这些可替换边界之间的协调。Orchestrator 并不永久依赖 Agnir、ChatGPT 或 Cloudflare；它们分别是 Continuity Provider、Execution Surface 和 Capability Provider 的首批/当前 binding。
+Project-surface 节点描述的是**首次使用时的 onboarding 边界**；产品节点描述的是 Svif 可替换的 runtime roles。Svif 自己负责这些边界之间的协调。Orchestrator 并不永久依赖 Agnir、ChatGPT 或 Cloudflare；它们分别是 Continuity Provider、Execution Surface 和 Capability Provider 的首批/当前 binding。
 
 当前 canonical repository 拓扑刻意保持最小：
 
@@ -89,11 +122,11 @@ flowchart TD
     V -- "否" --> STOP["停止并进入修复（Repair）<br/>不得把失败或不确定结果写成成功状态"]
     V -- "是" --> Q{"这次操作是否需要改变外部真实状态？"}
     Q -- "否" --> C["核对结果并写入 checkpoint<br/>把新的可靠项目事实持久化"]
-    Q -- "是" --> U{"当前是否已经获得<br/>执行该外部操作所需的授权？"}
+    Q -- "是" --> U{"当前是否已经获得<br/>执行该外部操作所需的授权？"]
     U -- "否" --> STOP
     U -- "是" --> D["能力提供者执行外部操作<br/>例如把已验证版本部署到 Cloudflare"]
     D --> O["独立观察外部结果<br/>重新读取真实系统，而不是只相信部署命令返回成功"]
-    O --> R{"外部系统中实际观察到的<br/>目标对象和目标位置是否与部署结果一致？"}
+    O --> R{"外部系统中实际观察到的<br/>目标对象和目标位置是否与部署结果一致？"]
     R -- "否" --> STOP
     R -- "是" --> C
     C --> A
@@ -208,7 +241,7 @@ Python 目前只是可执行 reference vehicle，并不冻结未来的分发技�
 
 `README.md` 与 `README.zh-CN.md` 是并行维护的项目入口。只要产品架构、组件归属、依赖方向、authority/provenance boundary、运行流程、分发状态或仓库结构发生变化，**同一个 change set 必须同步更新两种语言版本**。
 
-在架构图之前，README 只保留两类读者所需内容：**从这里开始**面向用户，**Agnir Project Instructions** 面向 Agent。Publication workflow、Plugin packaging rationale、compatibility detail 与实现说明应放到架构入口之后或专门文档中。
+在架构图之前，README 只保留面向用户的 **从这里开始**、面向 Agent 的 canonical **Agnir Project Instructions**，以及具体解释首次使用文件变化的 **Svif 会给 Project 增加什么**。架构图同步表达这个非破坏性的 first-use boundary；运行流程图保持 post-bootstrap runtime 视角，不加入安装阶段的 EDIT / ADD 标记。Publication workflow、Plugin packaging rationale、compatibility detail 与实现说明应放到架构入口之后或专门文档中。
 
 完整文件级结构由 **`REPOSITORY_TREE.md`** 维护。只要 tracked 文件被新增、删除、移动，或者职责发生实质变化，必须同步更新。
 

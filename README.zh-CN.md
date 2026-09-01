@@ -6,65 +6,38 @@ Svif 是一个 **Project orchestration（项目编排）产品**，负责协调�
 
 > Project 持续存在；Executor 和执行环境可以变化。
 
-## 30 秒快速开始
+## 从这里开始
 
-### 个人 ChatGPT 用户
+本节只面向用户。找到你现在要做的事，按对应方式操作即可。
 
-Svif 面向 ChatGPT 的首要用户是个人用户。成熟安装路径应当是 ChatGPT 与 Codex 共享的 **通用 Plugins Directory**：
+| 目标 | 怎么做 |
+| --- | --- |
+| 在个人 ChatGPT 使用 Svif | **Svif 目前还没有公开上架。** 正式发布后，从 ChatGPT 与 Codex 共享的通用 Plugins Directory 安装。 |
+| 在开发、Codex 或其他兼容 Agent 环境安装 | `为这个 Project 安装并启用 Svif：https://github.com/iorLab/svif` |
+| 已经安装，继续使用 | **不需要在每次对话里重复 Svif 安装提示。** 直接提出真正的 Project 任务。 |
+| 升级这个 Project 使用的 Agnir | `把这个 Project 使用的 Agnir 升级到最新稳定版：https://github.com/iorLab/agnir` |
 
-```text
-ChatGPT -> Plugins -> 搜索 “Svif” -> Install plugin
-```
+真正未初始化的 Project **不需要先手动初始化 Agnir**。在 founding repository/filesystem 路径上，Svif 的共享 Skill 会在首次使用时建立所需的 Agnir continuity 和匹配的 Svif Project Binding。
 
-**Svif 目前还没有公开上架。** 当前仓库正在按 OpenAI 的公开审核 / 发布流程准备，因此个人 ChatGPT 用户现在还不能把上面的 Plugins Directory 路径当作已经可用的正式安装方式。
-
-OpenAI 当前明确接受 **Skills-only** 的公开 Plugin，因此 Svif 不需要为了获得公开发布资格先增加 MCP server。等 OpenAI 审核通过 Skills-only submission，并由开发者在 portal 中显式 Publish 后，Plugin 才会进入通用 Plugins Directory。之后第一项真实消费者验证就是在个人 ChatGPT Web 上安装并实际调用 Svif。
-
-### 开发 / 兼容 Agent 环境
-
-对于仓库开发、Codex、managed workspace 测试或其他兼容 Agent 环境，只需要把下面这一句话交给 Agent：
-
-```text
-为这个 Project 安装并启用 Svif：https://github.com/iorLab/svif
-```
-
-Agent 应自行检查本仓库、读取 [`plugin/README.md`](plugin/README.md)，识别当前执行环境实际支持的安装路径，并直接完成它有能力完成的步骤。用户不需要把 marketplace 路径、manifest 文件名、CLI 参数、同步规则、revision provenance 检查表或其他内部安装细节塞进提示词里。
-
-Svif 当前使用 Agnir 作为首个 Continuity Provider。如果所选 Project 还没有初始化 Agnir，应先按照当前 Agnir 安装 / 激活 contract 建立所需的 Project continuity，再把 Svif Project operation 视为可用。
-
-### 已经安装
-
-**不需要在每次对话里重复 Svif 安装提示。** 只要把已经初始化 Agnir 的 Project 提供给执行环境，然后直接提出真正的 Project 任务即可。如果当前 surface 需要通过原生 Plugin 控件选择或启用 Svif，只需要针对相应 surface 完成一次，而不是每次会话都重复安装 procedure。
-
-### 升级这个 Project 使用的 Agnir
-
-如果只是更新现有 Svif Project 使用的 Agnir operational baseline，而不是升级 Svif 本身，只需要把这一句话交给 Agent：
-
-```text
-把这个 Project 使用的 Agnir 升级到最新稳定版：https://github.com/iorLab/agnir
-```
-
-`latest stable` 只指已经正式发布的 Agnir 稳定 tag / release，不能把会移动的 `main` 分支当成 stable。当 Agnir Core / profile compatibility line 没有变化时，这是 compatible operational upgrade：必须保留 `SVIF.yaml`、Project identity、Agnir memory locators / content、无关 Project instructions 和无关 extensions。如果 Agnir compatibility line 发生变化，应进入 migration，而不是静默改写 Svif continuity binding。
+升级 Agnir 不等于升级 Svif。兼容的 Agnir 升级必须保留 `SVIF.yaml`、Project identity 和 durable Project continuity。
 
 ## Agnir Project Instructions
 
-把这个仓库根目录视为 Svif Project 的已授权 Project Entry Point。开始任何实质性 Project 工作之前：
+> **本节供在这个仓库里工作的 Agent 使用。** 普通用户通常不需要阅读。
 
-1. 先读取根目录 `AGNIR.yaml`，校验声明的 Agnir Core / profile compatibility 与 Project identity。
-2. 按 `AGNIR.yaml` 声明的位置加载 Current State 与 Next Actions。
-3. 当 Decisions 与 Evidence 会约束本次操作时，再加载相关内容。
-4. 默认以 Project 自己持久化的 Agnir truth 为准；只有更新的 Principal 指令或直接观察到的当前 Project 事实才能覆盖它，不要把聊天记录或 Executor 私有记忆当 canonical truth。
-5. 对 Svif 本身进行开发时，再读取 `SVIF.yaml` 与本次变更相关的当前规格。
-6. 在明确的 checkpoint、保存进度、结束工作或 repository commit boundary 上，只 reconcile 有实质变化的 continuity。Durable truth 没变化时 checkpoint 是 no-op；有变化时要先构造完整且一致的 candidate，再以不会让 fresh resolver 接受 mixed checkpoint generations 的方式发布。若 authoritative revision 已经变化，不得覆盖更新事实；应按 stale-base conflict 重新 resolve/reconcile。发布后重新验证 locator chain。
-7. 在 repository / VCS 上下文中，把已授权的 `commit`、`提交`、`提交代码` 或同义请求视为 checkpoint boundary：**先 reconcile Agnir，再 commit**，并优先把 Project 改动与 Agnir 改动放进同一个 revision。`commit and push`、`提交推送` 或同义请求表示 checkpoint + commit + push，并在声明了 authoritative remote/ref 时验证推送结果。只是观察到一个外部产生的 commit，只触发 checkpoint evaluation，不代表必须无条件再写一次 Agnir。
+1. **Discover。** 把本仓库根目录视为 Svif Project 的已授权 Project Entry Point。读取顶层 `AGNIR.yaml`，校验声明的 Agnir Core/profile compatibility 与 Project identity。
+2. **Load。** 从 `AGNIR.yaml` 声明的 durable memory 加载 Current State 与 Next Actions；当 Decisions 与 Evidence 会实质约束本次操作时再加载。除非有更新的 Principal 指令或直接观察到的当前 Project 事实覆盖，否则 durable Project truth 优先于聊天记录或 Executor 私有记忆。
+3. **Bind Svif。** 修改 Svif 产品行为前，读取 `SVIF.yaml` 与相关当前规格。保留已配置的 Continuity Provider、execution、capability、authority 与 Project-identity boundary。
+4. **Work / checkpoint。** 完成真正的 Project 工作，然后在明确的 checkpoint、保存进度、结束工作或 repository commit boundary 上，只 reconcile 有实质变化的 continuity。Durable truth 未变化时做 no-op；发生变化时必须形成一致 candidate，若 authoritative base 已过期则拒绝覆盖更新事实，发布后重新验证 locator chain。
+5. **Commit / push。** 已授权的 `commit`、`提交`、`提交代码` 或同义请求表示先 checkpoint 再 commit，并优先把 Project + Agnir 变化放进同一个 revision。`commit and push`、`提交推送` 或同义请求再加 push 与 authoritative-ref verification。只是观察到外部 commit，只触发 checkpoint evaluation，不代表无条件写入 Agnir。
 
-根目录 `AGENTS.md` 只负责把 Agent 引导到本节，不得成为第二份 Project state 或 Agnir procedure。期望的激活路径是：
+根目录 `AGENTS.md` 只负责把 Agent 引导到本节，不得成为第二份 Project state 或 Agnir procedure。Canonical activation route 为：
 
 `Project root -> AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml -> declared durable memory`
 
 本 Project 实际应用的 Agnir operational distribution 记录在 `AGNIR.yaml` 的 `extensions.agnir/operations` 中；这份 provenance 不替代 Core/profile compatibility，也不替代 Project identity。
 
-如果 activation locator、Project identity、必需 memory locator 或 compatibility 校验任一失败，应在获得授权时修复最早出错的层；不得凭空补 Project state，也不得静默退回聊天历史、兄弟仓库或 retired layout。
+如果 activation locator、Project identity、必需 memory locator 或 compatibility 校验失败，应在获得授权时修复最早出错的层；不得凭空补 Project state，也不得静默退回聊天历史、兄弟仓库或 retired layout。
 
 ## 架构图（Architecture Diagram）
 
@@ -147,7 +120,11 @@ svif/
             └── SKILL.md
 ```
 
-`plugin/plugin.json` 仍然是 portable Agent Plugins manifest；`plugin/.codex-plugin/plugin.json` 是 OpenAI/Codex manifest，同时承载共享 Skill 与公开 listing metadata；`.agents/plugins/marketplace.json` 则降为开发、Codex 和 managed workspace 测试使用的辅助 repository marketplace 路径。
+`plugin/plugin.json` 仍然是 portable Agent Plugins manifest；`plugin/.codex-plugin/plugin.json` 是 OpenAI/Codex manifest，同时承载共享 Skill 与公开 listing metadata；`.agents/plugins/marketplace.json` 则作为开发、Codex 和 managed workspace 测试使用的辅助 repository marketplace 路径。
+
+### 个人 ChatGPT 分发状态
+
+面向个人用户的成熟路径仍然是 `ChatGPT -> Plugins Directory -> 找到 Svif -> 安装 -> 调用`。**Svif 目前还没有公开上架**，所以这仍是目标消费者路径，不是现在已经可用的正式安装方式。
 
 OpenAI 当前公开提交流程明确接受 **Skills-only Plugin**。因此 Svif 已把 `.codex-plugin/plugin.json` 收紧到当前公开目录最终提交的 metadata 限制，并继续让 `plugin/skills/svif/SKILL.md` 成为唯一共享的 workflow implementation。MCP/App packaging 不是首次公开 submission 的前置条件，不应为了“能发布”而强行加入。
 
@@ -228,6 +205,8 @@ Python 目前只是可执行 reference vehicle，并不冻结未来的分发技�
 ## 文档同步规则
 
 `README.md` 与 `README.zh-CN.md` 是并行维护的项目入口。只要产品架构、组件归属、依赖方向、authority/provenance boundary、运行流程、分发状态或仓库结构发生变化，**同一个 change set 必须同步更新两种语言版本**。
+
+在架构图之前，README 只保留两类读者所需内容：**从这里开始**面向用户，**Agnir Project Instructions** 面向 Agent。Publication workflow、Plugin packaging rationale、compatibility detail 与实现说明应放到架构入口之后或专门文档中。
 
 完整文件级结构由 **`REPOSITORY_TREE.md`** 维护。只要 tracked 文件被新增、删除、移动，或者职责发生实质变化，必须同步更新。
 

@@ -6,65 +6,38 @@ Svif is a **Project orchestration product** coordinating durable Project continu
 
 > The Project persists; Executors and execution environments may change.
 
-## 30-second Quick Start
+## Start Here
 
-### Personal ChatGPT
+This section is for users. Pick the action that matches what you want to do.
 
-Svif's primary ChatGPT audience is individual/personal users. The mature installation path is the **universal Plugins Directory** shared by ChatGPT and Codex:
+| Goal | What to do |
+| --- | --- |
+| Use Svif in personal ChatGPT | **Svif is not publicly listed yet.** After publication, install it from the universal Plugins Directory shared by ChatGPT and Codex. |
+| Install for development, Codex, or another compatible Agent environment | `Install and enable Svif for this Project: https://github.com/iorLab/svif` |
+| Continue with Svif already installed | **No recurring Svif installation prompt is required.** Ask for the actual Project task. |
+| Upgrade the Agnir used by this Project | `Upgrade the Agnir used by this Project to the latest stable release: https://github.com/iorLab/agnir` |
 
-```text
-ChatGPT -> Plugins -> search "Svif" -> Install plugin
-```
+A genuinely uninitialized Project does **not** need Agnir to be manually initialized first. On the founding repository/filesystem path, Svif's shared Skill establishes the required Agnir continuity and matching Svif Project Binding as part of first use.
 
-**Svif is not publicly listed yet.** The current repository is being prepared for the OpenAI public review/publishing flow, so a personal ChatGPT user cannot yet treat the public-directory path above as an available production install.
-
-OpenAI currently accepts **Skills-only** public Plugins, so Svif does not need an MCP server merely to qualify for public publication. After OpenAI approves the Skills-only submission and the developer explicitly publishes it, the Plugin can appear in the universal Plugins Directory. The first real consumer validation will then be installation and invocation in personal ChatGPT Web.
-
-### Development / compatible Agent environment
-
-For repository-backed development, Codex, managed-workspace testing, or another compatible Agent environment, give your Agent this one-line intent:
-
-```text
-Install and enable Svif for this Project: https://github.com/iorLab/svif
-```
-
-The Agent should inspect this repository, read [`plugin/README.md`](plugin/README.md), identify the supported route for the current execution surface, and perform every installation step it can perform directly. The user does not need to carry marketplace paths, manifest names, CLI flags, sync rules, revision-provenance checklists, or other internal mechanics in the prompt.
-
-Svif currently uses Agnir as its founding Continuity Provider. If the selected Project is not yet Agnir-initialized, establish the required Project continuity through the current Agnir installation/activation contract before treating Svif Project operation as ready.
-
-### Already installed
-
-**No recurring Svif installation prompt is required.** Give the execution surface access to the Agnir-initialized Project and ask for the actual Project task. If the surface requires selecting or enabling Svif through native Plugin controls, do that once for the applicable surface rather than repeating the installation procedure in every conversation.
-
-### Upgrade the Agnir used by this Project
-
-To update the Agnir operational baseline used by an existing Svif Project—without upgrading Svif itself—give your Agent this one-line request:
-
-```text
-Upgrade the Agnir used by this Project to the latest stable release: https://github.com/iorLab/agnir
-```
-
-`latest stable` means an actually published Agnir stable tag/release, never a moving `main` branch. When the Agnir Core/profile compatibility lines remain unchanged, this is a compatible operational upgrade: preserve `SVIF.yaml`, Project identity, Agnir memory locators/content, unrelated Project instructions, and unrelated extensions. If Agnir compatibility changes, treat that as migration rather than silently rewriting the Svif continuity binding.
+Upgrading Agnir is not the same as upgrading Svif. Compatible Agnir upgrades preserve `SVIF.yaml`, Project identity, and durable Project continuity.
 
 ## Agnir Project Instructions
 
-Treat this repository root as the authorized Project Entry Point for the Svif Project. Before substantive Project work:
+> **For Agents working in this repository.** Users normally do not need to read this section.
 
-1. Read top-level `AGNIR.yaml` and validate the declared Agnir Core/profile compatibility and Project identity.
-2. Load Current State and Next Actions from the durable memory locations declared by `AGNIR.yaml`.
-3. Load Decisions and Evidence when they materially constrain the current operation.
-4. Prefer durable Agnir Project truth over chat history or private executor memory unless superseded by a newer Principal instruction or a directly observed current Project fact.
-5. For Svif work, then read `SVIF.yaml` and the relevant current specifications before changing product behavior.
-6. At an intentional checkpoint, save-progress, finish, or repository commit boundary, reconcile only material continuity changes. If durable truth is unchanged, the checkpoint is a no-op. If material truth changed, publish one coherent candidate so a fresh resolver cannot accept mixed checkpoint generations, reject stale-base publication rather than overwriting newer truth, and verify the locator chain after publication.
-7. In repository/VCS context, treat an authorized request to `commit`, `提交`, `提交代码`, or equivalent as a checkpoint boundary: reconcile Agnir before the commit and prefer Project changes plus Agnir changes in one revision. Treat `commit and push`, `提交推送`, or equivalent as checkpoint + commit + push + verification of the declared authoritative remote/ref when available. Merely observing a commit triggers checkpoint evaluation, not an unconditional new Agnir write.
+1. **Discover.** Treat this repository root as the authorized Project Entry Point. Read top-level `AGNIR.yaml` and validate the declared Agnir Core/profile compatibility and Project identity.
+2. **Load.** Load Current State and Next Actions from the durable memory declared by `AGNIR.yaml`. Load Decisions and Evidence when they materially constrain the current operation. Prefer durable Project truth over chat history or private executor memory unless superseded by a newer Principal instruction or a directly observed current Project fact.
+3. **Bind Svif.** Read `SVIF.yaml` and the relevant current specifications before changing Svif product behavior. Preserve the configured Continuity Provider, execution, capability, authority, and Project-identity boundaries.
+4. **Work / checkpoint.** Perform the actual Project work, then reconcile only material continuity changes at an intentional checkpoint, save-progress, finish, or repository commit boundary. Unchanged durable truth is a no-op. Material changes must form one coherent candidate; reject stale-base publication rather than overwriting newer truth, then verify the locator chain after publication.
+5. **Commit / push.** Authorized `commit`, `提交`, `提交代码`, or equivalent intent means checkpoint before commit and preferably one revision for Project + Agnir changes. `commit and push`, `提交推送`, or equivalent adds push plus authoritative-ref verification. Merely observing an external commit triggers checkpoint evaluation, not an unconditional Agnir write.
 
-Root `AGENTS.md` is only the activation locator to this section; it must not become a second copy of Project state or the Agnir procedure. The expected activation route is:
+Root `AGENTS.md` is only the activation locator to this section; it must not become a second copy of Project state or the Agnir procedure. The canonical activation route is:
 
 `Project root -> AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml -> declared durable memory`
 
 The applied Agnir operational distribution is recorded in `AGNIR.yaml` under `extensions.agnir/operations`; this provenance does not replace Core/profile compatibility or Project identity.
 
-If any activation locator, identity, required memory locator, or compatibility check fails, repair the earliest faulty layer when authorized. Do not invent Project state or silently fall back to chat history, sibling repositories, or retired layouts.
+If an activation locator, identity, required memory locator, or compatibility check fails, repair the earliest faulty layer when authorized. Do not invent Project state or silently fall back to chat history, sibling repositories, or retired layouts.
 
 ## Architecture Diagram
 
@@ -150,6 +123,10 @@ svif/
 
 `plugin/plugin.json` remains the portable Agent Plugins manifest. `plugin/.codex-plugin/plugin.json` is the OpenAI/Codex manifest used for the shared Skill and public listing metadata. `.agents/plugins/marketplace.json` remains an auxiliary repository-marketplace path for development, Codex, and managed-workspace testing.
 
+### Personal ChatGPT distribution status
+
+The mature personal-user path remains `ChatGPT -> Plugins Directory -> discover Svif -> install -> invoke`. **Svif is not publicly listed yet**, so this is a target consumer path rather than a currently available production install.
+
 OpenAI's current public submission flow explicitly accepts a **Skills-only** Plugin. Svif's `.codex-plugin/plugin.json` has therefore been tightened to the current final-directory metadata limits, while the existing `plugin/skills/svif/SKILL.md` remains the single shared workflow implementation. MCP/App packaging is not a prerequisite for the initial public submission and must not be added merely to satisfy publication.
 
 There is still **no ChatGPT or Codex client installation that has yet been recorded as validated evidence** for the public personal-user release. Public review approval, publication, directory appearance, installation, invocation, Agnir activation, verification, and checkpoint are separate evidence layers. Installation validation requires an actual supported surface, exact surface/revision evidence when observable, and observed Agnir activation/verification/checkpoint evidence.
@@ -229,6 +206,8 @@ The founding E2E is intentionally credential-free. It proves the Svif product lo
 ## Documentation synchronization
 
 `README.md` and `README.zh-CN.md` are maintained as parallel entry points. Any change to product architecture, component ownership, dependency direction, authority/provenance boundaries, runtime flow, distribution status, or documented repository structure **must update both language versions in the same change set**.
+
+Before the Architecture Diagram, README content is deliberately limited to two audiences: **Start Here** for users and **Agnir Project Instructions** for Agents. Publication workflow, Plugin packaging rationale, compatibility detail, and implementation explanation belong after the architecture entry point or in dedicated documents.
 
 The exhaustive companion **`REPOSITORY_TREE.md`** is the file-level map of the active repository and must be updated whenever tracked files are added, removed, moved, or materially change responsibility.
 

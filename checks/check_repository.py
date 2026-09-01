@@ -18,6 +18,35 @@ def require_text(text: str, needles: list[str], label: str) -> None:
             fail(f"{label} missing required product-architecture marker: {needle}")
 
 
+def require_readme_entry_guide(
+    path: str,
+    *,
+    start_heading: str,
+    architecture_heading: str,
+    install_prompt: str,
+    upgrade_prompt: str,
+    normal_use_marker: str,
+) -> None:
+    text = (ROOT / path).read_text(encoding="utf-8")
+    require_text(
+        text,
+        [
+            start_heading,
+            install_prompt,
+            upgrade_prompt,
+            normal_use_marker,
+            "## Agnir Project Instructions",
+            architecture_heading,
+        ],
+        f"{path} entry guide",
+    )
+    start_position = text.find(start_heading)
+    agent_position = text.find("## Agnir Project Instructions")
+    architecture_position = text.find(architecture_heading)
+    if not (0 <= start_position < agent_position < architecture_position):
+        fail(f"{path} must present Start Here, then Agnir Project Instructions, before architecture material")
+
+
 def require_readme_diagrams(path: str, headings: tuple[str, str]) -> None:
     text = (ROOT / path).read_text(encoding="utf-8")
     if text.count("```mermaid") < 2:
@@ -173,6 +202,22 @@ def main() -> None:
         "Project orchestration product", "Continuity Provider", "Execution Surface",
         "Capability Provider", "iorLab/svif", "iorLab/agnir", "installable Plugin",
     ], "README.md")
+    require_readme_entry_guide(
+        "README.md",
+        start_heading="## Start Here",
+        architecture_heading="## Architecture Diagram",
+        install_prompt="Install and enable Svif for this Project: https://github.com/iorLab/svif",
+        upgrade_prompt="Upgrade the Agnir used by this Project to the latest stable release: https://github.com/iorLab/agnir",
+        normal_use_marker="No recurring Svif installation prompt is required.",
+    )
+    require_readme_entry_guide(
+        "README.zh-CN.md",
+        start_heading="## 从这里开始",
+        architecture_heading="## 架构图",
+        install_prompt="为这个 Project 安装并启用 Svif：https://github.com/iorLab/svif",
+        upgrade_prompt="把这个 Project 使用的 Agnir 升级到最新稳定版：https://github.com/iorLab/agnir",
+        normal_use_marker="不需要在每次对话里重复 Svif 安装提示。",
+    )
     require_readme_diagrams("README.md", ("## Architecture Diagram", "## Runtime / Operation Flow"))
     require_readme_diagrams("README.zh-CN.md", ("## 架构图", "## 运行流程"))
     require_readme_repository_tree("README.md", "## Repository Structure")

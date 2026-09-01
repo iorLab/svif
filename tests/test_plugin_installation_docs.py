@@ -114,7 +114,7 @@ class PluginInstallationDocumentationTests(unittest.TestCase):
             self.assertIn(marker, plugin)
 
         for marker in (
-            "### Personal ChatGPT",
+            "### Personal ChatGPT distribution status",
             "Svif is not publicly listed yet",
             "personal ChatGPT Web",
             "actual supported surface",
@@ -124,7 +124,7 @@ class PluginInstallationDocumentationTests(unittest.TestCase):
             self.assertIn(marker, english)
 
         for marker in (
-            "### 个人 ChatGPT 用户",
+            "### 个人 ChatGPT 分发状态",
             "Svif 目前还没有公开上架",
             "个人 ChatGPT Web",
             "真实受支持客户端",

@@ -133,3 +133,13 @@
 - Permission to install/enable/invoke Svif for a selected Project authorizes only the non-destructive Project files needed to establish the founding Svif continuity binding, subject to stricter Project policy. It does not grant protected external-effect authority.
 - The first real Codex and personal ChatGPT consumer exercises SHOULD start from an ordinary non-Agnir Project so they validate onboarding rather than bypassing it.
 - Durable evidence is `.agnir/evidence/2026-08-31-plugin-first-use-bootstrap-fix.md`.
+
+## 2026-09-01 — README user/Agent entry-point information architecture
+
+- Before the Architecture Diagram, both READMEs are deliberately limited to two operational audiences: **Start Here / 从这里开始** for users, followed by the canonical **Agnir Project Instructions** for Agents.
+- `Start Here` contains only the minimum current actions: personal-ChatGPT availability status, install intent for compatible Agent environments, normal continuation, and upgrade of the Agnir used by the Project.
+- `Agnir Project Instructions` remains the canonical activation heading resolved from `AGENTS.md` and is explicitly marked as Agent guidance for human readers.
+- Public-submission workflow, Plugin packaging rationale, compatibility detail, repository structure, and implementation/conformance explanation belong after the architecture entry point or in dedicated documents.
+- The user-facing README must reflect the active first-use decision: a genuinely uninitialized Project does not require manual Agnir pre-initialization; Svif owns the founding continuity bootstrap on the repository/filesystem path.
+- English and Simplified Chinese READMEs preserve the same audience split and operational meaning. Localized diagrams remain comprehension-first.
+- Repository-integrity checks enforce `Start Here -> Agnir Project Instructions -> Architecture` ordering and the canonical install/Agnir-upgrade intents so future edits do not rebuild the old mixed-audience front section.

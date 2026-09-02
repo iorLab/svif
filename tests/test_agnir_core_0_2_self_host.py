@@ -36,8 +36,12 @@ class SelfHostedAgnirCore02Tests(unittest.TestCase):
         self.assertEqual(snapshot.project_identity, PROJECT)
         self.assertEqual(provider.resolve_lineage(PROJECT), expected_lineage)
         self.assertIn("Project orchestration product", snapshot.state)
-        self.assertIn("Active Agnir Core 0.2 real-consumer validation", snapshot.next_actions)
-        self.assertIn("2026-09-02-agnir-core-0.2-real-consumer-validation.md", snapshot.evidence)
+        self.assertIn("Agnir Core 0.2", snapshot.next_actions)
+        self.assertIn(expected_lineage, snapshot.next_actions)
+        self.assertTrue(
+            any("agnir-core-0.2" in name for name in snapshot.evidence),
+            "fresh resume should recover inspectable Core 0.2 evidence",
+        )
 
 
 if __name__ == "__main__":

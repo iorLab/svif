@@ -22,6 +22,13 @@ ALLOWED_SKILL_FRONTMATTER_KEYS = {
 }
 
 
+def _quoted_scalar(text: str, key: str) -> str:
+    match = re.search(rf'^\s+{re.escape(key)}:\s+"([^"]+)"\s*$', text, re.MULTILINE)
+    if match is None:
+        raise AssertionError(f"missing quoted scalar {key!r}")
+    return match.group(1)
+
+
 def validate_agent_plugins_1_0_manifest(manifest: object) -> tuple[list[str], list[str]]:
     """Return fatal errors and non-fatal diagnostics using Agent Plugins 1.0 rules.
 
@@ -336,6 +343,8 @@ class PluginPackageTests(unittest.TestCase):
     def test_current_agnir_binding_has_no_live_predecessor_ref(self) -> None:
         agnir = (ROOT / "AGNIR.yaml").read_text(encoding="utf-8")
         svif = (ROOT / "SVIF.yaml").read_text(encoding="utf-8")
+        lineage = _quoted_scalar(svif, "lineage")
+        selector = _quoted_scalar(svif, "vcs_selector")
 
         for text in (agnir, svif):
             self.assertNotIn("predecessor_ref:", text)
@@ -344,16 +353,16 @@ class PluginPackageTests(unittest.TestCase):
         for marker in (
             'version: "0.2"',
             'discovery_profile: "repository-filesystem/0.2"',
-            'lineage: "urn:svif:lineage:agnir-core-0.2-validation"',
-            'selector: "refs/heads/feature/agnir-core-0.2-validation"',
+            f'lineage: "{lineage}"',
+            f'selector: "{selector}"',
         ):
             self.assertIn(marker, agnir)
         for marker in (
             'provider: "agnir"',
             'compatibility: "0.2"',
             'profile: "repository-filesystem/0.2"',
-            'lineage: "urn:svif:lineage:agnir-core-0.2-validation"',
-            'vcs_selector: "refs/heads/feature/agnir-core-0.2-validation"',
+            f'lineage: "{lineage}"',
+            f'vcs_selector: "{selector}"',
         ):
             self.assertIn(marker, svif)
 

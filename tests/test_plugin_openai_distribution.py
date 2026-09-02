@@ -9,6 +9,8 @@ ROOT = Path(__file__).resolve().parents[1]
 PORTABLE_MANIFEST = ROOT / "plugin" / "plugin.json"
 CODEX_MANIFEST = ROOT / "plugin" / ".codex-plugin" / "plugin.json"
 MARKETPLACE = ROOT / ".agents" / "plugins" / "marketplace.json"
+VERSION = ROOT / "VERSION"
+CLOUDFLARE_ADAPTER = ROOT / "integrations" / "cloudflare" / "adapter.json"
 
 
 class PluginOpenAIDistributionTests(unittest.TestCase):
@@ -87,10 +89,19 @@ class PluginOpenAIDistributionTests(unittest.TestCase):
     def test_codex_and_portable_manifests_keep_identity_metadata_in_sync(self) -> None:
         portable = json.loads(PORTABLE_MANIFEST.read_text(encoding="utf-8"))
         codex = json.loads(CODEX_MANIFEST.read_text(encoding="utf-8"))
+        version = VERSION.read_text(encoding="utf-8").strip()
 
         for field in ("name", "version", "description", "homepage", "repository", "keywords"):
             self.assertEqual(codex[field], portable[field], field)
         self.assertEqual(codex["author"], portable["author"])
+        self.assertEqual(portable["version"], version)
+
+    def test_product_release_version_is_shared_with_active_adapter(self) -> None:
+        version = VERSION.read_text(encoding="utf-8").strip()
+        adapter = json.loads(CLOUDFLARE_ADAPTER.read_text(encoding="utf-8"))
+
+        self.assertEqual(adapter["adapter"]["version"], version)
+        self.assertEqual(adapter["svif_adapter"]["version"], "0.2")
 
     def test_distribution_files_are_registered_in_project_binding(self) -> None:
         svif = (ROOT / "SVIF.yaml").read_text(encoding="utf-8")

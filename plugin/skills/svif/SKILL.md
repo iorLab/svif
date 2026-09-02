@@ -81,7 +81,7 @@ If more than one Project is involved, keep each Project's durable state isolated
 
 Load current state and next actions first. Then read only decisions and evidence that materially constrain the requested operation. Avoid pulling historical or retired artifacts back into active architecture unless the current Project explicitly declares them authoritative.
 
-Use the Project's canonical repository or substrate when one is declared. For `iorLab/svif`, `main` is the active line and repository-managed Agnir state is canonical. Svif currently consumes Agnir Core compatibility `0.1` through the `repository-filesystem/0.1` profile; Agnir repository release `0.1.0` is a separate SemVer layer and must not be confused with the Core/profile compatibility identifiers.
+Use the Project's canonical repository or substrate when one is declared. For `iorLab/svif`, `main` is the active line and repository-managed Agnir state is canonical. Svif currently consumes Agnir Core compatibility `0.1` through the `repository-filesystem/0.1` profile; Agnir repository release `0.1.1` is a separate SemVer layer and must not be confused with the Core/profile compatibility identifiers.
 
 ## 3. Execute through the Svif lifecycle
 

@@ -103,11 +103,31 @@ A useful workflow request after a client has actually loaded the Plugin or conta
 
 Expected behavior: the executor follows Project-owned Agnir activation/discovery, performs actionable Project work with verification, distinguishes package success from external-effect success, and persists a resumable checkpoint rather than relying on conversation memory.
 
-## OpenAI repository marketplace distribution
+## Repository Preview self-distribution
 
-The repository marketplace remains an **auxiliary development, Codex, managed-workspace, and validation route**. It is not the primary personal ChatGPT onboarding path.
+Svif `v0.2.0-preview.1` is a self-distributed Skills-only Plugin Preview for **Codex CLI** and **ChatGPT desktop/Codex**. It uses the repository marketplace and remains separate from the universal Plugins Directory. ChatGPT Web and mobile cannot install this repository Preview through a prompt alone.
 
-OpenAI currently exposes repository-marketplace paths that can exercise `.agents/plugins/marketplace.json`, including managed-workspace import and Codex-local marketplace registration. Both reuse the same repository distribution shape:
+The user-facing install intent stays deliberately short:
+
+```text
+Install and enable Svif for this Project: https://github.com/iorLab/svif
+```
+
+The installer—not the user prompt—owns the following procedure:
+
+1. Confirm that the active surface can install repository Plugins. The supported Preview surfaces are Codex CLI and ChatGPT desktop/Codex. If repository Plugin installation is unavailable, report the unsupported surface and do not claim installation succeeded.
+2. Resolve the current published Repository Preview to immutable tag `v0.2.0-preview.1`. Never silently substitute moving `main` for a released Preview.
+3. Register the repository marketplace at that exact tag:
+
+   ```text
+   codex plugin marketplace add iorLab/svif --ref v0.2.0-preview.1
+   ```
+
+4. In Codex CLI, open `/plugins`, select the `svif` marketplace, install and enable Svif, then start a new session. In ChatGPT desktop/Codex, refresh or restart after registering the marketplace, install Svif from the Plugins directory source, then start a new chat.
+5. Continue the user's original Project task after installation. Do not require manual Agnir pre-initialization; the shared Skill owns first-use classification, bootstrap, verification, and checkpoint behavior.
+6. Record the observed surface, installation state, and accepted revision when the client exposes it. Package validation or marketplace registration alone is not installation evidence.
+
+Both supported surfaces reuse the same repository distribution shape:
 
 - repository: `https://github.com/iorLab/svif`;
 - marketplace manifest: `.agents/plugins/marketplace.json`;
@@ -115,23 +135,19 @@ OpenAI currently exposes repository-marketplace paths that can exercise `.agents
 - OpenAI/Codex Plugin manifest: `plugin/.codex-plugin/plugin.json`;
 - shared Skill implementation: `plugin/skills/svif/SKILL.md`.
 
-The Codex CLI route is:
+For candidate verification before the immutable Preview tag exists, replace the tag in `--ref` with the exact candidate commit SHA and record that SHA as the tested subject. This candidate-only route must not appear in the user prompt and must not be described as a published Preview.
 
-```text
-codex plugin marketplace add iorLab/svif
-```
-
-For a revision-sensitive Codex-local exercise, use a ref explicitly, for example:
+An unpinned development route remains available for repository maintainers:
 
 ```text
 codex plugin marketplace add iorLab/svif --ref main
 ```
 
-`--ref main` selects a moving repository ref. Its repository SHA is comparison evidence, not proof of the exact installed revision unless a client-exposed accepted-version signal binds the invocation to that immutable commit.
+`--ref main` selects a moving development ref. It is not a Preview release and its current repository SHA is only comparison evidence unless the client exposes the exact accepted revision.
 
 For workspace-managed testing, use the repository URL as Source, leave Path empty because the marketplace manifest is at the repository root, and prefer a fixed commit when exact provenance matters. Workspace repository policy values are not workspace execution authority.
 
-Repository marketplace success remains distinct from public-directory publication and from personal ChatGPT installation evidence.
+Repository Preview success remains distinct from public-directory publication and from personal ChatGPT installation evidence. The public personal-user target remains the universal Plugins Directory after the separate OpenAI submission and review flow.
 
 ## Installation and invocation evidence
 

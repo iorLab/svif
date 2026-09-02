@@ -22,6 +22,6 @@ extensions:
     authoritative_ref: "main"
   agnir/operations:
     distribution: "agnir-agent-skill"
-    release: "0.1.0"
+    release: "0.1.1"
     source: "iorLab/agnir"
-    applied_revision: "2a0cb7bf2068b11f361e315670b2f2dc497b2588"
+    applied_revision: "e9712357ab590e5c1e5357b3cf3219d07d789aff"

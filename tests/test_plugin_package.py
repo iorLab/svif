@@ -211,11 +211,13 @@ def validate_agent_skill(skill_dir: Path, text: str) -> list[str]:
 class PluginPackageTests(unittest.TestCase):
     def test_manifest_conforms_to_agent_plugins_1_0_constraints(self) -> None:
         manifest = json.loads((PLUGIN_ROOT / "plugin.json").read_text(encoding="utf-8"))
+        version = (PLUGIN_ROOT.parent / "VERSION").read_text(encoding="utf-8").strip()
         errors, diagnostics = validate_agent_plugins_1_0_manifest(manifest)
         self.assertEqual(errors, [])
         self.assertEqual(diagnostics, [])
         self.assertEqual(manifest["name"], "svif")
-        self.assertEqual(manifest["version"], "0.2.0-dev")
+        self.assertEqual(version, "0.2.0-preview.1")
+        self.assertEqual(manifest["version"], version)
         self.assertEqual(manifest["repository"], "https://github.com/iorLab/svif")
         self.assertEqual(manifest["homepage"], "https://github.com/iorLab/svif")
 

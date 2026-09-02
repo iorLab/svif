@@ -26,9 +26,17 @@ svif/                                                     # Svif 产品主仓库
 │       ├── 2026-08-28-product-architecture-runtime.md    # 产品架构与 executable runtime 基线证据
 │       ├── 2026-08-28-readme-diagram-localization-checkpoint.md # 双语 README / Mermaid 本地化 checkpoint
 │       ├── 2026-08-28-validation-2-static-success.md     # 早期 Validation 2 静态验证成功证据
+│       ├── 2026-08-31-personal-chatgpt-distribution-checkpoint.md # personal ChatGPT 分发路径与 publisher gate 证据
 │       ├── 2026-08-31-plugin-first-use-bootstrap-fix.md  # 普通 Project 首次启用 Svif 时由 Plugin 建立 continuity/binding 的修复与 CI 证据
+│       ├── 2026-08-31-plugin-mvp-hardening-checkpoint.md # Skill-first Plugin MVP hardening 与 package guardrail 证据
+│       ├── 2026-09-01-agnir-v0.1.0-compatible-upgrade.md # Agnir v0.1.0 compatible operational upgrade 候选证据
+│       ├── 2026-09-01-agnir-v0.1.0-upgrade-verification.md # Agnir v0.1.0 upgrade 验证与 CI 证据
 │       ├── 2026-09-01-first-use-bootstrap-checkpoint.md  # first-use bootstrap 修复后的 canonical resume checkpoint 与 Codex 首测入口
+│       ├── 2026-09-01-readme-information-architecture.md # 双语 README 用户入口、Agnir instructions 与 first-use surface 分层证据
 │       ├── 2026-09-01-svif-name-origin.md                # Svif 冰岛语名称来源、svifryk 关联与产品隐喻的语言学证据
+│       ├── 2026-09-02-agnir-v0.1.1-compatible-upgrade.md # Agnir v0.1.1 compatible operational upgrade 与 immutable provenance
+│       ├── 2026-09-02-svif-v0.2.0-preview.1-candidate.md # Preview 候选、CI、Codex CLI 与桌面端真实安装验收证据
+│       ├── 2026-09-02-svif-v0.2.0-preview.1-release.md   # tag、GitHub Prerelease、main CI 与 tag-based 安装烟测证据
 │       └── checkpoint-2026-08-28-validation-2.md         # Validation 2 的持久 checkpoint 记录
 │
 ├── .github/                                              # GitHub 托管侧自动化配置
@@ -119,7 +127,7 @@ svif/                                                     # Svif 产品主仓库
 ├── README.md                                             # 英文项目入口与 canonical `Agnir Project Instructions`
 ├── README.zh-CN.md                                       # 简体中文项目入口；与英文版保持同一 canonical 产品语义
 ├── REPOSITORY_TREE.md                                    # 本文件：当前 main 的完整文件级仓库结构与职责说明
-└── VERSION                                               # 当前 Svif development version
+└── VERSION                                               # 当前 Svif 产品 / release version
 ```
 
 ## 如何使用这张树

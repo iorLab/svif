@@ -264,7 +264,7 @@ def main() -> None:
         start_heading="## 从这里开始",
         surface_heading="## Svif 会给 Project 增加什么",
         architecture_heading="## 架构图",
-        install_prompt="为这个 Project 安装并启用 Svif：https://github.com/iorLab/svif",
+        install_prompt="Install and enable Svif for this Project: https://github.com/iorLab/svif",
         upgrade_prompt="把这个 Project 使用的 Agnir 升级到最新稳定版：https://github.com/iorLab/agnir",
         normal_use_marker="不需要在每次对话里重复 Svif 安装提示。",
         surface_markers=(

@@ -16,11 +16,13 @@ Svif 是一个 **Project orchestration（项目编排）产品**，负责协调�
 
 **Svif 目前还没有公开上架。** 正式发布后，从 ChatGPT 与 Codex 共享的通用 Plugins Directory 安装。
 
-### 在开发、Codex 或其他兼容 Agent 环境安装
+### 在 Codex 或 ChatGPT 桌面版安装 Repository Preview
 
 ```text
-为这个 Project 安装并启用 Svif：https://github.com/iorLab/svif
+Install and enable Svif for this Project: https://github.com/iorLab/svif
 ```
+
+当前自分发版本为 `v0.2.0-preview.1`。兼容的安装器会把上面这句简短意图解析为 repository marketplace 中不可变的 Preview tag；不得静默安装移动的 `main`。本 Preview 明确支持 Codex CLI 与 ChatGPT 桌面版/Codex。若当前客户端不支持 repository Plugin 安装，必须报告 surface 不受支持，不得声称安装成功。
 
 ### 已经安装，继续使用
 
@@ -153,7 +155,7 @@ flowchart TD
 
 ## 可安装 Plugin MVP
 
-Svif 已在 `plugin/` 中提供 **Skill-first Plugin MVP**，采用 Agent Plugins 1.0.0 的可移植目录格式，并附加 OpenAI/Codex manifest：
+Svif 已在 `plugin/` 中提供 **Skill-first `v0.2.0-preview.1` Plugin**，采用 Agent Plugins 1.0.0 的可移植目录格式，并附加 OpenAI/Codex manifest：
 
 ```text
 svif/
@@ -167,7 +169,9 @@ svif/
             └── SKILL.md
 ```
 
-`plugin/plugin.json` 仍然是 portable Agent Plugins manifest；`plugin/.codex-plugin/plugin.json` 是 OpenAI/Codex manifest，同时承载共享 Skill 与公开 listing metadata；`.agents/plugins/marketplace.json` 则作为开发、Codex 和 managed workspace 测试使用的辅助 repository marketplace 路径。
+`plugin/plugin.json` 仍然是 portable Agent Plugins manifest；`plugin/.codex-plugin/plugin.json` 是 OpenAI/Codex manifest，同时承载共享 Skill 与公开 listing metadata；`.agents/plugins/marketplace.json` 是 Codex CLI 与 ChatGPT 桌面版/Codex 的受支持自分发 Preview 路径，但它不等于通用目录发布。
+
+Repository Preview 仍让用户请求保持一句话。版本解析、固定 tag 的 marketplace 注册、客户端能力检查、首次 Agnir bootstrap 与安装证据都属于安装器/Plugin procedure，而不是用户提示词。固定 tag 的准确安装路径见 [`plugin/README.md`](plugin/README.md)。
 
 ### 个人 ChatGPT 分发状态
 
@@ -175,7 +179,7 @@ svif/
 
 OpenAI 当前公开提交流程明确接受 **Skills-only Plugin**。因此 Svif 已把 `.codex-plugin/plugin.json` 收紧到当前公开目录最终提交的 metadata 限制，并继续让 `plugin/skills/svif/SKILL.md` 成为唯一共享的 workflow implementation。MCP/App packaging 不是首次公开 submission 的前置条件，不应为了“能发布”而强行加入。
 
-目前仍然**没有 ChatGPT 或 Codex client installation 已被记录为 validated evidence**，尤其还没有个人 ChatGPT 的公开版本。公开 review approval、显式 publication、Plugins Directory 出现、真实 installation、调用、Agnir activation、verification 和 checkpoint 都是不同的 evidence layer。安装验证必须来自真实受支持客户端，并记录 exact surface/revision（可观察时）以及 Agnir activation、verification、checkpoint 等实际 evidence。
+Repository Preview 与未来面向个人用户的公开版本是不同的分发层。Codex CLI 与 ChatGPT 桌面版/Codex 的 Preview 安装必须分别验证；公开 review approval、目录 publication、个人 ChatGPT installation、调用、Agnir activation、verification 和 checkpoint 仍是不同的 evidence layer。
 
 公开 submission 前置条件、拟定 listing metadata、review test cases、repository-marketplace 开发路径和 evidence boundary 见 [`plugin/README.md`](plugin/README.md)。
 
@@ -185,8 +189,8 @@ OpenAI 当前公开提交流程明确接受 **Skills-only Plugin**。因此 Svif
 
 ```text
 svif/
-├── .agents/plugins/                   # 辅助 OpenAI/Codex repository marketplace catalog
-│   └── marketplace.json              # 将开发 / workspace import 映射到本仓库的 ./plugin root
+├── .agents/plugins/                   # OpenAI/Codex repository marketplace catalog
+│   └── marketplace.json              # 将自分发 Preview 映射到本仓库的 ./plugin root
 │
 ├── src/                              # Svif 可执行产品代码
 │   └── svif/
@@ -224,7 +228,7 @@ svif/
 ├── ARCHITECTURE.md                   # 更详细的产品架构、依赖方向和边界说明
 ├── README.md                         # 英文项目入口，并承载 canonical Agnir Project Instructions
 ├── README.zh-CN.md                   # 简体中文项目入口
-└── VERSION                           # 当前 Svif development version
+└── VERSION                           # 当前 Svif 产品 / release version
 ```
 
 需要查看当前 `main` 的**完整文件级展开**，请看 **[完整目录树：REPOSITORY_TREE.md](REPOSITORY_TREE.md)**。
@@ -239,7 +243,7 @@ Python 目前只是可执行 reference vehicle，并不冻结未来的分发技�
 - `tests/test_founding_e2e.py` 已把三者通过真实 Orchestrator 边界串起来。
 - `plugin/plugin.json` + `plugin/skills/svif/SKILL.md` 继续构成 portable Plugin MVP package。
 - `plugin/.codex-plugin/plugin.json` 现在同时满足仓库测试约束的公开目录 listing limits。
-- `.agents/plugins/marketplace.json` 继续作为辅助的 OpenAI/Codex repository-backed 开发路径，而不是个人 ChatGPT 的主安装路径。
+- `.agents/plugins/marketplace.json` 是 Codex CLI 与 ChatGPT 桌面版/Codex 的受支持自分发 Preview 路径；它不是公开目录 publication，也不是个人 ChatGPT Web 的主 onboarding 路径。
 - Protected authority 不来自不可信的 model/result payload。
 - 外部成功必须满足 exact verified-subject delivery，并经过 independent observation 后才能 checkpoint。
 
@@ -269,4 +273,4 @@ PYTHONPATH=src python -m unittest discover -s tests -v
 
 ## 下一步
 
-仓库侧的公开分发路径已经明确：**通过 OpenAI Platform plugin submission portal 提交现有的 Skills-only Plugin。** 剩余的外部发布前置条件是：OpenAI Platform 发布组织中的 submitter 具备 Apps Management: Write 权限，并完成个人开发者或企业身份验证。Portal 提交后要记录 skill scan / review 结果；审核通过后必须显式 Publish；然后再从通用 Plugins Directory 做第一次个人 ChatGPT Web 安装与调用验证。MCP/App packaging 是后续能力增量，不再是 release gate。真实 Cloudflare actuation 仍然单独受权限门控。
+先在 Codex CLI 与 ChatGPT 桌面版/Codex 中，针对同一个不可变候选完成自分发 `v0.2.0-preview.1` 的验收；随后把已验证 tag 发布为 GitHub Prerelease，并保留同一份 Skills-only package 供以后提交 OpenAI Platform。通用目录 publication 仍需满足相应 publisher identity 与 review 流程；MCP/App packaging 继续作为后续能力增量，而不是 release gate。真实 Cloudflare actuation 仍然单独受权限门控。

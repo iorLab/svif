@@ -33,7 +33,7 @@ No execution surface becomes canonical Project truth merely because execution oc
 
 The Agnir `v0.1.1` candidate upgrade is a **compatible operational upgrade**, not a migration: Core `0.1` and `repository-filesystem/0.1` are unchanged, while Project identity, memory locators/content, unrelated manifest extensions, and `SVIF.yaml` remain preserved. Its execution-surface activation handoff repair is directly relevant to the Repository Preview installation path.
 
-Work is staged on short-lived branch `release/svif-v0.2.0-preview.1`. That branch is a candidate for the declared authoritative `main`; it is not a second continuity authority. No Preview tag, GitHub Prerelease, supported-client installation baseline, or public-directory publication has yet been claimed by this candidate state.
+Work is staged on short-lived branch `release/svif-v0.2.0-preview.1`. That branch is a candidate for the declared authoritative `main`; it is not a second continuity authority. Initial immutable candidate `1dbcce6582f218b0762fb655bc03455517c79802` passed GitHub Actions run `33590346950` and real Codex CLI plus ChatGPT desktop/Codex installation, bootstrap, checkpoint, initialized-Project idempotency, and fresh-context recovery acceptance. No Preview tag, GitHub Prerelease, or public-directory publication has yet been claimed by this candidate state.
 
 ## README entry architecture
 
@@ -94,16 +94,16 @@ Do not weaken the Skills-only package, add MCP merely to escape this gate, inven
 
 ## Current resume point
 
-1. Finish static validation of the `v0.2.0-preview.1` candidate and push one coherent candidate revision from the short-lived release branch.
-2. Require successful CI, then use the immutable candidate SHA to validate the one-line install intent in both Codex CLI and ChatGPT desktop/Codex from an ordinary non-Agnir Project; also validate idempotent resume on an initialized Project.
-3. Only after both supported surfaces pass, reconcile the target-main checkpoint, advance authoritative `main`, create immutable tag `v0.2.0-preview.1`, publish a GitHub Prerelease, and repeat a tag-based smoke.
+1. Commit and push this client-acceptance checkpoint as the final evidence-only candidate, require green CI, and smoke the new immutable SHA; the Plugin tree itself is unchanged from the fully exercised `1dbcce6582f218b0762fb655bc03455517c79802` subject.
+2. Re-read `origin/main`. If it remains the candidate base, advance authoritative `main` by fast-forward; if it changed, rebase/reconcile Agnir state and repeat all affected gates.
+3. Create immutable tag `v0.2.0-preview.1` only from the verified `origin/main` release commit, publish the GitHub Prerelease, and repeat a tag-based installation smoke.
 4. Record the observed release/tag/install evidence in a post-release target-main checkpoint. Do not move a failed tag; repair into `preview.2`.
 5. Keep the later public/personal ChatGPT submission path separate: resolve the publisher gate, submit the same Skills-only package, explicitly Publish after approval, then validate the universal Plugins Directory and personal ChatGPT Web.
 6. Keep live Cloudflare delivery disabled unless explicitly authorized.
 
 ## Evidence checkpoints
 
-- Repository Preview candidate: `.agnir/evidence/2026-09-02-svif-v0.2.0-preview.1-candidate.md`; static package/contract/runtime/Skill checks pass, while supported-client installation and release remain pending.
+- Repository Preview candidate: `.agnir/evidence/2026-09-02-svif-v0.2.0-preview.1-candidate.md`; static checks, GitHub CI, and immutable-SHA Codex CLI plus ChatGPT desktop/Codex acceptance pass; final evidence-only candidate smoke and release remain pending.
 - Agnir `v0.1.1` compatible operational upgrade candidate: `.agnir/evidence/2026-09-02-agnir-v0.1.1-compatible-upgrade.md`; stable tag `e9712357ab590e5c1e5357b3cf3219d07d789aff`, Core/profile unchanged.
 - README audience split / first-use Project surface: `.agnir/evidence/2026-09-01-readme-information-architecture.md`.
 - Previous Agnir `v0.1.0` compatible operational upgrade: `.agnir/evidence/2026-09-01-agnir-v0.1.0-compatible-upgrade.md`; upgrade revision `c7cd42b6e94556a630570a54e22c72acc97f3ecf`, run `33466389590` success.

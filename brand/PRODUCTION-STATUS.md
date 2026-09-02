@@ -49,11 +49,32 @@ This is not a redesign. It is a deterministic extraction of the frozen visual au
 
 The old `brand/masters/candidates/svif-wordmark-trace-v0.1.svg` remains provenance only. The raster-extracted approved wordmark is preferred for fidelity-first production until a separately reviewed smooth outline is demonstrated to match the locked source.
 
-## Binary repository boundary
+## Materialized repository binaries
 
-The active GitHub connector can create Git binary blobs from base64, but the execution bridge truncates sufficiently long local binary payloads before they can be safely attached to a tree. Corrupt/unverified blobs are therefore **not** attached to the branch.
+The Git binary path has now been verified end-to-end for payloads that fit through the current execution bridge. The following delivery files are directly committed under `brand/exports/`:
 
-The production builder, exact source SHA, crop rules and output hashes are persisted in-repository. Current binary outputs are preserved in the local production package. Actual PNG binaries must be added only through a binary-safe Git surface or a verified repository workflow; never attach an unverified/truncated blob merely to claim the binary was committed.
+- `svif-favicon-64.png` — Git blob `b396a8f9f36d3b59b69e16b650675e82d666e99e`;
+- `svif-favicon-32.png` — Git blob `791eb44f67e6e96d55a1126bdc2fdc23b18b5050`;
+- `svif-favicon-16.png` — Git blob `234044b5faf1be3a6862d5c8f8548757902bc69b`.
+
+For each file, GitHub's returned blob SHA matched the locally calculated Git object SHA exactly, and its SHA-256 matches `brand/masters/RASTER-MASTER-MANIFEST.md`.
+
+A failed attempt to read a PNG Git blob as UTF-8 is expected for binary content and is not evidence of corruption. The actual remaining limitation is the current execution bridge's long-base64 argument truncation: sufficiently large PNG payloads cannot traverse this bridge intact even though Git's blob API itself is binary-safe.
+
+Therefore the larger mark / wordmark / lockups / treatment / app / 128px favicon / social PNGs remain deterministic builder outputs rather than falsely attached truncated binaries.
+
+## QA status
+
+Final local production QA has been run across:
+
+- mark and wordmark;
+- horizontal and vertical lockups;
+- light / dark / monochrome treatments;
+- app icon;
+- 128 / 64 / 32 / 16 favicon targets;
+- social-card composition.
+
+The QA set preserves the approved translucent ribbon, particle trajectories and locked 10:42 composition. The complete local delivery package has also been generated with output manifests/hashes.
 
 ## QA rules
 
@@ -62,10 +83,10 @@ The production builder, exact source SHA, crop rules and output hashes are persi
 - Favicon QA is performed at actual 128 / 64 / 32 / 16 sizes.
 - The frozen 10:42 AM board remains visually authoritative over all derived files.
 
-## Next actions
+## Remaining integration gates
 
-1. Persist the raster-master file map and current output hashes.
-2. Write `brand/brand-handoff.md` describing raster-master semantics, usage and limitations.
-3. Package Svif mark / wordmark / lockups / variants / app / favicon / social derivatives for delivery.
-4. Add byte-exact binaries to repository storage only through a binary-safe path and verify their SHA-256 values afterward.
-5. Re-resolve latest `main`, reconcile branch-local Agnir continuity, then integrate the approved brand package coherently.
+1. Preserve the byte-exact approved Svif board in repository storage.
+2. Attach the larger deterministic PNG outputs through a binary transport that preserves exact bytes, then verify their Git blob SHA and documented SHA-256.
+3. Re-resolve latest `main` and reconcile branch-local Agnir continuity.
+4. Integrate the approved brand package coherently without changing the released `v0.2.0-preview.1` tag.
+5. Verify the resulting authoritative `main` after publication.

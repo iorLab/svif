@@ -44,6 +44,7 @@ checks:
   portable_contracts: "conformance/check_contracts.py"
   runtime_kernel: "tests/test_runtime.py"
   agnir_continuity: "tests/test_agnir_continuity.py"
+  agnir_core_0_2_self_host: "tests/test_agnir_core_0_2_self_host.py"
   chatgpt_surface: "tests/test_chatgpt_surface.py"
   cloudflare_capability: "tests/test_cloudflare_capability.py"
   founding_e2e: "tests/test_founding_e2e.py"

@@ -1,72 +1,27 @@
 # Svif Current State
 
-Svif remains the authoritative active **Project orchestration product** in `iorLab/svif`; `main` remains the only long-lived authoritative branch. Agnir remains the independent founding **Continuity Provider**; ChatGPT remains a founding **Execution Surface**; Cloudflare remains a founding **Capability Provider**. The former `iorLab/svif-cloudflare-reference` project is retired and historical only.
+Svif remains the authoritative active **Project orchestration product** in `iorLab/svif`; `main` remains the only long-lived authoritative branch. Agnir remains the founding **Continuity Provider**, ChatGPT a founding **Execution Surface**, and Cloudflare a founding **Capability Provider**. The former `iorLab/svif-cloudflare-reference` project is retired and historical only.
 
-## Active Core 0.2 real-consumer validation — 2026-09-02
+## Active target lineage — 2026-09-02
 
-Temporary branch `feature/agnir-core-0.2-validation` is now the first real Svif Project consumer of the Agnir Core `0.2` / `repository-filesystem/0.2` candidate. This branch is experimental and does not change authoritative `main` or released `v0.2.0-preview.1`.
+Temporary branch `feature/agnir-core-0.2-validation` remains the target lineage for the real Agnir Core `0.2` consumer experiment. Project identity remains `urn:svif:project:svif-core`; logical lineage remains `urn:svif:lineage:agnir-core-0.2-validation`; selector remains `refs/heads/feature/agnir-core-0.2-validation`.
 
-Project identity remains `urn:svif:project:svif-core`. The selected logical lineage is `urn:svif:lineage:agnir-core-0.2-validation`, bound to VCS selector `refs/heads/feature/agnir-core-0.2-validation`. Existing `.agnir/state.md`, `.agnir/next-actions.md`, `.agnir/decisions.md`, and `.agnir/evidence/` locations were preserved through migration.
+This target lineage has now advanced independently from common checkpoint `329984f94483a7cbbb21a6faa42b9cf9ed84fed2`. Its target-only real Project change updates `ARCHITECTURE.md` to state that the generic Svif Orchestrator consumes an already selected Continuity Context and must not enumerate/guess sibling provider contexts or infer Project identity from provider lineage/selector/revision metadata.
 
-Agnir experimental source revision `414dba1e50ad1bdcae3ca91d19c6768fdaa030cc` is recorded as validation provenance only; it is not a published stable Agnir release.
+The source lineage is separate: `urn:svif:lineage:agnir-core-0.2-parallel` on `refs/heads/feature/agnir-core-0.2-parallel`. Its `PROJECT_BINDING` contract change and source-local continuity are not copied into target truth before integration.
 
-## First real-consumer CI baseline passed
+## Validation evidence
 
-Svif Draft PR `#3` (`Validate Svif against Agnir Core 0.2 lineages`) exercises this validation branch against real repository checks.
+The migrated target baseline passed run `33616508143`; the coherent target self-host checkpoint passed run `33616750662`. Source-lineage CI exposed and then removed remaining tests that treated the target selector as a Project constant; those tests are being made binding-driven on the source branch before integration.
 
-Initial run `33615826969` produced useful pressure:
+This target checkpoint must pass repository-integrity, portable-contracts, runtime-kernel, and fresh target self-host discovery before staged integration begins.
 
-- portable-contracts passed;
-- the new Agnir `0.2` adapter cases themselves passed in runtime-kernel;
-- repository-integrity and three legacy tests failed because they hard-coded current Project compatibility as Agnir `0.1` or because the first branch-local Next Actions rewrite dropped still-valid Preview/public-distribution work.
+## Product/distribution state preserved
 
-Those regressions were repaired without weakening unrelated gates. The repository integrity checker now validates the **coherence of the currently selected Agnir/Svif binding** and accepts only supported `0.1` or `0.2` Core/profile pairs. For Core `0.2`, it additionally requires matching logical lineage and VCS selector binding and rejects selector==lineage identity. Legacy distribution tests now distinguish the current migrated Project binding from the released Skill's still-published `0.1` first-use bootstrap baseline. Existing Preview/Codex/public ChatGPT next actions were restored rather than discarded.
+The Plugin MVP remains active; `README.md` and `README.zh-CN.md` remain synchronized entry points. Released `v0.2.0-preview.1` remains immutable with prior Codex CLI and ChatGPT desktop/Codex acceptance evidence. The public/personal ChatGPT Web / universal Plugins Directory path remains separate active work. Live Cloudflare delivery remains disabled unless explicitly authorized.
 
-Follow-up run **`33616508143` completed successfully**:
+## Next boundary
 
-- `repository-integrity`: success;
-- `portable-contracts`: success;
-- `runtime-kernel`: success.
+After both target and source are independently green, capture both revisions and continuity. Build the integrated Project candidate without moving the target ref. Reconcile target continuity from the actual integrated result, previous target truth, relevant source continuity/evidence, and Principal intent. Only then publish the integrated Project + reconciled target continuity in the same target-advancing revision and fresh-resolve both lineages.
 
-This establishes a coherent migrated Svif Core `0.2` consumer baseline while preserving the released `0.1` bootstrap path and unrelated product gates.
-
-## Real selected-lineage fresh discovery
-
-`tests/test_agnir_core_0_2_self_host.py` now loads the actual Svif repository root through `AgnirFilesystemContinuityProvider` with explicit Core/profile `0.2` and selector context. It verifies:
-
-- Project identity `urn:svif:project:svif-core`;
-- logical lineage `urn:svif:lineage:agnir-core-0.2-validation`;
-- selector binding `refs/heads/feature/agnir-core-0.2-validation` through provider discovery;
-- recovery of real branch-local State / Next Actions / Evidence.
-
-This checkpoint records the first coherent target-lineage baseline from which the second Svif lineage will be forked.
-
-## Adapter boundary proven so far
-
-The real Svif Agnir Continuity Provider now:
-
-- retains Core/profile `0.1` support;
-- accepts experimental Core/profile `0.2` only with coherent logical lineage semantics;
-- treats VCS selector/binding as distinct from logical lineage identity;
-- rejects selected selector absence/mismatch rather than guessing;
-- records the resolved Agnir lineage in runtime checkpoint evidence;
-- leaves the generic Svif Orchestrator Continuity-Provider-neutral.
-
-## Released product/distribution state preserved
-
-The Plugin MVP remains active under `plugin/`. `README.md` and `README.zh-CN.md` remain synchronized user entry points. Released `v0.2.0-preview.1` remains immutable, with prior Codex CLI and ChatGPT desktop/Codex acceptance evidence unchanged. The public/personal ChatGPT Web / universal Plugins Directory path remains separate work. Live Cloudflare delivery remains disabled unless explicitly authorized.
-
-## Remaining validation boundary
-
-Core `0.2` real-Project validation is **not complete yet**. Next required evidence:
-
-1. this checkpoint's fresh self-host test passes in CI;
-2. fork a second temporary Svif branch from this coherent checkpoint with the same Project identity but a new logical lineage identity and selector binding;
-3. advance both lineages independently and fresh-resolve different Current State / Next Actions;
-4. stage source→target integration without advancing the target ref while unreconciled;
-5. reconcile target continuity from actual Project result + previous target truth + relevant source continuity/Evidence;
-6. publish integrated Project + target checkpoint coherently;
-7. fresh-resolve both target and source after integration;
-8. feed the completed real-consumer evidence back into Agnir Core `0.2` release readiness.
-
-`.agnir/decisions.md` remains authoritative for established Svif architecture/distribution decisions; `.agnir/next-actions.md` is the resume order for the active validation and still-valid distribution work.
+`.agnir/next-actions.md` is the active resume order; `.agnir/decisions.md` remains authoritative for durable architecture and distribution decisions.

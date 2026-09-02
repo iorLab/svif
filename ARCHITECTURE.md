@@ -49,7 +49,11 @@ ChatGPT uses the externally driven form. Untrusted model/result payloads cannot 
 
 A Continuity Provider supplies durable Project truth and resumability. The Svif kernel depends on this interface, not permanently on Agnir.
 
-`src/svif/continuity/agnir.py` is the founding adapter for Agnir Core `0.1` repository/filesystem discovery and checkpoint semantics.
+`src/svif/continuity/agnir.py` is the founding adapter for Agnir repository/filesystem discovery and checkpoint semantics.
+
+A Continuity Provider may expose more than one provider-local continuity context for the same stable Svif Project identity when its own contract supports that behavior. The **selected** continuity context comes from the Project Binding or another trusted adapter context; the generic Orchestrator consumes the selected `ContinuitySnapshot` and MUST NOT enumerate sibling provider contexts, infer one from a backend branch/ref/revision, or silently switch contexts when selection is missing or inconsistent.
+
+Provider-local lineage, namespace, selector, revision, and reconciliation semantics therefore remain at the Continuity Provider / Project Binding boundary. They do not become generic Svif Project identity or Orchestrator lifecycle semantics.
 
 ## 5. Execution Surface
 

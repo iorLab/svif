@@ -1,115 +1,48 @@
 # Svif Current State
 
-Svif is the authoritative active **Project orchestration product** in `iorLab/svif` on `main`. Agnir is the independent founding Continuity Provider in `iorLab/agnir`. The former `iorLab/svif-cloudflare-reference` project is retired. Historical ZeroLocal material, retired branches, and the retired Cloudflare reference are evidence only and are not active dependencies or release gates.
+Svif remains the authoritative active **Project orchestration product** in `iorLab/svif`; `main` remains the only long-lived authoritative branch. Agnir remains the founding **Continuity Provider**, ChatGPT a founding **Execution Surface**, and Cloudflare a founding **Capability Provider**. The former `iorLab/svif-cloudflare-reference` project is retired and historical only.
 
-## Product architecture
+## Agnir Core 0.2 real-consumer validation complete — 2026-09-02
 
-Svif coordinates four first-class components:
+Temporary target branch `feature/agnir-core-0.2-validation` has completed the first real Svif consumer validation of Agnir Core `0.2` / `repository-filesystem/0.2` parallel continuity.
 
-1. **Orchestrator** — `src/svif/runtime.py`;
-2. **Continuity Provider** — founding Agnir implementation at `src/svif/continuity/agnir.py`;
-3. **Execution Surface** — founding ChatGPT bridge at `src/svif/execution/chatgpt.py`;
-4. **Capability Provider** — founding Cloudflare Workers provider at `src/svif/capabilities/cloudflare.py`.
+Project identity remained `urn:svif:project:svif-core` throughout. Target logical lineage remains `urn:svif:lineage:agnir-core-0.2-validation` bound to `refs/heads/feature/agnir-core-0.2-validation`. Source logical lineage remains independently available as `urn:svif:lineage:agnir-core-0.2-parallel` on `refs/heads/feature/agnir-core-0.2-parallel`.
 
-Stable rule:
+### Real two-lineage receipts
 
-> The Project persists; Executors and execution environments may change.
+- common coherent baseline: `329984f94483a7cbbb21a6faa42b9cf9ed84fed2`;
+- independently advanced target: `79c5b7c7ee2ed545492702bea43d0f7135602f35`, CI `33619053159` 3/3 success;
+- independently advanced source: `d2d0c1bf25526b54490cce14c5aa8797c85c4d54`, CI `33618885830` 3/3 success;
+- unpublished staged two-parent candidate: `4b86b3adafe08cc2f7fd48eb4f685d2b633b25c3`;
+- reconciled two-parent target revision: `1cd25539c75f8a2a32c84b822c0db80b176fd319`;
+- post-publication semantic self-host test repair: `e48ae07faa6a716f7e2cd83cdcefdce6d02d8c7e`, CI `33619491154` 3/3 success.
 
-No execution surface becomes canonical Project truth merely because execution occurred there.
+The staged candidate existed while fresh ref reads still showed target at `79c5b7c7...` and source at `d2d0c1bf...`. The target ref then advanced exactly once from `79c5b7c7...` to reconciled two-parent revision `1cd25539...`; staged candidate `4b86b3ad...` was never authoritative target truth.
 
-## Active contracts and released Preview
+The first post-publication run `33619306602` had repository-integrity and portable-contracts green but one brittle self-host assertion expected an old workflow-stage heading. All actual Core `0.2` discovery and lineage checks passed. Commit `e48ae07...` replaced that heading check with binding-driven semantic assertions; run `33619491154` then passed repository-integrity, portable-contracts, and runtime-kernel.
 
-- Svif product line: `0.2`; the current released Repository Preview is `0.2.0-preview.1`.
-- Project Binding: `project-binding/0.2`.
-- Software Delivery profile: `software-delivery/0.2`.
-- Capability Adapter: `capability-adapter/0.2`.
-- Evidence record: `evidence-record/0.2`.
-- Repository/filesystem binding serialization: `SVIF.yaml`.
-- Agnir Core compatibility: `0.1`.
-- Agnir discovery profile: `repository-filesystem/0.1`.
-- The target-main candidate applies Agnir stable repository release `0.1.1` from `iorLab/agnir`, immutable revision `e9712357ab590e5c1e5357b3cf3219d07d789aff`, as a compatible operational upgrade recorded in `AGNIR.yaml`.
-- Canonical Agnir activation route: `Project root -> AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml -> declared durable memory`.
-- Canonical Svif repository/ref: `iorLab/svif` / `main`.
+### Integrated real Project result
 
-The Agnir `v0.1.1` upgrade is a **compatible operational upgrade**, not a migration: Core `0.1` and `repository-filesystem/0.1` are unchanged, while Project identity, memory locators/content, unrelated manifest extensions, and `SVIF.yaml` remain preserved. Its execution-surface activation handoff repair is directly relevant to the Repository Preview installation path.
+The target now contains both independently developed Project changes:
 
-Svif `v0.2.0-preview.1` was released from authoritative `main` commit `2b07b6b5ea0bc8feee59f9f647be9af3069d056e`. Annotated tag object `2535cb89426c2d38c2e061948e81954a7c7c26d7` peels to that commit, and GitHub Release `RE_kwDOUEzlR84WteIK` is published as a non-draft Prerelease. Initial immutable candidate `1dbcce6582f218b0762fb655bc03455517c79802` passed real Codex CLI plus ChatGPT desktop/Codex installation, bootstrap, checkpoint, initialized-Project idempotency, and fresh-context recovery acceptance; the final evidence-only candidate preserved the Plugin tree, passed CI runs `33598513827` and `33598628565`, and passed a tag-based fresh installation smoke. The short-lived release branch remains a temporary evidence carrier only and is not a second continuity authority.
+1. `ARCHITECTURE.md` states that the generic Svif Orchestrator consumes an already selected Continuity Context and must not enumerate/guess sibling provider contexts or infer Project identity from provider-local lineage/selector/revision metadata;
+2. `spec/PROJECT_BINDING.md` states that one stable Svif Project may use multiple independently advancing provider-local continuity contexts while lineage/selector semantics remain provider-specific;
+3. self-host and Plugin binding tests are binding-driven rather than hard-coding one lineage/selector.
 
-## README entry architecture
+Target `AGNIR.yaml` / `SVIF.yaml` remain target-bound. Source continuity is reconciliation evidence/input, not target truth.
 
-The README front section is now deliberately layered before architecture material:
+### Independent source fresh resume
 
-1. `Start Here` / `从这里开始` — minimal user actions for personal-ChatGPT availability, installation in compatible Agent environments, normal continuation, and upgrading the Agnir used by the Project;
-2. `Agnir Project Instructions` — canonical Agent activation/operation guidance for this repository;
-3. `What Svif Adds to a Project` / `Svif 会给 Project 增加什么` — concrete first-use Project surface, with `AGENTS.md` / `README.md` visibly marked as non-destructive EDIT/add-entry-only and `AGNIR.yaml` / `.agnir/` / `SVIF.yaml` as founding ADD surfaces;
-4. `Architecture Diagram` / `架构图` — static product architecture plus the first-use boundary;
-5. `Runtime / Operation Flow` / `运行流程` — post-bootstrap runtime behavior, intentionally free of install-mutation labels.
+After target integration and target repair, a fresh read still observed source ref `feature/agnir-core-0.2-parallel` at `d2d0c1bf25526b54490cce14c5aa8797c85c4d54`. Its `AGNIR.yaml` still resolves Project `urn:svif:project:svif-core`, lineage `urn:svif:lineage:agnir-core-0.2-parallel`, and selector `refs/heads/feature/agnir-core-0.2-parallel`; its source-local State remains intact. Target publication did not rewrite or collapse source continuity.
 
-A genuinely uninitialized Project does **not** require manual Agnir pre-initialization. The active Svif first-use contract remains that the shared Skill establishes founding Agnir continuity plus a matching minimal Svif Project Binding on the repository/filesystem path. Compatible existing artifacts are reused; partial/contradictory artifacts are repair cases; an intentional other Continuity Provider binding is preserved.
+## Conclusion
 
-Repository-integrity checks enforce the entry ordering, first-use ADD/EDIT distinction, architecture/runtime separation, and canonical user intents. Durable rationale is recorded in `.agnir/evidence/2026-09-01-readme-information-architecture.md` and `.agnir/decisions.md`. `README.md` and `README.zh-CN.md` remain synchronized entry points.
+The real Svif consumer experiment validates migration, explicit lineage binding, independent divergence, lineage-local checkpoints, binding-driven fresh resume, staged integration without target publication, target reconciliation, coherent target advancement, and independent source survival on a real Project.
 
-## Runtime baseline
+This success does **not** migrate Svif authoritative `main` or publish Agnir Core `0.2` stable. Svif `main` and released `v0.2.0-preview.1` remain unchanged. The result should now be fed back into Agnir `feature/core-0.2-lineage` as release-readiness evidence.
 
-- Externally driven execution uses `Orchestrator.begin()` / `Orchestrator.complete()`.
-- Untrusted model/result payloads cannot self-grant protected authority.
-- External actuation requires successful verification for the exact subject plus applicable trusted authority.
-- External success requires independent observation before checkpoint.
-- Agnir durable continuity remains Project-owned and execution-surface-neutral.
-- Detached commits, PR checkouts, temporary branches, forks, mirrors, or other non-authoritative copies do not silently become canonical checkpoint targets.
+## Product/distribution state preserved
 
-`tests/test_founding_e2e.py` proves the credential-free orchestration loop through Agnir continuity load -> Orchestrator -> ChatGPT bridge -> trusted authority -> exact-subject Cloudflare actuation through injected fake transport -> independent observation -> Agnir checkpoint -> continuity reload/resume. This is not live Cloudflare production-delivery evidence.
+The Plugin MVP remains active. `README.md` and `README.zh-CN.md` remain synchronized entry points. Released `v0.2.0-preview.1` remains immutable with prior Codex CLI and ChatGPT desktop/Codex acceptance evidence. The public/personal ChatGPT Web / universal Plugins Directory path remains separate active work. Live Cloudflare delivery remains disabled unless explicitly authorized.
 
-## Plugin MVP and first-use onboarding
-
-Svif has a released **Skills-only `v0.2.0-preview.1` Plugin Preview** under `plugin/`:
-
-- `plugin/plugin.json` — portable Agent Plugins `1.0.0` manifest;
-- `plugin/skills/svif/SKILL.md` — shared Svif Project-orchestration Skill;
-- `plugin/.codex-plugin/plugin.json` — OpenAI/Codex manifest reusing the same Skill and carrying public-listing metadata;
-- `.agents/plugins/marketplace.json` — repository-backed Preview catalog for Codex CLI and ChatGPT desktop/Codex;
-- `plugin/README.md` — submission, installation, review-case, and evidence-boundary guidance.
-
-First-use onboarding is a Svif product responsibility. For a genuinely uninitialized ordinary Project, the shared Skill establishes one stable Project identity, Agnir Core `0.1` / `repository-filesystem/0.1` continuity, a matching minimal `project-binding/0.2` `SVIF.yaml`, then fresh-activates and continues the original task. Partial/broken Agnir/Svif artifacts remain repair cases, and a Project intentionally bound to another Continuity Provider is not overwritten with Agnir.
-
-Repository checks can prove package/conformance, runtime, repository integrity, Agnir discovery guardrails, distribution metadata consistency, documentation claim boundaries, and first-use bootstrap regression behavior. They do **not** prove supported-client installation, OpenAI review, universal-directory publication, or personal ChatGPT invocation.
-
-## Repository Preview distribution status
-
-The copy-ready user intent remains exactly:
-
-`Install and enable Svif for this Project: https://github.com/iorLab/svif`
-
-The installer owns fixed-tag resolution, marketplace registration, client-capability checks, first-use bootstrap, and evidence. The released Preview supports Codex CLI and ChatGPT desktop/Codex through the repository marketplace fixed to immutable tag `v0.2.0-preview.1`. Moving `main` is not a released Preview, and ChatGPT Web/mobile cannot install this repository Preview through the prompt alone.
-
-## Personal ChatGPT public distribution status
-
-The primary ChatGPT audience is individual/personal users. The mature consumer path is:
-
-`individual ChatGPT user -> universal Plugins Directory -> install -> invoke Svif in normal ChatGPT use`
-
-Svif is not publicly listed yet. The repository-side Skills-only package is aligned to the current OpenAI public-submission route, but the real publisher flow is externally blocked before individual developer verification because the Platform requires an accepted default payment method. This is an account/publisher eligibility blocker, not evidence of a Svif package, Skill, Orchestrator, or runtime defect.
-
-Do not weaken the Skills-only package, add MCP merely to escape this gate, invent billing identity, or claim review/publication/install success while publisher verification is blocked. ChatGPT Web remains a first-class target. MCP/App packaging is a later capability increment, not a release gate.
-
-## Current resume point
-
-1. Preserve the temporary release branch and its final tip until the Principal explicitly confirms cleanup; then delete the local and remote branch without changing the tag or released `main` history.
-2. Keep the later public/personal ChatGPT submission path separate: resolve the publisher gate, submit the same Skills-only package, explicitly Publish after approval, then validate the universal Plugins Directory and personal ChatGPT Web.
-3. If the Preview requires a fix, create `v0.2.0-preview.2`; never move the released `v0.2.0-preview.1` tag.
-4. Keep live Cloudflare delivery disabled unless explicitly authorized.
-
-## Evidence checkpoints
-
-- Repository Preview release: `.agnir/evidence/2026-09-02-svif-v0.2.0-preview.1-release.md`; authoritative-main/tag identity, GitHub Prerelease, CI, and tag-based installation smoke are observed.
-- Repository Preview candidate acceptance: `.agnir/evidence/2026-09-02-svif-v0.2.0-preview.1-candidate.md`; static checks, GitHub CI, and immutable-SHA Codex CLI plus ChatGPT desktop/Codex acceptance passed before release.
-- Agnir `v0.1.1` compatible operational upgrade candidate: `.agnir/evidence/2026-09-02-agnir-v0.1.1-compatible-upgrade.md`; stable tag `e9712357ab590e5c1e5357b3cf3219d07d789aff`, Core/profile unchanged.
-- README audience split / first-use Project surface: `.agnir/evidence/2026-09-01-readme-information-architecture.md`.
-- Previous Agnir `v0.1.0` compatible operational upgrade: `.agnir/evidence/2026-09-01-agnir-v0.1.0-compatible-upgrade.md`; upgrade revision `c7cd42b6e94556a630570a54e22c72acc97f3ecf`, run `33466389590` success.
-- Plugin first-use bootstrap fix: `.agnir/evidence/2026-08-31-plugin-first-use-bootstrap-fix.md`; final behavior baseline `b90d1f8976b0e03d2c5a3b70c9bbb4b032c37724`, run `33384858568` success.
-- Personal ChatGPT distribution / publisher-gate checkpoint: `.agnir/evidence/2026-08-31-personal-chatgpt-distribution-checkpoint.md`.
-- Plugin MVP hardening checkpoint: `.agnir/evidence/2026-08-31-plugin-mvp-hardening-checkpoint.md`.
-- README/localization baseline: `.agnir/evidence/2026-08-28-readme-diagram-localization-checkpoint.md`.
-- Founding E2E: `.agnir/evidence/2026-08-28-founding-e2e.md`, run `33143308949` success.
-
-`.agnir/decisions.md` is authoritative for architecture and distribution decisions; `.agnir/next-actions.md` is the canonical ordered resume plan.
+`.agnir/next-actions.md` is the canonical resume order; `.agnir/decisions.md` remains authoritative for durable architecture and distribution decisions.

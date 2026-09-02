@@ -1,15 +1,13 @@
 # Svif Next Actions
 
-## Active Agnir Core 0.2 real-consumer validation
+## Complete the real Agnir Core 0.2 lineage validation
 
-1. **Verify this independently advanced target lineage.** CI and fresh self-host discovery must resolve Project `urn:svif:project:svif-core`, target lineage `urn:svif:lineage:agnir-core-0.2-validation`, target selector `refs/heads/feature/agnir-core-0.2-validation`, and target-local State / Next Actions / Evidence.
-2. **Wait for the source lineage to be independently green.** Source `feature/agnir-core-0.2-parallel` must resolve its different lineage/selector and pass the same product gates without relying on target constants.
-3. **Capture immutable pre-integration facts.** Record target revision/continuity and source revision/continuity before staging; verify both share Project identity but have different logical lineage identities and selectors.
-4. **Stage source→target Project integration without advancing the target ref.** The target ref must remain at its pre-integration checkpoint while the candidate is unreconciled.
-5. **Reconcile target continuity.** Use the actual integrated Project candidate, previous target truth, relevant source continuity/Evidence, and Principal intent. Source lineage/selector metadata is reconciliation input, never automatic target truth.
-6. **Publish coherently.** Construct one two-parent target revision containing integrated Project content plus reconciled target continuity, then advance the target ref once and fresh-resolve target and source independently.
-7. **Record completed real-consumer evidence back in Agnir.** If the experiment passes, update Core `0.2` release readiness and begin planning safe Agnir PR #4/#5 integration and `v0.2.0` RC preparation.
-8. **Keep Svif `main` and `v0.2.0-preview.1` unchanged during the experiment.**
+1. **Publish the already-reconciled two-parent target revision exactly once.** The target ref must advance from pre-integration `79c5b7c7ee2ed545492702bea43d0f7135602f35` directly to the final integrated revision; do not publish staged candidate `4b86b3adafe08cc2f7fd48eb4f685d2b633b25c3` as target truth.
+2. **Run full target verification after publication.** Require repository-integrity, portable-contracts, runtime-kernel, and fresh Core `0.2` target self-host discovery to pass on the final target revision.
+3. **Fresh-resolve the source lineage independently after target publication.** Source ref `feature/agnir-core-0.2-parallel` must remain at its own revision and resolve `urn:svif:lineage:agnir-core-0.2-parallel` / `refs/heads/feature/agnir-core-0.2-parallel` without being rewritten by target integration.
+4. **Record the completed real-consumer validation in Agnir.** Feed exact Svif source/target revisions, staged candidate, final integration revision, CI runs, and fresh-resume observations into `iorLab/agnir` on `feature/core-0.2-lineage`.
+5. **Reassess Agnir Core `0.2` release gates.** If no new defect appears, move from synthetic/consumer validation toward safe Agnir PR #4/#5 integration design and repository `v0.2.0-rc.1` preparation; do not merge Agnir `main` through an unsafe ordinary server-side path.
+6. **Keep Svif `main` and released `v0.2.0-preview.1` unchanged during this validation.** Decide authoritative Svif adoption of Agnir Core `0.2` separately after Agnir's compatibility line is accepted.
 
 ## Existing release and distribution work remains active
 
@@ -18,17 +16,15 @@
 - Core `0.2` validation is not directory publication evidence, and directory/review status is not continuity evidence.
 - Keep live Cloudflare delivery disabled unless explicitly authorized.
 
-## Target lineage reference
+## Integration receipts
 
-- Project: `urn:svif:project:svif-core`.
+- Common baseline: `329984f94483a7cbbb21a6faa42b9cf9ed84fed2`.
+- Target pre-integration: `79c5b7c7ee2ed545492702bea43d0f7135602f35`; CI `33619053159` success.
+- Source: `d2d0c1bf25526b54490cce14c5aa8797c85c4d54`; CI `33618885830` success.
+- Staged candidate: `4b86b3adafe08cc2f7fd48eb4f685d2b633b25c3`; target ref remained unchanged after staging.
 - Target lineage: `urn:svif:lineage:agnir-core-0.2-validation`.
-- Target selector: `refs/heads/feature/agnir-core-0.2-validation`.
-- Common fork baseline: `329984f94483a7cbbb21a6faa42b9cf9ed84fed2`.
 - Source lineage: `urn:svif:lineage:agnir-core-0.2-parallel`.
-- Source selector: `refs/heads/feature/agnir-core-0.2-parallel`.
 - Agnir experimental source revision: `414dba1e50ad1bdcae3ca91d19c6768fdaa030cc`.
-- Green migrated-baseline CI: `33616508143`.
-- Green target self-host checkpoint CI: `33616750662`.
 
 ## Invariants
 
@@ -37,7 +33,7 @@
 - Project identity is not lineage identity; lineage identity is not selector or revision receipt.
 - Selection is explicit/binding-driven and never guessed by sibling scanning.
 - Checkpoints are lineage-local by default.
-- Integration is target reconciliation, not source continuity copying.
+- Source continuity is reconciliation input, not automatic target truth.
 - Target ref advancement is the publication boundary.
 - The released Skills-only first-use bootstrap remains on its published Agnir Core/profile `0.1` baseline until an intentional distribution release changes it.
 - `main` is the only long-lived authoritative Svif branch; validation branches are temporary evidence carriers.

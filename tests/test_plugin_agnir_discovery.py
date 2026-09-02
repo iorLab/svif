@@ -1,11 +1,19 @@
 from __future__ import annotations
 
+import re
 import unittest
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
 SKILL = ROOT / "plugin" / "skills" / "svif" / "SKILL.md"
+
+
+def _quoted_scalar(text: str, key: str) -> str:
+    match = re.search(rf'^\s+{re.escape(key)}:\s+"([^"]+)"\s*$', text, re.MULTILINE)
+    if match is None:
+        raise AssertionError(f"missing quoted scalar {key!r}")
+    return match.group(1)
 
 
 class PluginAgnirDiscoveryTests(unittest.TestCase):
@@ -283,21 +291,22 @@ class PluginAgnirDiscoveryTests(unittest.TestCase):
         skill = SKILL.read_text(encoding="utf-8")
         agnir = (ROOT / "AGNIR.yaml").read_text(encoding="utf-8")
         svif = (ROOT / "SVIF.yaml").read_text(encoding="utf-8")
+        lineage = _quoted_scalar(svif, "lineage")
+        selector = _quoted_scalar(svif, "vcs_selector")
 
-        # Current selected Project binding is the explicit Core 0.2 validation line.
         for marker in (
             'version: "0.2"',
             'discovery_profile: "repository-filesystem/0.2"',
             'identity: "urn:svif:project:svif-core"',
-            'lineage: "urn:svif:lineage:agnir-core-0.2-validation"',
-            'selector: "refs/heads/feature/agnir-core-0.2-validation"',
+            f'lineage: "{lineage}"',
+            f'selector: "{selector}"',
         ):
             self.assertIn(marker, agnir)
         for marker in (
             'compatibility: "0.2"',
             'profile: "repository-filesystem/0.2"',
-            'lineage: "urn:svif:lineage:agnir-core-0.2-validation"',
-            'vcs_selector: "refs/heads/feature/agnir-core-0.2-validation"',
+            f'lineage: "{lineage}"',
+            f'vcs_selector: "{selector}"',
         ):
             self.assertIn(marker, svif)
 

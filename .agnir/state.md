@@ -17,9 +17,9 @@ Stable rule:
 
 No execution surface becomes canonical Project truth merely because execution occurred there.
 
-## Active contracts and bindings
+## Active contracts and release candidate
 
-- Svif product line: `0.2` development (`0.2.0-dev`).
+- Svif product line: `0.2`; the current target-main candidate is `0.2.0-preview.1`.
 - Project Binding: `project-binding/0.2`.
 - Software Delivery profile: `software-delivery/0.2`.
 - Capability Adapter: `capability-adapter/0.2`.
@@ -27,11 +27,13 @@ No execution surface becomes canonical Project truth merely because execution oc
 - Repository/filesystem binding serialization: `SVIF.yaml`.
 - Agnir Core compatibility: `0.1`.
 - Agnir discovery profile: `repository-filesystem/0.1`.
-- Agnir operational distribution applied to this Project: stable repository release `0.1.0` from `iorLab/agnir`, immutable applied revision `2a0cb7bf2068b11f361e315670b2f2dc497b2588`, recorded in `AGNIR.yaml` under `extensions.agnir/operations`.
+- The target-main candidate applies Agnir stable repository release `0.1.1` from `iorLab/agnir`, immutable revision `e9712357ab590e5c1e5357b3cf3219d07d789aff`, as a compatible operational upgrade recorded in `AGNIR.yaml`.
 - Canonical Agnir activation route: `Project root -> AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml -> declared durable memory`.
 - Canonical Svif repository/ref: `iorLab/svif` / `main`.
 
-The Agnir `v0.1.0` application was a **compatible operational upgrade**, not a migration. Upgrade revision `c7cd42b6e94556a630570a54e22c72acc97f3ecf` preserved Core/profile compatibility, Project identity, memory locators/content, and `SVIF.yaml`; `Svif product checks` run `33466389590` passed.
+The Agnir `v0.1.1` candidate upgrade is a **compatible operational upgrade**, not a migration: Core `0.1` and `repository-filesystem/0.1` are unchanged, while Project identity, memory locators/content, unrelated manifest extensions, and `SVIF.yaml` remain preserved. Its execution-surface activation handoff repair is directly relevant to the Repository Preview installation path.
+
+Work is staged on short-lived branch `release/svif-v0.2.0-preview.1`. That branch is a candidate for the declared authoritative `main`; it is not a second continuity authority. No Preview tag, GitHub Prerelease, supported-client installation baseline, or public-directory publication has yet been claimed by this candidate state.
 
 ## README entry architecture
 
@@ -60,17 +62,25 @@ Repository-integrity checks enforce the entry ordering, first-use ADD/EDIT disti
 
 ## Plugin MVP and first-use onboarding
 
-Svif has an active **Plugin MVP** under `plugin/`:
+Svif has a **Skills-only `v0.2.0-preview.1` Plugin candidate** under `plugin/`:
 
 - `plugin/plugin.json` — portable Agent Plugins `1.0.0` manifest;
 - `plugin/skills/svif/SKILL.md` — shared Svif Project-orchestration Skill;
 - `plugin/.codex-plugin/plugin.json` — OpenAI/Codex manifest reusing the same Skill and carrying public-listing metadata;
-- `.agents/plugins/marketplace.json` — auxiliary repository-backed OpenAI/Codex catalog;
+- `.agents/plugins/marketplace.json` — repository-backed Preview catalog for Codex CLI and ChatGPT desktop/Codex;
 - `plugin/README.md` — submission, installation, review-case, and evidence-boundary guidance.
 
 First-use onboarding is a Svif product responsibility. For a genuinely uninitialized ordinary Project, the shared Skill establishes one stable Project identity, Agnir Core `0.1` / `repository-filesystem/0.1` continuity, a matching minimal `project-binding/0.2` `SVIF.yaml`, then fresh-activates and continues the original task. Partial/broken Agnir/Svif artifacts remain repair cases, and a Project intentionally bound to another Continuity Provider is not overwritten with Agnir.
 
-Repository CI proves package/conformance, runtime, repository integrity, Agnir discovery guardrails, distribution metadata consistency, documentation claim boundaries, and first-use bootstrap regression behavior. It does **not** prove OpenAI review, publication, directory appearance, installation, or invocation on a consumer surface.
+Repository checks can prove package/conformance, runtime, repository integrity, Agnir discovery guardrails, distribution metadata consistency, documentation claim boundaries, and first-use bootstrap regression behavior. They do **not** prove supported-client installation, OpenAI review, universal-directory publication, or personal ChatGPT invocation.
+
+## Repository Preview distribution status
+
+The copy-ready user intent remains exactly:
+
+`Install and enable Svif for this Project: https://github.com/iorLab/svif`
+
+The installer owns fixed-tag resolution, marketplace registration, client-capability checks, first-use bootstrap, and evidence. The candidate Preview supports Codex CLI and ChatGPT desktop/Codex through the repository marketplace. Moving `main` is not a released Preview, and ChatGPT Web/mobile cannot install this repository Preview through the prompt alone.
 
 ## Personal ChatGPT public distribution status
 
@@ -84,16 +94,19 @@ Do not weaken the Skills-only package, add MCP merely to escape this gate, inven
 
 ## Current resume point
 
-1. Resolve or formally clarify the OpenAI publisher-verification payment-method gate through an official supported path.
-2. While that external gate is unresolved, run the first real Codex installation/invocation from an ordinary non-Agnir Project. Do not pre-initialize Agnir or pre-create `SVIF.yaml`; validate the actual Svif first-use bootstrap path and then fresh-context resume.
-3. When publisher verification becomes available, submit the exact tested Skills-only package, record scan/review evidence, explicitly Publish after approval, and then validate the first personal ChatGPT Web installation/invocation from the universal Plugins Directory.
-4. Repair only friction observed from real supported-surface use, then expand surface evidence while keeping the shared Skill and Orchestrator behavior single-sourced.
-5. Keep live Cloudflare delivery disabled unless explicitly authorized.
+1. Finish static validation of the `v0.2.0-preview.1` candidate and push one coherent candidate revision from the short-lived release branch.
+2. Require successful CI, then use the immutable candidate SHA to validate the one-line install intent in both Codex CLI and ChatGPT desktop/Codex from an ordinary non-Agnir Project; also validate idempotent resume on an initialized Project.
+3. Only after both supported surfaces pass, reconcile the target-main checkpoint, advance authoritative `main`, create immutable tag `v0.2.0-preview.1`, publish a GitHub Prerelease, and repeat a tag-based smoke.
+4. Record the observed release/tag/install evidence in a post-release target-main checkpoint. Do not move a failed tag; repair into `preview.2`.
+5. Keep the later public/personal ChatGPT submission path separate: resolve the publisher gate, submit the same Skills-only package, explicitly Publish after approval, then validate the universal Plugins Directory and personal ChatGPT Web.
+6. Keep live Cloudflare delivery disabled unless explicitly authorized.
 
 ## Evidence checkpoints
 
+- Repository Preview candidate: `.agnir/evidence/2026-09-02-svif-v0.2.0-preview.1-candidate.md`; static package/contract/runtime/Skill checks pass, while supported-client installation and release remain pending.
+- Agnir `v0.1.1` compatible operational upgrade candidate: `.agnir/evidence/2026-09-02-agnir-v0.1.1-compatible-upgrade.md`; stable tag `e9712357ab590e5c1e5357b3cf3219d07d789aff`, Core/profile unchanged.
 - README audience split / first-use Project surface: `.agnir/evidence/2026-09-01-readme-information-architecture.md`.
-- Agnir `v0.1.0` compatible operational upgrade: `.agnir/evidence/2026-09-01-agnir-v0.1.0-compatible-upgrade.md`; upgrade revision `c7cd42b6e94556a630570a54e22c72acc97f3ecf`, run `33466389590` success.
+- Previous Agnir `v0.1.0` compatible operational upgrade: `.agnir/evidence/2026-09-01-agnir-v0.1.0-compatible-upgrade.md`; upgrade revision `c7cd42b6e94556a630570a54e22c72acc97f3ecf`, run `33466389590` success.
 - Plugin first-use bootstrap fix: `.agnir/evidence/2026-08-31-plugin-first-use-bootstrap-fix.md`; final behavior baseline `b90d1f8976b0e03d2c5a3b70c9bbb4b032c37724`, run `33384858568` success.
 - Personal ChatGPT distribution / publisher-gate checkpoint: `.agnir/evidence/2026-08-31-personal-chatgpt-distribution-checkpoint.md`.
 - Plugin MVP hardening checkpoint: `.agnir/evidence/2026-08-31-plugin-mvp-hardening-checkpoint.md`.

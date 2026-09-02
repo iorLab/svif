@@ -2,7 +2,7 @@
   "svif_adapter": {"version": "0.2"},
   "adapter": {
     "id": "cloudflare.workers",
-    "version": "0.2.0-dev",
+    "version": "0.2.0-preview.1",
     "kinds": ["delivery", "provider", "observation"]
   },
   "operations": [

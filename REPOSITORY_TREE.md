@@ -119,7 +119,7 @@ svif/                                                     # Svif 产品主仓库
 ├── README.md                                             # 英文项目入口与 canonical `Agnir Project Instructions`
 ├── README.zh-CN.md                                       # 简体中文项目入口；与英文版保持同一 canonical 产品语义
 ├── REPOSITORY_TREE.md                                    # 本文件：当前 main 的完整文件级仓库结构与职责说明
-└── VERSION                                               # 当前 Svif development version
+└── VERSION                                               # 当前 Svif 产品 / release version
 ```
 
 ## 如何使用这张树

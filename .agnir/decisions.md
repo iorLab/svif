@@ -156,3 +156,13 @@
 - The user-facing README must reflect the active first-use decision: a genuinely uninitialized Project does not require manual Agnir pre-initialization; Svif owns the founding continuity bootstrap on the repository/filesystem path.
 - English and Simplified Chinese READMEs preserve the same audience split and operational meaning. Localized diagrams remain comprehension-first.
 - Repository-integrity checks enforce `Start Here -> Agnir Project Instructions -> installed Project surface -> Architecture` ordering, the canonical install/Agnir-upgrade intents, architecture ADD/EDIT markers, and runtime-flow separation so future edits do not rebuild the old mixed-audience front section.
+
+## 2026-09-02 — Self-distributed Repository Preview
+
+- Svif remains a Skills-only Plugin. `plugin/skills/svif/SKILL.md` is the single workflow implementation; the Repository Preview does not fork a standalone Skill or add MCP.
+- `v0.2.0-preview.1` is a GitHub self-distributed prerelease for Codex CLI and ChatGPT desktop/Codex through `.agents/plugins/marketplace.json`. It is not universal-directory publication and does not establish ChatGPT Web/mobile availability.
+- The canonical user install intent remains one sentence: `Install and enable Svif for this Project: https://github.com/iorLab/svif`. Version selection, fixed-tag marketplace registration, capability checks, first-use bootstrap, and evidence belong to the installer/Plugin procedure.
+- A published Preview resolves to its immutable tag. Moving `main` may be used for maintainer development but must not be silently substituted for a released Preview.
+- Unsupported clients must report the surface limitation and must not claim installation success. Marketplace registration, package checks, and installation/invocation/checkpoint observations remain distinct evidence layers.
+- The universal Plugins Directory remains the mature public/personal ChatGPT path after the separate publisher, submission, review, and explicit-publication flow.
+- Release preparation may use a short-lived `release/svif-v0.2.0-preview.1` branch only as a target-main staging surface. Canonical continuity remains bound to `iorLab/svif` / `main`; the temporary branch must not become a second long-lived authority.

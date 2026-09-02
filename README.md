@@ -16,11 +16,13 @@ This section is for users. Pick the action that matches what you want to do.
 
 **Svif is not publicly listed yet.** After publication, install it from the universal Plugins Directory shared by ChatGPT and Codex.
 
-### Install for development, Codex, or another compatible Agent environment
+### Install the Repository Preview in Codex or ChatGPT desktop
 
 ```text
 Install and enable Svif for this Project: https://github.com/iorLab/svif
 ```
+
+The current self-distributed release is `v0.2.0-preview.1`. A compatible installer resolves the short intent above to that immutable Preview tag through the repository marketplace; it must not silently install moving `main`. Codex CLI and ChatGPT desktop/Codex are the supported Preview surfaces. If the active client cannot install repository Plugins, it must report the unsupported surface instead of claiming installation succeeded.
 
 ### Continue with Svif already installed
 
@@ -153,7 +155,7 @@ The default internal lifecycle is:
 
 ## Installable Plugin MVP
 
-Svif ships a **Skill-first installable Plugin MVP** under `plugin/`, using the portable Agent Plugins 1.0.0 package layout and an additive OpenAI/Codex manifest:
+Svif ships the **Skill-first `v0.2.0-preview.1` Plugin** under `plugin/`, using the portable Agent Plugins 1.0.0 package layout and an additive OpenAI/Codex manifest:
 
 ```text
 svif/
@@ -167,7 +169,9 @@ svif/
             └── SKILL.md
 ```
 
-`plugin/plugin.json` remains the portable Agent Plugins manifest. `plugin/.codex-plugin/plugin.json` is the OpenAI/Codex manifest used for the shared Skill and public listing metadata. `.agents/plugins/marketplace.json` remains an auxiliary repository-marketplace path for development, Codex, and managed-workspace testing.
+`plugin/plugin.json` remains the portable Agent Plugins manifest. `plugin/.codex-plugin/plugin.json` is the OpenAI/Codex manifest used for the shared Skill and public listing metadata. `.agents/plugins/marketplace.json` is the supported self-distributed Preview path for Codex CLI and ChatGPT desktop/Codex, while remaining separate from universal-directory publication.
+
+The Repository Preview keeps the user request intentionally short. Version resolution, fixed-tag marketplace registration, client-capability checks, first-use Agnir bootstrap, and installation evidence belong to the installer/Plugin procedure rather than the prompt. See [`plugin/README.md`](plugin/README.md) for the exact fixed-tag route.
 
 ### Personal ChatGPT distribution status
 
@@ -175,7 +179,7 @@ The mature personal-user path remains `ChatGPT -> Plugins Directory -> discover 
 
 OpenAI's current public submission flow explicitly accepts a **Skills-only** Plugin. Svif's `.codex-plugin/plugin.json` has therefore been tightened to the current final-directory metadata limits, while the existing `plugin/skills/svif/SKILL.md` remains the single shared workflow implementation. MCP/App packaging is not a prerequisite for the initial public submission and must not be added merely to satisfy publication.
 
-There is still **no ChatGPT or Codex client installation that has yet been recorded as validated evidence** for the public personal-user release. Public review approval, publication, directory appearance, installation, invocation, Agnir activation, verification, and checkpoint are separate evidence layers. Installation validation requires an actual supported surface, exact surface/revision evidence when observable, and observed Agnir activation/verification/checkpoint evidence.
+The Repository Preview and the future public personal-user release are different distribution layers. Codex CLI and ChatGPT desktop/Codex Preview installation must be validated independently; public review approval, directory publication, personal ChatGPT installation, invocation, Agnir activation, verification, and checkpoint remain separate evidence layers.
 
 See [`plugin/README.md`](plugin/README.md) for public submission prerequisites, proposed listing metadata, review test cases, repository-marketplace development routes, and evidence boundaries.
 
@@ -185,8 +189,8 @@ This tree is the practical map of the repository. It is intentionally selective:
 
 ```text
 svif/
-├── .agents/plugins/                   # auxiliary OpenAI/Codex repository marketplace catalog
-│   └── marketplace.json              # maps development/workspace import to the local ./plugin root
+├── .agents/plugins/                   # OpenAI/Codex repository marketplace catalog
+│   └── marketplace.json              # maps the self-distributed Preview to the local ./plugin root
 │
 ├── src/                              # executable Svif product code
 │   └── svif/
@@ -224,7 +228,7 @@ svif/
 ├── ARCHITECTURE.md                   # detailed product architecture and dependency boundaries
 ├── README.md                         # English project entry point and canonical Agnir Project Instructions
 ├── README.zh-CN.md                   # Simplified Chinese project entry point
-└── VERSION                           # current Svif development version
+└── VERSION                           # current Svif product/release version
 ```
 
 For the fully expanded file-by-file map of the current `main`, including responsibility annotations for every tracked file, see **[REPOSITORY_TREE.md](REPOSITORY_TREE.md)**.
@@ -239,7 +243,7 @@ Python is the current executable reference vehicle; it does not freeze the event
 - `tests/test_founding_e2e.py` composes all three through the real Orchestrator boundary.
 - `plugin/plugin.json` + `plugin/skills/svif/SKILL.md` remain the portable Plugin MVP package.
 - `plugin/.codex-plugin/plugin.json` now also satisfies the public-directory listing limits currently guarded by repository tests.
-- `.agents/plugins/marketplace.json` remains an auxiliary repository-backed OpenAI/Codex development route, not the primary personal ChatGPT onboarding path.
+- `.agents/plugins/marketplace.json` is the supported self-distributed Preview route for Codex CLI and ChatGPT desktop/Codex; it is not public-directory publication or the primary personal ChatGPT Web onboarding path.
 - Protected authority remains outside untrusted model/result payloads.
 - External success requires exact verified-subject delivery plus independent observation before checkpoint.
 
@@ -267,4 +271,4 @@ PYTHONPATH=src python -m unittest discover -s tests -v
 
 ## Next
 
-The repository-side public-distribution path is now clear: **prepare and submit the existing Skills-only Plugin through the OpenAI Platform plugin submission portal.** The remaining external publication prerequisites are an OpenAI Platform publisher with Apps Management write access and a verified individual/business identity. After portal submission, record the skill scan/review result; after approval, explicitly publish; then run the first personal ChatGPT Web install/invocation exercise from the universal Plugins Directory. MCP/App packaging remains a later capability increment, not a release gate. Live Cloudflare actuation remains separately gated.
+First, complete the self-distributed `v0.2.0-preview.1` acceptance path in Codex CLI and ChatGPT desktop/Codex using the exact immutable candidate. Then publish the verified tag as a GitHub Prerelease and retain the same Skills-only package for the later OpenAI Platform submission. Universal-directory publication still requires the applicable publisher identity and review flow; MCP/App packaging remains a later capability increment, not a release gate. Live Cloudflare actuation remains separately gated.

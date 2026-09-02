@@ -1,6 +1,6 @@
 {
   "name": "svif",
-  "version": "0.2.0-dev",
+  "version": "0.2.0-preview.1",
   "description": "Project orchestration workflows backed by durable continuity, explicit evidence, authority boundaries, and checkpointing.",
   "author": {
     "name": "iorLab",

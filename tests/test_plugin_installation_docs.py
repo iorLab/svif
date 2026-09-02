@@ -10,6 +10,8 @@ ROOT_README = ROOT / "README.md"
 ROOT_README_ZH = ROOT / "README.zh-CN.md"
 SKILL = ROOT / "plugin" / "skills" / "svif" / "SKILL.md"
 NEXT_ACTIONS = ROOT / ".agnir" / "next-actions.md"
+INSTALL_PROMPT = "Install and enable Svif for this Project: https://github.com/iorLab/svif"
+PREVIEW_VERSION = "v0.2.0-preview.1"
 
 
 class PluginInstallationDocumentationTests(unittest.TestCase):
@@ -82,21 +84,35 @@ class PluginInstallationDocumentationTests(unittest.TestCase):
         self.assertIn("the durable activation route is mandatory before normal Project work", skill)
         self.assertIn("current Agent can directly open `AGNIR.yaml`", skill)
 
-    def test_repository_marketplace_is_auxiliary_and_preserves_revision_caution(self) -> None:
-        text = PLUGIN_README.read_text(encoding="utf-8")
+    def test_repository_preview_uses_short_intent_and_immutable_release_ref(self) -> None:
+        plugin = PLUGIN_README.read_text(encoding="utf-8")
+        english = ROOT_README.read_text(encoding="utf-8")
+        chinese = ROOT_README_ZH.read_text(encoding="utf-8")
 
         for marker in (
-            "## OpenAI repository marketplace distribution",
-            "auxiliary development, Codex, managed-workspace, and validation route",
+            "## Repository Preview self-distribution",
+            "Codex CLI",
+            "ChatGPT desktop/Codex",
+            INSTALL_PROMPT,
+            PREVIEW_VERSION,
             ".agents/plugins/marketplace.json",
             "plugin/.codex-plugin/plugin.json",
-            "codex plugin marketplace add iorLab/svif",
+            "codex plugin marketplace add iorLab/svif --ref v0.2.0-preview.1",
+            "Never silently substitute moving `main`",
+            "report the unsupported surface",
+            "do not claim installation succeeded",
             "codex plugin marketplace add iorLab/svif --ref main",
-            "moving repository ref",
+            "moving development ref",
             "comparison evidence",
-            "not proof of the exact installed revision",
         ):
-            self.assertIn(marker, text)
+            self.assertIn(marker, plugin)
+
+        for readme in (english, chinese):
+            self.assertIn(INSTALL_PROMPT, readme)
+            self.assertIn(PREVIEW_VERSION, readme)
+
+        self.assertNotIn("--ref main", INSTALL_PROMPT)
+        self.assertNotIn(PREVIEW_VERSION, INSTALL_PROMPT)
 
     def test_personal_chatgpt_installation_requires_real_surface_observation(self) -> None:
         plugin = PLUGIN_README.read_text(encoding="utf-8")
@@ -117,9 +133,9 @@ class PluginInstallationDocumentationTests(unittest.TestCase):
             "### Personal ChatGPT distribution status",
             "Svif is not publicly listed yet",
             "personal ChatGPT Web",
-            "actual supported surface",
-            "exact surface/revision",
-            "observed Agnir activation/verification/checkpoint evidence",
+            "Repository Preview",
+            "Codex CLI",
+            "ChatGPT desktop/Codex",
         ):
             self.assertIn(marker, english)
 
@@ -127,7 +143,9 @@ class PluginInstallationDocumentationTests(unittest.TestCase):
             "### 个人 ChatGPT 分发状态",
             "Svif 目前还没有公开上架",
             "个人 ChatGPT Web",
-            "真实受支持客户端",
+            "Repository Preview",
+            "Codex CLI",
+            "ChatGPT 桌面版/Codex",
             "Agnir activation",
             "verification",
             "checkpoint",
@@ -145,21 +163,20 @@ class PluginInstallationDocumentationTests(unittest.TestCase):
         ):
             self.assertIn(marker, text)
 
-    def test_durable_next_action_targets_public_submission_not_workspace_import(self) -> None:
+    def test_durable_next_actions_sequence_preview_before_public_submission(self) -> None:
         text = NEXT_ACTIONS.read_text(encoding="utf-8")
 
         for marker in (
+            "v0.2.0-preview.1",
+            "Codex CLI",
+            "ChatGPT desktop/Codex",
+            "immutable candidate",
             "public/personal ChatGPT path",
             "universal Plugins Directory",
             "ChatGPT Web",
             "individual-user ChatGPT surface",
         ):
             self.assertIn(marker, text)
-
-        self.assertNotIn(
-            "Perform the first real supported-client/workspace installation exercise through the repository-backed OpenAI GitHub marketplace path",
-            text,
-        )
 
     def test_installation_documentation_test_is_registered_in_project_binding(self) -> None:
         svif = (ROOT / "SVIF.yaml").read_text(encoding="utf-8")

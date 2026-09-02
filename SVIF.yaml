@@ -8,11 +8,13 @@ project:
 bindings:
   continuity:
     provider: "agnir"
-    compatibility: "0.1"
-    profile: "repository-filesystem/0.1"
+    compatibility: "0.2"
+    profile: "repository-filesystem/0.2"
     config:
       discovery: "AGNIR.yaml"
       activation: "AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml"
+      lineage: "urn:svif:lineage:agnir-core-0.2-validation"
+      vcs_selector: "refs/heads/feature/agnir-core-0.2-validation"
   execution: []
   capabilities: []
 
@@ -56,3 +58,5 @@ extensions:
   svif/repository:
     canonical: "iorLab/svif"
     authoritative_ref: "main"
+  svif/experiments:
+    agnir_core_0_2_real_consumer_validation: true

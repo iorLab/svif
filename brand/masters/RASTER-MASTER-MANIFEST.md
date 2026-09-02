@@ -24,6 +24,18 @@ The files below are the expected deterministic outputs of `brand/tools/build-pro
 | `svif-favicon-32.png` | favicon | 32×32 | `8698f84498e5cb61471e73f1fee1316b2892c5c9d1b46d283503da0594f2a2e2` |
 | `svif-favicon-16.png` | favicon | 16×16 | `0f9f49ab937210fc6e73fc06b903429562ee1e26dba38b7af578cd617c5fb378` |
 
+## Materialized binary verification
+
+The following files are now committed directly under `brand/exports/` after byte-level Git blob verification:
+
+| Repository file | Git blob SHA-1 | SHA-256 status |
+| --- | --- | --- |
+| `brand/exports/svif-favicon-64.png` | `b396a8f9f36d3b59b69e16b650675e82d666e99e` | matches table above |
+| `brand/exports/svif-favicon-32.png` | `791eb44f67e6e96d55a1126bdc2fdc23b18b5050` | matches table above |
+| `brand/exports/svif-favicon-16.png` | `234044b5faf1be3a6862d5c8f8548757902bc69b` | matches table above |
+
+Git blob acceptance criterion is exact: the SHA returned by GitHub must equal the locally calculated Git object SHA for the byte sequence. A UTF-8 decoding failure when attempting to read a PNG blob as text is expected and is **not** evidence of blob corruption.
+
 ## Semantics
 
 - Native raster dimensions are part of the master record.
@@ -34,4 +46,4 @@ The files below are the expected deterministic outputs of `brand/tools/build-pro
 
 ## Repository-binary gate
 
-Before binary PNGs are attached to the branch, verify each Git blob against the expected SHA-256 above. The current execution bridge has demonstrated truncation risk for long base64 payloads, so unverified binary blobs must not be attached merely to satisfy a repository-path expectation.
+The Git binary path itself is proven for payloads that can traverse the current execution bridge intact. The current bridge truncates sufficiently long base64 tool arguments, so larger PNGs remain gated even though Git's blob API is binary-safe. Never attach a larger blob when its returned Git blob SHA differs from the locally expected Git blob SHA.

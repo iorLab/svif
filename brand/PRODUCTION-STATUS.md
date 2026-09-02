@@ -15,39 +15,41 @@ The Principal-approved Today 10:42 AM Svif board is the sole Svif-only visual au
 - rejected deterministic v0.1 reconstruction removed from the active branch;
 - lossless source-board crops prepared for primary mark, wordmark, horizontal/vertical lockups, light/dark/monochrome examples, app-icon example, and social-card example;
 - crop coordinates and derived hashes persisted for reproducible trace/QA;
-- raster-board limitation recorded: board labels such as `512px` are presentation labels, not proof that a true 512px source asset exists;
-- `brand/masters/candidates/svif-wordmark-trace-v0.1.svg` contains a raster-derived trace candidate of the approved standalone `Svif` wordmark;
-- `brand/tools/derive-raster-assets.py` now provides a deterministic white-matte extraction path for approved white-background crops, producing transparent PNG derivatives plus a SHA-256 manifest;
-- local QA of that raster path preserves the approved Svif appearance on white while recovering usable transparency for the mark/lockups; 128/64/32/16 icon derivatives have been visually checked;
-- the derivation manifest explicitly marks outputs larger than the native approved crop as raster-derived upscales rather than pretending they are native source masters.
+- `brand/masters/candidates/svif-wordmark-trace-v0.1.svg` remains the standalone wordmark review candidate;
+- `brand/tools/derive-raster-assets.py` provides a deterministic white-matte extraction path for approved white-background crops, producing transparent PNG derivatives plus a SHA-256 manifest;
+- local raster QA preserves the approved Svif appearance on white and at 128/64/32/16 target sizes;
+- multiple primary-mark vectorization approaches have now been tested locally without being allowed to pollute the branch candidate set when they fail fidelity review.
 
 ## Current production gate
 
 **Faithful vectorization remains the master gate.**
 
-A vector master may be accepted only when it is traced/reconstructed from the approved crop and visually compared with that crop. No new image generation, generic S replacement, typography substitution, palette reconciliation, or aesthetic cleanup is allowed.
+A vector master may be accepted only when it is reconstructed from the approved crop and visually compared with that crop. No new image generation, generic S replacement, typography substitution, palette reconciliation, or aesthetic cleanup is allowed.
 
-The raster derivation tool is an interim/reproducible production path, not permission to redefine the master. It exists so exact approved appearance can be used without waiting for an inferior SVG reconstruction.
+The raster derivation tool is an interim/reproducible production path, not permission to redefine the master. It exists so the exact approved appearance can be used without waiting for an inferior SVG reconstruction.
 
 ### Candidate status
 
-- Wordmark trace: **candidate only**. Geometry is derived from the locked raster reference and has been iteratively tightened; it is not yet promoted to a master.
-- Primary S mark: **blocked from vector-master promotion**. Automatic contour/quantization, layered-gradient, and superpixel/SLIC experiments all preserve the broad silhouette but introduce visible posterization, faceting, or particle/ribbon drift. Those experiments remain rejected from the branch master set.
-- Raster primary/lockup derivation: **reproducible candidate path**. White-background source appearance is retained and transparency can be recovered deterministically; this does not make the result a vector master.
-- Lockups and final variants: vector versions remain blocked until the primary mark and wordmark pass the master gate.
+- Wordmark trace: **candidate only**. Geometry is derived from the locked raster reference and remains usable for review.
+- Primary S mark: **still blocked from vector-master promotion**.
+- Automatic contour/quantization and superpixel/SLIC experiments preserve the broad silhouette but visibly posterize the translucent ribbon.
+- A new multi-layer color-band trace and a new three-layer gradient/blur trace were also tested against the locked primary-mark crop. Both retained the S silhouette and particle direction but introduced visible faceting / hard layer boundaries in the ribbon. They were rejected locally and **not committed as candidates**.
+- This narrows the next reconstruction strategy: stop increasing automatic segmentation complexity and instead rebuild the ribbon as a small number of constrained smooth Bézier surfaces/paths, using the approved raster only as geometry/color evidence.
+- Raster primary/lockup derivation remains the only currently accepted faithful production path for the Svif mark.
+- Vector lockups and final variants remain blocked until the primary mark and wordmark pass the master gate.
 
-The quality rule is explicit: **absence of a vector master is preferable to a visually drifting vector master.**
+The quality rule remains: **absence of a vector master is preferable to a visually drifting vector master.**
 
 ## Binary reference boundary
 
-The byte-exact approved board and crop PNGs remain preserved by SHA-256 and in the locked local reference package. They are not falsely claimed to be repository binaries. The current connector can create Git blobs from supplied base64 text, but there is no direct local-file upload bridge; final binary preservation should be completed on a Git-capable execution surface before `main` integration.
+The byte-exact approved board and crop PNGs remain preserved by SHA-256 and in the locked local reference package. The current connector does not provide a practical local-file binary upload bridge for the multi-megabyte exact approved PNG, so final byte-exact repository preservation remains a pre-`main` integration gate.
 
 ## Next actions
 
-1. Continue faithful reconstruction of the Svif primary S, preserving ribbon layering, translucency, silhouette, and particle trajectories without posterization or visible faceting.
-2. Run visual regression on the current wordmark candidate and revise only where the locked raster demonstrates a mismatch.
-3. Use `brand/tools/derive-raster-assets.py` for reproducible interim transparent/icon derivatives once the approved crop files are present on the execution surface; keep upscale flags intact.
-4. Reconstruct horizontal and vertical vector lockups only after both primary mark and wordmark are accepted masters.
-5. Build light/dark/monochrome vector variants only from locked masters and the approved examples.
-6. Run target-size QA for repository, app, favicon, and social surfaces.
+1. Rebuild the Svif S as constrained smooth Bézier ribbon surfaces instead of another automatic segmentation trace.
+2. Preserve the approved semi-transparent overlap ordering and particle trajectories; do not simplify them merely to make the SVG easier.
+3. Run visual regression on the wordmark candidate and revise only demonstrated mismatch.
+4. Use `brand/tools/derive-raster-assets.py` for interim transparent/icon derivatives; preserve native/upscale metadata.
+5. Reconstruct horizontal/vertical vector lockups only after the S mark and wordmark are accepted masters.
+6. Build light/dark/monochrome vector variants only from locked masters and approved examples.
 7. Before final integration, preserve the byte-exact approved source in repository storage, re-resolve latest `main`, reconcile Agnir continuity, and integrate coherently.

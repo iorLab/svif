@@ -1,6 +1,6 @@
 # Svif brand production status
 
-Date: 2026-09-02
+Date: 2026-09-03
 Branch: `brand/identity-system`
 Canonical Project ref remains: `main`
 
@@ -51,7 +51,7 @@ The old `brand/masters/candidates/svif-wordmark-trace-v0.1.svg` remains provenan
 
 ## Materialized repository binaries
 
-The Git binary path has now been verified end-to-end for payloads that fit through the current execution bridge. The following delivery files are directly committed under `brand/exports/`:
+The Git binary path has been verified end-to-end for payloads that fit through the current execution bridge. The following delivery files are directly committed under `brand/exports/`:
 
 - `svif-favicon-64.png` — Git blob `b396a8f9f36d3b59b69e16b650675e82d666e99e`;
 - `svif-favicon-32.png` — Git blob `791eb44f67e6e96d55a1126bdc2fdc23b18b5050`;
@@ -63,18 +63,29 @@ A failed attempt to read a PNG Git blob as UTF-8 is expected for binary content 
 
 Therefore the larger mark / wordmark / lockups / treatment / app / 128px favicon / social PNGs remain deterministic builder outputs rather than falsely attached truncated binaries.
 
-## QA status
+## Complete QA status
 
-Final local production QA has been run across:
+The final QA scope is now explicitly symmetric with Agnir and recorded in `brand/qa/FINAL-QA.md` as 13/13 items:
 
-- mark and wordmark;
-- horizontal and vertical lockups;
-- light / dark / monochrome treatments;
-- app icon;
-- 128 / 64 / 32 / 16 favicon targets;
-- social-card composition.
+1. mark;
+2. wordmark;
+3. horizontal lockup;
+4. vertical lockup;
+5. light usage;
+6. dark usage;
+7. monochrome usage;
+8. app icon;
+9. favicon 128;
+10. favicon 64;
+11. favicon 32;
+12. favicon 16;
+13. social card.
 
-The QA set preserves the approved translucent ribbon, particle trajectories and locked 10:42 composition. The complete local delivery package has also been generated with output manifests/hashes.
+Complete Svif QA sheet SHA-256: `41606509a1ab49f4c48e2f8a0affbe966cdeee256f90a0d693a6c275dc9f6cb2`.
+
+Current cross-brand production delivery ZIP SHA-256: `171b974b62fabc9eb286104d6bc090563e381ac4fd4fb8d2157b6b3cceaad2c7`.
+
+The QA set preserves the approved translucent ribbon, particle trajectories and locked 10:42 composition.
 
 ## QA rules
 
@@ -87,6 +98,7 @@ The QA set preserves the approved translucent ribbon, particle trajectories and 
 
 1. Preserve the byte-exact approved Svif board in repository storage.
 2. Attach the larger deterministic PNG outputs through a binary transport that preserves exact bytes, then verify their Git blob SHA and documented SHA-256.
-3. Re-resolve latest `main` and reconcile branch-local Agnir continuity.
-4. Integrate the approved brand package coherently without changing the released `v0.2.0-preview.1` tag.
-5. Verify the resulting authoritative `main` after publication.
+3. Synchronize top-level repository structure documentation (`REPOSITORY_TREE.md` and affected README compact trees) with the new `brand/` product surface.
+4. Re-resolve latest `main` immediately before publication and reconcile branch-local continuity if it moved.
+5. Integrate the approved brand package coherently without changing the released `v0.2.0-preview.1` tag.
+6. Verify the resulting authoritative `main` after publication.

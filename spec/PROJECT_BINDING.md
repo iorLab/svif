@@ -78,6 +78,16 @@ For the founding Agnir integration:
 
 A compatibility-line change such as Agnir Core `0.1` → `0.2` is a Continuity Provider migration, not a normal compatible operational upgrade. Svif MUST preserve Project identity and provider-owned durable truth while the provider performs that migration.
 
+### Provider-local parallel continuity
+
+A Continuity Provider MAY expose multiple independently advancing continuity contexts for one stable Svif Project identity when the selected provider compatibility/profile supports that behavior.
+
+Svif Project identity MUST NOT be derived from a provider lineage, namespace, branch, selector, revision, worktree, or checkpoint receipt. Provider-specific lineage identity and backend selector/binding metadata remain inside `bindings.continuity.config` (or an equivalent provider-specific binding object) and MUST NOT become generic Orchestrator identity semantics.
+
+Two Svif bindings may therefore identify the same `project.identity` and the same Continuity Provider while selecting different provider-local continuity lineages. Each selected binding must be self-consistent and independently resumable according to that provider's contract. Svif MUST NOT scan sibling provider contexts and guess which one is current when the selected binding is absent, inconsistent, or unresolved.
+
+When provider-local lineages are integrated, the Continuity Provider owns reconciliation and coherent publication according to its contract. Svif MUST NOT copy the source lineage's provider-specific selector or continuity metadata into the target merely because Project content was integrated.
+
 ## 5. Execution Surface bindings
 
 `bindings.execution` is an array of execution-surface bindings.

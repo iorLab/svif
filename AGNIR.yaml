@@ -8,7 +8,7 @@ project:
     - generic
 
 continuity:
-  lineage: "urn:svif:lineage:agnir-core-0.2-validation"
+  lineage: "urn:svif:lineage:agnir-core-0.2-parallel"
 
 memory:
   state: ".agnir/state.md"
@@ -28,10 +28,12 @@ extensions:
     integration_reconciliation: "required"
     lineage_binding:
       kind: "vcs-ref"
-      selector: "refs/heads/feature/agnir-core-0.2-validation"
+      selector: "refs/heads/feature/agnir-core-0.2-parallel"
   agnir/experiments:
     purpose: "svif-real-core-0.2-consumer-validation"
     source_revision: "414dba1e50ad1bdcae3ca91d19c6768fdaa030cc"
+    forked_from_lineage: "urn:svif:lineage:agnir-core-0.2-validation"
+    forked_from_revision: "329984f94483a7cbbb21a6faa42b9cf9ed84fed2"
   agnir/operations:
     distribution: "agnir-agent-skill"
     release: "0.2.0-dev"

@@ -13,8 +13,8 @@ bindings:
     config:
       discovery: "AGNIR.yaml"
       activation: "AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml"
-      lineage: "urn:svif:lineage:agnir-core-0.2-validation"
-      vcs_selector: "refs/heads/feature/agnir-core-0.2-validation"
+      lineage: "urn:svif:lineage:agnir-core-0.2-parallel"
+      vcs_selector: "refs/heads/feature/agnir-core-0.2-parallel"
   execution: []
   capabilities: []
 

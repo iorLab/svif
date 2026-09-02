@@ -8,14 +8,18 @@ The Principal-approved Today 10:42 AM Svif board remains the sole Svif-only visu
 
 ## Candidate progress
 
-- `brand/masters/candidates/svif-wordmark-trace-v0.1.svg` is a raster-derived trace candidate of the approved standalone wordmark.
+- `brand/masters/candidates/svif-wordmark-trace-v0.1.svg` remains the raster-derived trace candidate of the approved standalone wordmark.
 - The candidate was tightened after direct raster comparison; it is still **not** a locked master.
-- Multiple automatic attempts to vectorize the primary S ribbon produced visible posterization / loss of the approved translucent ribbon character and therefore were **not promoted or committed as a primary-mark candidate**.
+- Automatic contour/quantization, superpixel/SLIC, multi-layer color-band tracing, and three-layer gradient/blur tracing were all tested against the locked primary S reference.
+- Those approaches preserved the broad S silhouette but introduced visible posterization, faceting, hard layer boundaries, or particle/ribbon drift.
+- They were rejected locally and were **not committed as primary-mark candidates**.
 
 ## Decision boundary
 
 No replacement font, generic S, palette cleanup, particle redesign, or aesthetic reinterpretation is authorized. A visually drifting SVG must be rejected even when technically valid.
 
+The failed experiments materially narrow the next acceptable reconstruction method: the ribbon should be rebuilt as a small number of constrained smooth Bézier surfaces/paths with explicit translucent overlap ordering, using the approved raster as geometry and color evidence rather than as an automatically segmented shape map.
+
 ## Next acceptable move
 
-Continue fidelity work on the approved S reference and wordmark trace. Only after mark + wordmark pass visual regression may lockups and derivatives be reconstructed.
+Continue the constrained Bézier ribbon reconstruction and visual regression of the approved S; preserve the raster derivation path for interim production use. Only after S mark + wordmark pass visual review may vector lockups and final variants be promoted.

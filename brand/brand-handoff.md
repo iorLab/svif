@@ -64,6 +64,14 @@ The builder emits exact approved-board derivatives for these three usage example
 
 The builder derives 128 / 64 / 32 / 16px transparent favicon files from the approved raster mark.
 
+Directly committed delivery binaries currently exist for:
+
+- `brand/exports/svif-favicon-64.png`;
+- `brand/exports/svif-favicon-32.png`;
+- `brand/exports/svif-favicon-16.png`.
+
+These three were accepted only after exact Git object-SHA verification and their SHA-256 values match `RASTER-MASTER-MANIFEST.md`.
+
 - Do not regenerate the S for small sizes.
 - Do not substitute a generic letter `S`.
 - Evaluate the actual raster target, not an enlarged preview.
@@ -98,17 +106,22 @@ Do not:
 - represent an SVG wrapper around a PNG as a true vector master;
 - treat the rejected deterministic v0.1 reconstruction or current wordmark trace candidate as production truth.
 
-## Binary repository gate
+## Binary repository boundary
 
-Actual generated PNG binaries must be committed only through a binary-safe Git surface and verified against `RASTER-MASTER-MANIFEST.md`. The current execution bridge can truncate long binary/base64 payloads; an unverified blob must not be attached merely to claim completion.
+Git's binary blob path is proven. The active execution bridge, however, truncates sufficiently long base64 tool arguments. Therefore only binaries whose returned Git blob SHA exactly matches the locally expected Git object SHA may be attached.
+
+The 16/32/64px favicons pass this gate and are committed. Larger files remain deterministic outputs of `build-production-assets.py` until a larger-payload binary transport is available. Never populate missing paths with approximate or regenerated artwork.
+
+## QA / delivery status
+
+A final clean production QA has been completed locally for the core raster masters, lockups, three approved treatments, app icon, all favicon targets and social card. A complete local delivery package with manifests has been generated. This local package is a delivery artifact; repository truth remains the locked reference, builder, hashes and files actually committed to the branch.
 
 ## Integration gate
 
 Before merging brand work to canonical `main`:
 
 1. preserve the byte-exact approved board in repository storage;
-2. add the generated PNG package and verify all SHA-256 values;
-3. run final target-size QA;
-4. re-resolve latest `main` and reconcile branch-local Agnir continuity;
-5. integrate assets and continuity coherently;
-6. verify from `main` after publication.
+2. add the remaining larger generated PNG package through a byte-preserving transport and verify all SHA-256 / Git blob values;
+3. re-resolve latest `main` and reconcile branch-local Agnir continuity;
+4. integrate assets and continuity coherently;
+5. verify from `main` after publication.

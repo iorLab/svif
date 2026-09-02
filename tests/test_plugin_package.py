@@ -243,9 +243,7 @@ class PluginPackageTests(unittest.TestCase):
         portable = {
             "$schema": SCHEMA_ID,
             "name": "svif",
-            "extensions": {
-                "com.example.client": "opaque-to-portable-validator",
-            },
+            "extensions": {"com.example.client": "opaque-to-portable-validator"},
         }
         errors, diagnostics = validate_agent_plugins_1_0_manifest(portable)
         self.assertEqual(errors, [])
@@ -254,10 +252,7 @@ class PluginPackageTests(unittest.TestCase):
     def test_plugin_package_paths_are_contained_within_plugin_root(self) -> None:
         result = inspect_plugin_filesystem(PLUGIN_ROOT)
         self.assertEqual(result, {
-            "plugin_errors": [],
-            "component_errors": [],
-            "skipped_skills": [],
-            "denied_paths": [],
+            "plugin_errors": [], "component_errors": [], "skipped_skills": [], "denied_paths": [],
         })
 
     def test_manifest_escape_rejects_whole_plugin(self) -> None:
@@ -268,7 +263,6 @@ class PluginPackageTests(unittest.TestCase):
             outside = base / "manifest.json"
             outside.write_text('{"$schema": "x", "name": "svif"}', encoding="utf-8")
             (plugin_root / "plugin.json").symlink_to(outside)
-
             result = inspect_plugin_filesystem(plugin_root)
             self.assertTrue(any("plugin.json resolves outside" in error for error in result["plugin_errors"]))
 
@@ -281,7 +275,6 @@ class PluginPackageTests(unittest.TestCase):
             outside_skills = base / "outside-skills"
             outside_skills.mkdir()
             (plugin_root / "skills").symlink_to(outside_skills, target_is_directory=True)
-
             result = inspect_plugin_filesystem(plugin_root)
             self.assertEqual(result["plugin_errors"], [])
             self.assertTrue(any("skills fixed component location escapes" in error for error in result["component_errors"]))
@@ -296,7 +289,6 @@ class PluginPackageTests(unittest.TestCase):
             outside = base / "outside.md"
             outside.write_text("outside", encoding="utf-8")
             (skill_dir / "SKILL.md").symlink_to(outside)
-
             result = inspect_plugin_filesystem(plugin_root)
             self.assertEqual(result["plugin_errors"], [])
             self.assertEqual(result["component_errors"], [])
@@ -311,7 +303,6 @@ class PluginPackageTests(unittest.TestCase):
             outside = base / "outside.txt"
             outside.write_text("outside", encoding="utf-8")
             (plugin_root / "notes.txt").symlink_to(outside)
-
             result = inspect_plugin_filesystem(plugin_root)
             self.assertEqual(result["plugin_errors"], [])
             self.assertIn("notes.txt", result["denied_paths"])
@@ -350,10 +341,21 @@ class PluginPackageTests(unittest.TestCase):
             self.assertNotIn("predecessor_ref:", text)
             self.assertNotIn("legacy/zerolocal-v0.1", text)
 
-        self.assertIn('discovery_profile: "repository-filesystem/0.1"', agnir)
-        self.assertIn('provider: "agnir"', svif)
-        self.assertIn('compatibility: "0.1"', svif)
-        self.assertIn('profile: "repository-filesystem/0.1"', svif)
+        for marker in (
+            'version: "0.2"',
+            'discovery_profile: "repository-filesystem/0.2"',
+            'lineage: "urn:svif:lineage:agnir-core-0.2-validation"',
+            'selector: "refs/heads/feature/agnir-core-0.2-validation"',
+        ):
+            self.assertIn(marker, agnir)
+        for marker in (
+            'provider: "agnir"',
+            'compatibility: "0.2"',
+            'profile: "repository-filesystem/0.2"',
+            'lineage: "urn:svif:lineage:agnir-core-0.2-validation"',
+            'vcs_selector: "refs/heads/feature/agnir-core-0.2-validation"',
+        ):
+            self.assertIn(marker, svif)
 
     def test_svif_project_has_self_describing_agnir_cold_start_route(self) -> None:
         agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")

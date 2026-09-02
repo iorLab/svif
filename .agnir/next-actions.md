@@ -1,12 +1,10 @@
 # Svif Next Actions
 
-1. **Finalize the evidence-only candidate.** Commit and push the accepted-client checkpoint, require green CI, and smoke installation from the resulting immutable candidate SHA. The release branch remains staging for authoritative `main`, not a separate durable Project truth.
-2. **Integrate only after the final immutable-ref smoke.** Recheck `origin/main`; reconcile/retest if it advanced. Otherwise advance `main` by fast-forward to the verified candidate. Do not use an ordinary merge commit to overwrite uncoordinated `.agnir` state.
-3. **Publish only from verified `origin/main`.** Create immutable tag `v0.2.0-preview.1`, publish a GitHub Prerelease, and run a tag-based installation smoke. Do not move a failed tag; repair into `v0.2.0-preview.2`.
-4. **Record post-release evidence and restore main-only governance.** Checkpoint the exact tag, release id/URL, CI, supported-client installation observations, Agnir activation/checkpoint results, and any unverified provenance. Preserve the release branch tip SHA; delete the temporary branch only after explicit cleanup confirmation.
-5. **Continue the separate public/personal ChatGPT path.** Resolve or formally clarify the publisher-verification gate, then submit the exact tested Skills-only package to the universal Plugins Directory. Record scan/review evidence, explicitly Publish after approval, and validate the first individual-user ChatGPT Web installation without conflating it with the Repository Preview.
-6. **Repair only observed friction, then expand neutrality/surface evidence.** Keep `plugin/skills/svif/SKILL.md` single-sourced; add no MCP merely for publication. Add broader non-repository and multi-project evidence without making GitHub, Cloudflare, ChatGPT, Cursor, or another execution environment universal dependencies.
-7. Keep live Cloudflare delivery disabled unless explicitly authorized. If authorized later, preserve exact verified-subject delivery and require independent observation before success claims.
+1. **Retain the release branch until cleanup is explicitly confirmed.** Record and report its final remote tip after the post-release checkpoint reaches `main`; do not delete the local or remote branch without the Principal's confirmation.
+2. **Continue the separate public/personal ChatGPT path.** Resolve or formally clarify the publisher-verification gate, then submit the exact tested Skills-only package to the universal Plugins Directory. Record scan/review evidence, explicitly Publish after approval, and validate the first individual-user ChatGPT Web installation without conflating it with the Repository Preview.
+3. **Use a new Preview tag for any fix.** Keep `v0.2.0-preview.1` immutable; repair observed defects into `v0.2.0-preview.2` rather than moving the released tag.
+4. **Repair only observed friction, then expand neutrality/surface evidence.** Keep `plugin/skills/svif/SKILL.md` single-sourced; add no MCP merely for publication. Add broader non-repository and multi-project evidence without making GitHub, Cloudflare, ChatGPT, Cursor, or another execution environment universal dependencies.
+5. Keep live Cloudflare delivery disabled unless explicitly authorized. If authorized later, preserve exact verified-subject delivery and require independent observation before success claims.
 
 ## Current Agnir compatibility reference
 
@@ -65,6 +63,8 @@ The GitHub marketplace path remains a useful secondary validation channel. **Pac
 - A real publisher verification attempt reached the individual-developer verification flow but was blocked at the required accepted-default-payment-method gate before verification/submission. This is recorded as an external release blocker without storing private payment/account data.
 - Svif first-use onboarding now handles an ordinary non-Agnir Project without requiring manual Agnir pre-initialization; regression pressure is `tests/test_plugin_first_use_bootstrap.py` and durable evidence is `.agnir/evidence/2026-08-31-plugin-first-use-bootstrap-fix.md`.
 - The target-main candidate upgrades Svif's Agnir operational baseline compatibly to stable `v0.1.1`; `AGNIR.yaml` records immutable provenance without changing Core/profile compatibility, Project identity, memory locators, or `SVIF.yaml`.
+- The immutable candidate passed Codex CLI and ChatGPT desktop/Codex installation, bootstrap, checkpoint, initialized-Project idempotency, and fresh-context recovery acceptance before release.
+- Svif `v0.2.0-preview.1` is released from authoritative `main` as a GitHub Prerelease; immutable tag installation resolves to the verified release commit and exposes the Skills-only Plugin as installed/enabled.
 - Main-only branch governance is complete.
 
 ## Repository-retirement note

@@ -33,8 +33,9 @@ The raster derivation tool is an interim/reproducible production path, not permi
 - Wordmark trace: **candidate only**. Geometry is derived from the locked raster reference and remains usable for review.
 - Primary S mark: **still blocked from vector-master promotion**.
 - Automatic contour/quantization and superpixel/SLIC experiments preserve the broad silhouette but visibly posterize the translucent ribbon.
-- A new multi-layer color-band trace and a new three-layer gradient/blur trace were also tested against the locked primary-mark crop. Both retained the S silhouette and particle direction but introduced visible faceting / hard layer boundaries in the ribbon. They were rejected locally and **not committed as candidates**.
-- This narrows the next reconstruction strategy: stop increasing automatic segmentation complexity and instead rebuild the ribbon as a small number of constrained smooth Bézier surfaces/paths, using the approved raster only as geometry/color evidence.
+- Multi-layer color-band and three-layer gradient/blur traces retained the S silhouette and particle direction but introduced visible faceting / hard layer boundaries. They were rejected locally and not committed as candidates.
+- A constrained smooth Bézier-centerline reconstruction was also tested. It removed segmentation faceting, but failed a more fundamental fidelity test: the approved Svif mark is **not representable as one centerline with progressively thicker strokes**. Its ribbon has surface width changes, distinct upper/lower edge trajectories, fold/overlap ordering, and crossing geometry. A stroke-derived S therefore changes the topology and reads as a different mark. This experiment was rejected locally and not committed.
+- The next vector strategy is now constrained further: reconstruct the Svif mark as a small set of **closed Bézier ribbon surfaces** (front/back translucent sheets) with independently traced inner/outer boundaries and explicit overlap masks, then add particles from the locked raster evidence.
 - Raster primary/lockup derivation remains the only currently accepted faithful production path for the Svif mark.
 - Vector lockups and final variants remain blocked until the primary mark and wordmark pass the master gate.
 
@@ -46,10 +47,11 @@ The byte-exact approved board and crop PNGs remain preserved by SHA-256 and in t
 
 ## Next actions
 
-1. Rebuild the Svif S as constrained smooth Bézier ribbon surfaces instead of another automatic segmentation trace.
-2. Preserve the approved semi-transparent overlap ordering and particle trajectories; do not simplify them merely to make the SVG easier.
-3. Run visual regression on the wordmark candidate and revise only demonstrated mismatch.
-4. Use `brand/tools/derive-raster-assets.py` for interim transparent/icon derivatives; preserve native/upscale metadata.
-5. Reconstruct horizontal/vertical vector lockups only after the S mark and wordmark are accepted masters.
-6. Build light/dark/monochrome vector variants only from locked masters and approved examples.
-7. Before final integration, preserve the byte-exact approved source in repository storage, re-resolve latest `main`, reconcile Agnir continuity, and integrate coherently.
+1. Trace the Svif ribbon as separate closed Bézier surfaces using the approved upper/lower boundaries, not a centerline stroke.
+2. Reconstruct front/back overlap ordering and translucency with masks/gradients that reproduce the approved crossing rather than merely approximating an S silhouette.
+3. Preserve particle trajectories as a separate evidence-derived layer.
+4. Run visual regression on the wordmark candidate and revise only demonstrated mismatch.
+5. Use `brand/tools/derive-raster-assets.py` for interim transparent/icon derivatives; preserve native/upscale metadata.
+6. Reconstruct horizontal/vertical vector lockups only after the S mark and wordmark are accepted masters.
+7. Build light/dark/monochrome vector variants only from locked masters and approved examples.
+8. Before final integration, preserve the byte-exact approved source in repository storage, re-resolve latest `main`, reconcile Agnir continuity, and integrate coherently.

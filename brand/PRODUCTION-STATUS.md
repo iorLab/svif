@@ -8,50 +8,64 @@ Canonical Project ref remains: `main`
 
 The Principal-approved Today 10:42 AM Svif board is the sole Svif-only visual authority. See `APPROVED-VISUAL-REFERENCE.md` and `reference/EXTRACTION-MANIFEST.md`.
 
-## Completed
+## Fidelity finding
 
-- concept exploration ended;
-- approved visual reference locked by exact source SHA-256;
-- rejected deterministic v0.1 reconstruction removed from the active branch;
-- lossless source-board crops prepared for primary mark, wordmark, horizontal/vertical lockups, light/dark/monochrome examples, app-icon example, and social-card example;
-- crop coordinates and derived hashes persisted for reproducible trace/QA;
-- `brand/masters/candidates/svif-wordmark-trace-v0.1.svg` remains the standalone wordmark review candidate;
-- `brand/tools/derive-raster-assets.py` provides a deterministic white-matte extraction path for approved white-background crops, producing transparent PNG derivatives plus a SHA-256 manifest;
-- local raster QA preserves the approved Svif appearance on white and at 128/64/32/16 target sizes;
-- multiple primary-mark vectorization approaches have now been tested locally without being allowed to pollute the branch candidate set when they fail fidelity review.
+Repeated reviewed attempts to convert the Svif S into a conventional pure-vector mark changed material features of the approved artwork:
 
-## Current production gate
+- contour / quantization / SLIC introduced posterization;
+- color-band and gradient/blur tracing introduced hard facets;
+- a centerline Bézier stroke changed the ribbon topology;
+- closed-surface Bézier experiments still failed to reproduce the approved translucent fold / overlap structure closely enough.
 
-**Faithful vectorization remains the master gate.**
+Those experiments remain rejected. No approximate S may be promoted merely to satisfy a file-format preference.
 
-A vector master may be accepted only when it is reconstructed from the approved crop and visually compared with that crop. No new image generation, generic S replacement, typography substitution, palette reconciliation, or aesthetic cleanup is allowed.
+## Current production path
 
-The raster derivation tool is an interim/reproducible production path, not permission to redefine the master. It exists so the exact approved appearance can be used without waiting for an inferior SVG reconstruction.
+**Fidelity-first raster production is the active delivery path for Svif.**
 
-### Candidate status
+`brand/tools/build-production-assets.py` verifies the exact approved board SHA-256 and deterministically derives:
 
-- Wordmark trace: **candidate only**. Geometry is derived from the locked raster reference and remains usable for review.
-- Primary S mark: **still blocked from vector-master promotion**.
-- Automatic contour/quantization and superpixel/SLIC experiments preserve the broad silhouette but visibly posterize the translucent ribbon.
-- Multi-layer color-band and three-layer gradient/blur traces retained the S silhouette and particle direction but introduced visible faceting / hard layer boundaries. They were rejected locally and not committed as candidates.
-- A constrained smooth Bézier-centerline reconstruction was also tested. It removed segmentation faceting, but failed a more fundamental fidelity test: the approved Svif mark is **not representable as one centerline with progressively thicker strokes**. Its ribbon has surface width changes, distinct upper/lower edge trajectories, fold/overlap ordering, and crossing geometry. A stroke-derived S therefore changes the topology and reads as a different mark. This experiment was rejected locally and not committed.
-- The next vector strategy is now constrained further: reconstruct the Svif mark as a small set of **closed Bézier ribbon surfaces** (front/back translucent sheets) with independently traced inner/outer boundaries and explicit overlap masks, then add particles from the locked raster evidence.
-- Raster primary/lockup derivation remains the only currently accepted faithful production path for the Svif mark.
-- Vector lockups and final variants remain blocked until the primary mark and wordmark pass the master gate.
+- transparent native-resolution raster mark;
+- transparent standalone wordmark;
+- transparent horizontal lockup;
+- transparent vertical lockup;
+- approved-board light / dark / monochrome usage derivatives;
+- approved app-icon derivative;
+- approved social-card derivative;
+- 128 / 64 / 32 / 16 favicon derivatives;
+- SHA-256 manifest for every output.
 
-The quality rule remains: **absence of a vector master is preferable to a visually drifting vector master.**
+This is not a redesign. It is a deterministic extraction of the frozen visual authority.
 
-## Binary reference boundary
+### Master semantics
 
-The byte-exact approved board and crop PNGs remain preserved by SHA-256 and in the locked local reference package. The current connector does not provide a practical local-file binary upload bridge for the multi-megabyte exact approved PNG, so final byte-exact repository preservation remains a pre-`main` integration gate.
+- The extracted native-resolution PNGs are **raster production masters** for the current approved Svif appearance.
+- They must not be described as infinitely scalable vector masters.
+- An SVG wrapper around a raster master, if supplied, is a transport/convenience container only; it does not convert the artwork into true vector geometry.
+- No upscale may be represented as a native-resolution source master.
+- A future pure-vector reconstruction is allowed only if it passes a new source-vs-vector fidelity review. It is no longer allowed to block delivery of the approved brand package.
+
+## Wordmark
+
+The old `brand/masters/candidates/svif-wordmark-trace-v0.1.svg` remains provenance only. The raster-extracted approved wordmark is preferred for fidelity-first production until a separately reviewed smooth outline is demonstrated to match the locked source.
+
+## Binary repository boundary
+
+The active GitHub connector can create Git binary blobs from base64, but the execution bridge truncates sufficiently long local binary payloads before they can be safely attached to a tree. Corrupt/unverified blobs are therefore **not** attached to the branch.
+
+The production builder, exact source SHA, crop rules and output hashes are persisted in-repository. Current binary outputs are preserved in the local production package. Actual PNG binaries must be added only through a binary-safe Git surface or a verified repository workflow; never attach an unverified/truncated blob merely to claim the binary was committed.
+
+## QA rules
+
+- Principal-facing review is clean; diagnostics do not appear in brand artwork.
+- Every raster master must recompose correctly on white and preserve the approved translucent ribbon / particles.
+- Favicon QA is performed at actual 128 / 64 / 32 / 16 sizes.
+- The frozen 10:42 AM board remains visually authoritative over all derived files.
 
 ## Next actions
 
-1. Trace the Svif ribbon as separate closed Bézier surfaces using the approved upper/lower boundaries, not a centerline stroke.
-2. Reconstruct front/back overlap ordering and translucency with masks/gradients that reproduce the approved crossing rather than merely approximating an S silhouette.
-3. Preserve particle trajectories as a separate evidence-derived layer.
-4. Run visual regression on the wordmark candidate and revise only demonstrated mismatch.
-5. Use `brand/tools/derive-raster-assets.py` for interim transparent/icon derivatives; preserve native/upscale metadata.
-6. Reconstruct horizontal/vertical vector lockups only after the S mark and wordmark are accepted masters.
-7. Build light/dark/monochrome vector variants only from locked masters and approved examples.
-8. Before final integration, preserve the byte-exact approved source in repository storage, re-resolve latest `main`, reconcile Agnir continuity, and integrate coherently.
+1. Persist the raster-master file map and current output hashes.
+2. Write `brand/brand-handoff.md` describing raster-master semantics, usage and limitations.
+3. Package Svif mark / wordmark / lockups / variants / app / favicon / social derivatives for delivery.
+4. Add byte-exact binaries to repository storage only through a binary-safe path and verify their SHA-256 values afterward.
+5. Re-resolve latest `main`, reconcile branch-local Agnir continuity, then integrate the approved brand package coherently.

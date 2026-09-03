@@ -38,6 +38,7 @@ svif/                                                     # Svif 产品主仓库
 │       ├── 2026-09-02-svif-v0.2.0-preview.1-candidate.md # Preview 候选、CI、Codex CLI 与桌面端真实安装验收证据
 │       ├── 2026-09-02-svif-v0.2.0-preview.1-release.md   # tag、GitHub Prerelease、main CI 与 tag-based 安装烟测证据
 │       ├── 2026-09-03-agnir-v0.2.0-real-downstream-migration.md # Svif 从发布版 Agnir v0.1.1/Core 0.1 迁移到 v0.2.0/Core 0.2 的真实下游证据
+│       ├── 2026-09-03-agnir-v0.2.0-main-acceptance.md    # target reconciliation、authoritative main publication 与 post-publication CI/cold-start 验证证据
 │       └── checkpoint-2026-08-28-validation-2.md         # Validation 2 的持久 checkpoint 记录
 │
 ├── .github/                                              # GitHub 托管侧自动化配置

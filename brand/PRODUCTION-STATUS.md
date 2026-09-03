@@ -59,13 +59,20 @@ The Git binary path has been verified end-to-end for payloads that fit through t
 
 For each file, GitHub's returned blob SHA matched the locally calculated Git object SHA exactly, and its SHA-256 matches `brand/masters/RASTER-MASTER-MANIFEST.md`.
 
-A failed attempt to read a PNG Git blob as UTF-8 is expected for binary content and is not evidence of corruption. The actual remaining limitation is the current execution bridge's long-base64 argument truncation: sufficiently large PNG payloads cannot traverse this bridge intact even though Git's blob API itself is binary-safe.
+A failed attempt to read a PNG Git blob as UTF-8 is expected for binary content and is not evidence of corruption. The actual remaining limitation is the current execution bridge's long-base64 argument truncation.
 
-Therefore the larger mark / wordmark / lockups / treatment / app / 128px favicon / social PNGs remain deterministic builder outputs rather than falsely attached truncated binaries.
+A controlled 128px probe confirmed the boundary:
+
+- `svif-favicon-128.png`, 12,183 bytes;
+- expected local Git object SHA `40dbc1cbca075149cd8fc4e0859f09217b0c3530`;
+- returned GitHub blob SHA `30eb8689852c6490c0e2e19d3ff39cb4269b1700`;
+- **mismatch => rejected; the blob was never attached to the branch tree**.
+
+Therefore the larger mark / wordmark / lockups / treatment / app / 128px favicon / social PNGs remain deterministic builder outputs rather than falsely attached truncated binaries. The verified direct-blob path is not used for larger files unless exact Git-object equality is observed.
 
 ## Complete QA status
 
-The final QA scope is now explicitly symmetric with Agnir and recorded in `brand/qa/FINAL-QA.md` as 13/13 items:
+The final QA scope is explicitly symmetric with Agnir and recorded in `brand/qa/FINAL-QA.md` as 13/13 items:
 
 1. mark;
 2. wordmark;
@@ -87,6 +94,27 @@ Current cross-brand production delivery ZIP SHA-256: `171b974b62fabc9eb286104d6b
 
 The QA set preserves the approved translucent ribbon, particle trajectories and locked 10:42 composition.
 
+## Repository-documentation status
+
+The new top-level `brand/` surface is synchronized into:
+
+- `REPOSITORY_TREE.md`;
+- `README.md` compact repository tree;
+- `README.zh-CN.md` compact repository tree.
+
+A one-off GitHub Actions patch synchronized both README trees successfully in run `33704957846`; the temporary workflow was removed afterward.
+
+## Integration validation
+
+The actual branch passed repository/product validation after correcting a temporary validation-workflow import-path omission:
+
+- first run: repository integrity PASS and portable contracts PASS; unit imports failed only because the temporary workflow omitted `PYTHONPATH=src`;
+- corrected run `33705138040`: **success**;
+- validated commands: repository integrity, portable contract conformance, and the full `tests/test_*.py` unittest suite with `PYTHONPATH=src`;
+- temporary validation workflow removed after the successful run.
+
+No Svif product code was changed to make the validation pass.
+
 ## QA rules
 
 - Principal-facing review is clean; diagnostics do not appear in brand artwork.
@@ -98,7 +126,8 @@ The QA set preserves the approved translucent ribbon, particle trajectories and 
 
 1. Preserve the byte-exact approved Svif board in repository storage.
 2. Attach the larger deterministic PNG outputs through a binary transport that preserves exact bytes, then verify their Git blob SHA and documented SHA-256.
-3. Synchronize top-level repository structure documentation (`REPOSITORY_TREE.md` and affected README compact trees) with the new `brand/` product surface.
-4. Re-resolve latest `main` immediately before publication and reconcile branch-local continuity if it moved.
-5. Integrate the approved brand package coherently without changing the released `v0.2.0-preview.1` tag.
-6. Verify the resulting authoritative `main` after publication.
+3. Re-resolve latest `main` immediately before publication and reconcile branch-local continuity if it moved.
+4. Integrate the approved brand package coherently without changing the released `v0.2.0-preview.1` tag.
+5. Verify the resulting authoritative `main` after publication.
+
+Visual design, 13/13 QA, repository documentation and branch validation are complete. **Large byte-exact binary preservation is the only non-reconciliation integration blocker still open.**

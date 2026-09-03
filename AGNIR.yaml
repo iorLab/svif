@@ -1,11 +1,14 @@
 agnir:
-  version: "0.1"
-  discovery_profile: "repository-filesystem/0.1"
+  version: "0.2"
+  discovery_profile: "repository-filesystem/0.2"
 
 project:
   identity: "urn:svif:project:svif-core"
   profiles:
     - generic
+
+continuity:
+  lineage: "urn:svif:lineage:agnir-v0.2.0-stable-migration"
 
 memory:
   state: ".agnir/state.md"
@@ -20,8 +23,14 @@ extensions:
   agnir/repository:
     canonical: "iorLab/svif"
     authoritative_ref: "main"
+  agnir/vcs:
+    branch_continuity: "lineage-bound"
+    integration_reconciliation: "required"
+    lineage_binding:
+      kind: "vcs-ref"
+      selector: "refs/heads/migration/agnir-v0.2.0-stable"
   agnir/operations:
     distribution: "agnir-agent-skill"
-    release: "0.1.1"
+    release: "0.2.0"
     source: "iorLab/agnir"
-    applied_revision: "e9712357ab590e5c1e5357b3cf3219d07d789aff"
+    applied_revision: "fc84095ed5d500be9e1b43a4af0e93356571bbd4"

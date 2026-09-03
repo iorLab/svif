@@ -8,8 +8,8 @@ project:
 bindings:
   continuity:
     provider: "agnir"
-    compatibility: "0.1"
-    profile: "repository-filesystem/0.1"
+    compatibility: "0.2"
+    profile: "repository-filesystem/0.2"
     config:
       discovery: "AGNIR.yaml"
       activation: "AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml"

@@ -1,0 +1,26 @@
+name: Brand integration validation
+
+on:
+  push:
+    branches:
+      - brand/identity-system
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: brand/identity-system
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Repository integrity
+        run: python checks/check_repository.py
+      - name: Portable contract conformance
+        run: python conformance/check_contracts.py
+      - name: Svif unit tests
+        run: python -m unittest discover -s tests -p 'test_*.py' -v

@@ -8,11 +8,13 @@ project:
 bindings:
   continuity:
     provider: "agnir"
-    compatibility: "0.1"
-    profile: "repository-filesystem/0.1"
+    compatibility: "0.2"
+    profile: "repository-filesystem/0.2"
     config:
       discovery: "AGNIR.yaml"
       activation: "AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml"
+      lineage: "urn:svif:lineage:authoritative"
+      vcs_selector: "refs/heads/main"
   execution: []
   capabilities: []
 
@@ -42,6 +44,7 @@ checks:
   portable_contracts: "conformance/check_contracts.py"
   runtime_kernel: "tests/test_runtime.py"
   agnir_continuity: "tests/test_agnir_continuity.py"
+  agnir_stable_migration: "tests/test_agnir_stable_migration.py"
   chatgpt_surface: "tests/test_chatgpt_surface.py"
   cloudflare_capability: "tests/test_cloudflare_capability.py"
   founding_e2e: "tests/test_founding_e2e.py"

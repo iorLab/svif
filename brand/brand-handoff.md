@@ -1,127 +1,92 @@
 # Svif brand handoff
 
-Status: **approved visual direction on `brand/identity-system`; branch-local until integrated into authoritative `main`.**
+Status: **approved and production-materialized on `brand/identity-system`; branch-local until integrated into authoritative `main`.**
 
-Visual authority: the Principal-approved Today 10:42 AM Svif asset board recorded in `APPROVED-VISUAL-REFERENCE.md`.
+Visual authority: the Principal-approved Today 10:42 AM Svif asset board.
 
 ## Brand idea
 
-Svif is the **Motion Layer / 流动层**.
+Svif is the **Motion Layer / 流动层**: flow, suspension and orchestration across surfaces. The identity is the approved translucent teal/turquoise `S` ribbon with suspended particle trajectories.
 
-- 流动、悬浮、跨表面编排
-- Flow, suspension, orchestration across surfaces
+## Repository-resident visual references
 
-The identity is a translucent teal/turquoise `S` ribbon with suspended particle trajectories. Svif is distinct from Agnir while sharing the family particle-and-geometry language.
+Use these byte-exact references when source comparison is required:
+
+- `brand/reference/svif-approved-reference.png`
+- `brand/reference/svif-agnir-family-approved-reference.png`
+
+Their SHA-256 locks are recorded in `brand/APPROVED-VISUAL-REFERENCE.md` and `brand/reference/EXTRACTION-MANIFEST.md`.
 
 ## Production-master model
 
-The approved S artwork contains translucent ribbon sheets, soft overlaps and particle trails that did not survive reviewed pure-vector reconstruction faithfully.
+Svif uses **fidelity-first raster masters** because reviewed pure-vector attempts materially changed the approved translucent ribbon topology, folds/overlaps or particle field.
 
-Therefore current production uses **fidelity-first raster masters** generated from the locked approved board by:
+Committed raster masters:
 
-```bash
-python brand/tools/build-production-assets.py \
-  --board <byte-exact-approved-Svif-board.png> \
-  --out <output-directory>
+```text
+brand/masters/
+├── svif-mark.png
+├── svif-wordmark.png
+├── svif-horizontal-lockup.png
+└── svif-vertical-lockup.png
 ```
 
-The builder refuses a board whose SHA-256 does not match the locked approved source.
+These are native raster production masters for the approved appearance. Do not upscale them and call the result a new native source master. A future vector replacement requires a new source-vs-vector fidelity review and explicit approval.
 
-Expected output hashes are recorded in `brand/masters/RASTER-MASTER-MANIFEST.md`.
+`brand/tools/build-production-assets.py` remains the deterministic rebuild path and validates the locked source SHA-256. Expected output hashes are in `brand/masters/RASTER-MASTER-MANIFEST.md`.
 
-### Core raster masters
+## Approved treatments and delivery exports
 
-- `svif-mark.png` — transparent approved S + particles, native 292×290.
-- `svif-wordmark.png` — transparent approved standalone black wordmark, native 255×155.
-- `svif-horizontal-lockup.png` — transparent approved mark + black wordmark, native 361×200.
-- `svif-vertical-lockup.png` — transparent approved vertical composition, native 208×215.
+The full repository-resident delivery set is under `brand/exports/`:
 
-These files preserve the approved visual but are **not infinitely scalable vectors**. Do not upscale them and call the result a new native master.
+- light / dark / monochrome approved treatments;
+- approved app icon;
+- approved social card;
+- favicons at 128 / 64 / 32 / 16px.
 
-## Approved treatments
+Use the actual committed files rather than regenerating a generic S, substitute typeface, simplified ribbon or redesigned particle field.
 
 ### Light background
 
-Use the teal/brand-colored wordmark treatment shown in the approved light-background example. Do not assume the standalone black wordmark means all light-background placements must be black.
+Use the approved teal/brand-color wordmark treatment shown by the locked board.
 
 ### Dark background
 
-Use the approved translucent mark treatment with a white wordmark on the dark teal surface.
+Use the approved translucent mark treatment with white wordmark on the dark teal surface.
 
 ### Monochrome
 
-Use the approved grayscale ribbon / particle treatment with a black wordmark.
+Use the approved grayscale ribbon/particle treatment with black wordmark.
 
-The builder emits exact approved-board derivatives for these three usage examples.
+### Favicons
 
-## App / repository / avatar usage
-
-- App icon: use the approved rounded-square treatment.
-- Repository icon / profile avatar: prefer the mark-only treatment with clear space.
-- Do not force the full wordmark into very small avatars.
-
-## Favicons
-
-The builder derives 128 / 64 / 32 / 16px transparent favicon files from the approved raster mark.
-
-Directly committed delivery binaries currently exist for:
-
-- `brand/exports/svif-favicon-64.png`;
-- `brand/exports/svif-favicon-32.png`;
-- `brand/exports/svif-favicon-16.png`.
-
-These three were accepted only after exact Git object-SHA verification and their SHA-256 values match `RASTER-MASTER-MANIFEST.md`.
-
-- Do not regenerate the S for small sizes.
-- Do not substitute a generic letter `S`.
-- Evaluate the actual raster target, not an enlarged preview.
-- A future special small-size vector variant would require explicit new Principal approval; none is currently authorized.
+Do not regenerate the S for small sizes. Evaluate the actual raster target at 128/64/32/16px.
 
 ## Social card
 
-The approved board defines the Svif social-card composition: translucent S on the left, black `Svif`, `流动层 / Motion Layer`, bilingual motion copy and the light teal particle/ribbon field along the lower edge. Preserve that composition rather than inventing a campaign variant.
-
-## Pure-vector status
-
-Pure-vector reconstruction remains optional future work, not a delivery gate. The following approaches were rejected because they materially drifted from the approved S:
-
-- automatic contour / quantization;
-- SLIC / superpixel tracing;
-- layered color-band tracing;
-- gradient/blur tracing;
-- centerline stroke reconstruction;
-- constrained closed Bézier ribbon surfaces tested so far.
-
-A future vector master may replace the raster production master only after a clean source-vs-vector fidelity review and explicit approval.
+Preserve the locked composition: translucent S, black `Svif`, `流动层 / Motion Layer`, bilingual copy and the light teal particle/ribbon field. Do not invent a campaign redesign.
 
 ## Forbidden substitutions
 
 Do not:
 
-- regenerate the Logo with image generation and use the result as an asset;
 - replace the S with a generic glyph;
 - replace the wordmark with a merely similar font;
-- simplify ribbon folds or particle trajectories for convenience;
-- recolor Agnir/Svif into one palette;
+- simplify ribbon folds or particle trajectories;
+- reconcile Agnir and Svif into one palette;
 - represent an SVG wrapper around a PNG as a true vector master;
-- treat the rejected deterministic v0.1 reconstruction or current wordmark trace candidate as production truth.
+- promote rejected v0.1/vectorization candidates;
+- use image generation to create a replacement production logo.
 
-## Binary repository boundary
+## Byte-exact materialization receipt
 
-Git's binary blob path is proven. The active execution bridge, however, truncates sufficiently long base64 tool arguments. Therefore only binaries whose returned Git blob SHA exactly matches the locally expected Git object SHA may be attached.
-
-The 16/32/64px favicons pass this gate and are committed. Larger files remain deterministic outputs of `build-production-assets.py` until a larger-payload binary transport is available. Never populate missing paths with approximate or regenerated artwork.
-
-## QA / delivery status
-
-A final clean production QA has been completed locally for the core raster masters, lockups, three approved treatments, app icon, all favicon targets and social card. A complete local delivery package with manifests has been generated. This local package is a delivery artifact; repository truth remains the locked reference, builder, hashes and files actually committed to the branch.
+The former large-binary transport blocker is closed. GitHub Actions run `33730468886` verified the handoff archive and every source/destination SHA-256 before committing the complete repository package at `137307351dfee467472ccd997fdc714b8a71c549`. The temporary transport ZIP and workflow removed themselves in that commit.
 
 ## Integration gate
 
-Before merging brand work to canonical `main`:
+Before canonical `main` integration:
 
-1. preserve the byte-exact approved board in repository storage;
-2. add the remaining larger generated PNG package through a byte-preserving transport and verify all SHA-256 / Git blob values;
-3. re-resolve latest `main` and reconcile branch-local Agnir continuity;
-4. integrate assets and continuity coherently;
-5. verify from `main` after publication.
+1. re-resolve latest `main` and reconcile if it moved;
+2. require Draft PR `#5` product checks to pass on the final head;
+3. integrate brand assets/evidence coherently without moving `v0.2.0-preview.1`;
+4. fresh-verify the resulting authoritative `main`.

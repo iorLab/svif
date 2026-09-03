@@ -4,75 +4,52 @@ Date: 2026-09-03
 Branch: `brand/identity-system`
 Canonical Project ref remains: `main`
 
-## Locked input
+## Locked visual authority
 
-The Principal-approved Today 10:42 AM Svif board is the sole Svif-only visual authority. See `APPROVED-VISUAL-REFERENCE.md` and `reference/EXTRACTION-MANIFEST.md`.
+The Principal-approved Today 10:42 AM Svif board remains the sole Svif-only visual authority. The byte-exact board is now committed at `brand/reference/svif-approved-reference.png` with locked SHA-256 `10ad09a3c68e7ccd84e8c50ac4aaeda2bdb1e1fee4c09899ef4215fdec18f3fd`.
 
-## Fidelity finding
+The byte-exact family board is committed at `brand/reference/svif-agnir-family-approved-reference.png` with SHA-256 `4110d285243b6241ac709e750cca1815a10ca41e27c3bb15e6c94b56e57fa4fb`.
 
-Repeated reviewed attempts to convert the Svif S into a conventional pure-vector mark changed material features of the approved artwork:
+## Production model
 
-- contour / quantization / SLIC introduced posterization;
-- color-band and gradient/blur tracing introduced hard facets;
-- a centerline Bézier stroke changed the ribbon topology;
-- closed-surface Bézier experiments still failed to reproduce the approved translucent fold / overlap structure closely enough.
+**Fidelity-first raster production is the approved Svif delivery model.** Reviewed pure-vector reconstructions materially changed the translucent ribbon topology, folds/overlaps or particle field and remain rejected.
 
-Those experiments remain rejected. No approximate S may be promoted merely to satisfy a file-format preference.
+`brand/tools/build-production-assets.py` deterministically derives the production package from the locked source and refuses a source-board SHA mismatch.
 
-## Current production path
+The current raster production masters are committed directly under `brand/masters/`:
 
-**Fidelity-first raster production is the active delivery path for Svif.**
+- `svif-mark.png`
+- `svif-wordmark.png`
+- `svif-horizontal-lockup.png`
+- `svif-vertical-lockup.png`
 
-`brand/tools/build-production-assets.py` verifies the exact approved board SHA-256 and deterministically derives:
+They preserve the approved raster appearance and are not infinitely scalable vector masters. `brand/masters/candidates/svif-wordmark-trace-v0.1.svg` remains provenance only.
 
-- transparent native-resolution raster mark;
-- transparent standalone wordmark;
-- transparent horizontal lockup;
-- transparent vertical lockup;
-- approved-board light / dark / monochrome usage derivatives;
-- approved app-icon derivative;
-- approved social-card derivative;
-- 128 / 64 / 32 / 16 favicon derivatives;
-- SHA-256 manifest for every output.
+## Materialized delivery exports
 
-This is not a redesign. It is a deterministic extraction of the frozen visual authority.
+The complete delivery set is now committed under `brand/exports/`:
 
-### Master semantics
+- `svif-light-usage.png`
+- `svif-dark-usage.png`
+- `svif-monochrome-usage.png`
+- `svif-app-icon.png`
+- `svif-social-card.png`
+- `svif-favicon-128.png`
+- `svif-favicon-64.png`
+- `svif-favicon-32.png`
+- `svif-favicon-16.png`
 
-- The extracted native-resolution PNGs are **raster production masters** for the current approved Svif appearance.
-- They must not be described as infinitely scalable vector masters.
-- An SVG wrapper around a raster master, if supplied, is a transport/convenience container only; it does not convert the artwork into true vector geometry.
-- No upscale may be represented as a native-resolution source master.
-- A future pure-vector reconstruction is allowed only if it passes a new source-vs-vector fidelity review. It is no longer allowed to block delivery of the approved brand package.
+All files were materialized on a GitHub runner from the user-uploaded byte-exact handoff archive. Workflow run `33730468886` verified the archive SHA-256, verified each source payload SHA-256, copied each file to its final repository path, re-verified each destination SHA-256, committed the results, and removed both the transport ZIP and the temporary workflow.
 
-## Wordmark
+Final materialization commit: `137307351dfee467472ccd997fdc714b8a71c549`.
 
-The old `brand/masters/candidates/svif-wordmark-trace-v0.1.svg` remains provenance only. The raster-extracted approved wordmark is preferred for fidelity-first production until a separately reviewed smooth outline is demonstrated to match the locked source.
+The previously blocked 128px favicon now proves the byte-safe path succeeded: repository Git blob `40dbc1cbca075149cd8fc4e0859f09217b0c3530`, exactly matching the locally expected Git object SHA that could not traverse the earlier direct base64 bridge.
 
-## Materialized repository binaries
+Expected production SHA-256 values remain recorded in `brand/masters/RASTER-MASTER-MANIFEST.md`.
 
-The Git binary path has been verified end-to-end for payloads that fit through the current execution bridge. The following delivery files are directly committed under `brand/exports/`:
+## Complete QA
 
-- `svif-favicon-64.png` — Git blob `b396a8f9f36d3b59b69e16b650675e82d666e99e`;
-- `svif-favicon-32.png` — Git blob `791eb44f67e6e96d55a1126bdc2fdc23b18b5050`;
-- `svif-favicon-16.png` — Git blob `234044b5faf1be3a6862d5c8f8548757902bc69b`.
-
-For each file, GitHub's returned blob SHA matched the locally calculated Git object SHA exactly, and its SHA-256 matches `brand/masters/RASTER-MASTER-MANIFEST.md`.
-
-A failed attempt to read a PNG Git blob as UTF-8 is expected for binary content and is not evidence of corruption. The actual remaining limitation is the current execution bridge's long-base64 argument truncation.
-
-A controlled 128px probe confirmed the boundary:
-
-- `svif-favicon-128.png`, 12,183 bytes;
-- expected local Git object SHA `40dbc1cbca075149cd8fc4e0859f09217b0c3530`;
-- returned GitHub blob SHA `30eb8689852c6490c0e2e19d3ff39cb4269b1700`;
-- **mismatch => rejected; the blob was never attached to the branch tree**.
-
-Therefore the larger mark / wordmark / lockups / treatment / app / 128px favicon / social PNGs remain deterministic builder outputs rather than falsely attached truncated binaries. The verified direct-blob path is not used for larger files unless exact Git-object equality is observed.
-
-## Complete QA status
-
-The final QA scope is explicitly symmetric with Agnir and recorded in `brand/qa/FINAL-QA.md` as 13/13 items:
+Final QA is symmetric with Agnir and covers 13/13 items:
 
 1. mark;
 2. wordmark;
@@ -90,44 +67,35 @@ The final QA scope is explicitly symmetric with Agnir and recorded in `brand/qa/
 
 Complete Svif QA sheet SHA-256: `41606509a1ab49f4c48e2f8a0affbe966cdeee256f90a0d693a6c275dc9f6cb2`.
 
-Current cross-brand production delivery ZIP SHA-256: `171b974b62fabc9eb286104d6bc090563e381ac4fd4fb8d2157b6b3cceaad2c7`.
+The frozen 10:42 board remains visually authoritative over every derivative.
 
-The QA set preserves the approved translucent ribbon, particle trajectories and locked 10:42 composition.
+## Latest main reconciliation
 
-## Repository-documentation status
+Immediately before binary materialization, authoritative `main` had advanced to `eba1b8538c4692a08bf69452525b735d23564599` and the brand branch was behind by 7 commits.
 
-The new top-level `brand/` surface is synchronized into:
+Reverse-sync PR `#8` (`main` -> `brand/identity-system`) was mergeable and was merged into the branch at `6076dd08d3e8d352d130a6c3ac2ccddb3d28bae7` before materialization. The post-reconcile branch was behind `main` by 0.
 
-- `REPOSITORY_TREE.md`;
-- `README.md` compact repository tree;
-- `README.zh-CN.md` compact repository tree.
+No released `v0.2.0-preview.1` tag was moved or modified.
 
-A one-off GitHub Actions patch synchronized both README trees successfully in run `33704957846`; the temporary workflow was removed afterward.
+## Repository documentation
 
-## Integration validation
+The `brand/` product surface is represented in `README.md`, `README.zh-CN.md`, and `REPOSITORY_TREE.md`. The latest-main reconciliation preserved newer product/runtime truth while retaining the brand-only repository-map entries.
 
-The actual branch passed repository/product validation after correcting a temporary validation-workflow import-path omission:
+## QA and integration rules
 
-- first run: repository integrity PASS and portable contracts PASS; unit imports failed only because the temporary workflow omitted `PYTHONPATH=src`;
-- corrected run `33705138040`: **success**;
-- validated commands: repository integrity, portable contract conformance, and the full `tests/test_*.py` unittest suite with `PYTHONPATH=src`;
-- temporary validation workflow removed after the successful run.
+- Principal-facing brand review stays free of diagnostic overlays.
+- Raster masters must preserve the approved translucent ribbon and particle appearance.
+- Favicon review is at actual 128/64/32/16 targets.
+- No derivative may become permission to redesign the locked source.
+- Future pure-vector replacement requires a new clean source-vs-vector review and explicit approval.
 
-No Svif product code was changed to make the validation pass.
+## Integration readiness
 
-## QA rules
+The former large-binary preservation blocker is **closed**. Byte-exact source references, raster masters, and delivery exports are now repository-resident and SHA-verified.
 
-- Principal-facing review is clean; diagnostics do not appear in brand artwork.
-- Every raster master must recompose correctly on white and preserve the approved translucent ribbon / particles.
-- Favicon QA is performed at actual 128 / 64 / 32 / 16 sizes.
-- The frozen 10:42 AM board remains visually authoritative over all derived files.
+Remaining publication gates are only:
 
-## Remaining integration gates
-
-1. Preserve the byte-exact approved Svif board in repository storage.
-2. Attach the larger deterministic PNG outputs through a binary transport that preserves exact bytes, then verify their Git blob SHA and documented SHA-256.
-3. Re-resolve latest `main` immediately before publication and reconcile branch-local continuity if it moved.
-4. Integrate the approved brand package coherently without changing the released `v0.2.0-preview.1` tag.
-5. Verify the resulting authoritative `main` after publication.
-
-Visual design, 13/13 QA, repository documentation and branch validation are complete. **Large byte-exact binary preservation is the only non-reconciliation integration blocker still open.**
+1. re-resolve latest `main` immediately before publication and reconcile again if it moved;
+2. require Draft PR `#5` synthetic-merge product checks to be green on the final branch head;
+3. integrate the approved brand package coherently without changing the immutable `v0.2.0-preview.1` release tag;
+4. fresh-verify authoritative `main` after publication.

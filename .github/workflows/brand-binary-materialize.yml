@@ -1,0 +1,87 @@
+name: Brand binary materialization
+
+on:
+  push:
+    branches:
+      - brand/identity-system
+
+permissions:
+  contents: write
+
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: brand/identity-system
+          fetch-depth: 0
+      - name: Verify uploaded handoff archive
+        run: |
+          echo "52e8cee3c03f0762fc47d579505122dc452e5de97dafb462a3b470ed5457f72d  svif-agnir-brand-binary-integration-handoff.zip" | sha256sum -c -
+      - name: Materialize Svif binaries with SHA verification
+        shell: python
+        run: |
+          from pathlib import Path
+          import hashlib
+          import json
+          import shutil
+          import zipfile
+
+          root = Path.cwd()
+          archive = root / "svif-agnir-brand-binary-integration-handoff.zip"
+          work = root / ".brand-handoff"
+          if work.exists():
+              shutil.rmtree(work)
+          work.mkdir()
+          with zipfile.ZipFile(archive) as z:
+              z.extractall(work)
+
+          manifest = json.loads((work / "manifest.json").read_text(encoding="utf-8"))
+
+          def sha256(path):
+              return hashlib.sha256(path.read_bytes()).hexdigest()
+
+          selected = []
+          for source_rel, spec in manifest["targets"].items():
+              if spec["repository"] == "svif":
+                  selected.append((source_rel, spec["target"], spec["sha256"]))
+
+          # Handoff manifest v1 used source_rel as a dict key, so the shared family
+          # source kept only its later Agnir mapping. The locked family payload is
+          # present in the archive; materialize Svif's intended target explicitly.
+          selected.append((
+              "payload/reference/family-approved-reference.png",
+              "brand/reference/svif-agnir-family-approved-reference.png",
+              "4110d285243b6241ac709e750cca1815a10ca41e27c3bb15e6c94b56e57fa4fb",
+          ))
+
+          if len(selected) != 15:
+              raise SystemExit(f"expected 15 Svif targets, got {len(selected)}")
+
+          for source_rel, target_rel, expected in selected:
+              src = work / source_rel
+              if not src.is_file():
+                  raise SystemExit(f"missing payload: {source_rel}")
+              got = sha256(src)
+              if got != expected:
+                  raise SystemExit(f"source SHA mismatch: {source_rel}: {got} != {expected}")
+              dst = root / target_rel
+              dst.parent.mkdir(parents=True, exist_ok=True)
+              shutil.copyfile(src, dst)
+              got = sha256(dst)
+              if got != expected:
+                  raise SystemExit(f"destination SHA mismatch: {target_rel}: {got} != {expected}")
+              print(f"PASS {target_rel} {expected}")
+
+          shutil.rmtree(work)
+          print("PASS: 15 Svif byte-exact brand targets materialized")
+      - name: Commit materialized assets and remove transport files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add brand
+          git rm svif-agnir-brand-binary-integration-handoff.zip
+          git rm .github/workflows/brand-binary-materialize.yml
+          git commit -m "brand: materialize byte-exact production binaries [skip ci]"
+          git push origin HEAD:brand/identity-system

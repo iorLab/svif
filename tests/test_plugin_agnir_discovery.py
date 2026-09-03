@@ -1,11 +1,19 @@
 from __future__ import annotations
 
+import re
 import unittest
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
 SKILL = ROOT / "plugin" / "skills" / "svif" / "SKILL.md"
+
+
+def _quoted_scalar(text: str, key: str) -> str:
+    match = re.search(rf'^\s+{re.escape(key)}:\s+"([^"]+)"\s*$', text, re.MULTILINE)
+    if match is None:
+        raise AssertionError(f"missing quoted scalar {key!r}")
+    return match.group(1)
 
 
 class PluginAgnirDiscoveryTests(unittest.TestCase):
@@ -98,10 +106,7 @@ class PluginAgnirDiscoveryTests(unittest.TestCase):
             "a parent or child Project with its own `AGNIR.yaml` does not make that selected root ambiguous",
             text,
         )
-        self.assertIn(
-            "MUST NOT be searched as a replacement",
-            text,
-        )
+        self.assertIn("MUST NOT be searched as a replacement", text)
 
     def test_skill_selects_trusted_profile_before_resolving_discovery_record(self) -> None:
         text = SKILL.read_text(encoding="utf-8")
@@ -282,21 +287,35 @@ class PluginAgnirDiscoveryTests(unittest.TestCase):
         self.assertIn("repair the earliest violated discovery invariant", text)
         self.assertIn("original authorized Project Entry Point", text)
 
-    def test_svif_binding_and_skill_agree_on_current_agnir_identity_and_compatibility(self) -> None:
+    def test_current_project_binding_can_migrate_without_rewriting_released_bootstrap_baseline(self) -> None:
         skill = SKILL.read_text(encoding="utf-8")
         agnir = (ROOT / "AGNIR.yaml").read_text(encoding="utf-8")
         svif = (ROOT / "SVIF.yaml").read_text(encoding="utf-8")
-
-        self.assertIn('version: "0.1"', agnir)
-        self.assertIn('discovery_profile: "repository-filesystem/0.1"', agnir)
-        self.assertIn('identity: "urn:svif:project:svif-core"', agnir)
-        self.assertIn('compatibility: "0.1"', svif)
-        self.assertIn('profile: "repository-filesystem/0.1"', svif)
+        lineage = _quoted_scalar(svif, "lineage")
+        selector = _quoted_scalar(svif, "vcs_selector")
 
         for marker in (
+            'version: "0.2"',
+            'discovery_profile: "repository-filesystem/0.2"',
+            'identity: "urn:svif:project:svif-core"',
+            f'lineage: "{lineage}"',
+            f'selector: "{selector}"',
+        ):
+            self.assertIn(marker, agnir)
+        for marker in (
+            'compatibility: "0.2"',
+            'profile: "repository-filesystem/0.2"',
+            f'lineage: "{lineage}"',
+            f'vcs_selector: "{selector}"',
+        ):
+            self.assertIn(marker, svif)
+
+        # The released Skills-only distribution still bootstraps new Projects on
+        # its published Agnir 0.1 baseline until a later distribution release says otherwise.
+        for marker in (
             "Agnir Core `0.1`",
-            "profile `repository-filesystem/0.1`",
-            "Project identity `urn:svif:project:svif-core`",
+            "repository-filesystem/0.1",
+            'compatibility `"0.1"`',
         ):
             self.assertIn(marker, skill)
 

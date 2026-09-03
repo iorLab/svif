@@ -13,6 +13,8 @@ bindings:
     config:
       discovery: "AGNIR.yaml"
       activation: "AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml"
+      lineage: "urn:svif:lineage:agnir-v0.2.0-stable-migration"
+      vcs_selector: "refs/heads/migration/agnir-v0.2.0-stable"
   execution: []
   capabilities: []
 
@@ -42,6 +44,7 @@ checks:
   portable_contracts: "conformance/check_contracts.py"
   runtime_kernel: "tests/test_runtime.py"
   agnir_continuity: "tests/test_agnir_continuity.py"
+  agnir_stable_migration: "tests/test_agnir_stable_migration.py"
   chatgpt_surface: "tests/test_chatgpt_surface.py"
   cloudflare_capability: "tests/test_cloudflare_capability.py"
   founding_e2e: "tests/test_founding_e2e.py"

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import re
 import sys
 from pathlib import Path
 
@@ -16,6 +17,29 @@ def require_text(text: str, needles: list[str], label: str) -> None:
     for needle in needles:
         if needle not in text:
             fail(f"{label} missing required product-architecture marker: {needle}")
+
+
+def parse_scalar_paths(text: str) -> dict[tuple[str, ...], str | None]:
+    """Parse the small nested scalar YAML subset used by Svif/Agnir bindings."""
+    values: dict[tuple[str, ...], str | None] = {}
+    stack: list[tuple[int, str]] = []
+    for raw in text.splitlines():
+        if not raw.strip() or raw.lstrip().startswith("#") or raw.lstrip().startswith("-"):
+            continue
+        indent = len(raw) - len(raw.lstrip(" "))
+        match = re.match(r"^\s*([A-Za-z0-9_./-]+):\s*(.*?)\s*$", raw)
+        if not match:
+            continue
+        key, scalar = match.groups()
+        while stack and indent <= stack[-1][0]:
+            stack.pop()
+        if scalar == "":
+            stack.append((indent, key))
+            continue
+        if len(scalar) >= 2 and scalar[0] == scalar[-1] and scalar[0] in {'"', "'"}:
+            scalar = scalar[1:-1]
+        values[tuple([item[1] for item in stack] + [key])] = None if scalar in {"null", "~"} else scalar
+    return values
 
 
 def require_readme_entry_guide(
@@ -85,8 +109,6 @@ def require_readme_diagrams(
     for marker in runtime_forbidden_markers:
         if marker in runtime_text:
             fail(f"{path} Runtime / Operation Flow must not include installation mutation marker: {marker}")
-
-    # Keep README Mermaid syntax deliberately conservative for GitHub rendering.
     diagram_text = architecture_text + runtime_text
     for risky in ("<-->", ".-> T", "\\n"):
         if risky in diagram_text:
@@ -173,37 +195,81 @@ def require_full_repository_tree() -> None:
 def require_agnir_activation() -> None:
     agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
     readme = (ROOT / "README.md").read_text(encoding="utf-8")
-    agnir = (ROOT / "AGNIR.yaml").read_text(encoding="utf-8")
-    svif = (ROOT / "SVIF.yaml").read_text(encoding="utf-8")
+    agnir_text = (ROOT / "AGNIR.yaml").read_text(encoding="utf-8")
+    svif_text = (ROOT / "SVIF.yaml").read_text(encoding="utf-8")
+    agnir = parse_scalar_paths(agnir_text)
+    svif = parse_scalar_paths(svif_text)
 
     require_text(agents, ["Agnir Project Instructions", "README.md", "AGNIR.yaml"], "AGENTS.md")
     if ".agnir/state.md" in agents or ".agnir/next-actions.md" in agents:
         fail("AGENTS.md must remain a locator and must not duplicate durable Project memory")
 
-    require_text(readme, [
-        "## Agnir Project Instructions",
-        "authorized Project Entry Point",
-        "AGNIR.yaml",
-        "Current State",
-        "Next Actions",
-        "Decisions",
-        "Evidence",
-        "Project root -> AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml -> declared durable memory",
-    ], "README.md Agnir activation")
+    require_text(
+        readme,
+        [
+            "## Agnir Project Instructions",
+            "authorized Project Entry Point",
+            "AGNIR.yaml",
+            "Current State",
+            "Next Actions",
+            "Decisions",
+            "Evidence",
+            "Project root -> AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml -> declared durable memory",
+        ],
+        "README.md Agnir activation",
+    )
 
-    require_text(agnir, [
-        'version: "0.1"',
-        'discovery_profile: "repository-filesystem/0.1"',
-        'state: ".agnir/state.md"',
-        'next_actions: ".agnir/next-actions.md"',
-        'decisions: ".agnir/decisions.md"',
-        'evidence: ".agnir/evidence/"',
-    ], "AGNIR.yaml")
-    require_text(svif, [
-        'compatibility: "0.1"',
-        'profile: "repository-filesystem/0.1"',
-        'activation: "AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml"',
-    ], "SVIF.yaml Agnir binding")
+    project_identity = agnir.get(("project", "identity"))
+    svif_project_identity = svif.get(("project", "identity"))
+    if not project_identity or project_identity != svif_project_identity:
+        fail("AGNIR.yaml and SVIF.yaml must identify the same non-empty Project")
+
+    version = agnir.get(("agnir", "version"))
+    profile = agnir.get(("agnir", "discovery_profile"))
+    compatibility = svif.get(("bindings", "continuity", "compatibility"))
+    bound_profile = svif.get(("bindings", "continuity", "profile"))
+    provider = svif.get(("bindings", "continuity", "provider"))
+
+    if provider != "agnir":
+        fail("Svif founding continuity binding must identify provider agnir")
+    supported = {
+        "0.1": "repository-filesystem/0.1",
+        "0.2": "repository-filesystem/0.2",
+    }
+    if version not in supported:
+        fail(f"Svif repository selected unsupported Agnir Core compatibility: {version!r}")
+    if profile != supported[version]:
+        fail(f"Agnir Core {version} must use profile {supported[version]}, got {profile!r}")
+    if compatibility != version or bound_profile != profile:
+        fail("SVIF.yaml Continuity Provider compatibility/profile must match AGNIR.yaml")
+
+    require_text(
+        agnir_text,
+        [
+            'state: ".agnir/state.md"',
+            'next_actions: ".agnir/next-actions.md"',
+            'decisions: ".agnir/decisions.md"',
+            'evidence: ".agnir/evidence/"',
+        ],
+        "AGNIR.yaml",
+    )
+    require_text(
+        svif_text,
+        ['activation: "AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml"'],
+        "SVIF.yaml Agnir binding",
+    )
+
+    if version == "0.2":
+        lineage = agnir.get(("continuity", "lineage"))
+        bound_lineage = svif.get(("bindings", "continuity", "config", "lineage"))
+        selector = agnir.get(("extensions", "agnir/vcs", "lineage_binding", "selector"))
+        bound_selector = svif.get(("bindings", "continuity", "config", "vcs_selector"))
+        if not lineage or bound_lineage != lineage:
+            fail("Core 0.2 requires one logical lineage and matching Svif provider binding")
+        if not selector or bound_selector != selector:
+            fail("Core 0.2 VCS validation requires matching durable selector binding")
+        if selector == lineage:
+            fail("VCS selector must remain distinct from logical lineage identity")
 
     for path in (".agnir/state.md", ".agnir/next-actions.md", ".agnir/decisions.md", ".agnir/evidence"):
         if not (ROOT / path).exists():
@@ -252,10 +318,8 @@ def main() -> None:
         upgrade_prompt="Upgrade the Agnir used by this Project to the latest stable release: https://github.com/iorLab/agnir",
         normal_use_marker="No recurring Svif installation prompt is required.",
         surface_markers=(
-            "[EDIT: add entry only]",
-            "[ADD] founding Agnir discovery anchor",
-            "[ADD] Project-owned durable continuity",
-            "[ADD] Svif Project Binding",
+            "[EDIT: add entry only]", "[ADD] founding Agnir discovery anchor",
+            "[ADD] Project-owned durable continuity", "[ADD] Svif Project Binding",
             "intentionally bound to another Continuity Provider",
         ),
     )
@@ -268,10 +332,8 @@ def main() -> None:
         upgrade_prompt="把这个 Project 使用的 Agnir 升级到最新稳定版：https://github.com/iorLab/agnir",
         normal_use_marker="不需要在每次对话里重复 Svif 安装提示。",
         surface_markers=(
-            "[编辑：仅添加入口]",
-            "[新增] founding Agnir discovery anchor",
-            "[新增] Project 自己拥有的 durable continuity",
-            "[新增] Svif Project Binding",
+            "[编辑：仅添加入口]", "[新增] founding Agnir discovery anchor",
+            "[新增] Project 自己拥有的 durable continuity", "[新增] Svif Project Binding",
             "明确绑定其他 Continuity Provider",
         ),
     )
@@ -279,15 +341,9 @@ def main() -> None:
         "README.md",
         ("## Architecture Diagram", "## Runtime / Operation Flow"),
         architecture_markers=(
-            "non-destructive first-use setup",
-            "EDIT: add activation locator only",
-            "EDIT: add Agnir instructions only",
-            "ADD: founding continuity",
-            "ADD: Project binding",
-            "Svif Orchestrator",
-            "Continuity Provider",
-            "Execution integration",
-            "Capability Providers",
+            "non-destructive first-use setup", "EDIT: add activation locator only",
+            "EDIT: add Agnir instructions only", "ADD: founding continuity", "ADD: Project binding",
+            "Svif Orchestrator", "Continuity Provider", "Execution integration", "Capability Providers",
         ),
         runtime_forbidden_markers=("EDIT: add", "ADD: founding", "ADD: Project binding"),
     )
@@ -295,15 +351,9 @@ def main() -> None:
         "README.zh-CN.md",
         ("## 架构图", "## 运行流程"),
         architecture_markers=(
-            "非破坏性 first-use setup",
-            "编辑：仅添加 activation locator",
-            "编辑：仅添加 Agnir instructions",
-            "新增：founding continuity",
-            "新增：Project binding",
-            "Svif 编排器",
-            "项目连续性提供者",
-            "执行环境适配层",
-            "能力提供层",
+            "非破坏性 first-use setup", "编辑：仅添加 activation locator",
+            "编辑：仅添加 Agnir instructions", "新增：founding continuity", "新增：Project binding",
+            "Svif 编排器", "项目连续性提供者", "执行环境适配层", "能力提供层",
         ),
         runtime_forbidden_markers=("编辑：仅添加", "新增：founding", "新增：Project binding"),
     )
@@ -341,8 +391,8 @@ def main() -> None:
 
     cloudflare = (ROOT / "src/svif/capabilities/cloudflare.py").read_text(encoding="utf-8")
     require_text(cloudflare, [
-        'provider_id = "cloudflare.workers"', "class CloudflareWorkersTransport", "class CloudflareWorkersCapabilityProvider",
-        "def actuate(", "def observe(",
+        'provider_id = "cloudflare.workers"', "class CloudflareWorkersTransport",
+        "class CloudflareWorkersCapabilityProvider", "def actuate(", "def observe(",
     ], "src/svif/capabilities/cloudflare.py")
 
     plugin = (ROOT / "plugin/skills/svif/SKILL.md").read_text(encoding="utf-8")
@@ -366,7 +416,7 @@ def main() -> None:
         "README.zh-CN.md", "Plugin MVP",
     ], "Agnir state")
 
-    print("PASS: Svif product repository integrity, Agnir activation, Plugin packaging, and single-repository architecture baseline")
+    print("PASS: Svif product repository integrity, coherent Agnir binding, Plugin packaging, and single-repository architecture baseline")
 
 
 if __name__ == "__main__":

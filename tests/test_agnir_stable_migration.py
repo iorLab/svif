@@ -9,6 +9,7 @@ from svif.continuity.agnir import AgnirFilesystemContinuityProvider
 
 ROOT = Path(__file__).resolve().parents[1]
 PROJECT = "urn:svif:project:svif-core"
+SKILL = ROOT / "plugin" / "skills" / "svif" / "SKILL.md"
 
 
 class PublishedAgnirStableMigrationTests(unittest.TestCase):
@@ -44,6 +45,8 @@ class PublishedAgnirStableMigrationTests(unittest.TestCase):
         self.assertIsNotNone(lineage_match)
         self.assertIsNotNone(selector_match)
         self.assertNotEqual(lineage_match.group(1), selector_match.group(1))
+        self.assertIn(f'lineage: "{lineage_match.group(1)}"', svif)
+        self.assertIn(f'vcs_selector: "{selector_match.group(1)}"', svif)
 
     def test_migration_preserves_project_identity_and_memory_locators(self) -> None:
         agnir = (ROOT / "AGNIR.yaml").read_text(encoding="utf-8")
@@ -55,6 +58,25 @@ class PublishedAgnirStableMigrationTests(unittest.TestCase):
             'evidence: ".agnir/evidence/"',
         ):
             self.assertIn(marker, agnir)
+
+    def test_skill_distinguishes_current_self_host_from_released_preview_bootstrap(self) -> None:
+        text = SKILL.read_text(encoding="utf-8")
+
+        for marker in (
+            "For the current Svif repository binding, the expected values are Agnir Core `0.2`",
+            "profile `repository-filesystem/0.2`",
+            "one explicit logical Continuity Lineage",
+            "matching durable VCS selector binding",
+            "The released `v0.2.0-preview.1` first-use bootstrap remains",
+            "Core/profile `0.1` baseline",
+            "published Agnir repository release `v0.2.0`",
+        ):
+            self.assertIn(marker, text)
+
+        self.assertIn("Initialize the Agnir `repository-filesystem/0.1` continuity contract", text)
+        self.assertIn('compatibility `"0.1"`', text)
+        self.assertIn("Core `0.2`, require a non-empty logical `continuity.lineage`", text)
+        self.assertIn("AGNIR_LINEAGE_REQUIRED", text)
 
 
 if __name__ == "__main__":

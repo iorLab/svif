@@ -1,10 +1,10 @@
 # Repository Tree / 目录树
 
-本页是 `iorLab/svif` 当前 `main` 的**完整文件级仓库结构说明**。README 中的仓库树只用于快速导航；这里把当前 tracked 目录与文件全部展开，并在右侧说明它们的职责。
+本页是 `iorLab/svif` 当前仓库的**完整文件级仓库结构说明**。README 中的仓库树只用于快速导航；这里把当前 tracked 目录与文件全部展开，并在右侧说明它们的职责。
 
 维护规则：只要仓库新增、删除、移动文件，或者某个目录 / 文件的职责发生实质变化，就必须在同一个 change set 中同步更新本页；README 中的简略目录树若受影响，也必须一起更新。
 
-> 本页解释的是当前 active `main`。Git 内部元数据（例如 `.git/`）不属于仓库 tracked 内容，因此不列出。
+> Git 内部元数据（例如 `.git/`）不属于仓库 tracked 内容，因此不列出。
 
 ```text
 svif/                                                     # Svif 产品主仓库
@@ -44,6 +44,19 @@ svif/                                                     # Svif 产品主仓库
 ├── .github/                                              # GitHub 托管侧自动化配置
 │   └── workflows/
 │       └── conformance.yml                               # CI：repository integrity、runtime tests、portable contracts
+│
+├── brand/                                                # Svif 品牌识别与 fidelity-first production asset surface
+│   ├── README.md                                         # 品牌目录职责、raster-master 模型与 integration status
+│   ├── APPROVED-VISUAL-REFERENCE.md                      # Principal 批准的 10:42 AM 视觉基准与 source hash
+│   ├── PRODUCTION-STATUS.md                              # 当前 fidelity / QA / binary / integration gates
+│   ├── brand-handoff.md                                  # 下游使用规则、限制与禁止替换项
+│   ├── brand-process-log.md                              # 品牌设计与生产过程记录
+│   ├── reference/                                       # extraction coordinates / source-reference manifests
+│   ├── masters/                                         # raster-master manifest 与 future approved master surface
+│   │   └── candidates/                                  # 历史 review candidates；不作为 production truth
+│   ├── exports/                                         # 已通过 binary verification 的 delivery derivatives
+│   ├── qa/                                              # 对称 13 项 final QA 范围与 evidence metadata
+│   └── tools/                                           # deterministic raster extraction / production builders
 │
 ├── src/                                                  # Svif 可执行产品代码
 │   └── svif/                                             # Python reference package
@@ -129,12 +142,14 @@ svif/                                                     # Svif 产品主仓库
 ├── ARCHITECTURE.md                                       # 详细产品架构、依赖方向、provider ownership 和 distribution 边界
 ├── README.md                                             # 英文项目入口与 canonical `Agnir Project Instructions`
 ├── README.zh-CN.md                                       # 简体中文项目入口；与英文版保持同一 canonical 产品语义
-├── REPOSITORY_TREE.md                                    # 本文件：当前 main 的完整文件级仓库结构与职责说明
+├── REPOSITORY_TREE.md                                    # 本文件：完整文件级仓库结构与职责说明
 └── VERSION                                               # 当前 Svif 产品 / release version
 ```
 
 ## 如何使用这张树
 
-如果只是第一次理解 Svif，优先看 README 里的简略树即可；需要定位某个具体 contract、fixture、test、Plugin artifact、evidence 或 integration 文件时，再查本页。
+如果只是第一次理解 Svif，优先看 README 里的简略树即可；需要定位某个具体 contract、fixture、test、Plugin artifact、brand asset、evidence 或 integration 文件时，再查本页。
+
+`brand/` 是产品/发布表面，不改变 Svif 的 Orchestrator / Continuity Provider / Execution Surface / Capability Provider 架构边界。品牌视觉权威和 production 规则以 `brand/` 内批准文件为准，合并到 `main` 前仍需通过 binary/documentation/integration gates。
 
 本页不是第二套架构定义。**架构语义仍以 `ARCHITECTURE.md`、`spec/`、`SVIF.yaml` 和 canonical Agnir decisions/state 为准；本页负责把这些职责映射回仓库中的实际文件位置。**

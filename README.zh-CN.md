@@ -65,6 +65,7 @@ Project/
 ├── AGENTS.md                 # [编辑：仅添加入口] 加入 Agnir activation locator；保留原有 instructions
 ├── README.md                 # [编辑：仅添加入口] 加入 ## Agnir Project Instructions；保留原有内容
 ├── AGNIR.yaml                # [新增] founding Agnir discovery anchor
+├── brand/                             # 已批准品牌主稿、导出、QA、参考与交付说明
 ├── .agnir/                   # [新增] Project 自己拥有的 durable continuity
 │   ├── state.md              # [新增] 当前仍然成立的 durable Project truth
 │   ├── next-actions.md       # [新增] 下一位 Executor 应继续推进的有序工作

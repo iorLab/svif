@@ -1,6 +1,6 @@
 # Svif Current State
 
-Svif is the authoritative active **Project orchestration product** in `iorLab/svif`. Authoritative `main` has now accepted the validated published-Agnir migration result through target-owned continuity reconciliation. The former `iorLab/svif-cloudflare-reference` project is retired.
+Svif is the authoritative active **Project orchestration product** in `iorLab/svif`. Authoritative `main` has accepted both the validated published-Agnir migration result and the Principal-approved Svif identity system through explicit target-owned integration. The former `iorLab/svif-cloudflare-reference` project is retired.
 
 ## Product architecture
 
@@ -20,11 +20,30 @@ Svif continues to coordinate the same four first-class components: Orchestrator 
 - Live Cloudflare delivery remains disabled unless explicitly authorized.
 - `README.md` and `README.zh-CN.md` remain synchronized user/Agent entry points.
 
-## Authoritative Agnir compatibility — accepted 2026-09-03
+## Canonical brand identity — accepted 2026-09-07
 
-The Svif Project itself has completed an explicit migration from published Agnir `v0.1.1` / Core-profile `0.1` to published stable Agnir `v0.2.0` / Core-profile `0.2`.
+The Principal-approved 10:42 AM Svif identity system is now part of authoritative `main`.
 
-Authoritative continuity is now:
+- canonical integration PR: `#5`;
+- approved brand integration commit: `77ff3d0e8b3d0d691bb47529e065571c17a0aa81`;
+- post-merge Svif product checks: run `34055656891`, repository-integrity / portable-contracts / runtime-kernel all success;
+- visual authority: byte-exact `brand/reference/svif-approved-reference.png` plus the byte-exact Svif × Agnir family board;
+- production model: fidelity-first raster masters under `brand/masters/`;
+- delivery exports: committed under `brand/exports/`, including light/dark/monochrome, app icon, social card and favicons at 128/64/32/16;
+- QA: symmetric 13/13 final package;
+- deterministic rebuild path: `brand/tools/build-production-assets.py` with locked source SHA verification.
+
+The approved Svif-only board SHA-256 remains `10ad09a3c68e7ccd84e8c50ac4aaeda2bdb1e1fee4c09899ef4215fdec18f3fd`; the family board SHA-256 remains `4110d285243b6241ac709e750cca1815a10ca41e27c3bb15e6c94b56e57fa4fb`.
+
+The completed `brand/identity-system` branch tip `62e9aac53246cef4eccffacb9434ead9928c0c3c` is recorded in `history/BRANCH_ARCHIVE.md`; retirement workflow run `34055731552` succeeded, the temporary workflow removed itself, and the branch ref is no longer present. `main` is again the only long-lived Svif work line.
+
+No brand integration changed the immutable `v0.2.0-preview.1` release tag or any Svif runtime/orchestration contract.
+
+## Authoritative Agnir compatibility — accepted 2026-09-03 and preserved through brand integration
+
+The Svif Project itself completed an explicit migration from published Agnir `v0.1.1` / Core-profile `0.1` to published stable Agnir `v0.2.0` / Core-profile `0.2`.
+
+Authoritative continuity remains:
 
 - Project identity: `urn:svif:project:svif-core` — unchanged;
 - Agnir Core: `0.2`;
@@ -37,7 +56,9 @@ Authoritative continuity is now:
 
 `SVIF.yaml` declares the same Project identity, Core/profile compatibility, logical lineage and VCS selector binding. Logical lineage identity is not derived from the branch ref or commit receipt.
 
-## Accepted migration and publication receipts
+Agnir `v1.0.0` is now the latest stable Agnir distribution, but this does **not** silently promote Svif's Project declaration. Agnir v1 preserves valid `0.2` Projects; `0.2` → `1.0` is a separately authorized Project-owned promotion. Brand publication did not authorize or perform that promotion, so `AGNIR.yaml` and `SVIF.yaml` intentionally remain on Core/profile `0.2`.
+
+## Accepted published-Agnir migration receipts
 
 Captured pre-migration authoritative main: `dac058789a27f32f4ed1949874c1954f31f12bd8`.
 
@@ -55,8 +76,8 @@ This is the first recorded real Svif Project upgrade across the **published** Ag
 
 ## Evidence consequence
 
-The migration has not exposed an Agnir `v0.2.0` product defect. The only convergence failures encountered were stale Svif guards that still described the old current binding; they were repaired without weakening the retained Core/profile `0.1` regression and immutable Preview.1 onboarding baseline.
+Neither the accepted published-Agnir migration nor the canonical brand integration exposed a Svif/Agnir compatibility defect. Brand integration was deliberately compatibility-neutral and preserved the released Preview.1 onboarding baseline, current self-host Core/profile `0.2` binding, Project identity, lineage and durable locators.
 
-The next material action is to record these exact downstream-upgrade receipts in `iorLab/agnir` as v1 evidence, then continue the separate Svif distribution obligations.
+Remaining material work is distribution/adoption work: post-1.0 Agnir downstream evidence, preservation of Preview evidence, the public/personal ChatGPT publication path when its publisher gate is resolvable, and separately authorized provider delivery work.
 
 `.agnir/next-actions.md` is the canonical ordered resume plan.

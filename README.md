@@ -65,6 +65,7 @@ Project/
 ├── AGENTS.md                 # [EDIT: add entry only] add Agnir activation locator; preserve existing instructions
 ├── README.md                 # [EDIT: add entry only] add ## Agnir Project Instructions; preserve existing content
 ├── AGNIR.yaml                # [ADD] founding Agnir discovery anchor
+├── brand/                             # approved brand masters, exports, QA, references, and handoff
 ├── .agnir/                   # [ADD] Project-owned durable continuity
 │   ├── state.md              # [ADD] current durable Project truth
 │   ├── next-actions.md       # [ADD] outstanding ordered work for the next Executor

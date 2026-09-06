@@ -89,13 +89,26 @@ The `brand/` product surface is represented in `README.md`, `README.zh-CN.md`, a
 - No derivative may become permission to redesign the locked source.
 - Future pure-vector replacement requires a new clean source-vs-vector review and explicit approval.
 
+## Agnir v1 compatibility assessment — 2026-09-07
+
+Agnir `v1.0.0` is now the latest stable Agnir distribution, but Svif's authoritative Project binding intentionally remains on Agnir Core/profile `0.2`:
+
+- `AGNIR.yaml`: Core `0.2`, `repository-filesystem/0.2`, operational Agnir release `0.2.0`;
+- `SVIF.yaml`: continuity compatibility `0.2`, profile `repository-filesystem/0.2`;
+- Project identity and logical lineage remain `urn:svif:project:svif-core` and `urn:svif:lineage:authoritative`;
+- selector remains `refs/heads/main`.
+
+This brand integration is compatibility-neutral and **does not authorize an Agnir `0.2` → `1.0` Project promotion**. Agnir v1 explicitly preserves historical `0.2` compatibility, while changing the Project declaration to `1.0` is a separate Project-owned promotion. Therefore no `AGNIR.yaml`, `SVIF.yaml`, continuity-provider adapter contract, or release/onboarding baseline is changed by the brand merge.
+
+Fresh comparison on 2026-09-07 reports `brand/identity-system` ahead of authoritative `main` and **behind by 0**, with merge base equal to current main `eba1b8538c4692a08bf69452525b735d23564599`.
+
 ## Integration readiness
 
-The former large-binary preservation blocker is **closed**. Byte-exact source references, raster masters, and delivery exports are now repository-resident and SHA-verified.
+The former large-binary preservation blocker is **closed**. Byte-exact source references, raster masters, and delivery exports are repository-resident and SHA-verified.
 
 Remaining publication gates are only:
 
-1. re-resolve latest `main` immediately before publication and reconcile again if it moved;
-2. require Draft PR `#5` synthetic-merge product checks to be green on the final branch head;
-3. integrate the approved brand package coherently without changing the immutable `v0.2.0-preview.1` release tag;
-4. fresh-verify authoritative `main` after publication.
+1. require PR `#5` synthetic-merge product checks to be green on the final branch head;
+2. re-check `behind main = 0` and PR mergeability immediately before publication;
+3. integrate the approved brand package coherently without changing the immutable `v0.2.0-preview.1` release tag or Svif's Agnir Core/profile `0.2` binding;
+4. fresh-verify authoritative `main` after publication and reconcile canonical Svif continuity.

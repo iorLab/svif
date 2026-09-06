@@ -82,11 +82,17 @@ Do not:
 
 The former large-binary transport blocker is closed. GitHub Actions run `33730468886` verified the handoff archive and every source/destination SHA-256 before committing the complete repository package at `137307351dfee467472ccd997fdc714b8a71c549`. The temporary transport ZIP and workflow removed themselves in that commit.
 
+## Agnir compatibility boundary
+
+Svif's current Project-owned continuity remains Agnir Core/profile `0.2` even though Agnir `v1.0.0` is now the latest stable distribution. This is intentional. The brand package does not alter continuity semantics and does not authorize the separately governed `0.2` → `1.0` Project promotion.
+
+For this integration, preserve current authoritative `AGNIR.yaml`, `SVIF.yaml`, Project identity, logical lineage, selector, durable locators, and the immutable Preview.1 onboarding baseline exactly as supplied by current Svif `main`.
+
 ## Integration gate
 
 Before canonical `main` integration:
 
-1. re-resolve latest `main` and reconcile if it moved;
-2. require Draft PR `#5` product checks to pass on the final head;
-3. integrate brand assets/evidence coherently without moving `v0.2.0-preview.1`;
-4. fresh-verify the resulting authoritative `main`.
+1. require PR `#5` product checks to pass on the final head;
+2. confirm the branch remains behind authoritative `main` by 0 and the PR remains mergeable;
+3. integrate the brand package without moving `v0.2.0-preview.1` or changing the current Agnir Core/profile `0.2` Project binding;
+4. fresh-verify the resulting authoritative `main` and checkpoint canonical Svif continuity.

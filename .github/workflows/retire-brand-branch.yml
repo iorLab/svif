@@ -1,0 +1,34 @@
+name: Retire completed brand branch
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/retire-brand-branch.yml
+
+permissions:
+  contents: write
+
+jobs:
+  retire:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Retire integrated brand branch
+        run: |
+          git fetch origin brand/identity-system || true
+          if git ls-remote --exit-code --heads origin refs/heads/brand/identity-system >/dev/null 2>&1; then
+            git push origin --delete brand/identity-system
+          fi
+      - name: Remove one-shot workflow
+        run: |
+          rm .github/workflows/retire-brand-branch.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .github/workflows/retire-brand-branch.yml
+          git commit -m 'ci: remove brand branch retirement workflow'
+          git push origin HEAD:main

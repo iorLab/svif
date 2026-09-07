@@ -1,0 +1,37 @@
+name: Retire completed Agnir 1.0 promotion branch
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/retire-agnir-1-0-promotion.yml
+
+permissions:
+  contents: write
+
+jobs:
+  retire:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+
+      - name: Verify integrated result and retire temporary promotion branch
+        shell: bash
+        run: |
+          test "$(git show main:AGNIR.yaml | grep -c 'version: \"1.0\"')" = "1"
+          test "$(git show main:SVIF.yaml | grep -c 'compatibility: \"1.0\"')" = "1"
+          test "$(git show main:history/BRANCH_ARCHIVE.md | grep -c 'promotion/agnir-1.0.*5a88eee4bc214b8da3b4c5f48640067b167248b8')" = "1"
+          git push origin --delete promotion/agnir-1.0
+
+      - name: Remove one-shot workflow
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git rm .github/workflows/retire-agnir-1-0-promotion.yml
+          git commit -m "ci: remove Agnir 1.0 promotion retirement workflow"
+          git push origin HEAD:main

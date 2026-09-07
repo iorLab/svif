@@ -33,8 +33,8 @@ class _ResolvedAgnir:
 class AgnirFilesystemContinuityProvider:
     """Agnir repository/filesystem Continuity Provider for Svif.
 
-    The adapter supports the published Core/profile `0.1` line and the
-    experimental Core/profile `0.2` lineage-aware line. Provider-specific
+    The adapter supports the published Core/profile `0.1` and `0.2`
+    compatibility lines plus the stable Core/profile `1.0` line. Provider-specific
     lineage and selector semantics stay inside this adapter; the Svif
     Orchestrator remains Continuity-Provider-neutral.
     """
@@ -43,6 +43,7 @@ class AgnirFilesystemContinuityProvider:
     _SUPPORTED_PROFILES = {
         "0.1": "repository-filesystem/0.1",
         "0.2": "repository-filesystem/0.2",
+        "1.0": "repository-filesystem/1.0",
     }
 
     def __init__(
@@ -171,11 +172,11 @@ class AgnirFilesystemContinuityProvider:
             )
 
         lineage_identity = values.get(("continuity", "lineage"))
-        if version == "0.2":
+        if version in {"0.2", "1.0"}:
             if not isinstance(lineage_identity, str) or not lineage_identity:
                 raise self._fail(
                     "AGNIR_LINEAGE_REQUIRED",
-                    "Core 0.2 repository/filesystem discovery requires continuity.lineage",
+                    f"Core {version} repository/filesystem discovery requires continuity.lineage",
                 )
         else:
             lineage_identity = None
@@ -183,7 +184,7 @@ class AgnirFilesystemContinuityProvider:
         binding_selector = values.get(
             ("extensions", "agnir/vcs", "lineage_binding", "selector")
         )
-        if self.selected_vcs_selector is not None and version == "0.2":
+        if self.selected_vcs_selector is not None and version in {"0.2", "1.0"}:
             if not isinstance(binding_selector, str) or not binding_selector:
                 raise self._fail(
                     "AGNIR_VCS_LINEAGE_BINDING_REQUIRED",

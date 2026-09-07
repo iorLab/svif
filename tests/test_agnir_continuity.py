@@ -32,7 +32,7 @@ def write_project(
     vcs_selector: str | None = None,
 ) -> None:
     if profile is None:
-        profile = f"repository-filesystem/{version}" if version in {"0.1", "0.2"} else "repository-filesystem/0.1"
+        profile = f"repository-filesystem/{version}" if version in {"0.1", "0.2", "1.0"} else "repository-filesystem/0.1"
     (root / ".agnir/evidence").mkdir(parents=True)
     (root / ".agnir/state.md").write_text("# State\nold\n", encoding="utf-8")
     (root / ".agnir/next-actions.md").write_text("# Next\nold\n", encoding="utf-8")
@@ -40,7 +40,7 @@ def write_project(
     (root / ".agnir/evidence/seed.md").write_text("# Seed\n", encoding="utf-8")
 
     continuity = ""
-    if version == "0.2" or lineage is not None:
+    if version in {"0.2", "1.0"} or lineage is not None:
         continuity = (
             "\ncontinuity:\n"
             f'  lineage: "{lineage or "urn:test:lineage:default"}"\n'
@@ -122,6 +122,24 @@ class AgnirFilesystemContinuityTests(unittest.TestCase):
 
             snapshot = provider.load(PROJECT)
 
+            self.assertEqual(snapshot.project_identity, PROJECT)
+            self.assertEqual(provider.resolve_lineage(PROJECT), lineage)
+            self.assertIn("old", snapshot.state)
+            self.assertIn("seed.md", snapshot.evidence)
+
+    def test_loads_repository_filesystem_profile_1_0_and_resolves_logical_lineage(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            selector = "refs/heads/feature/stable"
+            lineage = "urn:test:lineage:stable"
+            write_project(root, version="1.0", lineage=lineage, vcs_selector=selector)
+            provider = AgnirFilesystemContinuityProvider(
+                root,
+                expected_core_version="1.0",
+                expected_profile="repository-filesystem/1.0",
+                selected_vcs_selector=selector,
+            )
+            snapshot = provider.load(PROJECT)
             self.assertEqual(snapshot.project_identity, PROJECT)
             self.assertEqual(provider.resolve_lineage(PROJECT), lineage)
             self.assertIn("old", snapshot.state)
@@ -290,6 +308,29 @@ class AgnirFilesystemContinuityTests(unittest.TestCase):
             payload = json.loads(evidence_files[0].read_text(encoding="utf-8"))
             self.assertEqual(payload["agnir_lineage"], lineage)
             self.assertEqual(payload["operation_id"], "op-agnir-lineage")
+
+    def test_orchestrator_checkpoint_preserves_core_1_0_lineage_and_binding(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            selector = "refs/heads/feature/stable"
+            lineage = "urn:test:lineage:stable"
+            write_project(root, version="1.0", lineage=lineage, vcs_selector=selector)
+            provider = AgnirFilesystemContinuityProvider(
+                root,
+                expected_core_version="1.0",
+                expected_profile="repository-filesystem/1.0",
+                selected_vcs_selector=selector,
+            )
+            surface = UpdatingSurface()
+            orchestrator = Orchestrator(continuity_providers=(provider,), execution_surfaces=(surface,))
+            binding = ProjectBinding(project_identity=PROJECT, continuity=ProviderBinding("agnir"), execution_surface="chatgpt")
+            orchestrator.run(binding, OperationRequest(operation_id="op-agnir-1-0", intent="advance stable selected lineage"))
+            self.assertEqual(provider.resolve_lineage(PROJECT), lineage)
+            evidence_files = list((root / ".agnir/evidence").glob("svif-operation-*.json"))
+            self.assertEqual(len(evidence_files), 1)
+            payload = json.loads(evidence_files[0].read_text(encoding="utf-8"))
+            self.assertEqual(payload["agnir_lineage"], lineage)
+            self.assertEqual(payload["operation_id"], "op-agnir-1-0")
 
 
 if __name__ == "__main__":

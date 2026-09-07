@@ -295,16 +295,16 @@ class PluginAgnirDiscoveryTests(unittest.TestCase):
         selector = _quoted_scalar(svif, "vcs_selector")
 
         for marker in (
-            'version: "0.2"',
-            'discovery_profile: "repository-filesystem/0.2"',
+            'version: "1.0"',
+            'discovery_profile: "repository-filesystem/1.0"',
             'identity: "urn:svif:project:svif-core"',
             f'lineage: "{lineage}"',
             f'selector: "{selector}"',
         ):
             self.assertIn(marker, agnir)
         for marker in (
-            'compatibility: "0.2"',
-            'profile: "repository-filesystem/0.2"',
+            'compatibility: "1.0"',
+            'profile: "repository-filesystem/1.0"',
             f'lineage: "{lineage}"',
             f'vcs_selector: "{selector}"',
         ):

@@ -39,7 +39,8 @@ svif/                                                     # Svif 产品主仓库
 │       ├── 2026-09-02-svif-v0.2.0-preview.1-release.md   # tag、GitHub Prerelease、main CI 与 tag-based 安装烟测证据
 │       ├── 2026-09-03-agnir-v0.2.0-real-downstream-migration.md # Svif 从发布版 Agnir v0.1.1/Core 0.1 迁移到 v0.2.0/Core 0.2 的真实下游证据
 │       ├── 2026-09-03-agnir-v0.2.0-main-acceptance.md    # target reconciliation、authoritative main publication 与 post-publication CI/cold-start 验证证据
-│       ├── 2026-09-07-agnir-1.0-promotion-candidate.md # Principal 授权的 Agnir Core/profile 0.2→1.0 promotion staging / preservation / validation 证据
+│       ├── 2026-09-07-agnir-1.0-promotion-candidate.md   # Principal 授权的 Agnir Core/profile 0.2→1.0 promotion staging / preservation / validation 证据
+│       ├── 2026-09-07-agnir-1.0-main-promotion.md        # Agnir 1.0 authoritative publication、fresh verification 与 branch retirement 完整证据
 │       └── checkpoint-2026-08-28-validation-2.md         # Validation 2 的持久 checkpoint 记录
 │
 ├── .github/                                              # GitHub 托管侧自动化配置
@@ -138,7 +139,7 @@ svif/                                                     # Svif 产品主仓库
 │   └── CLOUDFLARE_REFERENCE.md                           # 已退休独立 Cloudflare reference 仓库的迁移记录
 │
 ├── AGENTS.md                                             # 最小 Agnir 激活 locator；只指向 README canonical Project Instructions
-├── AGNIR.yaml                                            # 当前 repository-filesystem profile 下发现本 Project Agnir memory 的入口
+├── AGNIR.yaml                                            # 当前 stable repository-filesystem/1.0 下发现本 Project Agnir memory 的入口
 ├── SVIF.yaml                                             # 本 Project 的 `project-binding/0.2` serialization，并登记 active Plugin artifacts
 ├── ARCHITECTURE.md                                       # 详细产品架构、依赖方向、provider ownership 和 distribution 边界
 ├── README.md                                             # 英文项目入口与 canonical `Agnir Project Instructions`
@@ -151,6 +152,6 @@ svif/                                                     # Svif 产品主仓库
 
 如果只是第一次理解 Svif，优先看 README 里的简略树即可；需要定位某个具体 contract、fixture、test、Plugin artifact、brand asset、evidence 或 integration 文件时，再查本页。
 
-`brand/` 是产品/发布表面，不改变 Svif 的 Orchestrator / Continuity Provider / Execution Surface / Capability Provider 架构边界。品牌视觉权威和 production 规则以 `brand/` 内批准文件为准，合并到 `main` 前仍需通过 binary/documentation/integration gates。
+`brand/` 是已经进入 authoritative `main` 的产品/发布表面，不改变 Svif 的 Orchestrator / Continuity Provider / Execution Surface / Capability Provider 架构边界。品牌视觉权威和 production 规则以 `brand/` 内批准文件为准；后续任何品牌变更仍需经过对应 fidelity、binary、documentation 与 integration gates。
 
 本页不是第二套架构定义。**架构语义仍以 `ARCHITECTURE.md`、`spec/`、`SVIF.yaml` 和 canonical Agnir decisions/state 为准；本页负责把这些职责映射回仓库中的实际文件位置。**

@@ -166,3 +166,14 @@
 - Unsupported clients must report the surface limitation and must not claim installation success. Marketplace registration, package checks, and installation/invocation/checkpoint observations remain distinct evidence layers.
 - The universal Plugins Directory remains the mature public/personal ChatGPT path after the separate publisher, submission, review, and explicit-publication flow.
 - Release preparation may use a short-lived `release/svif-v0.2.0-preview.1` branch only as a target-main staging surface. Canonical continuity remains bound to `iorLab/svif` / `main`; the temporary branch must not become a second long-lived authority.
+
+## 2026-09-07 — Svif authoritative Agnir Core/profile 0.2 → 1.0 promotion
+
+- The Principal explicitly authorized the Svif Project to cross the separately governed Agnir Core/profile `0.2` → `1.0` compatibility boundary.
+- The promotion is semantics-preserving and Project-owned. It changes the Svif repository's Agnir declaration/binding to Core `1.0` / `repository-filesystem/1.0` and operational provenance to immutable Agnir `v1.0.0@6d16dcfd17b8e9f22fd25804e22b9f8a516d06c3`.
+- Project identity `urn:svif:project:svif-core`, logical lineage `urn:svif:lineage:authoritative`, selector `refs/heads/main`, durable memory locators, Project policy, unrelated extensions, brand assets and Svif `VERSION` are preserved.
+- Svif product line remains `0.2` and `project-binding/0.2` remains the Svif binding serialization version; only the configured Agnir Continuity Provider compatibility/profile moved to `1.0`.
+- The released `v0.2.0-preview.1` tag is immutable and its first-use bootstrap remains Agnir Core/profile `0.1`. Repository self-host promotion is not permission to retroactively rewrite a published distribution baseline.
+- `src/svif/continuity/agnir.py` retains historical Core/profile `0.1` and `0.2` support while adding stable `1.0` dispatch with the accepted lineage/VCS-selector semantics.
+- Compatibility-line promotion requires an exact captured source, complete staged candidate, preservation validation, stale-source rejection/reconciliation, coherent publication and fresh post-publication discovery. Installing a newer Agnir distribution alone is never authorization to relabel a Project.
+- Authoritative promotion receipts are recorded in `.agnir/evidence/2026-09-07-agnir-1.0-main-promotion.md`.

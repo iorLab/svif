@@ -39,6 +39,7 @@ svif/                                                     # Svif 产品主仓库
 │       ├── 2026-09-02-svif-v0.2.0-preview.1-release.md   # tag、GitHub Prerelease、main CI 与 tag-based 安装烟测证据
 │       ├── 2026-09-03-agnir-v0.2.0-real-downstream-migration.md # Svif 从发布版 Agnir v0.1.1/Core 0.1 迁移到 v0.2.0/Core 0.2 的真实下游证据
 │       ├── 2026-09-03-agnir-v0.2.0-main-acceptance.md    # target reconciliation、authoritative main publication 与 post-publication CI/cold-start 验证证据
+│       ├── 2026-09-07-agnir-1.0-promotion-candidate.md # Principal 授权的 Agnir Core/profile 0.2→1.0 promotion staging / preservation / validation 证据
 │       └── checkpoint-2026-08-28-validation-2.md         # Validation 2 的持久 checkpoint 记录
 │
 ├── .github/                                              # GitHub 托管侧自动化配置
@@ -64,7 +65,7 @@ svif/                                                     # Svif 产品主仓库
 │       ├── runtime.py                                    # Orchestrator 核心：begin/run/complete、验证、权限、reconcile、checkpoint
 │       ├── continuity/                                   # Continuity Provider 实现 / 适配层
 │       │   ├── __init__.py                               # continuity 子包入口
-│       │   └── agnir.py                                  # founding Agnir repository/filesystem Continuity Provider；兼容 0.1 并支持当前 0.2 lineage/binding
+│       │   └── agnir.py                                  # founding Agnir repository/filesystem Continuity Provider；兼容 0.1/0.2 并支持当前 stable 1.0 lineage/binding
 │       ├── execution/                                    # Execution Surface 桥接层
 │       │   ├── __init__.py                               # execution 子包入口
 │       │   └── chatgpt.py                                # 当前 founding surface：ChatGPT 结构化 begin/complete bridge
@@ -104,8 +105,8 @@ svif/                                                     # Svif 产品主仓库
 │
 ├── tests/                                                # 可执行产品实现测试
 │   ├── test_runtime.py                                   # Orchestrator kernel、authority、verification、lifecycle 行为
-│   ├── test_agnir_continuity.py                          # Agnir Continuity Provider adapter 的 0.1/0.2 load / lineage / checkpoint / failure 行为
-│   ├── test_agnir_stable_migration.py                    # 当前 Svif Project 对发布版 Agnir v0.2.0 的 self-consumption、identity/locator/lineage 迁移 guard
+│   ├── test_agnir_continuity.py                          # Agnir Continuity Provider adapter 的 0.1/0.2/1.0 load / lineage / checkpoint / failure 行为
+│   ├── test_agnir_stable_migration.py                    # 当前 Svif Project 对发布版 Agnir v1.0.0 的 self-consumption、0.2→1.0 preservation / identity / lineage guard
 │   ├── test_chatgpt_surface.py                           # ChatGPT Execution Surface materialize / parse / identity 约束
 │   ├── test_cloudflare_capability.py                     # Cloudflare provider 的 actuation / observation / subject-target 约束
 │   ├── test_founding_e2e.py                              # founding Agnir + ChatGPT + Cloudflare 完整产品闭环

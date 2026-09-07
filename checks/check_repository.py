@@ -235,6 +235,7 @@ def require_agnir_activation() -> None:
     supported = {
         "0.1": "repository-filesystem/0.1",
         "0.2": "repository-filesystem/0.2",
+        "1.0": "repository-filesystem/1.0",
     }
     if version not in supported:
         fail(f"Svif repository selected unsupported Agnir Core compatibility: {version!r}")
@@ -259,15 +260,15 @@ def require_agnir_activation() -> None:
         "SVIF.yaml Agnir binding",
     )
 
-    if version == "0.2":
+    if version in {"0.2", "1.0"}:
         lineage = agnir.get(("continuity", "lineage"))
         bound_lineage = svif.get(("bindings", "continuity", "config", "lineage"))
         selector = agnir.get(("extensions", "agnir/vcs", "lineage_binding", "selector"))
         bound_selector = svif.get(("bindings", "continuity", "config", "vcs_selector"))
         if not lineage or bound_lineage != lineage:
-            fail("Core 0.2 requires one logical lineage and matching Svif provider binding")
+            fail(f"Core {version} requires one logical lineage and matching Svif provider binding")
         if not selector or bound_selector != selector:
-            fail("Core 0.2 VCS validation requires matching durable selector binding")
+            fail(f"Core {version} VCS validation requires matching durable selector binding")
         if selector == lineage:
             fail("VCS selector must remain distinct from logical lineage identity")
 

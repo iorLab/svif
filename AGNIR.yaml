@@ -1,6 +1,6 @@
 agnir:
-  version: "0.2"
-  discovery_profile: "repository-filesystem/0.2"
+  version: "1.0"
+  discovery_profile: "repository-filesystem/1.0"
 
 project:
   identity: "urn:svif:project:svif-core"
@@ -31,6 +31,6 @@ extensions:
       selector: "refs/heads/main"
   agnir/operations:
     distribution: "agnir-agent-skill"
-    release: "0.2.0"
+    release: "1.0.0"
     source: "iorLab/agnir"
-    applied_revision: "fc84095ed5d500be9e1b43a4af0e93356571bbd4"
+    applied_revision: "6d16dcfd17b8e9f22fd25804e22b9f8a516d06c3"

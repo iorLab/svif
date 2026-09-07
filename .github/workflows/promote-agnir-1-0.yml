@@ -23,178 +23,140 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Verify exact authorized source
+      - name: Verify exact authorized source is still authoritative
         shell: bash
         run: |
-          test "$(git rev-parse HEAD^)" = "a00ad6ed9f18abddbed1979a619f932350cefe54"
-          test "$(git show HEAD^:AGNIR.yaml | grep -c 'version: \"0.2\"')" = "1"
-          test "$(git show HEAD^:SVIF.yaml | grep -c 'compatibility: \"0.2\"')" = "1"
-          test "$(git show HEAD^:AGNIR.yaml | grep -c 'identity: \"urn:svif:project:svif-core\"')" = "1"
-          test "$(git show HEAD^:AGNIR.yaml | grep -c 'lineage: \"urn:svif:lineage:authoritative\"')" = "1"
+          git fetch origin main
+          test "$(git rev-parse origin/main)" = "a00ad6ed9f18abddbed1979a619f932350cefe54"
+          test "$(git merge-base HEAD origin/main)" = "a00ad6ed9f18abddbed1979a619f932350cefe54"
+          test "$(git show a00ad6ed9f18abddbed1979a619f932350cefe54:AGNIR.yaml | grep -c 'version: \"0.2\"')" = "1"
+          test "$(git show a00ad6ed9f18abddbed1979a619f932350cefe54:SVIF.yaml | grep -c 'compatibility: \"0.2\"')" = "1"
 
-      - name: Construct complete semantics-preserving 1.0 candidate
+      - name: Construct complete semantics-preserving candidate
         shell: bash
         run: |
           python - <<'PY'
           from pathlib import Path
 
-          def replace(path: str, old: str, new: str, count: int = 1) -> None:
+          def rep(path: str, old: str, new: str, count: int = 1) -> None:
               p = Path(path)
-              text = p.read_text(encoding="utf-8")
+              text = p.read_text(encoding='utf-8')
               actual = text.count(old)
               if actual != count:
-                  raise SystemExit(f"{path}: expected {count} occurrence(s) of {old!r}, found {actual}")
-              p.write_text(text.replace(old, new, count), encoding="utf-8")
+                  raise SystemExit(f'{path}: expected {count} occurrence(s) of {old!r}, found {actual}')
+              p.write_text(text.replace(old, new, count), encoding='utf-8')
 
-          # Project-owned compatibility declaration + operational provenance.
-          replace("AGNIR.yaml", '  version: "0.2"', '  version: "1.0"')
-          replace("AGNIR.yaml", '  discovery_profile: "repository-filesystem/0.2"', '  discovery_profile: "repository-filesystem/1.0"')
-          replace("AGNIR.yaml", '    release: "0.2.0"', '    release: "1.0.0"')
-          replace("AGNIR.yaml", '    applied_revision: "fc84095ed5d500be9e1b43a4af0e93356571bbd4"', '    applied_revision: "6d16dcfd17b8e9f22fd25804e22b9f8a516d06c3"')
-          replace("SVIF.yaml", '    compatibility: "0.2"', '    compatibility: "1.0"')
-          replace("SVIF.yaml", '    profile: "repository-filesystem/0.2"', '    profile: "repository-filesystem/1.0"')
+          # Compatibility declarations and immutable Agnir v1.0.0 operational provenance.
+          rep('AGNIR.yaml', '  version: "0.2"', '  version: "1.0"')
+          rep('AGNIR.yaml', '  discovery_profile: "repository-filesystem/0.2"', '  discovery_profile: "repository-filesystem/1.0"')
+          rep('AGNIR.yaml', '    release: "0.2.0"', '    release: "1.0.0"')
+          rep('AGNIR.yaml', '    applied_revision: "fc84095ed5d500be9e1b43a4af0e93356571bbd4"', '    applied_revision: "6d16dcfd17b8e9f22fd25804e22b9f8a516d06c3"')
+          rep('SVIF.yaml', '    compatibility: "0.2"', '    compatibility: "1.0"')
+          rep('SVIF.yaml', '    profile: "repository-filesystem/0.2"', '    profile: "repository-filesystem/1.0"')
 
-          # Svif Agnir adapter: retain 0.1/0.2 dispatch and add stable 1.0 semantics.
-          replace(
-              "src/svif/continuity/agnir.py",
-              "    The adapter supports the published Core/profile `0.1` line and the\n    experimental Core/profile `0.2` lineage-aware line. Provider-specific\n",
-              "    The adapter supports the published Core/profile `0.1` and `0.2`\n    compatibility lines plus the stable Core/profile `1.0` line. Provider-specific\n",
-          )
-          replace(
-              "src/svif/continuity/agnir.py",
+          # Continuity adapter keeps 0.1/0.2 compatibility and adds semantics-equivalent stable 1.0 dispatch.
+          rep('src/svif/continuity/agnir.py',
+              '    The adapter supports the published Core/profile `0.1` line and the\n    experimental Core/profile `0.2` lineage-aware line. Provider-specific\n',
+              '    The adapter supports the published Core/profile `0.1` and `0.2`\n    compatibility lines plus the stable Core/profile `1.0` line. Provider-specific\n')
+          rep('src/svif/continuity/agnir.py',
               '        "0.2": "repository-filesystem/0.2",\n',
-              '        "0.2": "repository-filesystem/0.2",\n        "1.0": "repository-filesystem/1.0",\n',
-          )
-          replace(
-              "src/svif/continuity/agnir.py",
-              '        if version == "0.2":\n',
-              '        if version in {"0.2", "1.0"}:\n',
-          )
-          replace(
-              "src/svif/continuity/agnir.py",
+              '        "0.2": "repository-filesystem/0.2",\n        "1.0": "repository-filesystem/1.0",\n')
+          rep('src/svif/continuity/agnir.py', '        if version == "0.2":\n', '        if version in {"0.2", "1.0"}:\n')
+          rep('src/svif/continuity/agnir.py',
               '                    "Core 0.2 repository/filesystem discovery requires continuity.lineage",\n',
-              '                    f"Core {version} repository/filesystem discovery requires continuity.lineage",\n',
-          )
-          replace(
-              "src/svif/continuity/agnir.py",
+              '                    f"Core {version} repository/filesystem discovery requires continuity.lineage",\n')
+          rep('src/svif/continuity/agnir.py',
               '        if self.selected_vcs_selector is not None and version == "0.2":\n',
-              '        if self.selected_vcs_selector is not None and version in {"0.2", "1.0"}:\n',
-          )
+              '        if self.selected_vcs_selector is not None and version in {"0.2", "1.0"}:\n')
 
-          # Repository integrity guard understands the stable 1.0 line.
-          replace(
-              "checks/check_repository.py",
+          # Repository binding guard recognizes the same stable line.
+          rep('checks/check_repository.py',
               '        "0.2": "repository-filesystem/0.2",\n',
-              '        "0.2": "repository-filesystem/0.2",\n        "1.0": "repository-filesystem/1.0",\n',
-          )
-          replace(
-              "checks/check_repository.py",
-              '    if version == "0.2":\n',
-              '    if version in {"0.2", "1.0"}:\n',
-          )
-          replace(
-              "checks/check_repository.py",
+              '        "0.2": "repository-filesystem/0.2",\n        "1.0": "repository-filesystem/1.0",\n')
+          rep('checks/check_repository.py', '    if version == "0.2":\n', '    if version in {"0.2", "1.0"}:\n')
+          rep('checks/check_repository.py',
               '            fail("Core 0.2 requires one logical lineage and matching Svif provider binding")\n',
-              '            fail(f"Core {version} requires one logical lineage and matching Svif provider binding")\n',
-          )
-          replace(
-              "checks/check_repository.py",
+              '            fail(f"Core {version} requires one logical lineage and matching Svif provider binding")\n')
+          rep('checks/check_repository.py',
               '            fail("Core 0.2 VCS validation requires matching durable selector binding")\n',
-              '            fail(f"Core {version} VCS validation requires matching durable selector binding")\n',
-          )
+              '            fail(f"Core {version} VCS validation requires matching durable selector binding")\n')
 
-          # Adapter tests keep historical compatibility coverage and add 1.0 coverage.
-          replace(
-              "tests/test_agnir_continuity.py",
+          # Generic continuity fixtures and explicit 1.0 load/checkpoint coverage.
+          rep('tests/test_agnir_continuity.py',
               'profile = f"repository-filesystem/{version}" if version in {"0.1", "0.2"} else "repository-filesystem/0.1"',
-              'profile = f"repository-filesystem/{version}" if version in {"0.1", "0.2", "1.0"} else "repository-filesystem/0.1"',
-          )
-          replace(
-              "tests/test_agnir_continuity.py",
+              'profile = f"repository-filesystem/{version}" if version in {"0.1", "0.2", "1.0"} else "repository-filesystem/0.1"')
+          rep('tests/test_agnir_continuity.py',
               '    if version == "0.2" or lineage is not None:\n',
-              '    if version in {"0.2", "1.0"} or lineage is not None:\n',
-          )
-          anchor = "    def test_project_mismatch_preserves_agnir_failure_class(self) -> None:\n"
-          insertion = '''    def test_loads_repository_filesystem_profile_1_0_and_resolves_logical_lineage(self) -> None:\n        with tempfile.TemporaryDirectory() as directory:\n            root = Path(directory)\n            selector = "refs/heads/feature/stable"\n            lineage = "urn:test:lineage:stable"\n            write_project(root, version="1.0", lineage=lineage, vcs_selector=selector)\n            provider = AgnirFilesystemContinuityProvider(\n                root,\n                expected_core_version="1.0",\n                expected_profile="repository-filesystem/1.0",\n                selected_vcs_selector=selector,\n            )\n\n            snapshot = provider.load(PROJECT)\n\n            self.assertEqual(snapshot.project_identity, PROJECT)\n            self.assertEqual(provider.resolve_lineage(PROJECT), lineage)\n            self.assertIn("old", snapshot.state)\n            self.assertIn("seed.md", snapshot.evidence)\n\n'''
-          p = Path("tests/test_agnir_continuity.py")
-          text = p.read_text(encoding="utf-8")
+              '    if version in {"0.2", "1.0"} or lineage is not None:\n')
+          p = Path('tests/test_agnir_continuity.py')
+          text = p.read_text(encoding='utf-8')
+          anchor = '    def test_project_mismatch_preserves_agnir_failure_class(self) -> None:\n'
           if text.count(anchor) != 1:
-              raise SystemExit("test_agnir_continuity.py: insertion anchor mismatch")
-          p.write_text(text.replace(anchor, insertion + anchor, 1), encoding="utf-8")
-
-          anchor = "\n\nif __name__ == \"__main__\":\n"
-          insertion = '''\n    def test_orchestrator_checkpoint_preserves_core_1_0_lineage_and_binding(self) -> None:\n        with tempfile.TemporaryDirectory() as directory:\n            root = Path(directory)\n            selector = "refs/heads/feature/stable"\n            lineage = "urn:test:lineage:stable"\n            write_project(root, version="1.0", lineage=lineage, vcs_selector=selector)\n            provider = AgnirFilesystemContinuityProvider(\n                root,\n                expected_core_version="1.0",\n                expected_profile="repository-filesystem/1.0",\n                selected_vcs_selector=selector,\n            )\n            surface = UpdatingSurface()\n            orchestrator = Orchestrator(\n                continuity_providers=(provider,),\n                execution_surfaces=(surface,),\n            )\n            binding = ProjectBinding(\n                project_identity=PROJECT,\n                continuity=ProviderBinding("agnir"),\n                execution_surface="chatgpt",\n            )\n\n            orchestrator.run(\n                binding,\n                OperationRequest(operation_id="op-agnir-1-0", intent="advance stable selected lineage"),\n            )\n\n            self.assertEqual(provider.resolve_lineage(PROJECT), lineage)\n            evidence_files = list((root / ".agnir/evidence").glob("svif-operation-*.json"))\n            self.assertEqual(len(evidence_files), 1)\n            payload = json.loads(evidence_files[0].read_text(encoding="utf-8"))\n            self.assertEqual(payload["agnir_lineage"], lineage)\n            self.assertEqual(payload["operation_id"], "op-agnir-1-0")\n'''
-          p = Path("tests/test_agnir_continuity.py")
-          text = p.read_text(encoding="utf-8")
+              raise SystemExit('continuity load insertion anchor mismatch')
+          load_test = '''    def test_loads_repository_filesystem_profile_1_0_and_resolves_logical_lineage(self) -> None:\n        with tempfile.TemporaryDirectory() as directory:\n            root = Path(directory)\n            selector = "refs/heads/feature/stable"\n            lineage = "urn:test:lineage:stable"\n            write_project(root, version="1.0", lineage=lineage, vcs_selector=selector)\n            provider = AgnirFilesystemContinuityProvider(\n                root,\n                expected_core_version="1.0",\n                expected_profile="repository-filesystem/1.0",\n                selected_vcs_selector=selector,\n            )\n            snapshot = provider.load(PROJECT)\n            self.assertEqual(snapshot.project_identity, PROJECT)\n            self.assertEqual(provider.resolve_lineage(PROJECT), lineage)\n            self.assertIn("old", snapshot.state)\n            self.assertIn("seed.md", snapshot.evidence)\n\n'''
+          text = text.replace(anchor, load_test + anchor, 1)
+          anchor = '\n\nif __name__ == "__main__":\n'
           if text.count(anchor) != 1:
-              raise SystemExit("test_agnir_continuity.py: final insertion anchor mismatch")
-          p.write_text(text.replace(anchor, insertion + anchor, 1), encoding="utf-8")
+              raise SystemExit('continuity checkpoint insertion anchor mismatch')
+          checkpoint_test = '''\n    def test_orchestrator_checkpoint_preserves_core_1_0_lineage_and_binding(self) -> None:\n        with tempfile.TemporaryDirectory() as directory:\n            root = Path(directory)\n            selector = "refs/heads/feature/stable"\n            lineage = "urn:test:lineage:stable"\n            write_project(root, version="1.0", lineage=lineage, vcs_selector=selector)\n            provider = AgnirFilesystemContinuityProvider(\n                root,\n                expected_core_version="1.0",\n                expected_profile="repository-filesystem/1.0",\n                selected_vcs_selector=selector,\n            )\n            surface = UpdatingSurface()\n            orchestrator = Orchestrator(continuity_providers=(provider,), execution_surfaces=(surface,))\n            binding = ProjectBinding(project_identity=PROJECT, continuity=ProviderBinding("agnir"), execution_surface="chatgpt")\n            orchestrator.run(binding, OperationRequest(operation_id="op-agnir-1-0", intent="advance stable selected lineage"))\n            self.assertEqual(provider.resolve_lineage(PROJECT), lineage)\n            evidence_files = list((root / ".agnir/evidence").glob("svif-operation-*.json"))\n            self.assertEqual(len(evidence_files), 1)\n            payload = json.loads(evidence_files[0].read_text(encoding="utf-8"))\n            self.assertEqual(payload["agnir_lineage"], lineage)\n            self.assertEqual(payload["operation_id"], "op-agnir-1-0")\n'''
+          p.write_text(text.replace(anchor, checkpoint_test + anchor, 1), encoding='utf-8')
 
-          # Current self-consumption test is promoted to published Agnir v1.0.0.
-          replacements = [
-              ("    def test_repository_self_consumes_published_core_0_2(self) -> None:\n", "    def test_repository_self_consumes_published_core_1_0(self) -> None:\n"),
-              ("        self.assertIn('version: \"0.2\"', agnir)\n", "        self.assertIn('version: \"1.0\"', agnir)\n"),
-              ("        self.assertIn('discovery_profile: \"repository-filesystem/0.2\"', agnir)\n", "        self.assertIn('discovery_profile: \"repository-filesystem/1.0\"', agnir)\n"),
-              ("        self.assertIn('release: \"0.2.0\"', agnir)\n", "        self.assertIn('release: \"1.0.0\"', agnir)\n"),
+          # Current repository self-consumption moves to 1.0.
+          for old, new in [
+              ('    def test_repository_self_consumes_published_core_0_2(self) -> None:\n', '    def test_repository_self_consumes_published_core_1_0(self) -> None:\n'),
+              ('        self.assertIn(\'version: "0.2"\', agnir)\n', '        self.assertIn(\'version: "1.0"\', agnir)\n'),
+              ('        self.assertIn(\'discovery_profile: "repository-filesystem/0.2"\', agnir)\n', '        self.assertIn(\'discovery_profile: "repository-filesystem/1.0"\', agnir)\n'),
+              ('        self.assertIn(\'release: "0.2.0"\', agnir)\n', '        self.assertIn(\'release: "1.0.0"\', agnir)\n'),
               ('            \'applied_revision: "fc84095ed5d500be9e1b43a4af0e93356571bbd4"\',\n', '            \'applied_revision: "6d16dcfd17b8e9f22fd25804e22b9f8a516d06c3"\',\n'),
-              ("        self.assertIn('compatibility: \"0.2\"', svif)\n", "        self.assertIn('compatibility: \"1.0\"', svif)\n"),
-              ("        self.assertIn('profile: \"repository-filesystem/0.2\"', svif)\n", "        self.assertIn('profile: \"repository-filesystem/1.0\"', svif)\n"),
+              ('        self.assertIn(\'compatibility: "0.2"\', svif)\n', '        self.assertIn(\'compatibility: "1.0"\', svif)\n'),
+              ('        self.assertIn(\'profile: "repository-filesystem/0.2"\', svif)\n', '        self.assertIn(\'profile: "repository-filesystem/1.0"\', svif)\n'),
               ('            expected_core_version="0.2",\n', '            expected_core_version="1.0",\n'),
               ('            expected_profile="repository-filesystem/0.2",\n', '            expected_profile="repository-filesystem/1.0",\n'),
               ('            "For the current Svif repository binding, the expected values are Agnir Core `0.2`",\n', '            "For the current Svif repository binding, the expected values are Agnir Core `1.0`",\n'),
               ('            "profile `repository-filesystem/0.2`",\n', '            "profile `repository-filesystem/1.0`",\n'),
               ('            "published Agnir repository release `v0.2.0`",\n', '            "published Agnir repository release `v1.0.0`",\n'),
               ('        self.assertIn("Core `0.2`, require a non-empty logical `continuity.lineage`", text)\n', '        self.assertIn("Core `0.2` or `1.0`, require a non-empty logical `continuity.lineage`", text)\n'),
-          ]
-          for old, new in replacements:
-              replace("tests/test_agnir_stable_migration.py", old, new)
-
-          # Plugin discovery test: current Project is 1.0, immutable Preview bootstrap stays 0.1.
-          for old, new in [
-              ('            \'version: "0.2"\',\n', '            \'version: "1.0"\',\n'),
-              ('            \'discovery_profile: "repository-filesystem/0.2"\',\n', '            \'discovery_profile: "repository-filesystem/1.0"\',\n'),
-              ('            \'compatibility: "0.2"\',\n', '            \'compatibility: "1.0"\',\n'),
-              ('            \'profile: "repository-filesystem/0.2"\',\n', '            \'profile: "repository-filesystem/1.0"\',\n'),
           ]:
-              replace("tests/test_plugin_agnir_discovery.py", old, new)
+              rep('tests/test_agnir_stable_migration.py', old, new)
 
-          # Shared Skill: current self-host moves to 1.0; released Preview.1 bootstrap remains 0.1.
+          # Current-binding assertions in Plugin discovery/package tests move to 1.0 only; Preview bootstrap assertions stay 0.1.
+          for path in ('tests/test_plugin_agnir_discovery.py', 'tests/test_plugin_package.py'):
+              for old, new in [
+                  ('            \'version: "0.2"\',\n', '            \'version: "1.0"\',\n'),
+                  ('            \'discovery_profile: "repository-filesystem/0.2"\',\n', '            \'discovery_profile: "repository-filesystem/1.0"\',\n'),
+                  ('            \'compatibility: "0.2"\',\n', '            \'compatibility: "1.0"\',\n'),
+                  ('            \'profile: "repository-filesystem/0.2"\',\n', '            \'profile: "repository-filesystem/1.0"\',\n'),
+              ]:
+                  rep(path, old, new)
+
+          # Shared operational Skill supports 1.0 and describes this repository's new current binding.
           for old, new in [
-              ("for Core `0.2`, require a non-empty logical `continuity.lineage`", "for Core `0.2` or `1.0`, require a non-empty logical `continuity.lineage`"),
-              ("For supported `repository-filesystem/0.1` and `repository-filesystem/0.2` profiles", "For supported `repository-filesystem/0.1`, `repository-filesystem/0.2`, and `repository-filesystem/1.0` profiles"),
-              ("For the current Svif repository binding, the expected values are Agnir Core `0.2`, profile `repository-filesystem/0.2`", "For the current Svif repository binding, the expected values are Agnir Core `1.0`, profile `repository-filesystem/1.0`"),
-              ("Core `0.2` without a selected logical lineage must surface `AGNIR_LINEAGE_REQUIRED`", "Core `0.2` or `1.0` without a selected logical lineage must surface `AGNIR_LINEAGE_REQUIRED`"),
-              ("The Svif repository Project now consumes published Agnir repository release `v0.2.0`, Core compatibility `0.2`, and profile `repository-filesystem/0.2`", "The Svif repository Project now consumes published Agnir repository release `v1.0.0`, Core compatibility `1.0`, and profile `repository-filesystem/1.0`"),
+              ('for Core `0.2`, require a non-empty logical `continuity.lineage`', 'for Core `0.2` or `1.0`, require a non-empty logical `continuity.lineage`'),
+              ('For supported `repository-filesystem/0.1` and `repository-filesystem/0.2` profiles', 'For supported `repository-filesystem/0.1`, `repository-filesystem/0.2`, and `repository-filesystem/1.0` profiles'),
+              ('For the current Svif repository binding, the expected values are Agnir Core `0.2`, profile `repository-filesystem/0.2`', 'For the current Svif repository binding, the expected values are Agnir Core `1.0`, profile `repository-filesystem/1.0`'),
+              ('Core `0.2` without a selected logical lineage must surface `AGNIR_LINEAGE_REQUIRED`', 'Core `0.2` or `1.0` without a selected logical lineage must surface `AGNIR_LINEAGE_REQUIRED`'),
+              ('The Svif repository Project now consumes published Agnir repository release `v0.2.0`, Core compatibility `0.2`, and profile `repository-filesystem/0.2`', 'The Svif repository Project now consumes published Agnir repository release `v1.0.0`, Core compatibility `1.0`, and profile `repository-filesystem/1.0`'),
           ]:
-              replace("plugin/skills/svif/SKILL.md", old, new)
+              rep('plugin/skills/svif/SKILL.md', old, new)
 
-          # Full repository map follows the current tracked/canonical surface.
-          replace(
-              "REPOSITORY_TREE.md",
-              "│       └── checkpoint-2026-08-28-validation-2.md         # Validation 2 的持久 checkpoint 记录\n",
-              "│       ├── 2026-09-07-agnir-1.0-promotion-candidate.md # Principal 授权的 Agnir Core/profile 0.2→1.0 promotion staging / preservation / validation 证据\n│       └── checkpoint-2026-08-28-validation-2.md         # Validation 2 的持久 checkpoint 记录\n",
-          )
-          replace(
-              "REPOSITORY_TREE.md",
-              "│       │   └── agnir.py                                  # founding Agnir repository/filesystem Continuity Provider；兼容 0.1 并支持当前 0.2 lineage/binding\n",
-              "│       │   └── agnir.py                                  # founding Agnir repository/filesystem Continuity Provider；兼容 0.1/0.2 并支持当前 stable 1.0 lineage/binding\n",
-          )
-          replace(
-              "REPOSITORY_TREE.md",
-              "│   ├── test_agnir_continuity.py                          # Agnir Continuity Provider adapter 的 0.1/0.2 load / lineage / checkpoint / failure 行为\n",
-              "│   ├── test_agnir_continuity.py                          # Agnir Continuity Provider adapter 的 0.1/0.2/1.0 load / lineage / checkpoint / failure 行为\n",
-          )
-          replace(
-              "REPOSITORY_TREE.md",
-              "│   ├── test_agnir_stable_migration.py                    # 当前 Svif Project 对发布版 Agnir v0.2.0 的 self-consumption、identity/locator/lineage 迁移 guard\n",
-              "│   ├── test_agnir_stable_migration.py                    # 当前 Svif Project 对发布版 Agnir v1.0.0 的 self-consumption、0.2→1.0 preservation / identity / lineage guard\n",
-          )
+          # Full repository map records this candidate and updated adapter/test responsibilities.
+          rep('REPOSITORY_TREE.md',
+              '│       └── checkpoint-2026-08-28-validation-2.md         # Validation 2 的持久 checkpoint 记录\n',
+              '│       ├── 2026-09-07-agnir-1.0-promotion-candidate.md # Principal 授权的 Agnir Core/profile 0.2→1.0 promotion staging / preservation / validation 证据\n│       └── checkpoint-2026-08-28-validation-2.md         # Validation 2 的持久 checkpoint 记录\n')
+          rep('REPOSITORY_TREE.md',
+              '│       │   └── agnir.py                                  # founding Agnir repository/filesystem Continuity Provider；兼容 0.1 并支持当前 0.2 lineage/binding\n',
+              '│       │   └── agnir.py                                  # founding Agnir repository/filesystem Continuity Provider；兼容 0.1/0.2 并支持当前 stable 1.0 lineage/binding\n')
+          rep('REPOSITORY_TREE.md',
+              '│   ├── test_agnir_continuity.py                          # Agnir Continuity Provider adapter 的 0.1/0.2 load / lineage / checkpoint / failure 行为\n',
+              '│   ├── test_agnir_continuity.py                          # Agnir Continuity Provider adapter 的 0.1/0.2/1.0 load / lineage / checkpoint / failure 行为\n')
+          rep('REPOSITORY_TREE.md',
+              '│   ├── test_agnir_stable_migration.py                    # 当前 Svif Project 对发布版 Agnir v0.2.0 的 self-consumption、identity/locator/lineage 迁移 guard\n',
+              '│   ├── test_agnir_stable_migration.py                    # 当前 Svif Project 对发布版 Agnir v1.0.0 的 self-consumption、0.2→1.0 preservation / identity / lineage guard\n')
 
-          evidence = Path(".agnir/evidence/2026-09-07-agnir-1.0-promotion-candidate.md")
-          evidence.write_text('''# Svif Agnir Core/profile 0.2 → 1.0 promotion candidate — 2026-09-07\n\nStatus: **staged candidate; not authoritative until reconciled to `main`.**\n\n## Authorization\n\nThe Principal explicitly authorized the Svif Project to perform the separately governed Agnir Core/profile `0.2` → `1.0` promotion on 2026-09-07. This satisfies the authorization gate in `iorLab/agnir/spec/CORE_0_2_TO_1_0_PROMOTION.md`.\n\n## Source receipt\n\n- authoritative Svif source revision captured before staging: `a00ad6ed9f18abddbed1979a619f932350cefe54`;\n- source Core/profile: `0.2` / `repository-filesystem/0.2`;\n- source Project identity: `urn:svif:project:svif-core`;\n- source logical lineage: `urn:svif:lineage:authoritative`;\n- source selector: `refs/heads/main`;\n- durable locators: `.agnir/state.md`, `.agnir/next-actions.md`, `.agnir/decisions.md`, `.agnir/evidence/`;\n- source Agnir operational provenance: `v0.2.0@fc84095ed5d500be9e1b43a4af0e93356571bbd4`.\n\n## Target\n\n- Core/profile: `1.0` / `repository-filesystem/1.0`;\n- Agnir operational provenance: immutable `v1.0.0@6d16dcfd17b8e9f22fd25804e22b9f8a516d06c3`;\n- `SVIF.yaml` continuity compatibility/profile: `1.0` / `repository-filesystem/1.0`.\n\n## Required preservation\n\nThe candidate preserves Project identity, logical lineage, VCS selector/binding, memory locators, Project policy, unrelated extensions, brand assets, released `v0.2.0-preview.1`, and the released Preview.1 first-use Core/profile `0.1` bootstrap baseline. The promotion does not move or rewrite any released tag.\n\nCurrent State, Next Actions and Decisions are intentionally not rewritten as part of staging; authoritative continuity remains on the 0.2 source until publication. A post-publication checkpoint may record the accepted promotion only after fresh 1.0 discovery and authoritative product checks succeed.\n\n## Implementation pressure\n\nSvif's Agnir filesystem adapter and repository integrity guard are extended to dispatch stable Core/profile `1.0` with the same accepted lineage/selector semantics as `0.2`, while retaining historical `0.1` and `0.2` compatibility. Tests add 1.0 load/checkpoint/current-self-consumption coverage and preserve the immutable Preview.1 bootstrap tests.\n''', encoding="utf-8")
+          Path('.agnir/evidence/2026-09-07-agnir-1.0-promotion-candidate.md').write_text('''# Svif Agnir Core/profile 0.2 → 1.0 promotion candidate — 2026-09-07\n\nStatus: **staged candidate; not authoritative until reconciled to `main`.**\n\n## Authorization\n\nThe Principal explicitly authorized the Svif Project to perform the separately governed Agnir Core/profile `0.2` → `1.0` promotion on 2026-09-07. This satisfies the authorization gate in `iorLab/agnir/spec/CORE_0_2_TO_1_0_PROMOTION.md`.\n\n## Source receipt\n\n- authoritative Svif source revision captured before staging: `a00ad6ed9f18abddbed1979a619f932350cefe54`;\n- source Core/profile: `0.2` / `repository-filesystem/0.2`;\n- source Project identity: `urn:svif:project:svif-core`;\n- source logical lineage: `urn:svif:lineage:authoritative`;\n- source selector: `refs/heads/main`;\n- durable locators: `.agnir/state.md`, `.agnir/next-actions.md`, `.agnir/decisions.md`, `.agnir/evidence/`;\n- source Agnir operational provenance: `v0.2.0@fc84095ed5d500be9e1b43a4af0e93356571bbd4`.\n\n## Target\n\n- Core/profile: `1.0` / `repository-filesystem/1.0`;\n- Agnir operational provenance: immutable `v1.0.0@6d16dcfd17b8e9f22fd25804e22b9f8a516d06c3`;\n- `SVIF.yaml` continuity compatibility/profile: `1.0` / `repository-filesystem/1.0`.\n\n## Required preservation\n\nThe candidate preserves Project identity, logical lineage, VCS selector/binding, memory locators, Project policy, unrelated extensions, brand assets, released `v0.2.0-preview.1`, and the released Preview.1 first-use Core/profile `0.1` bootstrap baseline. The promotion does not move or rewrite any released tag.\n\nCurrent State, Next Actions and Decisions are intentionally not rewritten as part of staging; authoritative continuity remains on the 0.2 source until publication. A post-publication checkpoint may record the accepted promotion only after fresh 1.0 discovery and authoritative product checks succeed.\n\n## Implementation pressure\n\nSvif's Agnir filesystem adapter and repository integrity guard are extended to dispatch stable Core/profile `1.0` with the same accepted lineage/selector semantics as `0.2`, while retaining historical `0.1` and `0.2` compatibility. Tests add 1.0 load/checkpoint/current-self-consumption coverage and preserve the immutable Preview.1 bootstrap tests.\n''', encoding='utf-8')
           PY
 
-      - name: Verify promotion preservation before tests
+      - name: Verify preservation and target shape
         shell: bash
         run: |
           test "$(grep -c 'version: \"1.0\"' AGNIR.yaml)" = "1"
@@ -206,28 +168,22 @@ jobs:
           test "$(grep -c 'applied_revision: \"6d16dcfd17b8e9f22fd25804e22b9f8a516d06c3\"' AGNIR.yaml)" = "1"
           test "$(grep -c 'compatibility: \"1.0\"' SVIF.yaml)" = "1"
           test "$(grep -c 'profile: \"repository-filesystem/1.0\"' SVIF.yaml)" = "1"
-          git diff --quiet HEAD^ -- .agnir/state.md .agnir/next-actions.md .agnir/decisions.md
-          git diff --quiet HEAD^ -- brand/
-          git diff --quiet HEAD^ -- VERSION
+          git diff --quiet a00ad6ed9f18abddbed1979a619f932350cefe54 -- .agnir/state.md .agnir/next-actions.md .agnir/decisions.md
+          git diff --quiet a00ad6ed9f18abddbed1979a619f932350cefe54 -- brand/ VERSION
 
-      - name: Run canonical Svif checks on complete candidate
+      - name: Run complete candidate verification
         shell: bash
         run: |
           python checks/check_repository.py
           PYTHONPATH=src python -m unittest discover -s tests -v
           python conformance/check_contracts.py
 
-      - name: Show compatibility references for audit
+      - name: Commit complete candidate and remove staging workflows
         shell: bash
         run: |
-          git grep -n -E 'repository-filesystem/(0\.1|0\.2|1\.0)|Agnir Core `0\.2`|Agnir Core `1\.0`' -- ':!history/*' ':!.agnir/evidence/*' || true
-
-      - name: Commit complete candidate and remove staging workflow
-        shell: bash
-        run: |
-          git rm .github/workflows/promote-agnir-1-0.yml
+          git rm .github/workflows/promote-agnir-1-0.yml .github/workflows/fix-promotion-stager.yml
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add AGNIR.yaml SVIF.yaml src/svif/continuity/agnir.py checks/check_repository.py tests/test_agnir_continuity.py tests/test_agnir_stable_migration.py tests/test_plugin_agnir_discovery.py plugin/skills/svif/SKILL.md REPOSITORY_TREE.md .agnir/evidence/2026-09-07-agnir-1.0-promotion-candidate.md
+          git add AGNIR.yaml SVIF.yaml src/svif/continuity/agnir.py checks/check_repository.py tests/test_agnir_continuity.py tests/test_agnir_stable_migration.py tests/test_plugin_agnir_discovery.py tests/test_plugin_package.py plugin/skills/svif/SKILL.md REPOSITORY_TREE.md .agnir/evidence/2026-09-07-agnir-1.0-promotion-candidate.md
           git commit -m "promotion: stage Svif on Agnir Core 1.0"
           git push origin HEAD:promotion/agnir-1.0

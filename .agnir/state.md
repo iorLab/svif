@@ -1,6 +1,6 @@
 # Svif Current State
 
-Svif is the authoritative active **Project orchestration product** in `iorLab/svif`. Authoritative `main` now carries the Principal-approved brand identity and the Principal-authorized Agnir Core/profile `0.2` → `1.0` Project promotion.
+Svif is the authoritative active **Project orchestration product** in `iorLab/svif`. Authoritative `main` now carries the Principal-approved brand identity and the Principal-authorized Agnir Core/profile `0.2` → `1.0` Project promotion. The former `iorLab/svif-cloudflare-reference` project is retired.
 
 ## Product state
 
@@ -10,10 +10,11 @@ Svif is the authoritative active **Project orchestration product** in `iorLab/sv
 - Capability Adapter remains `capability-adapter/0.2`.
 - Evidence Record remains `evidence-record/0.2`.
 - Released Repository Preview `v0.2.0-preview.1` remains immutable at commit `2b07b6b5ea0bc8feee59f9f647be9af3069d056e`.
-- The released Preview.1 first-use bootstrap remains separately versioned on Agnir Core/profile `0.1`; the repository self-host promotion did not retroactively rewrite that release.
+- The released **Plugin MVP** / Preview.1 first-use bootstrap remains separately versioned on Agnir Core/profile `0.1`; the repository self-host promotion did not retroactively rewrite that release.
 - Real Codex CLI and ChatGPT desktop/Codex Preview acceptance evidence remains valid.
 - The public/personal ChatGPT path remains a separate distribution obligation.
 - Live Cloudflare delivery remains disabled unless explicitly authorized.
+- `README.md` and `README.zh-CN.md` remain synchronized user/Agent entry points.
 
 ## Product architecture
 

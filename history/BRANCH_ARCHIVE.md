@@ -12,4 +12,8 @@ This file records branch names and tip commits that were intentionally retired f
 - `brand/identity-system` -> `62e9aac53246cef4eccffacb9434ead9928c0c3c` — Principal-approved Svif identity-system production branch; material result integrated to authoritative `main` by PR #5 at `77ff3d0e8b3d0d691bb47529e065571c17a0aa81`.
 - `promotion/agnir-1.0` -> `5a88eee4bc214b8da3b4c5f48640067b167248b8` — Principal-authorized semantics-preserving Svif Project promotion from Agnir Core/profile 0.2 to 1.0; material result integrated to authoritative `main` by PR #9 at `5da0eb76e38e817ba0f5111ce2b08750afa3b9c3`.
 
-These SHAs are historical locators only. None of the retired branches is an active dependency, compatibility obligation, conformance input, or release gate for Svif.
+## Archived tip pending physical ref retirement
+
+- `feature/agnir-core-0.2-validation` -> `d42489f72cc8985d353ccbf2f9b6ae7249fe6480` — historical Agnir Core/profile 0.2 lineage validation branch. PR #3 was closed unmerged on 2026-09-18. Its material outcome is superseded and durably represented by later authoritative 0.2 support, the accepted Svif 0.2 → 1.0 promotion, and Agnir downstream-adoption evidence. The branch is safe to delete and must not be merged.
+
+The retired-branch SHAs and the archived pending-retirement tip above are historical locators only. None is an active dependency, compatibility obligation, conformance input, or release gate for Svif.

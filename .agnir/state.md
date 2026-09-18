@@ -13,6 +13,8 @@ Svif is the authoritative active **Project orchestration product** in `iorLab/sv
 - The released **Plugin MVP** / Preview.1 first-use bootstrap remains separately versioned on Agnir Core/profile `0.1`; the repository self-host promotion did not retroactively rewrite that release.
 - Real Codex CLI and ChatGPT desktop/Codex Preview acceptance evidence remains valid.
 - The public/personal ChatGPT path remains a separate distribution obligation.
+- As of 2026-09-18, current OpenAI developer documentation still accepts **Skills-only** public Plugin submissions; MCP/App packaging is not a publication prerequisite for Svif's current package shape.
+- The remaining account-side submission prerequisites are **Apps Management: Write** in the publishing OpenAI Platform organization plus a **verified developer or business identity** in that same organization; approval and explicit Publish remain separate later observations.
 - Live Cloudflare delivery remains disabled unless explicitly authorized.
 - `README.md` and `README.zh-CN.md` remain synchronized user/Agent entry points.
 
@@ -65,6 +67,6 @@ The earlier published-Agnir migration from Core/profile `0.1` to `0.2` remains d
 
 ## Current focus
 
-No Agnir 1.0 promotion or brand integration gate remains open. Material work returns to Svif distribution/adoption: feed this real downstream 1.0 promotion back into Agnir adoption evidence, preserve released Preview evidence, decide any future distribution bootstrap upgrade separately, continue the public/personal ChatGPT publication path when its publisher gate is resolvable, and keep protected provider delivery separately authorized.
+No Agnir 1.0 promotion or brand integration gate remains open. The real downstream 1.0 promotion is already recorded in Agnir as accepted post-1.0 adoption evidence at `iorLab/agnir/.agnir/evidence/2026-09-07-svif-agnir-1.0-adoption.md`; that handoff is complete. Material work now returns to Svif distribution/adoption: preserve released Preview evidence, keep any future bootstrap compatibility change in a new Svif release, satisfy the OpenAI Platform publisher prerequisites, submit the existing Skills-only public package for review, explicitly Publish after approval, then validate a real personal ChatGPT installation/checkpoint/resume path. Historical draft PR #3 is closed unmerged; its validation branch tip is recorded for explicit ref retirement. Protected Cloudflare delivery remains separately authorized.
 
 `.agnir/next-actions.md` is the canonical ordered resume plan.

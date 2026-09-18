@@ -198,3 +198,12 @@
 - The approved 160×155 `brand/exports/svif-app-icon.png` remains a valid Svif brand export but is not used for these directory fields because it is not square.
 - The approved 128×128 `brand/exports/svif-favicon-128.png` is the canonical source for the public-directory icon; `plugin/assets/svif-directory-icon.png` MUST remain byte-identical to it.
 - Reusing an approved asset byte-for-byte for a new packaging surface is allowed; changing its geometry or artwork requires separate brand authority.
+
+## 2026-09-18 — Final 0.2.0 public candidate supersedes the initial audited subject
+
+- The earlier `0.2.0` candidate at commit `5a81d7a8b7490a6215d7a27966759fb2656b477a` / Plugin tree `34d2d205455f641b9eca59c0cb4fb9ff43880804` remains historical audit input only; it is **not** the package to submit.
+- Current OpenAI directory image requirements exposed that initial subject's non-square logo and missing `composerIcon`; the later repair supersedes it for public submission.
+- The exact accepted public-submission package subject is Plugin tree `5ab4b6147dbd096c052f042b23e37f0ec39f7091`, materialized by commit `f9026f7e3db4db8956cfc88ba1990daf0757a011`.
+- Final repair CI run `35317245771` passed all product-check jobs; final acceptance-checkpoint run `35317410100` also passed all product-check jobs.
+- Continuity-only commits after `f9026f7e3db4db8956cfc88ba1990daf0757a011` may advance authoritative `main` without changing the accepted Plugin tree. External submission evidence MUST identify the exact submitted Plugin subject, not merely a moving branch.
+- The immutable released Repository Preview `v0.2.0-preview.1` remains a different historical subject and is not rewritten.

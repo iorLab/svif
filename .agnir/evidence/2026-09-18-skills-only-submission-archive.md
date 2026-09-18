@@ -76,6 +76,29 @@ Repair:
 
 Fresh compare after repair confirmed no `plugin/` changes relative to the accepted package materialization commit.
 
+## Materialized exact submission bundle
+
+A one-shot GitHub Actions build then materialized the actual portal ZIP from the authoritative checkout while first asserting that `HEAD:plugin` exactly matched the accepted Plugin tree.
+
+Receipts:
+
+- one-shot workflow source commit: `52c32cac36f616d67368fca5a627fdb21e125750`;
+- workflow run: `35334437819` — success;
+- job: `105565905475` — success;
+- observed Plugin tree before packaging: `5ab4b6147dbd096c052f042b23e37f0ec39f7091`;
+- inner portal file: `svif-0.2.0.zip`;
+- inner portal ZIP SHA-256: `bc2315562f7bdeb4232aadb9b583a7442f8cd868dbeacd13bb57caf0c785177c`;
+- `unzip -t`: no errors;
+- Actions artifact name: `svif-0.2.0-openai-submission`;
+- Actions artifact id: `10542750132`;
+- Actions artifact size: `27757` bytes;
+- Actions artifact digest: `sha256:56c86a8da18d36edd02786da0ff6af4e7094438639656b3983497d42af133d3f`;
+- artifact retention: 30 days, expiring 2026-10-18.
+
+The Actions artifact is a transport wrapper containing the exact inner `svif-0.2.0.zip` plus its `.sha256` receipt. The **inner ZIP** is the candidate to upload to the OpenAI submission portal. The outer Actions artifact digest is not a substitute for the inner ZIP digest.
+
+The one-shot workflow is intentionally retired after materialization; future rebuilds should use the deterministic repository builder and must re-establish the exact accepted Plugin subject before claiming equivalence.
+
 ## Remaining external layers
 
 Not yet observed and therefore not claimed:

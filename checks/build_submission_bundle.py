@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import stat
+import unicodedata
 import zipfile
 from pathlib import Path
 
@@ -11,6 +12,10 @@ ROOT = Path(__file__).resolve().parents[1]
 PLUGIN_ROOT = ROOT / "plugin"
 DOS_EPOCH = (1980, 1, 1, 0, 0, 0)
 MAX_ARCHIVE_BYTES = 100 * 1024 * 1024
+MAX_MEMBER_BYTES = 100 * 1024 * 1024
+MAX_UNCOMPRESSED_BYTES = 512 * 1024 * 1024
+MAX_ENTRIES = 5000
+MAX_PATH_SEGMENTS = 20
 
 
 def iter_plugin_files() -> list[Path]:

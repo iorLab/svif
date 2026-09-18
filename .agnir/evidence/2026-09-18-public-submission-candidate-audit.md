@@ -61,7 +61,9 @@ Candidate CI:
 - `portable-contracts`: job `105510201580` — success;
 - `runtime-kernel`: job `105510201457` — success.
 
-Fresh post-CI readback confirmed authoritative `main` exactly at candidate commit `5a81d7a8b7490a6215d7a27966759fb2656b477a` before this durable checkpoint, with all four version surfaces aligned, OpenAI metadata synchronized, approved logo identity preserved, and the Preview tag still unchanged.
+Fresh post-CI readback confirmed authoritative `main` exactly at candidate commit `5a81d7a8b7490a6215d7a27966759fb2656b477a` before the durable checkpoint, with all four version surfaces aligned, OpenAI metadata synchronized, approved logo identity preserved, and the Preview tag still unchanged.
+
+The first durable-checkpoint publication at `fd94894530249e35fd373a7e80004167b08a336e` produced run `35317030008`: repository-integrity and portable-contracts passed, while runtime-kernel failed only because the durable installation-documentation guard expected the stable literal marker `public/personal ChatGPT path` and the checkpoint title had inserted `0.2.0` inside that phrase. The product/package candidate was unchanged. The follow-up repair restores the stable marker while preserving the `0.2.0` candidate semantics.
 
 ## Remaining evidence layers
 

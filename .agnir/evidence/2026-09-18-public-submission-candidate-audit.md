@@ -1,6 +1,6 @@
 # Svif 0.2.0 public-submission candidate audit — 2026-09-18
 
-Status: **candidate audit in repair; initial package passed repository CI but a current OpenAI directory image blocker was discovered before submission.**
+Status: **accepted repository/package candidate; not submitted, scanned by OpenAI, reviewed, approved, published, directory-listed, or consumer-installed.**
 
 ## Candidate subject
 
@@ -99,3 +99,41 @@ Fresh inspection of approved Svif exports established:
 The repair therefore reuses the approved 128×128 favicon byte-for-byte as `plugin/assets/svif-directory-icon.png`, points both required interface fields to it, removes the non-square Plugin-local app-icon copy, and adds repository regression coverage for required paths, byte identity, PNG decoding signature, exact 128×128 dimensions, 48–4096 square bounds, and the 5 MiB file limit.
 
 This is a packaging compliance repair, not a brand redesign.
+
+
+## Final image-contract repair acceptance
+
+The directory-branding repair was published on authoritative `main` and independently re-read after CI:
+
+- repair commit: `f9026f7e3db4db8956cfc88ba1990daf0757a011`;
+- repair tree: `4963f063a7bd3dcb0c05df839e44c10dab7a3f4f`;
+- exact repaired Plugin subtree: `5ab4b6147dbd096c052f042b23e37f0ec39f7091`;
+- `VERSION`: `0.2.0`;
+- portable manifest version: `0.2.0`;
+- compatibility-overlay version: `0.2.0`;
+- Cloudflare adapter package version: `0.2.0`;
+- root and fallback OpenAI interface metadata: exact equality;
+- `interface.logo`: `./assets/svif-directory-icon.png`;
+- `interface.composerIcon`: `./assets/svif-directory-icon.png`;
+- package directory icon blob: `40dbc1cbca075149cd8fc4e0859f09217b0c3530`;
+- approved `brand/exports/svif-favicon-128.png` blob: same `40dbc1cbca075149cd8fc4e0859f09217b0c3530`;
+- dimensions guarded by tests: 128×128;
+- non-square `plugin/assets/svif-app-icon.png`: absent;
+- original approved non-square brand export remains unchanged in `brand/exports/`.
+
+Final repair CI:
+
+- workflow run: `35317245771` — success;
+- runtime-kernel job: `105511502688` — success;
+- portable-contracts job: `105511502989` — success;
+- repository-integrity job: `105511503097` — success.
+
+Fresh tag readback also confirmed the immutable Repository Preview boundary remains unchanged:
+
+- `refs/tags/v0.2.0-preview.1`;
+- annotated tag object: `2535cb89426c2d38c2e061948e81954a7c7c26d7`;
+- peeled released commit remains `2b07b6b5ea0bc8feee59f9f647be9af3069d056e`.
+
+The exact submission candidate is therefore the `plugin/` tree `5ab4b6147dbd096c052f042b23e37f0ec39f7091` as materialized by source commit `f9026f7e3db4db8956cfc88ba1990daf0757a011`. A later durable checkpoint may advance `main` without changing that Plugin subtree; external submission evidence must identify the exact submitted package subject rather than merely a moving branch.
+
+No `v0.2.0` tag, GitHub Release, OpenAI portal submission, scan result, review result, publication, directory listing, or consumer installation is claimed by this acceptance.

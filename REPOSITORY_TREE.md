@@ -41,6 +41,7 @@ svif/                                                     # Svif 产品主仓库
 │       ├── 2026-09-03-agnir-v0.2.0-main-acceptance.md    # target reconciliation、authoritative main publication 与 post-publication CI/cold-start 验证证据
 │       ├── 2026-09-07-agnir-1.0-promotion-candidate.md   # Principal 授权的 Agnir Core/profile 0.2→1.0 promotion staging / preservation / validation 证据
 │       ├── 2026-09-07-agnir-1.0-main-promotion.md        # Agnir 1.0 authoritative publication、fresh verification 与 branch retirement 完整证据
+│       ├── 2026-09-18-public-submission-candidate-audit.md # Svif 0.2.0 public-submission candidate 版本边界、package tree、OpenAI packaging 审计与 CI 证据
 │       └── checkpoint-2026-08-28-validation-2.md         # Validation 2 的持久 checkpoint 记录
 │
 ├── .github/                                              # GitHub 托管侧自动化配置

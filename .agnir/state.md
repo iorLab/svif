@@ -9,10 +9,12 @@ Svif is the authoritative active **Project orchestration product** in `iorLab/sv
 - Software Delivery remains `software-delivery/0.2`.
 - Capability Adapter remains `capability-adapter/0.2`.
 - Evidence Record remains `evidence-record/0.2`.
-- Released Repository Preview `v0.2.0-preview.1` remains immutable at commit `2b07b6b5ea0bc8feee59f9f647be9af3069d056e`.
+- Current authoritative `main` carries the **unpublished `0.2.0` public-submission candidate** at commit `5a81d7a8b7490a6215d7a27966759fb2656b477a`; its exact Plugin subtree is `34d2d205455f641b9eca59c0cb4fb9ff43880804`.
+- Released Repository Preview `v0.2.0-preview.1` remains immutable at commit `2b07b6b5ea0bc8feee59f9f647be9af3069d056e`; it is a distinct historical release subject.
 - The released **Plugin MVP** / Preview.1 first-use bootstrap remains separately versioned on Agnir Core/profile `0.1`; the repository self-host promotion did not retroactively rewrite that release.
 - Real Codex CLI and ChatGPT desktop/Codex Preview acceptance evidence remains valid.
-- The public/personal ChatGPT path remains a separate distribution obligation.
+- The public/personal ChatGPT path remains a separate distribution obligation. Repository/package readiness is now green for the `0.2.0` candidate, but OpenAI submission, automated scan, review, approval, explicit Publish, directory appearance, personal ChatGPT installation, invocation, checkpoint, and fresh-context resume remain separate unobserved layers.
+- Root `plugin/plugin.json -> extensions.com.openai` is the canonical OpenAI metadata source; `.codex-plugin/plugin.json` is a synchronized compatibility fallback. The approved Plugin logo is self-contained at `plugin/assets/svif-app-icon.png` and is the same Git blob as `brand/exports/svif-app-icon.png`.
 - As of 2026-09-18, current OpenAI developer documentation still accepts **Skills-only** public Plugin submissions; MCP/App packaging is not a publication prerequisite for Svif's current package shape.
 - The remaining account-side submission prerequisites are **Apps Management: Write** in the publishing OpenAI Platform organization plus a **verified developer or business identity** in that same organization; approval and explicit Publish remain separate later observations.
 - Live Cloudflare delivery remains disabled unless explicitly authorized.
@@ -67,6 +69,6 @@ The earlier published-Agnir migration from Core/profile `0.1` to `0.2` remains d
 
 ## Current focus
 
-No Agnir 1.0 promotion or brand integration gate remains open. The real downstream 1.0 promotion is already recorded in Agnir as accepted post-1.0 adoption evidence at `iorLab/agnir/.agnir/evidence/2026-09-07-svif-agnir-1.0-adoption.md`; that handoff is complete. Material work now returns to Svif distribution/adoption: preserve released Preview evidence, keep any future bootstrap compatibility change in a new Svif release, satisfy the OpenAI Platform publisher prerequisites, submit the existing Skills-only public package for review, explicitly Publish after approval, then validate a real personal ChatGPT installation/checkpoint/resume path. Historical draft PR #3 is closed unmerged; its validation branch tip is recorded for explicit ref retirement. Protected Cloudflare delivery remains separately authorized.
+No Agnir 1.0 promotion or brand integration gate remains open. The real downstream 1.0 promotion is already recorded in Agnir as accepted post-1.0 adoption evidence at `iorLab/agnir/.agnir/evidence/2026-09-07-svif-agnir-1.0-adoption.md`; that handoff is complete. Material work now returns to Svif distribution/adoption: preserve released Preview evidence, keep any future bootstrap compatibility change in a new Svif release, satisfy the OpenAI Platform publisher prerequisites, submit the existing Skills-only public package for review, explicitly Publish after approval, then validate a real personal ChatGPT installation/checkpoint/resume path. Historical draft PR #3 is closed unmerged; its validation branch tip is recorded for explicit ref retirement. Candidate audit evidence is `.agnir/evidence/2026-09-18-public-submission-candidate-audit.md`. Protected Cloudflare delivery remains separately authorized.
 
 `.agnir/next-actions.md` is the canonical ordered resume plan.

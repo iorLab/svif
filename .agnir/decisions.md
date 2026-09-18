@@ -177,3 +177,15 @@
 - `src/svif/continuity/agnir.py` retains historical Core/profile `0.1` and `0.2` support while adding stable `1.0` dispatch with the accepted lineage/VCS-selector semantics.
 - Compatibility-line promotion requires an exact captured source, complete staged candidate, preservation validation, stale-source rejection/reconciliation, coherent publication and fresh post-publication discovery. Installing a newer Agnir distribution alone is never authorization to relabel a Project.
 - Authoritative promotion receipts are recorded in `.agnir/evidence/2026-09-07-agnir-1.0-main-promotion.md`.
+
+
+## 2026-09-18 — Public submission candidate identity and packaging
+
+- The immutable Repository Preview remains `v0.2.0-preview.1` at released commit `2b07b6b5ea0bc8feee59f9f647be9af3069d056e`, annotated tag object `2535cb89426c2d38c2e061948e81954a7c7c26d7`. It is not rewritten by later public-submission preparation.
+- Current authoritative `main` advances the active package identity to **`0.2.0`** for the public-directory submission candidate. `0.2.0` is currently an unpublished candidate source version, not evidence of a GitHub release, OpenAI approval, publication, directory availability, or consumer installation.
+- Reusing version `0.2.0-preview.1` for changed `main` package contents is prohibited because that released version already identifies a different immutable subject.
+- Root `plugin/plugin.json` is the canonical portable Plugin manifest and canonical OpenAI metadata source via `extensions.com.openai`; `plugin/.codex-plugin/plugin.json` remains a synchronized compatibility fallback.
+- Portable components remain rooted at `plugin/`: `skills/` is discovered at its fixed location and approved visual assets are stored under `assets/`.
+- `plugin/assets/svif-app-icon.png` is byte-identical to approved `brand/exports/svif-app-icon.png`; both resolve to Git blob `2db76d3c8ad8bc5fb365b3a17c946f90eecdddca`.
+- The exact accepted repository candidate is commit `5a81d7a8b7490a6215d7a27966759fb2656b477a`; its Plugin subtree is `34d2d205455f641b9eca59c0cb4fb9ff43880804`.
+- OpenAI submission/review/publication and real personal-ChatGPT installation remain external evidence layers. Repository CI cannot satisfy them.

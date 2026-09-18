@@ -189,3 +189,12 @@
 - `plugin/assets/svif-app-icon.png` is byte-identical to approved `brand/exports/svif-app-icon.png`; both resolve to Git blob `2db76d3c8ad8bc5fb365b3a17c946f90eecdddca`.
 - The exact accepted repository candidate is commit `5a81d7a8b7490a6215d7a27966759fb2656b477a`; its Plugin subtree is `34d2d205455f641b9eca59c0cb4fb9ff43880804`.
 - OpenAI submission/review/publication and real personal-ChatGPT installation remain external evidence layers. Repository CI cannot satisfy them.
+
+
+## 2026-09-18 — OpenAI directory branding asset compliance
+
+- Public-directory packaging MUST satisfy the current OpenAI branding image contract before the candidate is treated as submission-ready.
+- Both `interface.logo` and `interface.composerIcon` are required for the public candidate and MUST resolve to square package-local images.
+- The approved 160×155 `brand/exports/svif-app-icon.png` remains a valid Svif brand export but is not used for these directory fields because it is not square.
+- The approved 128×128 `brand/exports/svif-favicon-128.png` is the canonical source for the public-directory icon; `plugin/assets/svif-directory-icon.png` MUST remain byte-identical to it.
+- Reusing an approved asset byte-for-byte for a new packaging surface is allowed; changing its geometry or artwork requires separate brand authority.

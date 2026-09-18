@@ -8,8 +8,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PORTABLE_MANIFEST = ROOT / "plugin" / "plugin.json"
 CODEX_MANIFEST = ROOT / "plugin" / ".codex-plugin" / "plugin.json"
-PLUGIN_LOGO = ROOT / "plugin" / "assets" / "svif-app-icon.png"
-BRAND_LOGO = ROOT / "brand" / "exports" / "svif-app-icon.png"
+PLUGIN_LOGO = ROOT / "plugin" / "assets" / "svif-directory-icon.png"
+BRAND_LOGO = ROOT / "brand" / "exports" / "svif-favicon-128.png"
 MARKETPLACE = ROOT / ".agents" / "plugins" / "marketplace.json"
 VERSION = ROOT / "VERSION"
 CLOUDFLARE_ADAPTER = ROOT / "integrations" / "cloudflare" / "adapter.json"
@@ -34,9 +34,19 @@ class PluginOpenAIDistributionTests(unittest.TestCase):
 
         interface = portable["extensions"]["com.openai"]["interface"]
         self.assertEqual(interface, codex["interface"])
-        self.assertEqual(interface["logo"], "./assets/svif-app-icon.png")
+        self.assertEqual(interface["logo"], "./assets/svif-directory-icon.png")
+        self.assertEqual(interface["composerIcon"], "./assets/svif-directory-icon.png")
         self.assertTrue(PLUGIN_LOGO.is_file())
         self.assertEqual(PLUGIN_LOGO.read_bytes(), BRAND_LOGO.read_bytes())
+
+        raw = PLUGIN_LOGO.read_bytes()
+        self.assertTrue(raw.startswith(b"\x89PNG\r\n\x1a\n"))
+        width = int.from_bytes(raw[16:20], "big")
+        height = int.from_bytes(raw[20:24], "big")
+        self.assertEqual((width, height), (128, 128))
+        self.assertGreaterEqual(width, 48)
+        self.assertLessEqual(width, 4096)
+        self.assertLessEqual(len(raw), 5 * 1024 * 1024)
 
     def test_codex_manifest_reuses_existing_skill_without_runtime_shadowing(self) -> None:
         data = json.loads(CODEX_MANIFEST.read_text(encoding="utf-8"))

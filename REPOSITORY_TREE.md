@@ -87,7 +87,7 @@ svif/                                                     # Svif 产品主仓库
 │   ├── .codex-plugin/
 │   │   └── plugin.json                                   # OpenAI/Codex compatibility fallback；与 root extension 同步
 │   ├── assets/
-│   │   └── svif-app-icon.png                             # 已批准品牌 app icon 的 byte-identical Plugin 内副本
+│   │   └── svif-directory-icon.png                       # 已批准 128×128 favicon 的 byte-identical Plugin 内副本；OpenAI logo + composerIcon
 │   ├── README.md                                         # portable/package/distribution 校验、GitHub marketplace 路径、真实 client exercise 与证据边界
 │   └── skills/
 │       └── svif/

@@ -164,14 +164,14 @@ svif/
 └── plugin/
     ├── plugin.json
     ├── .codex-plugin/plugin.json
-    ├── assets/svif-app-icon.png
+    ├── assets/svif-directory-icon.png
     ├── README.md
     └── skills/
         └── svif/
             └── SKILL.md
 ```
 
-`plugin/plugin.json` 是 canonical portable manifest，并通过 `extensions.com.openai` 承载 OpenAI listing metadata；`plugin/.codex-plugin/plugin.json` 保留为 compatibility fallback。已批准的 Plugin logo 自包含在 `plugin/assets/svif-app-icon.png`；`.agents/plugins/marketplace.json` 是 Codex CLI 与 ChatGPT 桌面版/Codex 的受支持自分发 Preview 路径，但它不等于通用目录发布。
+`plugin/plugin.json` 是 canonical portable manifest，并通过 `extensions.com.openai` 承载 OpenAI listing metadata；`plugin/.codex-plugin/plugin.json` 保留为 compatibility fallback。已批准的正方形 directory logo / composer icon 自包含在 `plugin/assets/svif-directory-icon.png`，并与 `brand/exports/svif-favicon-128.png` byte-identical；`.agents/plugins/marketplace.json` 是 Codex CLI 与 ChatGPT 桌面版/Codex 的受支持自分发 Preview 路径，但它不等于通用目录发布。
 
 Repository Preview 仍让用户请求保持一句话。版本解析、固定 tag 的 marketplace 注册、客户端能力检查、首次 Agnir bootstrap 与安装证据都属于安装器/Plugin procedure，而不是用户提示词。固定 tag 的准确安装路径见 [`plugin/README.md`](plugin/README.md)。
 
@@ -211,7 +211,7 @@ svif/
 ├── plugin/                           # 可安装 Agent Plugins 1.0 分发包
 │   ├── plugin.json                   # 可移植 Plugin manifest
 │   ├── .codex-plugin/plugin.json     # OpenAI/Codex compatibility fallback
-│   ├── assets/svif-app-icon.png      # 已批准、自包含的公开 listing logo
+│   ├── assets/svif-directory-icon.png      # 已批准、自包含的公开 listing logo
 │   ├── README.md                     # public submission、package validation、installation 与 evidence 说明
 │   └── skills/svif/SKILL.md          # 共享的 Svif Project orchestration 工作流 Skill
 │

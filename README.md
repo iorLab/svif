@@ -164,14 +164,14 @@ svif/
 └── plugin/
     ├── plugin.json
     ├── .codex-plugin/plugin.json
-    ├── assets/svif-app-icon.png
+    ├── assets/svif-directory-icon.png
     ├── README.md
     └── skills/
         └── svif/
             └── SKILL.md
 ```
 
-`plugin/plugin.json` is the canonical portable manifest and carries OpenAI listing metadata under `extensions.com.openai`; `plugin/.codex-plugin/plugin.json` remains a compatibility fallback. The approved Plugin logo is packaged at `plugin/assets/svif-app-icon.png`. `.agents/plugins/marketplace.json` is the supported self-distributed Preview path for Codex CLI and ChatGPT desktop/Codex, while remaining separate from universal-directory publication.
+`plugin/plugin.json` is the canonical portable manifest and carries OpenAI listing metadata under `extensions.com.openai`; `plugin/.codex-plugin/plugin.json` remains a compatibility fallback. The approved square directory logo/composer icon is packaged at `plugin/assets/svif-directory-icon.png`, byte-identical to `brand/exports/svif-favicon-128.png`. `.agents/plugins/marketplace.json` is the supported self-distributed Preview path for Codex CLI and ChatGPT desktop/Codex, while remaining separate from universal-directory publication.
 
 The Repository Preview keeps the user request intentionally short. Version resolution, fixed-tag marketplace registration, client-capability checks, first-use Agnir bootstrap, and installation evidence belong to the installer/Plugin procedure rather than the prompt. See [`plugin/README.md`](plugin/README.md) for the exact fixed-tag route.
 
@@ -211,7 +211,7 @@ svif/
 ├── plugin/                           # installable Agent Plugins 1.0 distribution package
 │   ├── plugin.json                   # portable Plugin manifest
 │   ├── .codex-plugin/plugin.json     # OpenAI/Codex compatibility fallback
-│   ├── assets/svif-app-icon.png      # approved self-contained public listing logo
+│   ├── assets/svif-directory-icon.png      # approved self-contained public listing logo
 │   ├── README.md                     # public submission, package validation, installation and evidence guidance
 │   └── skills/svif/SKILL.md          # shared Svif Project-orchestration workflow Skill
 │

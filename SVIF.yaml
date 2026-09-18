@@ -31,7 +31,7 @@ product:
   cloudflare_integration: "integrations/cloudflare/README.md"
   plugin_manifest: "plugin/plugin.json"
   plugin_codex_manifest: "plugin/.codex-plugin/plugin.json"
-  plugin_public_logo: "plugin/assets/svif-app-icon.png"
+  plugin_public_logo: "plugin/assets/svif-directory-icon.png"
   plugin_openai_marketplace: ".agents/plugins/marketplace.json"
   plugin_skill: "plugin/skills/svif/SKILL.md"
   plugin_readme: "plugin/README.md"

@@ -10,7 +10,7 @@ svif/
 └── plugin/
     ├── plugin.json
     ├── .codex-plugin/plugin.json
-    ├── assets/svif-app-icon.png
+    ├── assets/svif-directory-icon.png
     └── skills/
         └── svif/
             └── SKILL.md
@@ -22,7 +22,7 @@ A Skill-only Plugin is structurally useful without an MCP server. MCP packaging 
 
 ## Current validation status
 
-Repository CI validates the portable package structure, Agent Plugins 1.0.0 manifest constraints used by this package, Agent Skills frontmatter/guardrails, Plugin-root filesystem containment and component isolation, Agnir activation/discovery guards, OpenAI/Codex distribution metadata, public-directory listing limits represented in `.codex-plugin/plugin.json`, and the boundary that prevents the Plugin from shadowing the Svif runtime.
+Repository CI validates the portable package structure, Agent Plugins 1.0.0 manifest constraints used by this package, Agent Skills frontmatter/guardrails, Plugin-root filesystem containment and component isolation, Agnir activation/discovery guards, OpenAI/Codex distribution metadata, public-directory listing limits, required square `logo` / `composerIcon` branding assets, and the boundary that prevents the Plugin from shadowing the Svif runtime.
 
 Current `main` carries the **unpublished `0.2.0` public-submission candidate**. The already released Repository Preview remains immutable as `v0.2.0-preview.1`; these are distinct versioned subjects.
 
@@ -75,7 +75,7 @@ For a Skills-only public submission, OpenAI's current final-directory validation
 - **Short description:** `Durable project orchestration`
 - **Long description:** `Continue a durable Svif Project through Agnir continuity, explicit verification, trusted authority boundaries, independent observation, and resumable checkpointing without moving canonical Project truth into the execution surface.`
 - **Starter prompt:** `Continue this Project using its durable state, implement the next action, verify the result, and checkpoint when finished.`
-- **Logo:** `plugin/assets/svif-app-icon.png` — byte-identical to the Principal-approved `brand/exports/svif-app-icon.png`.
+- **Logo / composer icon:** `plugin/assets/svif-directory-icon.png` — byte-identical to the Principal-approved square `brand/exports/svif-favicon-128.png` (128×128). Both `interface.logo` and `interface.composerIcon` point to this package-local asset.
 - **Website:** `https://github.com/iorLab/svif`
 - **Support / privacy / terms:** optional under current Skills-only ZIP final validation; if supplied, use public HTTPS URLs consistent with the verified publisher identity.
 - **Availability:** choose intended countries/regions explicitly in the submission portal; repository defaults do not broaden availability.

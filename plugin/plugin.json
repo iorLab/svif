@@ -32,7 +32,8 @@
         "defaultPrompt": [
           "Continue this Project using its durable state, implement the next action, verify the result, and checkpoint when finished."
         ],
-        "logo": "./assets/svif-app-icon.png"
+        "logo": "./assets/svif-directory-icon.png",
+        "composerIcon": "./assets/svif-directory-icon.png"
       }
     }
   }

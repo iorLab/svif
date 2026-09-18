@@ -1,6 +1,6 @@
 # Svif 0.2.0 public-submission candidate audit — 2026-09-18
 
-Status: **accepted repository/package candidate; not submitted, reviewed, approved, published, or consumer-installed.**
+Status: **candidate audit in repair; initial package passed repository CI but a current OpenAI directory image blocker was discovered before submission.**
 
 ## Candidate subject
 
@@ -81,3 +81,21 @@ Still unobserved and therefore not claimed complete:
 10. fresh-context resume from that checkpoint.
 
 No `v0.2.0` Git tag or GitHub Release was created by this audit.
+
+
+## Directory image blocker discovered after initial candidate CI
+
+A fresh check against the current OpenAI public-directory submission error reference found stricter branding requirements not yet encoded by Svif CI:
+
+- `interface.logo` is required and must reference a square image;
+- `interface.composerIcon` is required and must reference a square image;
+- raster branding assets must be decodable PNG/JPEG/WebP, at least 48×48, at most 4096×4096, and no larger than 5 MiB.
+
+Fresh inspection of approved Svif exports established:
+
+- `brand/exports/svif-app-icon.png`: 160×155, blob `2db76d3c8ad8bc5fb365b3a17c946f90eecdddca` — approved brand asset but **not square**, therefore unsuitable for the current directory branding fields;
+- `brand/exports/svif-favicon-128.png`: 128×128, blob `40dbc1cbca075149cd8fc4e0859f09217b0c3530` — approved, square, and within current dimension limits.
+
+The repair therefore reuses the approved 128×128 favicon byte-for-byte as `plugin/assets/svif-directory-icon.png`, points both required interface fields to it, removes the non-square Plugin-local app-icon copy, and adds repository regression coverage for required paths, byte identity, PNG decoding signature, exact 128×128 dimensions, 48–4096 square bounds, and the 5 MiB file limit.
+
+This is a packaging compliance repair, not a brand redesign.

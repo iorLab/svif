@@ -22,6 +22,32 @@ def iter_plugin_files() -> list[Path]:
             files.append(path)
     if not files:
         raise ValueError("submission package is empty")
+    if len(files) > MAX_ENTRIES:
+        raise ValueError(f"submission package exceeds {MAX_ENTRIES} entries")
+
+    total_bytes = 0
+    normalized_paths: set[str] = set()
+    for path in files:
+        relative = path.relative_to(PLUGIN_ROOT).as_posix()
+        parts = relative.split("/")
+        if relative != relative.strip() or relative.startswith("/") or "\\" in relative:
+            raise ValueError(f"unsafe submission member path: {relative!r}")
+        if any(part in {"", ".", ".."} for part in parts):
+            raise ValueError(f"unsafe submission member segment: {relative!r}")
+        if len(parts) > MAX_PATH_SEGMENTS:
+            raise ValueError(f"submission member path exceeds {MAX_PATH_SEGMENTS} segments: {relative}")
+        normalized = unicodedata.normalize("NFC", relative).casefold()
+        if normalized in normalized_paths:
+            raise ValueError(f"submission member normalization collision: {relative}")
+        normalized_paths.add(normalized)
+
+        size = path.stat().st_size
+        if size > MAX_MEMBER_BYTES:
+            raise ValueError(f"submission member exceeds 100 MiB: {relative}")
+        total_bytes += size
+
+    if total_bytes > MAX_UNCOMPRESSED_BYTES:
+        raise ValueError("submission package exceeds 512 MiB uncompressed limit")
     return files
 
 

@@ -1,6 +1,6 @@
 {
   "name": "svif",
-  "version": "0.2.0-preview.1",
+  "version": "0.2.0",
   "description": "Project orchestration workflows backed by durable continuity, explicit evidence, authority boundaries, and checkpointing.",
   "author": {
     "name": "iorLab",
@@ -29,6 +29,7 @@
     "websiteURL": "https://github.com/iorLab/svif",
     "defaultPrompt": [
       "Continue this Project using its durable state, implement the next action, verify the result, and checkpoint when finished."
-    ]
+    ],
+    "logo": "./assets/svif-app-icon.png"
   }
 }

@@ -10,18 +10,21 @@ svif/
 └── plugin/
     ├── plugin.json
     ├── .codex-plugin/plugin.json
+    ├── assets/svif-app-icon.png
     └── skills/
         └── svif/
             └── SKILL.md
 ```
 
-`plugin/plugin.json` remains the Agent Plugins 1.0 portable manifest. `plugin/.codex-plugin/plugin.json` is product-specific OpenAI/Codex distribution metadata and points at the same `skills/` component. Neither file is allowed to introduce a second Orchestrator or a second continuity source of truth.
+`plugin/plugin.json` is the canonical Agent Plugins 1.0 portable manifest and carries current OpenAI listing metadata under `extensions.com.openai`. `plugin/.codex-plugin/plugin.json` remains a synchronized compatibility fallback for clients that still read the Codex overlay. Neither manifest may introduce a second Orchestrator or a second continuity source of truth.
 
 A Skill-only Plugin is structurally useful without an MCP server. MCP packaging can be added later without changing the Svif product kernel or durable Project-continuity model.
 
 ## Current validation status
 
 Repository CI validates the portable package structure, Agent Plugins 1.0.0 manifest constraints used by this package, Agent Skills frontmatter/guardrails, Plugin-root filesystem containment and component isolation, Agnir activation/discovery guards, OpenAI/Codex distribution metadata, public-directory listing limits represented in `.codex-plugin/plugin.json`, and the boundary that prevents the Plugin from shadowing the Svif runtime.
+
+Current `main` carries the **unpublished `0.2.0` public-submission candidate**. The already released Repository Preview remains immutable as `v0.2.0-preview.1`; these are distinct versioned subjects.
 
 That is **package/conformance/distribution validation**, not proof that a particular ChatGPT, Codex, or other compatible client has installed and exercised this exact revision. Repository success does not prove that the Plugin has passed OpenAI public review, appeared in the universal Plugins Directory, been installed by a personal ChatGPT user, or reached a real Project checkpoint.
 
@@ -46,7 +49,7 @@ The Plugin is a distribution/workflow layer. It does not reimplement `src/svif/r
 
 The primary ChatGPT audience for Svif is **individual/personal ChatGPT users**. The mature consumer path is therefore the **universal Plugins Directory**, not a managed-workspace GitHub marketplace import.
 
-Current OpenAI developer documentation explicitly allows a public Plugin submission to be **Skills only**. Svif does not need an MCP server or Apps SDK integration merely to qualify for public Plugin review. A skills-only public submission uses the existing OpenAI plugin manifest at `.codex-plugin/plugin.json` plus the bundled `skills/` tree. MCP remains an optional future capability increment rather than a publication prerequisite.
+Current OpenAI developer documentation explicitly allows a public Plugin submission to be **Skills only**. Svif does not need an MCP server or Apps SDK integration merely to qualify for public Plugin review. The canonical public package is the portable Plugin root: root `plugin.json`, `skills/`, and packaged assets. OpenAI-specific listing metadata lives in `plugin.json -> extensions.com.openai`; `.codex-plugin/plugin.json` remains a compatibility fallback. MCP remains an optional future capability increment rather than a publication prerequisite.
 
 The current public publishing flow is:
 
@@ -61,7 +64,7 @@ The current public publishing flow is:
 
 The current `.codex-plugin/plugin.json` is intentionally kept inside OpenAI's final-directory listing limits used by Svif: `displayName` <= 30 characters, `shortDescription` <= 30 characters, `longDescription` <= 4,000 characters, `developerName` <= 80 characters, no more than 20 capabilities, and no more than three starter prompts with each prompt <= 128 characters and no `@mention`. Repository tests guard these limits.
 
-For a Skills-only public submission, OpenAI's current directory validation treats website/support/privacy/terms URLs as optional, while a verified developer or business identity and skill safety/security scans remain required. If Svif later adds MCP, the submission type and review requirements become materially broader; do not silently treat that as the same release surface.
+For a Skills-only public submission, OpenAI's current final-directory validation treats website/support/privacy/terms URLs as optional for ZIP uploads. Svif treats them as optional validation fields but recommended publisher material when the portal requests listing/contact information. A verified developer or business identity and skill safety/security scans remain required. If Svif later adds MCP, the submission type and review requirements become materially broader; do not silently treat that as the same release surface.
 
 ### Proposed public listing
 
@@ -72,6 +75,11 @@ For a Skills-only public submission, OpenAI's current directory validation treat
 - **Short description:** `Durable project orchestration`
 - **Long description:** `Continue a durable Svif Project through Agnir continuity, explicit verification, trusted authority boundaries, independent observation, and resumable checkpointing without moving canonical Project truth into the execution surface.`
 - **Starter prompt:** `Continue this Project using its durable state, implement the next action, verify the result, and checkpoint when finished.`
+- **Logo:** `plugin/assets/svif-app-icon.png` — byte-identical to the Principal-approved `brand/exports/svif-app-icon.png`.
+- **Website:** `https://github.com/iorLab/svif`
+- **Support / privacy / terms:** optional under current Skills-only ZIP final validation; if supplied, use public HTTPS URLs consistent with the verified publisher identity.
+- **Availability:** choose intended countries/regions explicitly in the submission portal; repository defaults do not broaden availability.
+- **Release notes (candidate):** `Svif 0.2.0 is the first public Skills-only release candidate for durable Project orchestration, preserving Agnir continuity, verification, authority boundaries, independent observation, and checkpoint/resume semantics validated by the Repository Preview.`
 
 ### Review test cases to enter in the submission portal
 
@@ -105,7 +113,7 @@ Expected behavior: the executor follows Project-owned Agnir activation/discovery
 
 ## Repository Preview self-distribution
 
-Svif `v0.2.0-preview.1` is a self-distributed Skills-only Plugin Preview for **Codex CLI** and **ChatGPT desktop/Codex**. It uses the repository marketplace and remains separate from the universal Plugins Directory. ChatGPT Web and mobile cannot install this repository Preview through a prompt alone.
+`v0.2.0-preview.1` remains the immutable self-distributed Skills-only Repository Preview for **Codex CLI** and **ChatGPT desktop/Codex**. Current `main` is the separate, unpublished `0.2.0` public-submission candidate. It uses the repository marketplace and remains separate from the universal Plugins Directory. ChatGPT Web and mobile cannot install this repository Preview through a prompt alone.
 
 The user-facing install intent stays deliberately short:
 

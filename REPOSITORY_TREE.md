@@ -84,7 +84,9 @@ svif/                                                     # Svif 产品主仓库
 ├── plugin/                                               # Agent Plugins 1.0 portable 分发包；当前为 Skill-first MVP
 │   ├── plugin.json                                       # portable Plugin manifest：name/version/schema/author/repository metadata
 │   ├── .codex-plugin/
-│   │   └── plugin.json                                   # OpenAI/Codex 产品侧附加 manifest；复用同一 skills/，不复制 runtime
+│   │   └── plugin.json                                   # OpenAI/Codex compatibility fallback；与 root extension 同步
+│   ├── assets/
+│   │   └── svif-app-icon.png                             # 已批准品牌 app icon 的 byte-identical Plugin 内副本
 │   ├── README.md                                         # portable/package/distribution 校验、GitHub marketplace 路径、真实 client exercise 与证据边界
 │   └── skills/
 │       └── svif/

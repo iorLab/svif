@@ -223,7 +223,7 @@ class PluginPackageTests(unittest.TestCase):
         self.assertEqual(errors, [])
         self.assertEqual(diagnostics, [])
         self.assertEqual(manifest["name"], "svif")
-        self.assertEqual(version, "0.2.0-preview.1")
+        self.assertEqual(version, "0.2.0")
         self.assertEqual(manifest["version"], version)
         self.assertEqual(manifest["repository"], "https://github.com/iorLab/svif")
         self.assertEqual(manifest["homepage"], "https://github.com/iorLab/svif")

@@ -156,7 +156,7 @@ The default internal lifecycle is:
 
 ## Installable Plugin MVP
 
-Svif ships the **Skill-first `v0.2.0-preview.1` Plugin** under `plugin/`, using the portable Agent Plugins 1.0.0 package layout and an additive OpenAI/Codex manifest:
+Svif's current `main` carries the **Skill-first `0.2.0` public-submission candidate** under `plugin/`. The released self-distributed Repository Preview remains immutable as **`v0.2.0-preview.1`**. Both use the portable Agent Plugins 1.0.0 package layout:
 
 ```text
 svif/
@@ -164,13 +164,14 @@ svif/
 └── plugin/
     ├── plugin.json
     ├── .codex-plugin/plugin.json
+    ├── assets/svif-app-icon.png
     ├── README.md
     └── skills/
         └── svif/
             └── SKILL.md
 ```
 
-`plugin/plugin.json` remains the portable Agent Plugins manifest. `plugin/.codex-plugin/plugin.json` is the OpenAI/Codex manifest used for the shared Skill and public listing metadata. `.agents/plugins/marketplace.json` is the supported self-distributed Preview path for Codex CLI and ChatGPT desktop/Codex, while remaining separate from universal-directory publication.
+`plugin/plugin.json` is the canonical portable manifest and carries OpenAI listing metadata under `extensions.com.openai`; `plugin/.codex-plugin/plugin.json` remains a compatibility fallback. The approved Plugin logo is packaged at `plugin/assets/svif-app-icon.png`. `.agents/plugins/marketplace.json` is the supported self-distributed Preview path for Codex CLI and ChatGPT desktop/Codex, while remaining separate from universal-directory publication.
 
 The Repository Preview keeps the user request intentionally short. Version resolution, fixed-tag marketplace registration, client-capability checks, first-use Agnir bootstrap, and installation evidence belong to the installer/Plugin procedure rather than the prompt. See [`plugin/README.md`](plugin/README.md) for the exact fixed-tag route.
 
@@ -178,7 +179,7 @@ The Repository Preview keeps the user request intentionally short. Version resol
 
 The mature personal-user path remains `ChatGPT -> Plugins Directory -> discover Svif -> install -> invoke`. **Svif is not publicly listed yet**, so this is a target consumer path rather than a currently available production install.
 
-OpenAI's current public submission flow explicitly accepts a **Skills-only** Plugin. Svif's `.codex-plugin/plugin.json` has therefore been tightened to the current final-directory metadata limits, while the existing `plugin/skills/svif/SKILL.md` remains the single shared workflow implementation. MCP/App packaging is not a prerequisite for the initial public submission and must not be added merely to satisfy publication.
+OpenAI's current public submission flow explicitly accepts a **Skills-only** Plugin. Svif's root portable manifest and compatibility overlay are both kept within the current final-directory metadata limits, while `plugin/skills/svif/SKILL.md` remains the single shared workflow implementation. MCP/App packaging is not a prerequisite for the initial public submission and must not be added merely to satisfy publication.
 
 The Repository Preview and the future public personal-user release are different distribution layers. Codex CLI and ChatGPT desktop/Codex Preview installation must be validated independently; public review approval, directory publication, personal ChatGPT installation, invocation, Agnir activation, verification, and checkpoint remain separate evidence layers.
 
@@ -209,7 +210,8 @@ svif/
 │
 ├── plugin/                           # installable Agent Plugins 1.0 distribution package
 │   ├── plugin.json                   # portable Plugin manifest
-│   ├── .codex-plugin/plugin.json     # OpenAI/Codex + public-directory listing metadata
+│   ├── .codex-plugin/plugin.json     # OpenAI/Codex compatibility fallback
+│   ├── assets/svif-app-icon.png      # approved self-contained public listing logo
 │   ├── README.md                     # public submission, package validation, installation and evidence guidance
 │   └── skills/svif/SKILL.md          # shared Svif Project-orchestration workflow Skill
 │
@@ -243,7 +245,7 @@ Python is the current executable reference vehicle; it does not freeze the event
 - Cloudflare provider logic is owned by Svif and uses an injected transport boundary, so tests do not require live credentials.
 - `tests/test_founding_e2e.py` composes all three through the real Orchestrator boundary.
 - `plugin/plugin.json` + `plugin/skills/svif/SKILL.md` remain the portable Plugin MVP package.
-- `plugin/.codex-plugin/plugin.json` now also satisfies the public-directory listing limits currently guarded by repository tests.
+- `plugin/plugin.json -> extensions.com.openai` is the canonical OpenAI listing metadata; `plugin/.codex-plugin/plugin.json` is a synchronized compatibility fallback, and both satisfy the public-directory limits guarded by repository tests.
 - `.agents/plugins/marketplace.json` is the supported self-distributed Preview route for Codex CLI and ChatGPT desktop/Codex; it is not public-directory publication or the primary personal ChatGPT Web onboarding path.
 - Protected authority remains outside untrusted model/result payloads.
 - External success requires exact verified-subject delivery plus independent observation before checkpoint.

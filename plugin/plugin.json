@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "svif",
-  "version": "0.2.0-preview.1",
+  "version": "0.2.0",
   "description": "Project orchestration workflows backed by durable continuity, explicit evidence, authority boundaries, and checkpointing.",
   "author": {
     "name": "iorLab",
@@ -14,5 +14,26 @@
     "continuity",
     "agnir",
     "agent-skill"
-  ]
+  ],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Svif",
+        "shortDescription": "Durable project orchestration",
+        "longDescription": "Continue a durable Svif Project through Agnir continuity, explicit verification, trusted authority boundaries, independent observation, and resumable checkpointing without moving canonical Project truth into the execution surface.",
+        "developerName": "iorLab",
+        "category": "Developer Tools",
+        "capabilities": [
+          "Interactive",
+          "Read",
+          "Write"
+        ],
+        "websiteURL": "https://github.com/iorLab/svif",
+        "defaultPrompt": [
+          "Continue this Project using its durable state, implement the next action, verify the result, and checkpoint when finished."
+        ],
+        "logo": "./assets/svif-app-icon.png"
+      }
+    }
+  }
 }

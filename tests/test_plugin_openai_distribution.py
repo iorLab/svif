@@ -8,6 +8,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PORTABLE_MANIFEST = ROOT / "plugin" / "plugin.json"
 CODEX_MANIFEST = ROOT / "plugin" / ".codex-plugin" / "plugin.json"
+PLUGIN_LOGO = ROOT / "plugin" / "assets" / "svif-app-icon.png"
+BRAND_LOGO = ROOT / "brand" / "exports" / "svif-app-icon.png"
 MARKETPLACE = ROOT / ".agents" / "plugins" / "marketplace.json"
 VERSION = ROOT / "VERSION"
 CLOUDFLARE_ADAPTER = ROOT / "integrations" / "cloudflare" / "adapter.json"
@@ -25,6 +27,16 @@ class PluginOpenAIDistributionTests(unittest.TestCase):
         self.assertEqual(entry["name"], "svif")
         self.assertEqual(entry["source"], {"source": "local", "path": "./plugin"})
         self.assertEqual(entry["category"], "Developer Tools")
+
+    def test_portable_manifest_is_canonical_openai_metadata_source(self) -> None:
+        portable = json.loads(PORTABLE_MANIFEST.read_text(encoding="utf-8"))
+        codex = json.loads(CODEX_MANIFEST.read_text(encoding="utf-8"))
+
+        interface = portable["extensions"]["com.openai"]["interface"]
+        self.assertEqual(interface, codex["interface"])
+        self.assertEqual(interface["logo"], "./assets/svif-app-icon.png")
+        self.assertTrue(PLUGIN_LOGO.is_file())
+        self.assertEqual(PLUGIN_LOGO.read_bytes(), BRAND_LOGO.read_bytes())
 
     def test_codex_manifest_reuses_existing_skill_without_runtime_shadowing(self) -> None:
         data = json.loads(CODEX_MANIFEST.read_text(encoding="utf-8"))
@@ -95,6 +107,8 @@ class PluginOpenAIDistributionTests(unittest.TestCase):
             self.assertEqual(codex[field], portable[field], field)
         self.assertEqual(codex["author"], portable["author"])
         self.assertEqual(portable["version"], version)
+        self.assertEqual(version, "0.2.0")
+        self.assertEqual(portable["extensions"]["com.openai"]["interface"], codex["interface"])
 
     def test_product_release_version_is_shared_with_active_adapter(self) -> None:
         version = VERSION.read_text(encoding="utf-8").strip()

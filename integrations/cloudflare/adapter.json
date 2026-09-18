@@ -1,9 +1,15 @@
 {
-  "svif_adapter": {"version": "0.2"},
+  "svif_adapter": {
+    "version": "0.2"
+  },
   "adapter": {
     "id": "cloudflare.workers",
-    "version": "0.2.0-preview.1",
-    "kinds": ["delivery", "provider", "observation"]
+    "version": "0.2.0",
+    "kinds": [
+      "delivery",
+      "provider",
+      "observation"
+    ]
   },
   "operations": [
     {
@@ -11,18 +17,36 @@
       "effect": "actuate",
       "authority": "protected-delivery",
       "retry": "guarded",
-      "input_record_kinds": ["verification"],
-      "output_record_kinds": ["delivery"],
-      "failure_classes": ["AUTHORITY_REQUIRED", "CREDENTIAL_UNAVAILABLE", "PROVENANCE_MISMATCH", "DELIVERY_FAILURE", "TRANSIENT_EXTERNAL_FAILURE"]
+      "input_record_kinds": [
+        "verification"
+      ],
+      "output_record_kinds": [
+        "delivery"
+      ],
+      "failure_classes": [
+        "AUTHORITY_REQUIRED",
+        "CREDENTIAL_UNAVAILABLE",
+        "PROVENANCE_MISMATCH",
+        "DELIVERY_FAILURE",
+        "TRANSIENT_EXTERNAL_FAILURE"
+      ]
     },
     {
       "name": "observe_worker_health",
       "effect": "observe",
       "authority": "read",
       "retry": "idempotent",
-      "input_record_kinds": ["delivery"],
-      "output_record_kinds": ["observation"],
-      "failure_classes": ["OBSERVATION_FAILURE", "EXTERNAL_INTEGRATION_FAILURE", "TRANSIENT_EXTERNAL_FAILURE"]
+      "input_record_kinds": [
+        "delivery"
+      ],
+      "output_record_kinds": [
+        "observation"
+      ],
+      "failure_classes": [
+        "OBSERVATION_FAILURE",
+        "EXTERNAL_INTEGRATION_FAILURE",
+        "TRANSIENT_EXTERNAL_FAILURE"
+      ]
     }
   ],
   "credentials": [

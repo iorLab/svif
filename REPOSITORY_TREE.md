@@ -42,6 +42,7 @@ svif/                                                     # Svif 产品主仓库
 │       ├── 2026-09-07-agnir-1.0-promotion-candidate.md   # Principal 授权的 Agnir Core/profile 0.2→1.0 promotion staging / preservation / validation 证据
 │       ├── 2026-09-07-agnir-1.0-main-promotion.md        # Agnir 1.0 authoritative publication、fresh verification 与 branch retirement 完整证据
 │       ├── 2026-09-18-public-submission-candidate-audit.md # Svif 0.2.0 public-submission candidate 版本边界、package tree、OpenAI packaging 审计与 CI 证据
+│       ├── 2026-09-18-skills-only-submission-archive.md    # exact Plugin tree 的 deterministic ZIP、archive guards、CI 与外部 submission evidence 边界
 │       └── checkpoint-2026-08-28-validation-2.md         # Validation 2 的持久 checkpoint 记录
 │
 ├── .github/                                              # GitHub 托管侧自动化配置
@@ -119,6 +120,7 @@ svif/                                                     # Svif 产品主仓库
 │   ├── test_plugin_first_use_bootstrap.py                # 普通未初始化 Project 首次启用 Svif 时自动建立 Agnir + Svif durable binding 的回归测试
 │   ├── test_plugin_installation_docs.py                  # 双语入口与 Plugin README 的安装证据边界 guardrail，含 GitHub marketplace 路径但禁止把 repository validation 写成 client validation
 │   ├── test_plugin_openai_distribution.py                # OpenAI/Codex marketplace source、Codex manifest 与 portable identity metadata 一致性测试
+│   ├── test_plugin_submission_bundle.py                  # Skills-only ZIP 的 deterministic byte mirror、path/size/normalization archive guards
 │   └── test_plugin_package.py                            # Plugin manifest/Skill/package、filesystem failure isolation 与 Agnir activation boundary 验证
 │
 ├── conformance/                                          # Portable contracts 的一致性验证，不等同于产品 runtime
@@ -134,6 +136,7 @@ svif/                                                     # Svif 产品主仓库
 │           └── workspace-scm.json                        # workspace / source-control capability fixture
 │
 ├── checks/                                               # 仓库与产品结构完整性检查
+│   ├── build_submission_bundle.py                        # 从 accepted plugin/ tree 构建 deterministic Skills-only portal ZIP 并输出 SHA-256
 │   └── check_repository.py                               # 防止关键模块、README、Plugin packaging、Agnir activation、canonical topology 漂移
 │
 ├── history/                                              # 前身 / 已退休项目历史；仅作 lineage 与 provenance 记录

@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+from contextlib import nullcontext
 from dataclasses import dataclass
+from threading import RLock
 from typing import Protocol
 
 
@@ -18,6 +20,22 @@ class AuthorityRequired(SvifRuntimeError):
 
 class ProvenanceMismatch(SvifRuntimeError):
     """Evidence/candidate identity does not justify the requested transition."""
+
+
+class VerificationFailed(ProvenanceMismatch):
+    """Required verification did not succeed for the exact completion subject."""
+
+
+class SessionConsumed(BindingError):
+    """A completion was replayed, forged, or belongs to another Orchestrator."""
+
+
+class DeliveryFailed(SvifRuntimeError):
+    """The external delivery failed or its outcome is uncertain."""
+
+
+class ObservationFailed(SvifRuntimeError):
+    """Independent resulting-state observation was unavailable."""
 
 
 class ObservationMismatch(SvifRuntimeError):
@@ -44,6 +62,15 @@ class EvidenceRecord:
     status: str = "succeeded"
     target_identity: str | None = None
     producer: str | None = None
+    check_id: str | None = None
+
+    def __post_init__(self) -> None:
+        if self.kind not in {"candidate", "transformation", "verification", "delivery", "observation", "checkpoint"}:
+            raise BindingError("unsupported evidence kind")
+        if self.status not in {"succeeded", "failed", "blocked", "unknown"}:
+            raise BindingError("unsupported evidence status")
+        if not isinstance(self.subject_identity, str) or not self.subject_identity.strip():
+            raise BindingError("evidence requires a stable subject identity")
 
 
 @dataclass(frozen=True)
@@ -53,6 +80,8 @@ class ContinuitySnapshot:
     next_actions: object | None = None
     decisions: object | None = None
     evidence: object | None = None
+    revision: str | None = None
+    pending_effect: object | None = None
 
 
 @dataclass(frozen=True)
@@ -86,6 +115,15 @@ class CapabilityRequest:
 
 
 @dataclass(frozen=True)
+class CapabilityPolicy:
+    """Trusted provider metadata, never read from a WorkResult."""
+
+    operation: str
+    effect: str
+    authority_classes: frozenset[str]
+
+
+@dataclass(frozen=True)
 class WorkResult:
     subject_identity: str
     evidence: tuple[EvidenceRecord, ...] = ()
@@ -98,6 +136,22 @@ class OperationRequest:
     operation_id: str
     intent: str
     authority_grants: frozenset[str] = frozenset()
+    verification_required: bool = True
+    required_checks: frozenset[str] = frozenset()
+    verification_not_applicable_reason: str | None = None
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.operation_id, str) or not self.operation_id.strip():
+            raise BindingError("operation_id must be non-empty")
+        for label, values in (("authority_grants", self.authority_grants), ("required_checks", self.required_checks)):
+            if not isinstance(values, frozenset) or any(not isinstance(x, str) or not x.strip() for x in values):
+                raise BindingError(f"{label} must contain non-empty trusted names")
+        if type(self.verification_required) is not bool:
+            raise BindingError("verification_required must be a trusted boolean")
+        if not self.verification_required and (
+            self.required_checks or not isinstance(self.verification_not_applicable_reason, str) or not self.verification_not_applicable_reason.strip()
+        ):
+            raise BindingError("verification exemption requires a reason and no required checks")
 
 
 @dataclass(frozen=True)
@@ -108,6 +162,8 @@ class OperationOutcome:
     evidence: tuple[EvidenceRecord, ...]
     externally_effectful: bool
     continuity_update: ContinuityUpdate = ContinuityUpdate()
+    expected_revision: str | None = None
+    target_identity: str | None = None
 
 
 @dataclass(frozen=True)
@@ -140,6 +196,8 @@ class ExecutionSurface(Protocol):
 class CapabilityProvider(Protocol):
     provider_id: str
 
+    def operation_policy(self, operation: str) -> CapabilityPolicy: ...
+
     def actuate(self, request: CapabilityRequest) -> EvidenceRecord: ...
 
     def observe(self, delivery: EvidenceRecord) -> EvidenceRecord: ...
@@ -163,6 +221,8 @@ class Orchestrator:
         self._continuity = self._index(continuity_providers, "provider_id", "Continuity Provider")
         self._surfaces = self._index(execution_surfaces, "surface_id", "Execution Surface")
         self._capabilities = self._index(capability_providers, "provider_id", "Capability Provider")
+        self._sessions: dict[int, OperationSession] = {}
+        self._session_lock = RLock()
 
     @staticmethod
     def _index(items: tuple[object, ...], attr: str, label: str) -> dict[str, object]:
@@ -242,7 +302,10 @@ class Orchestrator:
             operation_id=request.operation_id,
             continuity=snapshot,
         )
-        return OperationSession(binding=binding, request=request, context=context)
+        session = OperationSession(binding=binding, request=request, context=context)
+        with self._session_lock:
+            self._sessions[id(session)] = session
+        return session
 
     def complete(
         self,
@@ -257,78 +320,100 @@ class Orchestrator:
         untrusted model/result payload cannot grant itself protected authority.
         """
 
+        # Consume once before effects. A failed/uncertain delivery must be reconciled,
+        # not blindly repeated by calling complete() again.
+        with self._session_lock:
+            if self._sessions.pop(id(session), None) is not session:
+                raise SessionConsumed("operation session is foreign or already consumed")
         binding = session.binding
         request = session.request
         continuity = self._continuity_for(binding)
 
-        if not work.subject_identity:
+        if not isinstance(work.subject_identity, str) or not work.subject_identity.strip():
             raise ProvenanceMismatch("Execution Surface returned no stable subject identity")
-
         evidence = list(work.evidence)
-        externally_effectful = False
-        effective_authority = request.authority_grants | authority_grants
+        checks = [r for r in evidence if r.kind == "verification" and r.subject_identity == work.subject_identity]
+        if any(r.status != "succeeded" for r in checks):
+            raise VerificationFailed("failed/blocked/unknown verification cannot checkpoint completion")
+        required = request.verification_required or work.capability_request is not None
+        if required and not self._successful_verification(tuple(checks), work.subject_identity):
+            raise VerificationFailed("completion requires successful verification for the exact subject")
+        if not request.required_checks.issubset({r.check_id for r in checks}):
+            raise VerificationFailed("not all trusted required checks succeeded for the exact subject")
 
         capability_request = work.capability_request
+        provider = None
         if capability_request is not None:
-            externally_effectful = True
-
             if capability_request.provider not in binding.capabilities:
-                raise BindingError(
-                    f"Capability Provider is not bound to this Project: {capability_request.provider}"
-                )
+                raise BindingError(f"Capability Provider is not bound to this Project: {capability_request.provider}")
             provider = self._capabilities.get(capability_request.provider)
             if provider is None:
                 raise BindingError(f"unavailable Capability Provider: {capability_request.provider}")
-
-            if capability_request.effect != "actuate":
-                raise BindingError(
-                    "minimal Svif kernel supports only an actuate request at the external-effect boundary"
-                )
-
+            resolver = getattr(provider, "operation_policy", None)
+            if not callable(resolver):
+                raise BindingError("Capability Provider has no trusted operation policy")
+            policy = resolver(capability_request.operation)
+            if not isinstance(policy, CapabilityPolicy) or (
+                policy.operation != capability_request.operation
+                or policy.effect != capability_request.effect or policy.effect != "actuate"
+                or not isinstance(policy.authority_classes, frozenset)
+                or any(not isinstance(a, str) or not a.strip() for a in policy.authority_classes)
+            ):
+                raise BindingError("missing/inconsistent trusted capability operation policy")
             if capability_request.subject_identity != work.subject_identity:
-                raise ProvenanceMismatch(
-                    "Capability request subject differs from the Execution Surface result subject"
-                )
+                raise ProvenanceMismatch("Capability request subject differs from the Execution Surface result subject")
+            # external actuation requires successful verification evidence for the exact subject
+            effective_authority = request.authority_grants | authority_grants
+            required_authority = policy.authority_classes
+            if capability_request.authority_class:
+                required_authority |= frozenset({capability_request.authority_class})
+            missing = required_authority - effective_authority
+            if missing:
+                raise AuthorityRequired(f"external actuation requires authority classes: {sorted(missing)}")
 
-            if not self._successful_verification(tuple(evidence), work.subject_identity):
-                raise ProvenanceMismatch(
-                    "external actuation requires successful verification evidence for the exact subject"
-                )
-
-            required_authority = capability_request.authority_class
-            if required_authority and required_authority not in effective_authority:
-                raise AuthorityRequired(
-                    f"external actuation requires authority class: {required_authority}"
-                )
-
-            delivery = provider.actuate(capability_request)
-            self._require_delivery_match(
-                delivery,
-                subject=work.subject_identity,
-                target=capability_request.target_identity,
-            )
-            evidence.append(delivery)
-
-            observation = provider.observe(delivery)
-            self._require_observation_match(observation, delivery)
-            evidence.append(observation)
-
-        outcome = OperationOutcome(
-            project_identity=binding.project_identity,
-            operation_id=request.operation_id,
-            subject_identity=work.subject_identity,
-            evidence=tuple(evidence),
-            externally_effectful=externally_effectful,
+        preliminary = OperationOutcome(
+            project_identity=binding.project_identity, operation_id=request.operation_id,
+            subject_identity=work.subject_identity, evidence=tuple(evidence),
+            externally_effectful=capability_request is not None,
             continuity_update=work.continuity_update,
+            expected_revision=session.context.continuity.revision,
+            target_identity=capability_request.target_identity if capability_request else None,
         )
-
-        continuity.checkpoint(outcome)
-        return outcome
+        # A filesystem provider holds its cross-process lock from preflight through
+        # delivery/observation/checkpoint, and rejects stale contexts before effects.
+        guard = getattr(continuity, "operation_guard", None)
+        with guard(preliminary) if callable(guard) else nullcontext():
+            if capability_request is not None:
+                try:
+                    delivery = provider.actuate(capability_request)
+                except SvifRuntimeError:
+                    raise
+                except Exception as exc:
+                    raise DeliveryFailed("external delivery failed; reconcile before retry") from exc
+                self._require_delivery_match(delivery, subject=work.subject_identity, target=capability_request.target_identity)
+                evidence.append(delivery)
+                try:
+                    observation = provider.observe(delivery)
+                except SvifRuntimeError:
+                    raise
+                except Exception as exc:
+                    raise ObservationFailed("independent observation unavailable; effect remains unconfirmed") from exc
+                self._require_observation_match(observation, delivery)
+                evidence.append(observation)
+            outcome = OperationOutcome(
+                project_identity=binding.project_identity, operation_id=request.operation_id,
+                subject_identity=work.subject_identity, evidence=tuple(evidence),
+                externally_effectful=capability_request is not None,
+                continuity_update=work.continuity_update,
+                expected_revision=session.context.continuity.revision,
+            target_identity=capability_request.target_identity if capability_request else None,
+            )
+            continuity.checkpoint(outcome)
+            return outcome
 
     def run(self, binding: ProjectBinding, request: OperationRequest) -> OperationOutcome:
         """Convenience path for an Execution Surface that supports synchronous execute()."""
 
-        session = self.begin(binding, request)
         surface = self._surface_for(binding)
         execute = getattr(surface, "execute", None)
         if not callable(execute):
@@ -336,5 +421,10 @@ class Orchestrator:
                 f"Execution Surface {binding.execution_surface!r} is externally driven; "
                 "use begin()/complete() through its integration bridge"
             )
-        work = execute(session.context, request)
-        return self.complete(session, work)
+        session = self.begin(binding, request)
+        try:
+            work = execute(session.context, request)
+            return self.complete(session, work)
+        finally:
+            with self._session_lock:
+                self._sessions.pop(id(session), None)

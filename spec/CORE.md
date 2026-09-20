@@ -12,7 +12,7 @@ Svif coordinates a configured Continuity Provider, Execution Surface, and Capabi
 
 Svif Core MUST NOT require ChatGPT, an AI agent, Git, GitHub, a repository, local-only or remote-only execution, a specific CI product, Skill/Plugin packaging, Agnir-specific storage layout, or any provider such as Cloudflare.
 
-ZeroLocal v0.1 remains predecessor evidence on the dedicated legacy branch and MUST NOT be silently relabeled as Svif conformance.
+ZeroLocal v0.1 remains predecessor evidence through archived commit history and MUST NOT be silently relabeled as Svif conformance.
 
 ## 2. Core concepts
 
@@ -53,7 +53,7 @@ Svif Core requires durable Project continuity through the configured Continuity 
 - Svif MUST NOT define a competing durable Project Memory protocol.
 - Continuity failure/authorization failure MUST be distinguishable from an empty/new Project state when evidence permits.
 
-The active `0.2` Project binding uses Agnir Core `0.1` as the first provider. Agnir remains an independent protocol/project.
+The founding `0.2` Project binding used Agnir Core `0.1`; the current Svif repository self-host uses Core/profile `1.0` and the adapter retains `0.1` / `0.2` support. Agnir remains an independent protocol/project.
 
 ## 4. Lifecycle
 
@@ -203,3 +203,9 @@ Adapters/providers/profiles MAY add subcodes while mapping back to a portable cl
 Skill, Plugin, CLI, SDK, IDE extension, CI automation, and similar forms are Svif distribution/integration surfaces, not canonical Project-memory layers.
 
 The mature product target remains a Plugin. Concrete packaging MAY integrate deeply with ChatGPT or another surface while canonical Project truth remains surface-neutral.
+
+## 10. Reference runtime enforcement
+
+Required authority is resolved from trusted provider/operation metadata, independently of model-result fields. Required verification is declared before completion through trusted operation context; not-applicable verification needs an explicit reason. Failed/blocked/unknown or wrong-subject required verification cannot justify a successful completion checkpoint. Actual evidence authenticity is the trusted integration's responsibility, not something proved by parsing a result JSON object.
+
+The filesystem reference adapter preflights all checkpoint destinations/values, serializes cooperating operations, rejects stale discovered state, and journals multi-file publication with crash recovery. Generic Capability/Continuity Providers must supply equivalent coordination where their operations require it. An uncertain external attempt is not automatically retried; observation and explicitly authorized reconciliation are required.

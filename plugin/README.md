@@ -22,6 +22,8 @@ A Skill-only Plugin is structurally useful without an MCP server. MCP packaging 
 
 ## Current validation status
 
+Public publication is paused while local effectiveness and functional readiness are accepted. The current development candidate includes stronger trusted-authority, required-verification, confined-I/O, and recoverable-checkpoint guidance. Package tests do not certify native task execution; the repository's `LOCAL_ACCEPTANCE.md` and `RELEASE_READINESS.md` define the remaining acceptance boundary. The Python runtime is not bundled into this Skills-only package.
+
 Repository CI validates the portable package structure, Agent Plugins 1.0.0 manifest constraints used by this package, Agent Skills frontmatter/guardrails, Plugin-root filesystem containment and component isolation, Agnir activation/discovery guards, OpenAI/Codex distribution metadata, public-directory listing limits, required square `logo` / `composerIcon` branding assets, and the boundary that prevents the Plugin from shadowing the Svif runtime.
 
 Current `main` carries the **unpublished `0.2.0` public-submission candidate**. The already released Repository Preview remains immutable as `v0.2.0-preview.1`; these are distinct versioned subjects.

@@ -118,6 +118,8 @@ Before an external effect that depends on verification:
 
 Untrusted model/result payloads must never self-grant protected authority.
 
+Resolve required authority from trusted Project/provider/operation policy, never from an optional authority field in a result. An omitted, null, empty, or weaker requested class cannot remove a provider's mandatory authorization. Establish required checks before work; failed, blocked, unknown, missing, or wrong-subject required verification prevents completion, including repository-only work. A verification-not-applicable decision needs an explicit trusted reason and cannot excuse a failed check. Authenticate evidence using the actual tool/CI/verification receipts; a model-authored success field is not a receipt.
+
 If authority is missing, stop before actuation. If observation is unavailable or contradicts the requested result, record the effect as unconfirmed/failed rather than successful.
 
 ## 5. Keep execution surfaces replaceable
@@ -129,6 +131,10 @@ Do not introduce an unnecessary dependency on ChatGPT, GitHub, Cloudflare, Git, 
 ## 6. Checkpoint durable truth
 
 Checkpoint after a meaningful state transition and whenever the user asks to checkpoint, save progress, stop, finish, or equivalent.
+
+Before any checkpoint write, validate every requested value and destination, including optional Decisions and Evidence. Confine each actual child read/write to the authorized Project root; a contained parent directory does not authorize an out-of-root symlink or reparse target. Reject stale State/Next snapshots and reconcile rather than overwriting newer Project truth.
+
+Publish related State, Next Actions, Decisions and Evidence as one coherent checkpoint using the available repository transaction or provider's recoverable transaction boundary. Per-file atomic replacement alone is insufficient. If an interruption leaves a pending transaction, recover it through that provider before normal continuation; if a concurrent external edit conflicts, stop for reconciliation rather than choosing old or new arbitrarily. Do not replay a delivery after an uncertain outcome; independently observe and reconcile it first. A checkpoint-capability blocker must be reported rather than claiming resumability.
 
 Write the checkpoint through the Project's declared Agnir memory locations. Update, as applicable:
 

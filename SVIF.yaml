@@ -35,6 +35,10 @@ product:
   plugin_openai_marketplace: ".agents/plugins/marketplace.json"
   plugin_skill: "plugin/skills/svif/SKILL.md"
   plugin_readme: "plugin/README.md"
+  local_acceptance: "LOCAL_ACCEPTANCE.md"
+  release_readiness: "RELEASE_READINESS.md"
+  native_install_check: "checks/check_native_install.py"
+  agnir_checkpoint_storage: "src/svif/continuity/_filesystem.py"
   orchestration_contract: "spec/CORE.md"
   project_binding_contract: "spec/PROJECT_BINDING.md"
   capability_adapter_contract: "spec/CAPABILITY_ADAPTER.md"
@@ -55,6 +59,9 @@ checks:
   plugin_agnir_discovery: "tests/test_plugin_agnir_discovery.py"
   plugin_first_use_bootstrap: "tests/test_plugin_first_use_bootstrap.py"
   plugin_openai_distribution: "tests/test_plugin_openai_distribution.py"
+  readiness_regressions: "tests/test_readiness_regressions.py"
+  native_install_evidence: "tests/test_native_install_evidence.py"
+  plugin_submission_bundle: "tests/test_plugin_submission_bundle.py"
 
 extensions:
   svif/repository:

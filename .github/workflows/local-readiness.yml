@@ -1,0 +1,83 @@
+name: Svif local readiness
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  platform-tests:
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            python: '3.13'
+          - os: macos-14
+            python: '3.12'
+          - os: windows-2022
+            python: '3.12'
+    runs-on: ${{ matrix.os }}
+    env:
+      PYTHONPATH: src
+      PYTHONUTF8: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Verify this checkout and recovery behavior
+        shell: bash
+        run: |
+          set -euo pipefail
+          git rev-parse HEAD HEAD:plugin
+          python checks/check_repository.py
+          python conformance/check_contracts.py
+          python -m unittest discover -s tests -v 2>&1 | tee "$RUNNER_TEMP/readiness-tests.log"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: readiness-tests-${{ matrix.os }}-${{ matrix.python }}
+          path: ${{ runner.temp }}/readiness-tests.log
+          if-no-files-found: warn
+          retention-days: 14
+
+  native-install-discovery:
+    timeout-minutes: 10
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install the previously observed official native client
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm install --prefix "$RUNNER_TEMP/native-tools" '@openai/codex@0.155.1'
+      - name: Observe isolated installation and fresh-process Skill discovery
+        shell: bash
+        run: |
+          set -euo pipefail
+          git rev-parse HEAD HEAD:plugin
+          python checks/check_native_install.py --codex "$RUNNER_TEMP/native-tools/node_modules/.bin/codex" --output "$RUNNER_TEMP/native-acceptance"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: readiness-native-install-receipt
+          path: |
+            ${{ runner.temp }}/native-acceptance/receipt.json
+            ${{ runner.temp }}/native-acceptance/app-server.stderr.log
+          if-no-files-found: warn
+          retention-days: 14

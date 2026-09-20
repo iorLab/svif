@@ -43,10 +43,12 @@ svif/                                                     # Svif 产品主仓库
 │       ├── 2026-09-07-agnir-1.0-main-promotion.md        # Agnir 1.0 authoritative publication、fresh verification 与 branch retirement 完整证据
 │       ├── 2026-09-18-public-submission-candidate-audit.md # Svif 0.2.0 public-submission candidate 版本边界、package tree、OpenAI packaging 审计与 CI 证据
 │       ├── 2026-09-18-skills-only-submission-archive.md    # exact Plugin tree 的 deterministic ZIP、archive guards、CI 与外部 submission evidence 边界
+│       ├── 2026-09-20-functional-hardening.md             # F1-F4 实现、故障/崩溃/并发回归、候选与独立 native 验收边界
 │       └── checkpoint-2026-08-28-validation-2.md         # Validation 2 的持久 checkpoint 记录
 │
 ├── .github/                                              # GitHub 托管侧自动化配置
 │   └── workflows/
+│       ├── local-readiness.yml                           # 持续跨平台故障恢复测试与隔离原生 Codex 安装/Skill 发现；不调用模型
 │       └── conformance.yml                               # CI：repository integrity、runtime tests、portable contracts
 │
 ├── brand/                                                # Svif 品牌识别与 fidelity-first production asset surface
@@ -68,6 +70,7 @@ svif/                                                     # Svif 产品主仓库
 │       ├── runtime.py                                    # Orchestrator 核心：begin/run/complete、验证、权限、reconcile、checkpoint
 │       ├── continuity/                                   # Continuity Provider 实现 / 适配层
 │       │   ├── __init__.py                               # continuity 子包入口
+│       │   ├── _filesystem.py                            # confined I/O、跨进程锁、multi-file checkpoint journal/recovery
 │       │   └── agnir.py                                  # founding Agnir repository/filesystem Continuity Provider；兼容 0.1/0.2 并支持当前 stable 1.0 lineage/binding
 │       ├── execution/                                    # Execution Surface 桥接层
 │       │   ├── __init__.py                               # execution 子包入口
@@ -121,6 +124,8 @@ svif/                                                     # Svif 产品主仓库
 │   ├── test_plugin_installation_docs.py                  # 双语入口与 Plugin README 的安装证据边界 guardrail，含 GitHub marketplace 路径但禁止把 repository validation 写成 client validation
 │   ├── test_plugin_openai_distribution.py                # OpenAI/Codex marketplace source、Codex manifest 与 portable identity metadata 一致性测试
 │   ├── test_plugin_submission_bundle.py                  # Skills-only ZIP 的 deterministic byte mirror、path/size/normalization archive guards
+│   ├── test_readiness_regressions.py                      # 授权、必需验证、崩溃恢复、路径越界、并发与重放的行为回归
+│   ├── test_native_install_evidence.py                    # 原生 Skill 命名空间、Plugin 身份、启用状态、路径和字节证据判定反例
 │   └── test_plugin_package.py                            # Plugin manifest/Skill/package、filesystem failure isolation 与 Agnir activation boundary 验证
 │
 ├── conformance/                                          # Portable contracts 的一致性验证，不等同于产品 runtime
@@ -137,6 +142,7 @@ svif/                                                     # Svif 产品主仓库
 │
 ├── checks/                                               # 仓库与产品结构完整性检查
 │   ├── build_submission_bundle.py                        # 从 accepted plugin/ tree 构建 deterministic Skills-only portal ZIP 并输出 SHA-256
+│   ├── check_native_install.py                           # 隔离 native Codex 安装、精确包校验与新进程 Skill discovery
 │   └── check_repository.py                               # 防止关键模块、README、Plugin packaging、Agnir activation、canonical topology 漂移
 │
 ├── history/                                              # 前身 / 已退休项目历史；仅作 lineage 与 provenance 记录
@@ -150,6 +156,9 @@ svif/                                                     # Svif 产品主仓库
 ├── ARCHITECTURE.md                                       # 详细产品架构、依赖方向、provider ownership 和 distribution 边界
 ├── README.md                                             # 英文项目入口与 canonical `Agnir Project Instructions`
 ├── README.zh-CN.md                                       # 简体中文项目入口；与英文版保持同一 canonical 产品语义
+├── LOCAL_ACCEPTANCE.md                                  # 当前候选的 native 安装、真实任务、独立新会话及反例验收
+├── RELEASE_READINESS.md                                 # 既有功能 -> 实现/测试 -> 独立验收 gate 矩阵
+├── .gitignore                                           # 排除运行时锁、journal、临时文件与 Python 缓存
 ├── REPOSITORY_TREE.md                                    # 本文件：完整文件级仓库结构与职责说明
 └── VERSION                                               # 当前 Svif 产品 / release version
 ```

@@ -38,6 +38,8 @@ The default internal lifecycle remains:
 
 `REPAIR` returns to the earliest violated invariant.
 
+Trusted provider `operation_policy()` supplies mandatory authority requirements. `OperationRequest` supplies required verification and check IDs; model result fields cannot weaken either. Completion sessions are single-use. The Agnir filesystem adapter holds a cooperating-reader/writer lock through preflight, optional effects and checkpoint; it rejects stale snapshots, journals multi-file writes and preserves uncertain external attempts for explicit reconciliation.
+
 ### Execution handoff modes
 
 - **Synchronous surfaces:** `Orchestrator.run()` calls a surface `execute()` implementation.
@@ -49,7 +51,7 @@ ChatGPT uses the externally driven form. Untrusted model/result payloads cannot 
 
 A Continuity Provider supplies durable Project truth and resumability. The Svif kernel depends on this interface, not permanently on Agnir.
 
-`src/svif/continuity/agnir.py` is the founding adapter for Agnir Core `0.1` repository/filesystem discovery and checkpoint semantics.
+`src/svif/continuity/agnir.py` is the founding adapter for Agnir Core `0.1`, `0.2`, and `1.0` repository/filesystem discovery and checkpoint semantics.
 
 ## 5. Execution Surface
 

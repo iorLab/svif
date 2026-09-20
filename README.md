@@ -65,7 +65,6 @@ Project/
 ├── AGENTS.md                 # [EDIT: add entry only] add Agnir activation locator; preserve existing instructions
 ├── README.md                 # [EDIT: add entry only] add ## Agnir Project Instructions; preserve existing content
 ├── AGNIR.yaml                # [ADD] founding Agnir discovery anchor
-├── brand/                             # approved brand masters, exports, QA, references, and handoff
 ├── .agnir/                   # [ADD] Project-owned durable continuity
 │   ├── state.md              # [ADD] current durable Project truth
 │   ├── next-actions.md       # [ADD] outstanding ordered work for the next Executor
@@ -275,3 +274,7 @@ PYTHONPATH=src python -m unittest discover -s tests -v
 ## Next
 
 First, complete the self-distributed `v0.2.0-preview.1` acceptance path in Codex CLI and ChatGPT desktop/Codex using the exact immutable candidate. Then publish the verified tag as a GitHub Prerelease and retain the same Skills-only package for the later OpenAI Platform submission. Universal-directory publication still requires the applicable publisher identity and review flow; MCP/App packaging remains a later capability increment, not a release gate. Live Cloudflare actuation remains separately gated.
+
+## Local functional acceptance
+
+OpenAI Platform publication is paused. The development candidate uses independent behavioral tests for trusted authority, required verification, path confinement and checkpoint recovery. Native installation, Skill discovery and real fresh-session recovery are accepted separately. See [local acceptance](LOCAL_ACCEPTANCE.md) and the [requirement/evidence matrix](RELEASE_READINESS.md). Old Preview receipts, ZIP checks and Python tests do not replace current-candidate client evidence.

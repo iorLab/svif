@@ -4,12 +4,29 @@
 
 The Principal has paused OpenAI Platform publication. Confirm local installation/effectiveness and complete Svif's existing functionality before returning to distribution paperwork. Current `0.2.0` is not signed off as locally effective or feature-complete. Do not repeat the superseded conclusion that only publisher prerequisites remain.
 
-1. **Repair the reproduced authority and continuity blockers.** At audited source `fe7788bd53d3a240f663860133b741799d0470e3`, omitted/null/empty model-supplied authority classes bypassed protected delivery in the real Orchestrator + ChatGPT bridge + Cloudflare provider using fake transport; invalid Decisions updates partially changed State/Next Actions before checkpoint failure; evidence-child symlinks loaded a dummy outside-root file. Repair using trusted provider/operation authority policy, full checkpoint preflight/coherent publication and recovery, and resolved-path containment for every read/write. Add executable regression tests across Agnir `0.1`, `0.2`, and `1.0`, not just Skill-text markers.
-2. **Close the verification-completion gap and finish the requirement-to-test audit.** A failed non-effectful verification result could still checkpoint a completion State/Next update. Define required verification from trusted operation context, preserve legitimate not-applicable cases, and prevent failed required verification from being recorded as successful completion. Check current CORE, Project Binding, Evidence, Capability Adapter, software-delivery and Skill commitments against implementation and positive/negative tests. The current findings are a targeted audit, not an exhaustive defect list. Do not add MCP merely to manufacture a completion gate.
-3. **Run same-revision native local installation/effectiveness acceptance.** Freeze a reviewed local candidate without moving released tags. Use an isolated Codex CLI home or a real ChatGPT desktop/Codex local Project, record host/version and exact installed package revision, and verify installed + enabled + actual Skill discovery. Start from an ordinary Project without Agnir; perform a concrete file task, verify its exact content, checkpoint, then use a genuinely new session without prior transcript to recover the result and next action. Re-run on an existing Project to prove identity/instruction preservation and idempotency. Exercise broken discovery, another Continuity Provider, failed verification, missing authority and unavailable observation as negative cases. Archive registration, ZIP extraction, Python-provider tests and old Preview receipts cannot substitute for this evidence.
-4. **Keep both acceptance conclusions explicit.** Record (a) local host installation and actual effect, and (b) completion of the bounded Skill-first MVP and applicable runtime commitments. Clearly separate optional future integrations from defects in already-promised behavior. Do not mark either gate passed without its own evidence. The current executor could retrieve the ZIP and execute blob-verified Python modules, but had no installed Codex binary and no access to the Principal's local host; current-version native installation remains unobserved.
+1. **Verify and integrate the implemented local-readiness repair candidate.**
+   The four baseline defects have executable repairs and regressions. Run the complete
+   candidate product checks, including Linux/macOS/Windows filesystem behavior and
+   native Codex install/enable/discovery with exact installed-package byte comparison.
+   Record exact candidate/tree/PR/main receipts; do not infer success from an older run.
+2. **Close actual same-candidate native behavior acceptance.** Use the real installed
+   Skill on an ordinary Project, perform a concrete task and verify/checkpoint it, recover
+   from a genuinely new conversation with no prior transcript, then prove idempotent
+   reuse of an existing Project. `checks/check_local_install.py --exercise` drives these
+   positive cases using the operator's authorized local Codex login. It does not copy
+   credentials. Execute the negative host cases in `conformance/RELEASE_READINESS.md`.
+   No-auth installation/discovery and Python tests do not establish LLM adherence.
+3. **Keep the release stop conditions explicit.** `spec/RUNTIME_SAFETY.md` defines
+   trusted receipt/policy responsibility, adapter-cooperative transactions, supported
+   local-filesystem limitations and independent effect recovery. Do not invent MCP or
+   production Cloudflare integration as a new requirement for the bounded Skill-first MVP.
+   Do not sign off current full local effectiveness or release-readiness while required
+   native positive/negative evidence is missing. Repair any newly observed defect rather
+   than bypassing tests or broadening claims.
 
-Reproduction details and observed results: `.agnir/evidence/2026-09-18-public-submission-candidate-audit.md`, 2026-09-20 local-readiness audit. All newly reported gaps are open; this checkpoint changes continuity only, not product code.
+Implementation and local test evidence: `.agnir/evidence/2026-09-20-runtime-readiness-repair.md`.
+Baseline defect reproductions remain historical evidence in
+`.agnir/evidence/2026-09-18-public-submission-candidate-audit.md`.
 
 ## Deferred public/personal ChatGPT path
 

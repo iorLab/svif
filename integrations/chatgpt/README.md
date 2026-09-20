@@ -62,6 +62,20 @@ It currently:
 
 A trusted MCP/App wrapper must translate platform authorization/confirmation into the `authority_grants` argument of `Orchestrator.complete()`. The model cannot self-grant protected authority by emitting a field.
 
+## Trusted completion and failure recovery
+
+The reference runtime defaults `OperationRequest.verification_required` to true.
+Model verification declarations are advisory: the wrapper supplies real exact-subject
+`verification_evidence` separately to `complete()`. Required verifier identities come
+from trusted planning. Missing/failed required checks block non-effectful completion too.
+Do not deserialize model JSON into trusted OperationRequest, CapabilityPolicy or grants.
+Provider `policy_for(operation)` sets mandatory authorization; a result field cannot
+weaken it. Model-supplied delivery, observation and checkpoint receipts are rejected.
+
+Use the returned session once. On uncertain external effects, inspect the Agnir pending
+effect and independently observe/reconcile through the adapter instead of re-actuating.
+See `spec/RUNTIME_SAFETY.md` for preflight, revision checks, locking and recovery.
+
 ## Next packaging step
 
 Implement a remote Apps SDK/MCP wrapper that exposes at minimum:

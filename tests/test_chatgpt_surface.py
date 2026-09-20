@@ -8,6 +8,7 @@ from svif.continuity.agnir import AgnirFilesystemContinuityProvider
 from svif.execution.chatgpt import ChatGPTExecutionSurface
 from svif.runtime import (
     BindingError,
+    EvidenceRecord,
     OperationRequest,
     Orchestrator,
     ProjectBinding,
@@ -78,7 +79,10 @@ class ChatGPTExecutionSurfaceTests(unittest.TestCase):
                     },
                 },
             )
-            outcome = orchestrator.complete(session, work)
+            # A trusted tool/verifier receipt, not the model's declaration.
+            outcome = orchestrator.complete(session, work, verification_evidence=(
+                EvidenceRecord("verification", SUBJECT, producer="fixture-verifier"),
+            ))
 
             self.assertEqual(outcome.subject_identity, SUBJECT)
             self.assertIn(

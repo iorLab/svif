@@ -20,6 +20,20 @@ svif/
 
 A Skill-only Plugin is structurally useful without an MCP server. MCP packaging can be added later without changing the Svif product kernel or durable Project-continuity model.
 
+## Local acceptance before publication
+
+OpenAI Platform submission is paused by the Principal. Current `0.2.0` is an unpublished
+local-readiness candidate; prior ZIP/CI acceptance is not functional release sign-off.
+The native local procedure and requirement-to-evidence matrix are maintained in
+`conformance/RELEASE_READINESS.md` in the source repository. Keep the user install intent
+short; the maintainer acceptance harness owns isolated installation and exact-revision
+checks. A local marketplace does not require public Platform publication.
+
+The Skill requires trusted verification and provider-owned authority policy, contained
+reads/writes and coherent recovery. It must block on unresolved `.svif-runtime` recovery
+markers when encountering a Project previously operated by the Python adapter. This
+package contains instructions, not that runtime or a remote MCP service.
+
 ## Current validation status
 
 Repository CI validates the portable package structure, Agent Plugins 1.0.0 manifest constraints used by this package, Agent Skills frontmatter/guardrails, Plugin-root filesystem containment and component isolation, Agnir activation/discovery guards, OpenAI/Codex distribution metadata, public-directory listing limits, required square `logo` / `composerIcon` branding assets, and the boundary that prevents the Plugin from shadowing the Svif runtime.
@@ -56,7 +70,7 @@ The current public publishing flow is:
 1. Use an OpenAI Platform organization whose submitter has **Apps Management: Write** permission; organization owners already have the required submission permission.
 2. Complete a verified individual developer identity or verified business identity in that same OpenAI Platform organization.
 3. Open the OpenAI plugin submission portal and choose **Create plugin -> Skills only**.
-4. Upload the final Skill bundle/package rooted around the same tested `.codex-plugin/plugin.json` and `skills/` implementation. Do not add `apps`, `.app.json`, `mcpServers`, or `.mcp.json` to a Skills-only submission.
+4. Upload the final portable Plugin root with tested `plugin.json`, `skills/`, and assets; retain the synchronized `.codex-plugin/plugin.json` compatibility fallback. Do not add `apps`, `.app.json`, `mcpServers`, or `.mcp.json` to a Skills-only submission.
 5. Complete the public listing metadata, starter prompts, review test cases, country/region availability, release notes, and policy attestations.
 6. Submit for review. Submission is not publication.
 7. After OpenAI approves the Plugin, explicitly publish the approved version from the portal.

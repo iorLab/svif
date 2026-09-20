@@ -6,14 +6,14 @@ Svif is the authoritative active **Project orchestration product** in `iorLab/sv
 
 The Principal explicitly paused OpenAI Platform publication and requested two confirmations: (1) Svif can be installed locally and actually takes effect; (2) Svif's functionality is developed and complete. Publisher prerequisites and portal submission are no longer the active P0. Public publication requires a later explicit resumption instruction.
 
-**Current verdict: neither current-version local effectiveness nor whole-product functional completion is signed off.** Historical package/CI acceptance is not withdrawn as a historical observation, but it does not establish either requested conclusion. The earlier assumption that only publisher/account blockers remain is superseded by the functional findings below.
+**Current verdict: safety/recovery repairs are implemented in the candidate; current-version full native effectiveness and whole-product release acceptance are not yet signed off.** Historical package/CI acceptance is not withdrawn as a historical observation, but it does not establish either requested conclusion. The earlier assumption that only publisher/account blockers remain is superseded by the functional findings below.
 
-## Audited subject and evidence levels
+## Historical audited subject and evidence levels
 
 - Audited authoritative source: `fe7788bd53d3a240f663860133b741799d0470e3`.
 - Svif product line remains `0.2`; Project Binding, Software Delivery, Capability Adapter and Evidence Record remain their `0.2` contracts.
 - Active source/package version remains unpublished `0.2.0`.
-- The package-only accepted Plugin subtree remains `5ab4b6147dbd096c052f042b23e37f0ec39f7091`, materialized by `f9026f7e3db4db8956cfc88ba1990daf0757a011`. No product or Plugin source is changed by this readiness checkpoint.
+- The historical package-only accepted Plugin subtree was `5ab4b6147dbd096c052f042b23e37f0ec39f7091`, materialized by `f9026f7e3db4db8956cfc88ba1990daf0757a011`. That historical audit changed continuity only; the 2026-09-20 implementation candidate changes the runtime, Skill and acceptance tooling.
 - The actual `svif-0.2.0.zip` was retrieved from Actions artifact `10542750132`. Independent extraction verified CRC, all five member Git blob identities, and inner ZIP SHA-256 `bc2315562f7bdeb4232aadb9b583a7442f8cd868dbeacd13bb57caf0c785177c`. This proves package identity/integrity, not native installation or activation.
 - Released **Plugin MVP** / Repository Preview `v0.2.0-preview.1` remains immutable at `2b07b6b5ea0bc8feee59f9f647be9af3069d056e`, annotated tag object `2535cb89426c2d38c2e061948e81954a7c7c26d7`.
 - Historical Preview.1 evidence records real Codex CLI and ChatGPT desktop/Codex installation, first-use bootstrap, work, checkpoint and fresh-context recovery. It does not establish current `0.2.0` native-host acceptance or certify all failure paths in Preview.1.
@@ -21,14 +21,45 @@ The Principal explicitly paused OpenAI Platform publication and requested two co
 - Four source modules were re-materialized from connector reads, verified byte-for-byte against their Git blob SHAs, and exercised in an isolated Python 3.13.5 environment. The audit did not run the full repository suite locally, did not install a native Codex/desktop host, and did not operate the Principal's computer.
 - Basic Agnir load -> checkpoint -> fresh provider load succeeded in isolated fixtures on compatibility lines `0.1`, `0.2`, and `1.0`. This is provider behavior evidence, not a fresh LLM-session or native-client acceptance result.
 
-## Open functional blockers — reproduced, not repaired
+## Functional repair candidate — 2026-09-20
 
-1. **Trusted authority can be bypassed by omitting the requested authority class.** `ChatGPTExecutionSurface.parse_result()` accepts a model-controlled optional `authority_class`; `Orchestrator.complete()` enforces only that supplied class. For the actual Cloudflare provider operation whose descriptor requires `protected-delivery`, omitted/null/empty values reached the injected fake deploy/observe transport and checkpointed with no trusted grants. Explicit `protected-delivery` correctly blocked the control case. Authority requirements must come from trusted provider/operation policy, not optional result data.
-2. **A failed checkpoint can partially publish durable truth.** A valid discovery record with `decisions: null` loads successfully, but an outcome requesting State + Next Actions + Decisions writes State and Next Actions before raising for the unavailable Decisions locator. All three supported compatibility lines reproduced changed State/Next Actions with no new evidence receipt. Preflight, coherent publication and interruption/recovery behavior need repair and executable regression coverage.
-3. **Evidence-child symlinks bypass Project-root containment.** The declared evidence directory is contained, but `_read_evidence()` follows its child-file symlinks without rechecking their resolved paths. On all three compatibility lines a dummy file outside the selected Project root was loaded as evidence without an authorized external binding. Only dummy temporary data was used.
-4. **Failed non-effectful verification does not prevent a success-state checkpoint.** A result carrying a failed verification record and a completion State/Next update, with no capability request, was checkpointed. Required verification needs a trusted operation-level contract and failure handling; not every trivial non-effectful operation must necessarily require verification.
+The Principal authorized implementation to release standard. The four reproduced
+baseline gaps are now repaired in the staged source candidate and covered by executable
+regressions; they are no longer merely audit findings. The complete local suite passes
+126 tests, plus repository-integrity and portable-contract checks. Remote candidate
+verification and native model-behavior acceptance must still be observed separately.
 
-Detailed reproduction inputs, controls, results and acceptance criteria are appended under the 2026-09-20 readiness audit in `.agnir/evidence/2026-09-18-public-submission-candidate-audit.md`. This is a targeted audit, not a claim that these are the only remaining defects.
+- Provider-owned `CapabilityPolicy` is mandatory at the effect boundary. Omitted/null/
+  empty/downgraded model authority advice cannot waive Cloudflare protected-delivery.
+- Trusted operation-level verification defaults to required. Parsed ChatGPT verification
+  declarations need independent trusted receipts; failed required non-effect checks cannot
+  publish completion. Legitimate trusted not-applicable operations remain supported.
+- Full checkpoint preflight, revision CAS, no-follow contained I/O, a process/thread lock
+  and recoverable write-ahead journal prevent normal failures from leaving a successful
+  partial checkpoint and recover interruptions before exposing adapter snapshots.
+- Evidence children, anchor/locator/receipt/runtime paths and unsafe link types are checked.
+- Single-use sessions, durable operation replay checks and a pre-actuation effect marker
+  prevent uncertain effects from being blindly repeated after restart. Independent trusted
+  reconciliation does not redeploy. This is not a distributed exactly-once guarantee.
+- Executable tests cover all three Agnir compatibility lines, every publication failure
+  position, actual process death followed by recovery in another process, concurrency,
+  stale/conflicting memory, corruption, links and trusted-policy/receipt boundaries.
+
+Native Codex `0.155.1` was installed and exercised without model credentials in an
+isolated Ubuntu runner: probe run `35507822026` reported the then-current Svif `0.2.0`
+package installed and enabled. That preliminary probe does not validate the final
+modified Skill or actual LLM behavior. The final native acceptance harness verifies
+exact installed bytes plus app-server Skill discovery; optional authenticated positive
+model scenarios and same-candidate negative host scenarios remain distinct release gates.
+
+`conformance/RELEASE_READINESS.md` is the requirement-to-evidence matrix and native
+acceptance procedure. `spec/RUNTIME_SAFETY.md` defines the trusted integration and
+recovery boundary. The Skill now explicitly covers those failure semantics without
+bundling or duplicating the Python kernel. Package bytes have changed: old tree
+`5ab4b6147dbd096c052f042b23e37f0ec39f7091` and its ZIP remain historical packaging evidence,
+not the new local candidate. No release tag or public submission is created.
+
+Candidate implementation evidence: `.agnir/evidence/2026-09-20-runtime-readiness-repair.md`.
 
 ## Product architecture and scope
 

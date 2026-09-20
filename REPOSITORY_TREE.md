@@ -43,6 +43,7 @@ svif/                                                     # Svif 产品主仓库
 │       ├── 2026-09-07-agnir-1.0-main-promotion.md        # Agnir 1.0 authoritative publication、fresh verification 与 branch retirement 完整证据
 │       ├── 2026-09-18-public-submission-candidate-audit.md # Svif 0.2.0 public-submission candidate 版本边界、package tree、OpenAI packaging 审计与 CI 证据
 │       ├── 2026-09-18-skills-only-submission-archive.md    # exact Plugin tree 的 deterministic ZIP、archive guards、CI 与外部 submission evidence 边界
+│       ├── 2026-09-20-runtime-readiness-repair.md         # 可信策略/事务恢复修复、回归与原生验收层次证据
 │       └── checkpoint-2026-08-28-validation-2.md         # Validation 2 的持久 checkpoint 记录
 │
 ├── .github/                                              # GitHub 托管侧自动化配置
@@ -68,6 +69,7 @@ svif/                                                     # Svif 产品主仓库
 │       ├── runtime.py                                    # Orchestrator 核心：begin/run/complete、验证、权限、reconcile、checkpoint
 │       ├── continuity/                                   # Continuity Provider 实现 / 适配层
 │       │   ├── __init__.py                               # continuity 子包入口
+│       │   ├── filesystem.py                            # 含路径约束的 I/O、进程锁与原子单文件写入；adapter 私有实现
 │       │   └── agnir.py                                  # founding Agnir repository/filesystem Continuity Provider；兼容 0.1/0.2 并支持当前 stable 1.0 lineage/binding
 │       ├── execution/                                    # Execution Surface 桥接层
 │       │   ├── __init__.py                               # execution 子包入口
@@ -95,6 +97,7 @@ svif/                                                     # Svif 产品主仓库
 │           └── SKILL.md                                  # Svif 工作流 Skill：首次 Project continuity bootstrap、Agnir discovery/repair、lifecycle、provenance、authority、checkpoint
 │
 ├── spec/                                                 # Svif 内部可移植产品 contracts
+│   ├── RUNTIME_SAFETY.md                                 # 可信策略、验证凭据、事务恢复与不确定外部效果边界
 │   ├── CORE.md                                           # 编排生命周期、核心 invariants 与 product-kernel 语义
 │   ├── PROJECT_BINDING.md                                # Project 如何声明 continuity / execution / capability bindings
 │   ├── EVIDENCE.md                                       # Evidence、provenance、subject / target 对齐语义
@@ -109,6 +112,9 @@ svif/                                                     # Svif 产品主仓库
 │   └── evidence-record.schema.json                       # portable EvidenceRecord 的 JSON Schema
 │
 ├── tests/                                                # 可执行产品实现测试
+│   ├── test_release_safety.py                            # 真实授权绕过、验证来源、重放与不确定效果回归
+│   ├── test_agnir_transactions.py                        # 三兼容线事务中断、冲突、并发、路径安全回归
+│   ├── test_local_acceptance_harness.py                  # 原生验收器自身的路径/状态断言；不是宿主验收
 │   ├── test_runtime.py                                   # Orchestrator kernel、authority、verification、lifecycle 行为
 │   ├── test_agnir_continuity.py                          # Agnir Continuity Provider adapter 的 0.1/0.2/1.0 load / lineage / checkpoint / failure 行为
 │   ├── test_agnir_stable_migration.py                    # 当前 Svif Project 对发布版 Agnir v1.0.0 的 self-consumption、0.2→1.0 preservation / identity / lineage guard
@@ -124,6 +130,7 @@ svif/                                                     # Svif 产品主仓库
 │   └── test_plugin_package.py                            # Plugin manifest/Skill/package、filesystem failure isolation 与 Agnir activation boundary 验证
 │
 ├── conformance/                                          # Portable contracts 的一致性验证，不等同于产品 runtime
+│   ├── RELEASE_READINESS.md                             # 范围明确的发布验收矩阵、本地实测命令、未关闭门槛
 │   ├── svif-0.2.md                                       # 当前 Svif 0.2 conformance baseline 的人类可读说明
 │   ├── check_contracts.py                                # 对 schemas / fixtures / portable contract 语义执行检查
 │   └── fixtures/                                         # conformance 输入样例
@@ -136,6 +143,7 @@ svif/                                                     # Svif 产品主仓库
 │           └── workspace-scm.json                        # workspace / source-control capability fixture
 │
 ├── checks/                                               # 仓库与产品结构完整性检查
+│   ├── check_local_install.py                           # 隔离原生 Codex 安装/发现与显式 opt-in 真实模型验收
 │   ├── build_submission_bundle.py                        # 从 accepted plugin/ tree 构建 deterministic Skills-only portal ZIP 并输出 SHA-256
 │   └── check_repository.py                               # 防止关键模块、README、Plugin packaging、Agnir activation、canonical topology 漂移
 │
@@ -144,6 +152,7 @@ svif/                                                     # Svif 产品主仓库
 │   ├── BRANCH_ARCHIVE.md                                 # 已删除分支及最终 tip SHA 的历史索引；main-only 治理记录
 │   └── CLOUDFLARE_REFERENCE.md                           # 已退休独立 Cloudflare reference 仓库的迁移记录
 │
+├── .gitignore                                           # Python 缓存与本地事务机械文件不进入源码/分发
 ├── AGENTS.md                                             # 最小 Agnir 激活 locator；只指向 README canonical Project Instructions
 ├── AGNIR.yaml                                            # 当前 stable repository-filesystem/1.0 下发现本 Project Agnir memory 的入口
 ├── SVIF.yaml                                             # 本 Project 的 `project-binding/0.2` serialization，并登记 active Plugin artifacts

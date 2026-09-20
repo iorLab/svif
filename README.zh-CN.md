@@ -65,7 +65,6 @@ Project/
 ├── AGENTS.md                 # [编辑：仅添加入口] 加入 Agnir activation locator；保留原有 instructions
 ├── README.md                 # [编辑：仅添加入口] 加入 ## Agnir Project Instructions；保留原有内容
 ├── AGNIR.yaml                # [新增] founding Agnir discovery anchor
-├── brand/                             # 已批准品牌主稿、导出、QA、参考与交付说明
 ├── .agnir/                   # [新增] Project 自己拥有的 durable continuity
 │   ├── state.md              # [新增] 当前仍然成立的 durable Project truth
 │   ├── next-actions.md       # [新增] 下一位 Executor 应继续推进的有序工作
@@ -184,6 +183,8 @@ OpenAI 当前公开提交流程明确接受 **Skills-only Plugin**。因此 Svif
 Repository Preview 与未来面向个人用户的公开版本是不同的分发层。Codex CLI 与 ChatGPT 桌面版/Codex 的 Preview 安装必须分别验证；公开 review approval、目录 publication、个人 ChatGPT installation、调用、Agnir activation、verification 和 checkpoint 仍是不同的 evidence layer。
 
 公开 submission 前置条件、拟定 listing metadata、review test cases、repository-marketplace 开发路径和 evidence boundary 见 [`plugin/README.md`](plugin/README.md)。
+
+本地发布验收与当前限制见[发布就绪矩阵](conformance/RELEASE_READINESS.md)。原生安装与 Skill 发现、真实模型任务/checkpoint/新会话恢复、内核安全分别验收；Platform 发布暂停。
 
 ## 仓库结构
 

@@ -293,6 +293,13 @@ def main() -> None:
         "schemas/project-binding.schema.json", "schemas/capability-adapter.schema.json", "schemas/evidence-record.schema.json",
         "conformance/check_contracts.py", "history/PREDECESSOR.md", "history/CLOUDFLARE_REFERENCE.md",
     ]
+    required += [
+        "spec/RUNTIME_SAFETY.md", "src/svif/continuity/filesystem.py",
+        "tests/test_release_safety.py", "tests/test_agnir_transactions.py",
+        "tests/test_local_acceptance_harness.py", "tests/test_plugin_submission_bundle.py",
+        "checks/check_local_install.py", "checks/build_submission_bundle.py",
+        "conformance/RELEASE_READINESS.md",
+    ]
     for path in required:
         if not (ROOT / path).exists():
             fail(f"missing active Svif product artifact: {path}")

@@ -1,13 +1,18 @@
 from __future__ import annotations
 
+import base64
 import hashlib
 import json
 import os
 import re
+import stat
+from contextlib import contextmanager
+from typing import Iterator
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
-from svif.runtime import BindingError, ContinuitySnapshot, OperationOutcome
+from svif.runtime import BindingError, CapabilityRequest, ContinuitySnapshot, ContinuityUpdate, EvidenceRecord, OperationOutcome
+from svif.continuity.filesystem import FilesystemSafetyError, ProjectFilesystem
 
 
 class AgnirDiscoveryError(BindingError):
@@ -28,6 +33,7 @@ class _ResolvedAgnir:
     next_actions: Path
     decisions: Path | None
     evidence: Path | None
+    discovery_digest: str
 
 
 class AgnirFilesystemContinuityProvider:
@@ -55,6 +61,9 @@ class AgnirFilesystemContinuityProvider:
         selected_vcs_selector: str | None = None,
     ) -> None:
         self.project_root = Path(project_root).resolve()
+        self._fs = ProjectFilesystem(self.project_root)
+        self._journal = self.project_root / ProjectFilesystem.RUNTIME / "agnir-pending.json"
+        self._effect = self.project_root / ProjectFilesystem.RUNTIME / "agnir-effect.json"
         self.expected_core_version = expected_core_version
         self.expected_profile = expected_profile
         self.selected_vcs_selector = selected_vcs_selector
@@ -79,11 +88,14 @@ class AgnirFilesystemContinuityProvider:
 
         values: dict[tuple[str, ...], str | None] = {}
         stack: list[tuple[int, str]] = []
+        seen: set[tuple[str, ...]] = set()
         for raw in text.splitlines():
             if not raw.strip() or raw.lstrip().startswith("#"):
                 continue
             if raw.lstrip().startswith("-"):
                 continue
+            if "\t" in raw[:len(raw) - len(raw.lstrip())]:
+                raise AgnirDiscoveryError("AGNIR_DISCOVERY_INCONSISTENT", "tabs are not supported in discovery indentation")
             indent = len(raw) - len(raw.lstrip(" "))
             match = re.match(r"^\s*([A-Za-z0-9_./-]+):\s*(.*?)\s*$", raw)
             if not match:
@@ -91,6 +103,10 @@ class AgnirFilesystemContinuityProvider:
             key, scalar_text = match.groups()
             while stack and indent <= stack[-1][0]:
                 stack.pop()
+            path = tuple([item[1] for item in stack] + [key])
+            if path in seen:
+                raise AgnirDiscoveryError("AGNIR_DISCOVERY_INCONSISTENT", "duplicate discovery key: " + ".".join(path))
+            seen.add(path)
             if scalar_text == "":
                 stack.append((indent, key))
                 continue
@@ -117,13 +133,13 @@ class AgnirFilesystemContinuityProvider:
                 )
             return None
 
-        candidate = (self.project_root / locator).resolve()
+        candidate = self._fs.path(locator)
         if not candidate.is_relative_to(self.project_root):
             raise self._fail(
                 "AGNIR_DISCOVERY_UNRESOLVABLE",
                 f"{kind} locator escapes the authorized Project root",
             )
-        if not candidate.exists():
+        if self._fs.metadata(candidate) is None:
             raise self._fail(
                 "AGNIR_DISCOVERY_UNRESOLVABLE",
                 f"{kind} locator does not resolve: {locator}",
@@ -132,13 +148,14 @@ class AgnirFilesystemContinuityProvider:
 
     def _discover(self, project_identity: str) -> _ResolvedAgnir:
         discovery = self.project_root / "AGNIR.yaml"
-        if not discovery.is_file():
+        if self._fs.metadata(discovery) is None:
             raise self._fail(
                 "AGNIR_DISCOVERY_NOT_FOUND",
                 "repository/filesystem profile could not resolve AGNIR.yaml at the Project Entry Point",
             )
 
-        values = self._parse_discovery(discovery.read_text(encoding="utf-8"))
+        discovery_bytes = self._fs.read(discovery)
+        values = self._parse_discovery(discovery_bytes.decode("utf-8"))
         version = values.get(("agnir", "version"))
         profile = values.get(("agnir", "discovery_profile"))
 
@@ -213,19 +230,28 @@ class AgnirFilesystemContinuityProvider:
 
         for kind in ("state", "next_actions", "decisions"):
             path = paths[kind]
-            if path is not None and not path.is_file():
+            if path is not None and not stat.S_ISREG(self._fs.metadata(path).st_mode):
                 raise self._fail(
                     "AGNIR_DISCOVERY_UNRESOLVABLE",
                     f"{kind} locator is not a file",
                 )
 
         evidence = paths["evidence"]
-        if evidence is not None and not evidence.is_dir():
+        if evidence is not None and not stat.S_ISDIR(self._fs.metadata(evidence).st_mode):
             raise self._fail(
                 "AGNIR_DISCOVERY_UNRESOLVABLE",
                 "Evidence locator is not a directory",
             )
 
+        concrete = [path for path in paths.values() if path is not None]
+        if len(set(concrete)) != len(concrete):
+            raise self._fail("AGNIR_DISCOVERY_INCONSISTENT", "memory roles must not alias each other")
+        for path in concrete:
+            if path == discovery or path.is_relative_to(self.project_root / ProjectFilesystem.RUNTIME):
+                raise self._fail("AGNIR_DISCOVERY_INCONSISTENT", "memory locator overlaps discovery/recovery metadata")
+        if evidence is not None and any(paths[k] is not None and paths[k].is_relative_to(evidence)
+                                       for k in ("state", "next_actions", "decisions")):
+            raise self._fail("AGNIR_DISCOVERY_INCONSISTENT", "state files must not overlap the evidence collection")
         return _ResolvedAgnir(
             version=version,
             profile=profile,
@@ -235,92 +261,315 @@ class AgnirFilesystemContinuityProvider:
             next_actions=paths["next_actions"],
             decisions=paths["decisions"],
             evidence=paths["evidence"],
+            discovery_digest=hashlib.sha256(discovery_bytes).hexdigest(),
         )
 
-    @staticmethod
-    def _read_optional(path: Path | None) -> str | None:
-        return None if path is None else path.read_text(encoding="utf-8")
+    @contextmanager
+    def operation_guard(self, project_identity: str) -> Iterator[None]:
+        """Serialize cooperating readers/writers; recover before exposing memory."""
+        try:
+            with self._fs.guard():
+                self._recover(project_identity)
+                self._clear_resolved_effect(project_identity)
+                yield
+        except (FilesystemSafetyError, UnicodeError) as exc:
+            raise self._fail("AGNIR_DISCOVERY_UNRESOLVABLE", str(exc)) from exc
 
-    @staticmethod
-    def _read_evidence(path: Path | None) -> dict[str, str]:
-        if path is None:
-            return {}
-        return {
-            item.name: item.read_text(encoding="utf-8")
-            for item in sorted(path.iterdir())
-            if item.is_file()
-        }
+    def _snapshot(self, project_identity: str) -> tuple[_ResolvedAgnir, ContinuitySnapshot]:
+        resolved = self._discover(project_identity)
+        raw: dict[str, bytes] = {}
+
+        def read(path: Path | None) -> str | None:
+            if path is None:
+                return None
+            value = self._fs.read(path)
+            raw[path.relative_to(self.project_root).as_posix()] = value
+            return value.decode("utf-8")
+
+        state, next_actions, decisions = read(resolved.state), read(resolved.next_actions), read(resolved.decisions)
+        evidence = {} if resolved.evidence is None else {p.name: read(p) for p in self._fs.files(resolved.evidence)}
+        discovery = self._fs.read(self.project_root / "AGNIR.yaml")
+        if hashlib.sha256(discovery).hexdigest() != resolved.discovery_digest:
+            raise self._fail("AGNIR_DISCOVERY_STALE", "Discovery Record changed during load")
+        raw["AGNIR.yaml"] = discovery
+        identity = [(name, hashlib.sha256(value).hexdigest()) for name, value in sorted(raw.items())]
+        revision = hashlib.sha256(json.dumps(identity, ensure_ascii=True).encode()).hexdigest()
+        return resolved, ContinuitySnapshot(project_identity, state, next_actions, decisions, evidence, revision)
 
     def resolve_lineage(self, project_identity: str) -> str | None:
-        """Return the selected logical Agnir lineage, if the compatibility line has one."""
-        return self._discover(project_identity).lineage_identity
+        with self.operation_guard(project_identity):
+            return self._discover(project_identity).lineage_identity
 
     def load(self, project_identity: str) -> ContinuitySnapshot:
-        resolved = self._discover(project_identity)
-        return ContinuitySnapshot(
-            project_identity=project_identity,
-            state=self._read_optional(resolved.state),
-            next_actions=self._read_optional(resolved.next_actions),
-            decisions=self._read_optional(resolved.decisions),
-            evidence=self._read_evidence(resolved.evidence),
-        )
+        with self.operation_guard(project_identity):
+            if self._effect_record(project_identity) is not None:
+                raise self._fail("AGNIR_EFFECT_RECONCILIATION_REQUIRED", "external effect is unresolved; inspect pending_effect before continuation")
+            return self._snapshot(project_identity)[1]
 
     @staticmethod
     def _require_text_update(value: object | None, label: str) -> str | None:
-        if value is None:
-            return None
-        if not isinstance(value, str):
+        if value is not None and not isinstance(value, str):
             raise BindingError(f"Agnir filesystem {label} update must be text")
         return value
 
-    @staticmethod
-    def _atomic_write(path: Path, content: str) -> None:
-        tmp = path.with_name(f".{path.name}.svif-tmp")
-        tmp.write_text(content, encoding="utf-8")
-        os.replace(tmp, path)
+    def _receipt(self, resolved: _ResolvedAgnir, project: str, operation: str) -> Path | None:
+        if resolved.evidence is None:
+            return None
+        digest = hashlib.sha256(f"{project}\0{resolved.lineage_identity or ''}\0{operation}".encode()).hexdigest()
+        return resolved.evidence / f"svif-operation-{digest}.json"
 
-    def checkpoint(self, outcome: OperationOutcome) -> None:
-        resolved = self._discover(outcome.project_identity)
-        update = outcome.continuity_update
+    def _permitted(self, resolved: _ResolvedAgnir, project: str, operation: str) -> set[Path]:
+        return {p for p in (resolved.state, resolved.next_actions, resolved.decisions,
+                           self._receipt(resolved, project, operation)) if p is not None}
 
-        state = self._require_text_update(update.state, "Current State")
-        next_actions = self._require_text_update(update.next_actions, "Next Actions")
-        decisions = self._require_text_update(update.decisions, "Decisions")
-
-        if state is not None:
-            self._atomic_write(resolved.state, state)
-        if next_actions is not None:
-            self._atomic_write(resolved.next_actions, next_actions)
-        if decisions is not None:
-            if resolved.decisions is None:
-                raise self._fail(
-                    "AGNIR_DISCOVERY_UNRESOLVABLE",
-                    "cannot persist Decisions because the Discovery Record has no Decisions locator",
-                )
-            self._atomic_write(resolved.decisions, decisions)
-
-        if resolved.evidence is not None:
-            digest = hashlib.sha256(
-                (
-                    f"{outcome.project_identity}\0{resolved.lineage_identity or ''}\0"
-                    f"{outcome.operation_id}"
-                ).encode("utf-8")
-            ).hexdigest()[:16]
-            evidence_path = resolved.evidence / f"svif-operation-{digest}.json"
+    def _plan(self, outcome: OperationOutcome, expected_revision: str | None,
+              *, reject_replay: bool = False) -> tuple[_ResolvedAgnir, dict[Path, bytes]]:
+        for value in (outcome.project_identity, outcome.operation_id, outcome.subject_identity):
+            if not isinstance(value, str) or not value.strip():
+                raise BindingError("checkpoint requires non-empty Project/operation/subject identity")
+        # Validate every value and locator before writing even one state file.
+        resolved, snapshot = self._snapshot(outcome.project_identity)
+        values = {name: self._require_text_update(getattr(outcome.continuity_update, name), name)
+                  for name in ("state", "next_actions", "decisions")}
+        writes = {}
+        for name, value in values.items():
+            path = getattr(resolved, name)
+            if value is not None:
+                if path is None:
+                    raise self._fail("AGNIR_DISCOVERY_UNRESOLVABLE", f"cannot persist {name}: no locator")
+                writes[path] = value.encode("utf-8")
+        receipt = self._receipt(resolved, outcome.project_identity, outcome.operation_id)
+        if receipt is not None:
             payload = {
-                "svif_runtime_checkpoint": "0.1",
+                "svif_runtime_checkpoint": "0.2",
                 "project_identity": outcome.project_identity,
                 "agnir_lineage": resolved.lineage_identity,
                 "operation_id": outcome.operation_id,
                 "subject_identity": outcome.subject_identity,
                 "externally_effectful": outcome.externally_effectful,
                 "evidence": [asdict(record) for record in outcome.evidence],
+                "updates": {name: None if value is None else hashlib.sha256(value.encode()).hexdigest()
+                            for name, value in values.items()},
             }
-            self._atomic_write(
-                evidence_path,
-                json.dumps(payload, indent=2, sort_keys=True) + "\n",
-            )
+            writes[receipt] = (json.dumps(payload, indent=2, sort_keys=True) + "\n").encode()
+            previous = self._fs.read(receipt, missing_ok=True)
+            # The old 64-bit locator remains a replay boundary, never overwritten.
+            legacy = receipt.with_name(receipt.name[:len("svif-operation-") + 16] + ".json")
+            if previous is not None or self._fs.read(legacy, missing_ok=True) is not None:
+                same = previous == writes[receipt] and all(self._fs.read(p, missing_ok=True) == v for p, v in writes.items())
+                if not reject_replay and same:
+                    return resolved, {}  # Exact retry of an already committed checkpoint.
+                raise self._fail("AGNIR_OPERATION_REPLAY", "operation receipt already exists; reconcile, do not replay")
+        if expected_revision is not None and expected_revision != snapshot.revision:
+            raise self._fail("AGNIR_DISCOVERY_STALE", "durable memory changed since operation began")
+        # Preflight also detects unsafe receipt leaves, even for new operations.
+        for path in writes:
+            self._fs.read(path, missing_ok=True)
+        return resolved, writes
 
-        # Do not claim resumability until the resulting locator chain, Project
-        # identity, logical lineage, and optional VCS selector binding resolve.
-        self._discover(outcome.project_identity)
+    def validate_checkpoint(self, outcome: OperationOutcome, *, expected_revision: str | None = None) -> None:
+        with self.operation_guard(outcome.project_identity):
+            if self._effect_record(outcome.project_identity) is not None:
+                raise self._fail("AGNIR_EFFECT_RECONCILIATION_REQUIRED", "prior external effect needs independent observation")
+            self._plan(outcome, expected_revision, reject_replay=True)
+
+    def _publish_file(self, path: Path, content: bytes) -> None:
+        self._fs.write(path, content)
+
+    @staticmethod
+    def _encode(value: bytes | None) -> str | None:
+        return None if value is None else base64.b64encode(value).decode("ascii")
+
+    def _journal_changes(self, project_identity: str) -> list[tuple[Path, bytes | None, bytes]] | None:
+        data = self._fs.read(self._journal, missing_ok=True)
+        if data is None:
+            return None
+        try:
+            record = json.loads(data)
+            resolved = self._discover(project_identity)
+            if (record["schema"] != "svif-agnir-transaction/1" or record["project_identity"] != project_identity
+                    or record["discovery_digest"] != resolved.discovery_digest
+                    or not isinstance(record["operation_id"], str) or not record["operation_id"].strip()):
+                raise ValueError("journal binding mismatch")
+            allowed = self._permitted(resolved, project_identity, record["operation_id"])
+            if not isinstance(record["changes"], list) or not 1 <= len(record["changes"]) <= 4:
+                raise ValueError("invalid transaction size")
+            changes = []
+            seen: set[Path] = set()
+            for item in record["changes"]:
+                if not isinstance(item["path"], str) or Path(item["path"]).is_absolute():
+                    raise ValueError("journal path is not relative")
+                path = self._fs.path(item["path"])
+                if path not in allowed or path in seen:
+                    raise ValueError("unauthorized or duplicate journal target")
+                seen.add(path)
+                before = None if item["before"] is None else base64.b64decode(item["before"], validate=True)
+                after = base64.b64decode(item["after"], validate=True)
+                after.decode("utf-8")
+                if hashlib.sha256(after).hexdigest() != item["sha256"]:
+                    raise ValueError("corrupt staged content")
+                current = self._fs.read(path, missing_ok=True)
+                if current != before and current != after:
+                    raise ValueError("target changed outside the interrupted transaction")
+                changes.append((path, before, after))
+            return changes
+        except (KeyError, TypeError, ValueError, FilesystemSafetyError) as exc:
+            raise self._fail("AGNIR_CHECKPOINT_RECOVERY_REQUIRED", "invalid/conflicting journal; no recovery writes performed") from exc
+
+    def _recover(self, project_identity: str) -> None:
+        changes = self._journal_changes(project_identity)
+        if changes is None:
+            return
+        # A durable intent was recorded only after complete preflight. Following
+        # process death, finish it before returning any mixed state to a reader.
+        try:
+            for path, _, after in changes:
+                self._publish_file(path, after)
+            self._discover(project_identity)
+            self._fs.remove(self._journal)
+        except Exception as exc:
+            raise self._fail("AGNIR_CHECKPOINT_RECOVERY_REQUIRED", "interrupted checkpoint could not be recovered") from exc
+
+    def checkpoint(self, outcome: OperationOutcome, *, expected_revision: str | None = None) -> None:
+        with self.operation_guard(outcome.project_identity):
+            self._validate_pending_outcome(outcome)
+            resolved, writes = self._plan(outcome, expected_revision)
+            if not writes:
+                return
+            before = {path: self._fs.read(path, missing_ok=True) for path in writes}
+            record = {
+                "schema": "svif-agnir-transaction/1",
+                "project_identity": outcome.project_identity,
+                "operation_id": outcome.operation_id,
+                "discovery_digest": resolved.discovery_digest,
+                "changes": [{"path": path.relative_to(self.project_root).as_posix(),
+                             "before": self._encode(before[path]), "after": self._encode(content),
+                             "sha256": hashlib.sha256(content).hexdigest()}
+                            for path, content in writes.items()],
+            }
+            # Journal first, fsynced and atomically replaced; no fixed-name temp.
+            self._fs.write(self._journal, (json.dumps(record, sort_keys=True) + "\n").encode())
+            try:
+                for path, content in writes.items():
+                    self._publish_file(path, content)
+                if self._discover(outcome.project_identity).discovery_digest != resolved.discovery_digest:
+                    raise self._fail("AGNIR_DISCOVERY_STALE", "Discovery Record changed during checkpoint")
+                self._fs.remove(self._journal)
+            except Exception as original:
+                try:
+                    # Refuse to overwrite unrelated concurrent edits on rollback.
+                    self._journal_changes(outcome.project_identity)
+                    for path, content in before.items():
+                        if content is None:
+                            self._fs.remove(path)
+                        else:
+                            self._publish_file(path, content)
+                    self._fs.remove(self._journal)
+                except Exception as recovery:
+                    raise self._fail("AGNIR_CHECKPOINT_RECOVERY_REQUIRED", "checkpoint and rollback failed; recovery intent retained") from recovery
+                raise self._fail("AGNIR_CHECKPOINT_FAILED", "checkpoint failed and all prior contents were restored") from original
+            # BaseException (process interruption) deliberately retains the
+            # journal. Next provider load rolls forward or fails closed.
+
+            # The receipt is durable before an uncertain external-effect marker
+            # can be retired. A cleanup interruption is recovered at next entry.
+            self._clear_resolved_effect(outcome.project_identity)
+
+    def _effect_record(self, project_identity: str) -> dict | None:
+        data = self._fs.read(self._effect, missing_ok=True)
+        if data is None:
+            return None
+        try:
+            value = json.loads(data)
+            if value["schema"] != "svif-agnir-effect/1" or value["project_identity"] != project_identity:
+                raise ValueError("effect identity mismatch")
+            for name in ("operation_id", "subject_identity", "target_identity", "provider", "revision"):
+                if not isinstance(value[name], str) or not value[name].strip():
+                    raise ValueError("effect identity missing")
+            return value
+        except (ValueError, KeyError, TypeError) as exc:
+            raise self._fail("AGNIR_EFFECT_RECONCILIATION_REQUIRED", "invalid pending external-effect record") from exc
+
+    def pending_effect(self, project_identity: str) -> dict | None:
+        """Inspect uncertain effect identity without treating old state as success."""
+        with self.operation_guard(project_identity):
+            self._discover(project_identity)
+            return self._effect_record(project_identity)
+
+    def prepare_effect(self, outcome: OperationOutcome, request: CapabilityRequest,
+                       *, expected_revision: str | None = None) -> None:
+        with self.operation_guard(outcome.project_identity):
+            if self._effect_record(outcome.project_identity) is not None:
+                raise self._fail("AGNIR_EFFECT_RECONCILIATION_REQUIRED", "do not replay an unresolved external effect")
+            resolved, snapshot = self._snapshot(outcome.project_identity)
+            self._plan(outcome, expected_revision, reject_replay=True)
+            if resolved.evidence is None or not request.target_identity:
+                raise BindingError("recoverable effects require a durable evidence locator and stable target")
+            record = {
+                "schema": "svif-agnir-effect/1",
+                "project_identity": outcome.project_identity,
+                "operation_id": outcome.operation_id,
+                "subject_identity": outcome.subject_identity,
+                "target_identity": request.target_identity,
+                "provider": request.provider,
+                "revision": snapshot.revision,
+                "verification": [asdict(item) for item in outcome.evidence if item.kind == "verification"],
+                "continuity_update": asdict(outcome.continuity_update),
+            }
+            self._fs.write(self._effect, (json.dumps(record, sort_keys=True) + "\n").encode())
+
+    def _matches_pending(self, record: dict, evidence: tuple[EvidenceRecord, ...]) -> bool:
+        return all(any(item.kind == kind and item.status == "succeeded"
+                       and item.subject_identity == record["subject_identity"]
+                       and item.target_identity == record["target_identity"]
+                       and item.producer == record["provider"] for item in evidence)
+                   for kind in ("delivery", "observation"))
+
+    def _validate_pending_outcome(self, outcome: OperationOutcome) -> None:
+        record = self._effect_record(outcome.project_identity)
+        if record is not None and (outcome.operation_id != record["operation_id"]
+                or outcome.subject_identity != record["subject_identity"] or not outcome.externally_effectful
+                or not self._matches_pending(record, outcome.evidence)):
+            raise self._fail("AGNIR_EFFECT_RECONCILIATION_REQUIRED", "checkpoint does not independently resolve the pending effect")
+
+    def _clear_resolved_effect(self, project_identity: str) -> None:
+        record = self._effect_record(project_identity)
+        if record is None:
+            return
+        resolved = self._discover(project_identity)
+        receipt = self._receipt(resolved, project_identity, record["operation_id"])
+        if receipt is None:
+            return
+        data = self._fs.read(receipt, missing_ok=True)
+        if data is None:
+            return
+        try:
+            saved = json.loads(data)
+            evidence = tuple(EvidenceRecord(**item) for item in saved["evidence"])
+            if (saved["project_identity"] != project_identity or saved["operation_id"] != record["operation_id"]
+                    or saved["subject_identity"] != record["subject_identity"]
+                    or not saved["externally_effectful"] or not self._matches_pending(record, evidence)):
+                raise ValueError("pending effect receipt mismatch")
+        except (ValueError, TypeError, KeyError) as exc:
+            raise self._fail("AGNIR_EFFECT_RECONCILIATION_REQUIRED", "pending effect has a conflicting receipt") from exc
+        self._fs.remove(self._effect)
+
+    def reconcile_effect(self, project_identity: str, *, delivery: EvidenceRecord,
+                         observation: EvidenceRecord) -> OperationOutcome:
+        """Trusted integration-only recovery. No actuation is performed here.
+
+        The caller must obtain these receipts from an independent provider read,
+        never from an untrusted model assertion. Stale memory still blocks repair.
+        """
+        with self.operation_guard(project_identity):
+            record = self._effect_record(project_identity)
+            if record is None:
+                raise BindingError("there is no pending effect to reconcile")
+            if not self._matches_pending(record, (delivery, observation)):
+                raise self._fail("AGNIR_EFFECT_RECONCILIATION_REQUIRED", "independent evidence does not resolve subject/target/provider")
+            verification = tuple(EvidenceRecord(**item) for item in record["verification"])
+            result = OperationOutcome(project_identity, record["operation_id"], record["subject_identity"],
+                                      verification + (delivery, observation), True,
+                                      ContinuityUpdate(**record["continuity_update"]))
+            self.checkpoint(result, expected_revision=record["revision"])
+            return result

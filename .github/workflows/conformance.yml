@@ -10,28 +10,79 @@ permissions:
 
 jobs:
   repository-integrity:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: '3.12'
       - run: python checks/check_repository.py
 
   portable-contracts:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: '3.12'
       - run: python conformance/check_contracts.py
 
   runtime-kernel:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            python: '3.12'
+          - os: ubuntu-24.04
+            python: '3.13'
+          - os: macos-14
+            python: '3.12'
+          - os: windows-2022
+            python: '3.12'
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
-      - run: PYTHONPATH=src python -m unittest discover -s tests -v
+          python-version: ${{ matrix.python }}
+      - run: python -B -m unittest discover -s tests -v
+        env:
+          PYTHONPATH: src
+
+  native-installation:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-14]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install exact native host in isolation
+        run: npm install --prefix "$RUNNER_TEMP/native-codex" @openai/codex@0.155.1
+      - name: Validate native install, enablement and actual Skill discovery
+        run: python -B checks/check_local_install.py --codex "$RUNNER_TEMP/native-codex/node_modules/.bin/codex" --output "$RUNNER_TEMP/svif-native-acceptance"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: svif-native-installation-${{ matrix.os }}
+          path: |
+            ${{ runner.temp }}/svif-native-acceptance/latest-report.json
+            ${{ runner.temp }}/svif-native-acceptance/run-*/app-server.jsonl
+            ${{ runner.temp }}/svif-native-acceptance/run-*/app-server.stderr
+          if-no-files-found: error
+          retention-days: 14

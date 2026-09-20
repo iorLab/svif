@@ -1,0 +1,26 @@
+name: Materialize readiness source once
+on:
+  push:
+    branches: [fix/local-readiness]
+    paths: [.github/workflows/readiness-source-once.yml]
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Export exact baseline and Git object metadata
+        run: |
+          mkdir -p "$RUNNER_TEMP/readiness-source"
+          git archive --format=zip 960526544da308ea8b0eb1d325b26609487ab856 -o "$RUNNER_TEMP/readiness-source/source.zip"
+          git bundle create "$RUNNER_TEMP/readiness-source/source.bundle" HEAD refs/remotes/origin/main refs/tags/v0.2.0-preview.1
+          git ls-tree -r 960526544da308ea8b0eb1d325b26609487ab856 > "$RUNNER_TEMP/readiness-source/tree.txt"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: svif-readiness-source
+          path: ${{ runner.temp }}/readiness-source/
+          retention-days: 7

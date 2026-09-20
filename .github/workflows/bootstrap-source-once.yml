@@ -1,0 +1,27 @@
+name: Bootstrap source capture once
+on:
+  push:
+    branches: [fix/bootstrap-acceptance]
+    paths: [.github/workflows/bootstrap-source-once.yml]
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: 9501fd7ed0843f46882ee63ed9c19cd2759a7cb2
+          persist-credentials: false
+      - name: Capture tracked source only
+        run: |
+          mkdir -p "$RUNNER_TEMP/source"
+          git rev-parse HEAD HEAD^{tree} > "$RUNNER_TEMP/source/identity.txt"
+          git ls-tree -r HEAD > "$RUNNER_TEMP/source/tree.txt"
+          git archive --format=tar HEAD > "$RUNNER_TEMP/source/source.tar"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: svif-bootstrap-pinned-source
+          path: ${{ runner.temp }}/source/
+          retention-days: 3
+          if-no-files-found: error

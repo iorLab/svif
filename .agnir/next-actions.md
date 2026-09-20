@@ -22,13 +22,17 @@ Full current-version Skill effectiveness and whole-release sign-off remain open.
    observation and interrupted write markers. Record prompts, actual tool behavior,
    initial/resulting file hashes, host/version and classification. Kernel tests do not
    substitute for installed-Skill adherence. Repair any observed failure before sign-off.
-3. **Preserve exact integration and release evidence.** Tested source
-   `225e535e32a18bf8db2bfc7d76efe6bed9378e97` / tree
-   `12542123c9ab47e5e938f8db8fd8a7d36f28a513` belongs to PR #11. Verify the final
-   continuity-checkpoint CI and authoritative main after integration, and preserve
-   the exact Plugin tree. Evidence is `.agnir/evidence/2026-09-20-runtime-readiness-repair.md`.
-   Keep the explicit trusted-integration/filesystem limits in `spec/RUNTIME_SAFETY.md`.
-   Do not mark full release acceptance passed while required native evidence is missing.
+3. **Preserve the integrated engineering baseline and release limits.** PR #11 was
+   squash-merged to authoritative `main` as `9e8f602b3c9a9d4a1a3c674979fcbc6f5483f27a`.
+   The merge tree is `3b6d026b8d3b6b8281b9cc9f7d8e62fefc741361`, exactly the reviewed
+   candidate tree. Final PR run `35509842215` and authoritative-main run `35509894716`
+   passed all eight checks. The latter includes native Codex installation/discovery on
+   Linux and macOS, plus runtime checks on Linux/macOS/Windows. Plugin tree remains
+   `7cc90517013306181a4df2238f849b85cf716665`. Integration verification is complete;
+   the remaining P0 is real authenticated native positive/negative behavior, not merging
+   the already-integrated repair. Keep `spec/RUNTIME_SAFETY.md` limitations explicit.
+   Implementation evidence: `.agnir/evidence/2026-09-20-runtime-readiness-repair.md`.
+   Full release acceptance must stay unpassed until the remaining native gates close.
 
 ## Deferred public/personal ChatGPT path
 

@@ -106,7 +106,7 @@ plugin/
 
 - `plugin/plugin.json` is the portable Plugin manifest.
 - `plugin/skills/svif/SKILL.md` is the first installable workflow component.
-- The Plugin guides compatible execution surfaces through Agnir discovery, Svif lifecycle execution, provenance/authority guards, independent observation, and durable checkpointing.
+- The Plugin guides compatible execution surfaces through Agnir discovery, Svif lifecycle execution, provenance/authority guards, independent observation, and durable checkpointing. On first use it preserves an existing Project's declared Agnir compatibility line; only a genuinely uninitialized Project resolves the canonical latest published stable Agnir and adopts the Core/profile declared by that release.
 - The Plugin is a distribution layer and does not reimplement `src/svif/runtime.py`.
 
 A Skill-only Plugin is a valid and useful first product increment. An optional `mcp.json` will be added when the concrete remote Svif MCP/App surface is ready; MCP completion is not a prerequisite for testing and iterating the Plugin workflow itself.

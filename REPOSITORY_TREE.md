@@ -44,6 +44,7 @@ svif/                                                     # Svif 产品主仓库
 │       ├── 2026-09-18-public-submission-candidate-audit.md # Svif 0.2.0 public-submission candidate 版本边界、package tree、OpenAI packaging 审计与 CI 证据
 │       ├── 2026-09-18-skills-only-submission-archive.md    # exact Plugin tree 的 deterministic ZIP、archive guards、CI 与外部 submission evidence 边界
 │       ├── 2026-09-20-runtime-readiness-repair.md         # 可信策略/事务恢复修复、回归与原生验收层次证据
+│       ├── 2026-09-20-bootstrap-version-selection.md      # 现有 Agnir 版本保留 / 全新 Project latest-stable bootstrap 语义与验证证据
 │       └── checkpoint-2026-08-28-validation-2.md         # Validation 2 的持久 checkpoint 记录
 │
 ├── .github/                                              # GitHub 托管侧自动化配置

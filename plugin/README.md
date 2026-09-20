@@ -46,7 +46,9 @@ That is **package/conformance/distribution validation**, not proof that a partic
 
 The bundled `svif` Skill guides a compatible execution surface to:
 
-- for an Agent-operable Agnir Project using `repository-filesystem/0.1`, require the durable activation route `Project root -> AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml -> durable memory` before normal Project work;
+- preserve an existing Agnir Project's declared Core/profile compatibility and bind Svif to that exact line instead of silently migrating it;
+- for a genuinely uninitialized Project, resolve the canonical latest published stable Agnir, use the Core/profile declared by that release, and never substitute moving `main`, an RC, or the historical 0.1 bootstrap baseline;
+- require the version-appropriate durable activation route before normal Project work: current stable packaging uses `Project root -> AGENTS.md -> AGNIR.md -> AGNIR.yaml -> durable memory`, while supported legacy Projects may retain `Project root -> AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml -> durable memory`;
 - validate Agnir Core/profile compatibility and selected-Project identity before loading durable memory;
 - surface unsupported-version, Project-mismatch, authorization, locator, cycle, stale, and inconsistency failures instead of silently falling back to unrelated state;
 - load current state and next actions first, then only relevant decisions/evidence;
@@ -101,7 +103,7 @@ OpenAI currently asks for five positive and three negative review cases. These c
 
 **Positive cases**
 
-1. **Resume a valid Agnir Project.** Prompt: continue the Project and implement the next concrete action. Expected: follow `AGENTS.md -> README Agnir Project Instructions -> AGNIR.yaml`, validate compatibility/identity, load Current State + Next Actions, perform the concrete work, verify it, and checkpoint durable state.
+1. **Resume a valid Agnir Project.** Prompt: continue the Project and implement the next concrete action. Expected: follow the Project's installed version-appropriate Agnir activation route (`AGENTS.md -> AGNIR.md -> AGNIR.yaml` for current stable packaging, or the compatible legacy README route when the Project already declares it), validate compatibility/identity, load Current State + Next Actions, perform the concrete work, verify it, and checkpoint durable state.
 2. **Checkpoint a non-effectful repository change.** Expected: run DISCOVER -> PLAN -> CHANGE -> VERIFY -> CHECKPOINT without inventing DELIVER/OBSERVE evidence.
 3. **Repair a missing Agnir locator without destroying existing instructions.** Expected: preserve unrelated `AGENTS.md` content, add only the minimal locator when authorized, rerun activation, and remain idempotent on a second pass.
 4. **Resume after a prior checkpoint.** Expected: a fresh execution context reconstructs required Project truth from Project-owned durable surfaces rather than conversation memory.

@@ -58,13 +58,14 @@ If an activation locator, identity, required memory locator, or compatibility ch
 
 ## What Svif Adds to a Project
 
-On first use of Svif in a genuinely uninitialized repository/filesystem Project, the shared Skill establishes the founding Agnir continuity plus a matching Svif Project Binding. **Svif does not take over existing Project files.** Existing `AGENTS.md` and `README.md` receive only the activation/instruction entry they need, while unrelated content is preserved.
+On first use, Svif first checks whether the Project already has Agnir. If it does, Svif preserves that Project's declared Agnir Core/profile compatibility exactly and creates/validates the Svif binding against the same line; installing Svif is not permission to migrate Agnir. Only a genuinely uninitialized repository/filesystem Project resolves the canonical **latest published stable Agnir** and initializes using the Core/profile and activation contract declared by that stable release. **Svif does not take over existing Project files.** Existing activation/documentation surfaces receive only the entry required by the selected Agnir contract, while unrelated content is preserved.
 
 ```text
 Project/
-├── AGENTS.md                 # [EDIT: add entry only] add Agnir activation locator; preserve existing instructions
-├── README.md                 # [EDIT: add entry only] add ## Agnir Project Instructions; preserve existing content
-├── AGNIR.yaml                # [ADD] founding Agnir discovery anchor
+├── AGENTS.md                 # [EDIT: add entry only] add selected Agnir activation locator; preserve existing instructions
+├── AGNIR.md                  # [ADD when selected release requires it] canonical Project instructions for current stable packaging
+├── README.md                 # [EDIT: add entry only] add selected release compatibility/instruction entry; preserve existing content
+├── AGNIR.yaml                # [ADD] founding Agnir discovery anchor using selected stable Core/profile
 ├── .agnir/                   # [ADD] Project-owned durable continuity
 │   ├── state.md              # [ADD] current durable Project truth
 │   ├── next-actions.md       # [ADD] outstanding ordered work for the next Executor
@@ -73,7 +74,7 @@ Project/
 └── SVIF.yaml                 # [ADD] Svif Project Binding: continuity, execution, capability and profile bindings
 ```
 
-If compatible Agnir/Svif artifacts already exist, the Skill validates and reuses them rather than recreating them. Partial or contradictory artifacts are a repair case, not clean initialization. A Project intentionally bound to another Continuity Provider is not silently overwritten with Agnir.
+If compatible Agnir/Svif artifacts already exist, the Skill validates and reuses their exact declared compatibility rather than recreating or upgrading them. Partial or contradictory artifacts are a repair case, not clean initialization. A Project intentionally bound to another Continuity Provider is not silently overwritten with Agnir. Agnir package release version and Core/profile compatibility are separate: a newer distribution may operate a supported older Project without relabeling it.
 
 These are founding `repository-filesystem` onboarding artifacts, not universal Svif kernel requirements. Svif coordinates replaceable providers and execution surfaces; it does not make Git, GitHub, Agnir, ChatGPT, or Cloudflare permanent kernel dependencies.
 

@@ -59,7 +59,7 @@ class PublishedAgnirStableMigrationTests(unittest.TestCase):
         ):
             self.assertIn(marker, agnir)
 
-    def test_skill_distinguishes_current_self_host_from_released_preview_bootstrap(self) -> None:
+    def test_skill_distinguishes_self_host_existing_projects_and_fresh_bootstrap(self) -> None:
         text = SKILL.read_text(encoding="utf-8")
 
         for marker in (
@@ -67,14 +67,16 @@ class PublishedAgnirStableMigrationTests(unittest.TestCase):
             "profile `repository-filesystem/1.0`",
             "one explicit logical Continuity Lineage",
             "matching durable VCS selector binding",
-            "The released `v0.2.0-preview.1` first-use bootstrap remains",
-            "Core/profile `0.1` baseline",
-            "published Agnir repository release `v1.0.0`",
+            "Existing target Projects likewise dispatch according to their own declared compatibility",
+            "immutable released `v0.2.0-preview.1` retains its historical Core/profile `0.1` bootstrap bytes",
+            "current unpublished `0.2.0` Skill uses existing-version preservation plus latest-stable selection",
         ):
             self.assertIn(marker, text)
 
-        self.assertIn("Initialize the Agnir `repository-filesystem/0.1` continuity contract", text)
-        self.assertIn('compatibility `"0.1"`', text)
+        self.assertNotIn("Initialize the Agnir `repository-filesystem/0.1` continuity contract", text)
+        self.assertIn("A valid Core/profile `0.1` Project remains `0.1`", text)
+        self.assertIn("a valid `0.2` Project remains `0.2`", text)
+        self.assertIn("a valid `1.0` Project remains `1.0`", text)
         self.assertIn("Core `0.2` or `1.0`, require a non-empty logical `continuity.lineage`", text)
         self.assertIn("AGNIR_LINEAGE_REQUIRED", text)
 

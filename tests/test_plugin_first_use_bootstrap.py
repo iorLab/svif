@@ -9,65 +9,82 @@ SKILL = ROOT / "plugin" / "skills" / "svif" / "SKILL.md"
 
 
 class PluginFirstUseBootstrapTests(unittest.TestCase):
-    def test_uninitialized_project_bootstraps_before_not_found(self) -> None:
+    def test_existing_agnir_project_preserves_declared_compatibility(self) -> None:
         text = SKILL.read_text(encoding="utf-8")
 
-        bootstrap = text.index("### Bootstrap a Project that has no continuity binding")
+        for marker in (
+            "Existing Agnir Project: preserve the declared compatibility line",
+            "Dispatch according to the compatibility identifiers the Project actually declares",
+            "A valid Core/profile `0.1` Project remains `0.1`",
+            "a valid `0.2` Project remains `0.2`",
+            "a valid `1.0` Project remains `1.0`",
+            "authorization to migrate or relabel compatibility",
+            "`compatibility` equal to the existing `agnir.version`",
+            "`profile` equal to the existing `agnir.discovery_profile`",
+            "An operational Agnir package upgrade and a Core/profile compatibility migration are different operations",
+        ):
+            self.assertIn(marker, text)
+
+    def test_genuinely_new_project_resolves_latest_published_stable(self) -> None:
+        text = SKILL.read_text(encoding="utf-8")
+
         first_use = text.index("classify it as a **first-use bootstrap**")
         no_separate_prompt = text.index("Do not make the user issue a separate Agnir initialization prompt")
         not_found = text.index("surface `AGNIR_DISCOVERY_NOT_FOUND`")
-
-        self.assertLess(bootstrap, first_use)
         self.assertLess(first_use, no_separate_prompt)
         self.assertLess(no_separate_prompt, not_found)
 
         for marker in (
-            "Do not require the user to initialize Agnir separately",
-            "no `SVIF.yaml` continuity binding",
-            "no `AGNIR.yaml`",
-            "no Project instruction or durable configuration selecting another Continuity Provider",
-            "first-use bootstrap",
-            "same stable Project identity",
-            "Agnir Core `0.1`",
-            "repository-filesystem/0.1",
-            "create top-level `AGNIR.yaml`",
-            "`.agnir/state.md`",
-            "`.agnir/next-actions.md`",
-            "`.agnir/decisions.md`",
-            "`.agnir/evidence/`",
-            "minimal Agnir locator",
-            "minimal repository/filesystem `SVIF.yaml`",
-            "project-binding/0.2",
-            'continuity.provider: "agnir"',
-            'compatibility `"0.1"`',
-            'discovery `"AGNIR.yaml"`',
+            "latest published stable release",
+            "published non-prerelease tag/Release",
+            "never substitute moving `main`",
+            "Package SemVer and Core/profile compatibility are distinct version layers",
+            "use the Core/profile declared by the resolved stable release",
+            "Do not fall back to Core/profile `0.1`",
+            "record immutable Agnir operational provenance",
+            "`compatibility` equal to the newly created `AGNIR.yaml -> agnir.version`",
+            "`profile` equal to `AGNIR.yaml -> agnir.discovery_profile`",
             "continue the user's original Project task in the same operation",
         ):
             self.assertIn(marker, text)
 
-    def test_bootstrap_does_not_overwrite_existing_or_conflicting_continuity(self) -> None:
+    def test_existing_broken_or_other_provider_is_not_clean_bootstrap(self) -> None:
         text = SKILL.read_text(encoding="utf-8")
-
         for marker in (
-            "Preserve unrelated Project documentation and instructions",
-            "merge only the minimal locator",
-            "If a material existing instruction conflicts with Agnir activation",
-            "surface the conflict to the Principal",
-            "Do not treat partial or contradictory Agnir/Svif artifacts as a clean first-use bootstrap",
+            "partial or contradictory Agnir/Svif artifacts",
             "enter repair and preserve the applicable Agnir failure class",
+            "Do not silently replace that Project",
             "intentionally selects a different Continuity Provider",
             "do not overwrite it with Agnir",
+            "A mismatch is a repair/binding case",
         ):
             self.assertIn(marker, text)
 
-    def test_bootstrap_is_self_contained_and_does_not_create_external_effect_authority(self) -> None:
+    def test_activation_dispatch_preserves_installed_contract(self) -> None:
         text = SKILL.read_text(encoding="utf-8")
+        for marker in (
+            "Activate according to the Project's installed Agnir contract",
+            "Do not infer the activation route from the newest available version",
+            "AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml",
+            "AGENTS.md -> AGNIR.md -> AGNIR.yaml",
+            "Preserve a valid existing route unless an explicit compatible operational upgrade or repair authorizes changing it",
+            "`AGENTS.md` remains locator-only",
+        ):
+            self.assertIn(marker, text)
 
+    def test_preview_history_does_not_pin_current_bootstrap(self) -> None:
+        text = SKILL.read_text(encoding="utf-8")
+        self.assertIn("released `v0.2.0-preview.1` artifact is immutable historical evidence", text)
+        self.assertIn("current unpublished `0.2.0` line deliberately supersedes that historical bootstrap rule", text)
+        self.assertNotIn("Initialize the Agnir `repository-filesystem/0.1` continuity contract", text)
+
+    def test_bootstrap_does_not_create_external_effect_authority_or_require_prior_install(self) -> None:
+        text = SKILL.read_text(encoding="utf-8")
         for marker in (
             "does not grant authority for protected external effects",
-            "MUST NOT require the Agnir Skill repository",
+            "MUST NOT require a preinstalled Agnir Skill",
             "previous Agnir installation conversation",
-            "successful first use must remain possible from the Svif Plugin procedure itself",
+            "If that resolution is unavailable, surface the blocker instead of inventing a version",
             "bootstrap capability blocker",
         ):
             self.assertIn(marker, text)

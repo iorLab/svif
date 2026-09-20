@@ -227,3 +227,14 @@
 - Existing Project identity, lineage, selector, compatibility and released Preview tags remain
   unchanged. The unpublished 0.2.0 candidate may change; older exact package/ZIP receipts stay
   historical and cannot certify the new bytes.
+
+
+## 2026-09-20 — First-use Agnir version selection follows Project truth
+
+- Svif MUST distinguish an existing Agnir Project from a genuinely uninitialized Project before first-use bootstrap.
+- If a Project already declares a valid Agnir Core/profile compatibility line, Svif preserves and dispatches that exact line. A `0.1`, `0.2`, `1.0`, or future supported `x.y` Project is not migrated merely because a newer Agnir distribution exists.
+- If Svif binding is added to an existing Agnir Project, its continuity compatibility/profile MUST match the existing `AGNIR.yaml`; mismatch is a repair case.
+- A genuinely uninitialized Project resolves the canonical `iorLab/agnir` latest **published non-prerelease stable** at operation time and initializes using the Core/profile and activation contract declared by that release.
+- "Latest stable" MUST NOT mean moving `main`, an RC, an untagged revision, stale model memory, or fallback to Svif Preview's historical Core/profile `0.1` bootstrap. If stable resolution is unavailable, bootstrap stops with a capability blocker.
+- Agnir package SemVer / operational provenance and Project Core/profile compatibility are separate version layers. A newer distribution may operate a supported older Project without silently relabeling it.
+- The immutable Svif `v0.2.0-preview.1` artifact retains its historical `0.1` bootstrap bytes; this decision changes the current unpublished `0.2.0` line and future distributions only.

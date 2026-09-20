@@ -1,0 +1,38 @@
+name: Native local installation probe
+on:
+  push:
+    branches: [fix/local-release-readiness]
+    paths: [.github/workflows/readiness-native-probe.yml]
+permissions:
+  contents: read
+jobs:
+  native:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Probe isolated native host without model credentials
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/probe" "$RUNNER_TEMP/codex-home"
+          npm install --prefix "$RUNNER_TEMP/codex-cli" @openai/codex
+          CLI="$RUNNER_TEMP/codex-cli/node_modules/.bin/codex"
+          export CODEX_HOME="$RUNNER_TEMP/codex-home"
+          "$CLI" --version | tee "$RUNNER_TEMP/probe/version.txt"
+          "$CLI" plugin --help > "$RUNNER_TEMP/probe/plugin-help.txt"
+          "$CLI" plugin marketplace add "$GITHUB_WORKSPACE" --json > "$RUNNER_TEMP/probe/marketplace.json"
+          "$CLI" plugin add svif@svif --json > "$RUNNER_TEMP/probe/install.json"
+          "$CLI" plugin list --json > "$RUNNER_TEMP/probe/list.json"
+          "$CLI" app-server --help > "$RUNNER_TEMP/probe/app-server-help.txt"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: svif-native-probe
+          path: ${{ runner.temp }}/probe/
+          if-no-files-found: error
+          retention-days: 7

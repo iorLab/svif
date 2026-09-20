@@ -10,17 +10,22 @@ credentials are never copied from the normal home or included in receipts.
 from __future__ import annotations
 
 import argparse
+import base64
 import hashlib
 import json
 import os
 import platform
 import queue
+import re
 import shutil
 import subprocess
 import sys
 import threading
 import time
 import uuid
+import urllib.parse
+import urllib.request
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -171,6 +176,134 @@ def discovered_skill(response: dict, expected: Path) -> dict:
     return matches[0]
 
 
+def agnir_adapter():
+    # This checker uses the repository's actual parser and compatibility support.
+    source = str(ROOT / "src")
+    if source not in sys.path:
+        sys.path.insert(0, source)
+    from svif.continuity.agnir import AgnirFilesystemContinuityProvider
+    return AgnirFilesystemContinuityProvider
+
+
+def canonical_agnir_json(path: str) -> Any:
+    """Read public canonical metadata only; never send credentials or change hosts."""
+    class NoRedirect(urllib.request.HTTPRedirectHandler):
+        def redirect_request(self, req, fp, code, msg, headers, newurl):
+            raise RuntimeError("canonical Agnir lookup redirected; resolve explicitly")
+
+    request = urllib.request.Request(
+        "https://api.github.com/repos/iorLab/agnir/" + path,
+        headers={"Accept": "application/vnd.github+json", "User-Agent": "svif-local-acceptance"},
+    )
+    with urllib.request.build_opener(NoRedirect).open(request, timeout=30) as response:
+        data = response.read(4 * 1024 * 1024 + 1)
+    require(len(data) <= 4 * 1024 * 1024, "canonical Agnir response exceeds limit")
+    return json.loads(data)
+
+
+def resolve_latest_agnir(fetch=None) -> tuple[dict, dict[str, str]]:
+    """Resolve once per NEW bootstrap, not per existing Project or normal resume.
+
+    The injected reader is for unit tests; those fixtures are NOT live receipts.
+    Return verified release files to the sandbox without granting it network access.
+    """
+    fetch = canonical_agnir_json if fetch is None else fetch
+    release = fetch("releases/latest")
+    require(isinstance(release, dict), "invalid latest-stable release metadata")
+    tag = release.get("tag_name", "")
+    require(isinstance(tag, str) and re.fullmatch(r"v?(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)", tag) is not None,
+            "latest Agnir must have a stable SemVer tag, not a branch or prerelease")
+    require(release.get("draft") is False and release.get("prerelease") is False,
+            "latest Agnir is not a published stable release")
+    published = release.get("published_at")
+    require(isinstance(published, str) and bool(published), "latest Agnir is not published")
+    timestamp = datetime.fromisoformat(published.replace("Z", "+00:00"))
+    require(timestamp.tzinfo is not None and timestamp <= datetime.now(timezone.utc),
+            "invalid Agnir publication time")
+    commit = fetch("commits/" + urllib.parse.quote(tag, safe=""))
+    require(isinstance(commit, dict), "invalid stable tag resolution")
+    revision = commit.get("sha", "")
+    require(isinstance(revision, str) and re.fullmatch(r"[0-9a-f]{40}", revision) is not None,
+            "stable tag did not resolve to an exact commit")
+    files: dict[str, str] = {}
+    hashes: dict[str, str] = {}
+
+    def read(path: str) -> str:
+        item = fetch("contents/" + path + "?ref=" + revision)
+        require(isinstance(item, dict) and item.get("type") == "file"
+                and item.get("encoding") == "base64", "missing canonical release file: " + path)
+        content = item.get("content")
+        require(isinstance(content, str), "invalid release file content: " + path)
+        raw = base64.b64decode("".join(content.split()), validate=True)
+        blob = hashlib.sha1(b"blob " + str(len(raw)).encode() + b"\0" + raw).hexdigest()
+        require(blob == item.get("sha"), "release file Git identity mismatch: " + path)
+        files[path] = raw.decode("utf-8")
+        hashes[path] = hashlib.sha256(raw).hexdigest()
+        return files[path]
+
+    package = read("VERSION").strip()
+    require(package == tag.removeprefix("v"), "Agnir tag and package VERSION disagree")
+    values = agnir_adapter()._parse_discovery(read("AGNIR.yaml"))
+    core, profile = values.get(("agnir", "version")), values.get(("agnir", "discovery_profile"))
+    require(core in agnir_adapter()._SUPPORTED_PROFILES
+            and profile == agnir_adapter()._SUPPORTED_PROFILES[core],
+            "latest stable Core/profile is unsupported; do not downgrade or initialize")
+    # Paths belong to the supported contract lines, not the package patch number.
+    suffix = {"0.1": "", "0.2": "_0_2", "1.0": "_1_0"}[core]
+    read("SKILL.md")
+    read("RELEASE.md")
+    read("spec/AGNIR_CORE" + suffix + ".md")
+    read("profiles/REPOSITORY_FILESYSTEM" + suffix + ".md")
+    schema_suffix = "" if core == "0.1" else "-" + core
+    read("schemas/agnir-manifest" + schema_suffix + ".schema.json")
+    entries = fetch("contents?ref=" + revision)
+    require(isinstance(entries, list), "cannot inspect canonical activation files")
+    activation = "AGNIR.md" if any(e.get("path") == "AGNIR.md" and e.get("type") == "file"
+                                    for e in entries if isinstance(e, dict)) else "README.md"
+    read(activation)
+    receipt = {"source": "iorLab/agnir", "release": package, "tag": tag,
+               "revision": revision, "release_id": release.get("id"),
+               "published_at": published, "resolved_at": datetime.now(timezone.utc).isoformat(),
+               "core": core, "profile": profile, "activation": activation,
+               "files_sha256": hashes}
+    return receipt, files
+
+
+def validate_agnir_binding(project: Path, *, stable: dict | None = None):
+    """Read-only assertion: bind to existing truth, or independently resolved stable.
+
+    No latest lookup is made for an existing Project. Structural assertions here
+    do not replace the installed Skill's actual activation/behavior observations.
+    """
+    adapter = agnir_adapter()
+    values = adapter._parse_discovery((project / "AGNIR.yaml").read_text(encoding="utf-8"))
+    binding = adapter._parse_discovery((project / "SVIF.yaml").read_text(encoding="utf-8"))
+    identity = values.get(("project", "identity"))
+    core, profile = values.get(("agnir", "version")), values.get(("agnir", "discovery_profile"))
+    require(isinstance(identity, str) and bool(identity.strip()), "missing Agnir Project identity")
+    require(core in adapter._SUPPORTED_PROFILES and profile == adapter._SUPPORTED_PROFILES[core],
+            "unsupported or inconsistent existing Agnir Core/profile; preserve it and stop")
+    require(binding.get(("svif", "manifest")) == "project-binding/0.2"
+            and binding.get(("project", "identity")) == identity
+            and binding.get(("bindings", "continuity", "provider")) == "agnir"
+            and binding.get(("bindings", "continuity", "compatibility")) == core
+            and binding.get(("bindings", "continuity", "profile")) == profile
+            and binding.get(("bindings", "continuity", "config", "discovery")) == "AGNIR.yaml",
+            "Svif/Agnir Project binding does not match exactly")
+    if stable is not None:
+        require((core, profile) == (stable["core"], stable["profile"]),
+                "new Project did not use independently resolved latest stable Core/profile")
+        for key, expected in (("source", "iorLab/agnir"), ("release", stable["release"]),
+                              ("applied_revision", stable["revision"])):
+            require(values.get(("extensions", "agnir/operations", key)) == expected,
+                    "new Project lacks exact applied Agnir release provenance: " + key)
+        activation = stable["activation"]
+        require((project / activation).is_file()
+                and activation in (project / "AGENTS.md").read_text(encoding="utf-8"),
+                "new Project has no selected-release activation locator")
+    return adapter(project, expected_core_version=core, expected_profile=profile), identity
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", type=Path, required=True, help="isolated acceptance directory outside the source repo")
@@ -233,6 +366,16 @@ def main() -> int:
             return 0
 
         report["model_exercise"] = "in-progress"
+        # Same-operation trusted lookup; no preinitialized Project or stale cache.
+        stable, release_files = resolve_latest_agnir()
+        report["agnir_bootstrap_target"] = stable
+        release_root = session_dir / "agnir-release"
+        release_root.mkdir()
+        for name, data in release_files.items():
+            destination = release_root / name
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.write_bytes(data.encode("utf-8"))
+        (release_root / "resolved-release.json").write_text(json.dumps(stable, indent=2), encoding="utf-8")
         token = "svif-local-" + uuid.uuid4().hex
         content = token + "\n"
         digest = hashlib.sha256(content.encode()).hexdigest()
@@ -242,20 +385,16 @@ def main() -> int:
             thread1, _ = client.exercise(project,
                 f"Use Svif for this selected ordinary Project. Create RESULT.md containing exactly {token!r} followed by one newline. "
                 "Verify the real file and checkpoint completion with no remaining task. Preserve existing README and AGENTS instructions. "
+                f"A trusted latest-stable Agnir lookup for this bootstrap operation is available at {release_root}. "
+                "Read its resolved-release.json, SKILL.md and selected contracts. These are installer source, "
+                "not this Project's identity or memory. Use them without making network requests. "
                 "Do not access network providers or publish anything.", skill, model=args.model)
         require((project / "RESULT.md").read_bytes() == content.encode(), "native task result bytes do not match")
-        sys.path.insert(0, str(ROOT / "src"))
-        from svif.continuity.agnir import AgnirFilesystemContinuityProvider
-        provider = AgnirFilesystemContinuityProvider(project)
-        values = provider._parse_discovery((project / "AGNIR.yaml").read_text(encoding="utf-8"))
-        identity = values.get(("project", "identity"))
-        require(isinstance(identity, str) and bool(identity), "native bootstrap did not establish Project identity")
+        provider, identity = validate_agnir_binding(project, stable=stable)
         snapshot = provider.load(identity)
         require(bool(snapshot.state) and bool(snapshot.next_actions) and bool(snapshot.evidence), "native checkpoint is incomplete")
         require(readme.strip() in (project / "README.md").read_text(encoding="utf-8"), "README original content was destroyed")
         require(agents.strip() in (project / "AGENTS.md").read_text(encoding="utf-8"), "AGENTS original content was destroyed")
-        svif = provider._parse_discovery((project / "SVIF.yaml").read_text(encoding="utf-8"))
-        require(svif.get(("project", "identity")) == identity, "Svif/Agnir identity mismatch")
         before = file_map(project)
         phase2 = session_dir / "cold-resume"
         phase2.mkdir()

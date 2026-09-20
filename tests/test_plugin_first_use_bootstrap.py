@@ -72,6 +72,18 @@ class PluginFirstUseBootstrapTests(unittest.TestCase):
         ):
             self.assertIn(marker, text)
 
+    def test_existing_resume_is_offline_and_new_unsupported_latest_does_not_downgrade(self) -> None:
+        text = SKILL.read_text(encoding="utf-8")
+        for marker in (
+            "does not require a latest-release lookup",
+            "Preserve its recorded operational release/provenance",
+            "absent optional package provenance is not evidence of an uninitialized Project",
+            "fresh, same-operation canonical release-resolution receipt",
+            "Before writing any Project files",
+            "If unsupported, stop without initializing or selecting an older release",
+        ):
+            self.assertIn(marker, text)
+
     def test_preview_history_does_not_pin_current_bootstrap(self) -> None:
         text = SKILL.read_text(encoding="utf-8")
         self.assertIn("released `v0.2.0-preview.1` artifact is immutable historical evidence", text)

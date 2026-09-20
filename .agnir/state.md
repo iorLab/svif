@@ -9,29 +9,41 @@ Agnir continuity on `main` remains canonical; staging is not a second authority.
 The Principal requested release-standard functional repair and local effectiveness;
 OpenAI Platform submission/Publish remains paused until an explicit new instruction.
 
-**The four reproduced runtime blockers are repaired and cross-platform regression
-checks pass. A new first-use version-selection repair is now under validation: existing
-Agnir Projects preserve their declared Core/profile, while genuinely uninitialized
-Projects resolve the canonical latest published stable Agnir. Because this changes Skill
-bytes, the prior native install/discovery receipt remains historical for the preceding
-candidate and must be rerun for the new candidate before model-driven release acceptance.**
+**The four reproduced runtime blockers remain repaired. Project-aware bootstrap selection
+and its executable acceptance checks now pass: existing Agnir Projects preserve their
+own version; only genuinely uninitialized Projects resolve the latest published stable.
+The changed Plugin has fresh Linux/macOS native installation/discovery receipts.
+Authenticated model-driven effectiveness and whole-product release sign-off remain open.**
 
-## Verified repair subject
+## Verified current candidate
 
 - Product/package version: unpublished `0.2.0`; product and portable contracts remain `0.2`.
-- Baseline: `960526544da308ea8b0eb1d325b26609487ab856`, retaining audited product code
-  `fe7788bd53d3a240f663860133b741799d0470e3`.
-- Reviewed repair source: `225e535e32a18bf8db2bfc7d76efe6bed9378e97`, tree
-  `12542123c9ab47e5e938f8db8fd8a7d36f28a513`, PR #11.
-- Prior repaired Plugin tree `7cc90517013306181a4df2238f849b85cf716665` passed native install/discovery and remains historical evidence. The bootstrap-version-selection change creates a new Plugin subject that requires its own exact tree and native receipt before acceptance.
-- Local full suite: 128 tests pass on Linux/Python 3.13.5; repository integrity and
-  portable contracts pass. Tests execute real code, including process termination.
-- PR candidate run `35509417968`: all eight jobs pass, including runtime on Linux
-  (Python 3.12/3.13), macOS (3.12), Windows (3.12), and native installation on Linux/macOS.
-- Native Codex 0.155.1 reports installed+enabled and discovers `svif:svif` at the exact
-  installed cache path. All installed package file hashes equal the selected source.
-- Native no-auth receipts remain distinct from model execution. No current-version
-  real model task/checkpoint/fresh-LLM-session or desktop GUI acceptance is claimed.
+- Initial version-selection implementation reached main at
+  `9501fd7ed0843f46882ee63ed9c19cd2759a7cb2`; run `35519581944` passed.
+- Completed checker/Skill candidate: `08f2c7c7581edb8845cea161b971a0c4dca2de4d`,
+  tree `3c053b2371f0fe916379ac7ea2f74ce1eb4bad3f`, PR #13.
+- Exact current Plugin tree: `77953ba954b2c0f3ff7dcc6f9c7814df5fa05e12`.
+- Local complete suite: 141 tests pass; repository integrity and portable contracts pass.
+- PR run `35520792408` passed all eight checks: Linux Python 3.12/3.13, macOS 3.12,
+  Windows 3.12, repository integrity, portable contracts, native installation on Linux/macOS.
+- Downloaded native reports from artifacts `10608285647` and `10607959357` confirm
+  Codex 0.155.1 installation, enabled state and exact installed Skill discovery. Every
+  installed file equals the candidate source; package-file-map SHA-256 is
+  `4e6ccce8405606f260d010d058622b1f32eeafdb59501658ea75d971a621ed81`.
+- Native reports explicitly retain `model_exercise: not-run` and
+  `complete_release_acceptance: false`. No authenticated current-version task,
+  checkpoint/fresh-model-session, negative-host or desktop GUI acceptance is claimed.
+- Actual stable lookup observed Agnir `v1.0.2` at
+  `b5626394ec40a5cb7a28c01892acde07cc0adc8e`, Core/profile `1.0`, on 2026-09-20.
+  This is a dated receipt, never a hard-coded future default. A subsequent HTTP 403
+  lookup stopped safely; no old-version fallback was used.
+- The one-shot transfer/verification workflow is absent from the product candidate.
+
+The earlier runtime repair was integrated by PR #11 at
+`9e8f602b3c9a9d4a1a3c674979fcbc6f5483f27a`, with authoritative run `35509894716`.
+Its Plugin tree `7cc90517013306181a4df2238f849b85cf716665` and 128-test/native receipts
+remain historical and are not the identity of this changed candidate. Runtime code and
+its safety contract were not changed by the bootstrap acceptance work.
 
 ## Implemented behavior
 

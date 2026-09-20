@@ -350,7 +350,7 @@ def main() -> None:
         ("## Architecture Diagram", "## Runtime / Operation Flow"),
         architecture_markers=(
             "non-destructive first-use setup", "EDIT: add activation locator only",
-            "EDIT: add Agnir instructions only", "ADD: founding continuity", "ADD: Project binding",
+            "EDIT: add compatibility locator only", "AGNIR.md", "ADD: founding continuity", "ADD: Project binding",
             "Svif Orchestrator", "Continuity Provider", "Execution integration", "Capability Providers",
         ),
         runtime_forbidden_markers=("EDIT: add", "ADD: founding", "ADD: Project binding"),
@@ -360,7 +360,7 @@ def main() -> None:
         ("## 架构图", "## 运行流程"),
         architecture_markers=(
             "非破坏性 first-use setup", "编辑：仅添加 activation locator",
-            "编辑：仅添加 Agnir instructions", "新增：founding continuity", "新增：Project binding",
+            "编辑：仅添加兼容入口", "AGNIR.md", "新增：founding continuity", "新增：Project binding",
             "Svif 编排器", "项目连续性提供者", "执行环境适配层", "能力提供层",
         ),
         runtime_forbidden_markers=("编辑：仅添加", "新增：founding", "新增：Project binding"),

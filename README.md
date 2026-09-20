@@ -58,6 +58,8 @@ If an activation locator, identity, required memory locator, or compatibility ch
 
 ## What Svif Adds to a Project
 
+The following is the current unpublished `0.2.0` behavior. The immutable `v0.2.0-preview.1` package retains its historical onboarding procedure.
+
 On first use, Svif first checks whether the Project already has Agnir. If it does, Svif preserves that Project's declared Agnir Core/profile compatibility exactly and creates/validates the Svif binding against the same line; installing Svif is not permission to migrate Agnir. Only a genuinely uninitialized repository/filesystem Project resolves the canonical **latest published stable Agnir** and initializes using the Core/profile and activation contract declared by that stable release. **Svif does not take over existing Project files.** Existing activation/documentation surfaces receive only the entry required by the selected Agnir contract, while unrelated content is preserved.
 
 ```text
@@ -87,10 +89,12 @@ flowchart TB
 
     subgraph T["Target Project surface — first use"]
         G["AGENTS.md<br/>EDIT: add activation locator only"]
-        H["README.md<br/>EDIT: add Agnir instructions only"]
+        H["README.md<br/>EDIT: add compatibility locator only"]
+        A0["AGNIR.md<br/>ADD: activation procedure when selected release requires it"]
         Q["AGNIR.yaml + .agnir/<br/>ADD: founding continuity"]
         B["SVIF.yaml<br/>ADD: Project binding"]
-        G --> H --> Q --> B
+        G --> A0 --> Q --> B
+        H --> A0
     end
 
     D -. "non-destructive first-use setup" .-> G

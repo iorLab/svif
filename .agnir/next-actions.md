@@ -7,24 +7,37 @@ and native install/discovery now have passing evidence; do not repeat the old cl
 that the four audit findings are unrepaired or that publisher prerequisites are the P0.
 Full current-version Skill effectiveness and whole-release sign-off remain open.
 
-1. **Accept the new bootstrap-version-selection Plugin subject before authenticated behavior.** The current Skill now preserves an existing Project's declared Agnir Core/profile and resolves latest published stable Agnir only for a genuinely uninitialized Project. This changes Plugin bytes, so tree `7cc90517013306181a4df2238f849b85cf716665` / run `35509417968` remains historical for the prior candidate. Run full CI and `checks/check_local_install.py --output <isolated-directory>` on the exact new candidate; require installed+enabled status, exact installed bytes and native Skill discovery on supported hosts before using `--exercise`. Then use the operator's authorized Codex login in the isolated CODEX_HOME and perform ordinary-Project bootstrap/task/checkpoint, fresh process + new conversation recovery, and unchanged existing-Project reuse. Do not copy, request or commit secret token values.
+1. **Complete authenticated native behavior on the accepted current candidate.**
+   Use a fixed reviewed checkout whose Plugin tree is
+   `77953ba954b2c0f3ff7dcc6f9c7814df5fa05e12`. PR #13 candidate
+   `08f2c7c7581edb8845cea161b971a0c4dca2de4d` passed all eight checks in
+   `35520792408`; downloaded Linux/macOS Codex 0.155.1 reports confirm exact installed
+   bytes, enabled state and Skill discovery. This new no-auth gate is no longer pending.
+   With the operator's authorized login in isolated CODEX_HOME, run
+   `checks/check_local_install.py --output <isolated-directory> --exercise`.
+   New-Project testing resolves the latest published stable Agnir in that operation,
+   stages verified installer/contracts outside the Project, and independently checks
+   matching Core/profile, Svif binding and operational provenance. No preinitialized
+   continuity, cached fallback or relaxed model sandbox is allowed. Existing Projects
+   keep their actual version and valid activation; normal resume needs no latest lookup.
+   Exercise first-use task/checkpoint, fresh process + new conversation recovery and
+   unchanged reuse; also exercise existing 0.1/0.2/1.0 Projects independently.
+   Do not copy, request or commit secret token values.
 2. **Exercise all same-candidate negative host scenarios.** Follow
    `conformance/RELEASE_READINESS.md`: broken discovery, other Continuity Provider,
    identity/version mismatch, failing required checks, absent authority, missing
    observation and interrupted write markers. Record prompts, actual tool behavior,
-   initial/resulting file hashes, host/version and classification. Kernel tests do not
-   substitute for installed-Skill adherence. Repair any observed failure before sign-off.
-3. **Preserve the integrated engineering baseline and release limits.** PR #11 was
-   squash-merged to authoritative `main` as `9e8f602b3c9a9d4a1a3c674979fcbc6f5483f27a`.
-   The merge tree is `3b6d026b8d3b6b8281b9cc9f7d8e62fefc741361`, exactly the reviewed
-   candidate tree. Final PR run `35509842215` and authoritative-main run `35509894716`
-   passed all eight checks. The latter includes native Codex installation/discovery on
-   Linux and macOS, plus runtime checks on Linux/macOS/Windows. Plugin tree remains
-   `7cc90517013306181a4df2238f849b85cf716665`. Integration verification is complete;
-   the remaining P0 is real authenticated native positive/negative behavior, not merging
-   the already-integrated repair. Keep `spec/RUNTIME_SAFETY.md` limitations explicit.
-   Implementation evidence: `.agnir/evidence/2026-09-20-runtime-readiness-repair.md`.
-   Full release acceptance must stay unpassed until the remaining native gates close.
+   initial/resulting file hashes, host/version and classification. The 141 passing tests
+   include version-checker regressions, not fabricated model observations. Kernel tests
+   and native installation cannot substitute for installed-Skill adherence.
+3. **Preserve current evidence and integration identity.** The bootstrap correction
+   and native receipts are in `.agnir/evidence/2026-09-20-bootstrap-version-selection.md`.
+   Candidate tree `3c053b2371f0fe916379ac7ea2f74ce1eb4bad3f` contains no temporary
+   workflow. Require the continuity-only PR checkpoint CI before integration and read
+   back authoritative main afterward. Keep `spec/RUNTIME_SAFETY.md` limitations explicit.
+   PR #11's older integrated runtime and Plugin receipt remain historical; they must not
+   replace the current Plugin identity. Full release acceptance stays unpassed until
+   authenticated positive and negative native behavior gates close.
 
 ## Deferred public/personal ChatGPT path
 

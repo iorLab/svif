@@ -30,7 +30,7 @@ Evidence in `.agnir/` records the actually observed candidate, host and results.
 | Portable distribution and exact package bytes | package/component tests; builder + negative archive tests | Invalid output paths, links, limits and I/O failure do not corrupt source or prior ZIP. Source/installed file identities must match. |
 | Native install + enabled + Skill discovery | `checks/check_local_install.py`; real Codex CLI/app-server | Requires actual native `plugin add`, `plugin list`, `skills/list` and installed-file hash equality. Unit mocks do not count. |
 | Ordinary Project first-use, actual work, checkpoint and fresh-context resume | installed `plugin/skills/svif/SKILL.md`; native `--exercise` | Existing Agnir Projects must preserve their declared compatibility; genuinely new Projects must resolve the latest published stable Agnir and use that release's declared Core/profile. Requires model authentication in isolated home and independent result-file checks. Not proven by a Skill-text assertion. |
-| Existing Project idempotency and instruction preservation | installed Skill; native `--exercise` | Separate fresh thread preserves identity, original instructions and unchanged completed memory. |
+| Existing Project idempotency and instruction preservation | installed Skill; native `--exercise` | Separate fresh thread preserves identity, original instructions and unchanged completed memory. Also exercise existing 0.1/0.2/1.0 Projects independently, with no implicit package upgrade or latest lookup. |
 | Broken discovery, another provider and failure-path host behavior | negative scenarios below | Must be observed with the same installed candidate; kernel unit tests are not a substitute for Skill adherence. |
 
 ## Reproducible native acceptance
@@ -69,6 +69,23 @@ python checks/check_local_install.py --output /tmp/svif-acceptance --exercise
 On PowerShell set `$env:CODEX_HOME` to that directory for the login command. The harness
 itself sets CODEX_HOME explicitly. `--exercise` uses the signed-in account's quota. It
 creates only isolated dummy Projects and does not authorize deployment/publication.
+
+For a new Project, the trusted harness now resolves `iorLab/agnir/releases/latest`
+once in this operation, rejects unpublished/prerelease or unsupported targets, resolves
+the tag to an exact commit, and verifies each retrieved contract file's Git blob identity.
+It reads package `VERSION` separately from the release-declared Core/profile. Required
+installer/contracts/schema and a timestamped `resolved-release.json` are staged outside
+the target Project. The model reads that freshly resolved source via local tools; the
+sandbox remains network-restricted and no target continuity is preinitialized by the
+harness. Failed upstream lookup is a blocker, never an old-version fallback.
+
+The independent post-bootstrap checker requires exact Agnir/Svif compatibility/profile,
+Project identity, selected-release activation locator and applied package/revision
+provenance. Existing Project validation does not query latest or demand missing optional
+historical provenance. Unit fixtures cover existing 0.1/0.2/1.0 Projects, version/binding
+conflicts, wrong latest/fallback/provenance and unavailable upstream; these are checker
+regressions, not evidence that a model has executed those cases. The no-auth install
+path does not fetch Agnir and continues to leave model acceptance unpassed.
 
 The positive exercise uses three distinct native app-server processes and thread IDs:
 ordinary-Project bootstrap and concrete file task; read-only cold reconstruction with

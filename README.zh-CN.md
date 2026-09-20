@@ -58,6 +58,8 @@ Install and enable Svif for this Project: https://github.com/iorLab/svif
 
 ## Svif 会给 Project 增加什么
 
+以下描述当前尚未发布的 `0.2.0` 行为；不可变的 `v0.2.0-preview.1` 包仍保留其历史初始化流程。
+
 首次使用时，Svif 会先判断 Project 是否已经使用 Agnir。若已经存在 Agnir，就原样保留该 Project 声明的 Agnir Core/profile compatibility，并让 Svif binding 与这一条兼容线保持一致；安装 Svif 不等于获得迁移 Agnir 的授权。只有真正没有 Agnir / 其他 continuity binding 的 repository/filesystem Project，才解析 canonical **最新已发布 stable Agnir**，并按该 stable release 声明的 Core/profile 与 activation contract 初始化。**Svif 不会接管已有 Project 文件。** 已有 activation / 文档表面只增加所选 Agnir contract 需要的入口，并保留无关内容。
 
 ```text
@@ -87,10 +89,12 @@ flowchart TB
 
     subgraph T["目标 Project surface — 首次使用"]
         G["AGENTS.md<br/>编辑：仅添加 activation locator"]
-        H["README.md<br/>编辑：仅添加 Agnir instructions"]
+        H["README.md<br/>编辑：仅添加兼容入口"]
+        A0["AGNIR.md<br/>新增：所选版本要求的项目激活流程"]
         Q["AGNIR.yaml + .agnir/<br/>新增：founding continuity"]
         B["SVIF.yaml<br/>新增：Project binding"]
-        G --> H --> Q --> B
+        G --> A0 --> Q --> B
+        H --> A0
     end
 
     D -. "非破坏性 first-use setup" .-> G

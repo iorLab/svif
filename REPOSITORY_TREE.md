@@ -144,7 +144,7 @@ svif/                                                     # Svif 产品主仓库
 │           └── workspace-scm.json                        # workspace / source-control capability fixture
 │
 ├── checks/                                               # 仓库与产品结构完整性检查
-│   ├── check_local_install.py                           # 隔离原生 Codex 安装/发现与显式 opt-in 真实模型验收
+│   ├── check_local_install.py                           # 原生安装/发现；同操作 latest-stable 源核验、精确 bootstrap binding 与 opt-in 模型验收
 │   ├── build_submission_bundle.py                        # 从 accepted plugin/ tree 构建 deterministic Skills-only portal ZIP 并输出 SHA-256
 │   └── check_repository.py                               # 防止关键模块、README、Plugin packaging、Agnir activation、canonical topology 漂移
 │

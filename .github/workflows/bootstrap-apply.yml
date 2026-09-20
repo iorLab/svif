@@ -28,7 +28,7 @@ jobs:
           python - <<'PY'
           import base64, gzip, hashlib
           from pathlib import Path
-          encoded = "".join(Path(f".github/bootstrap-payload-{i}.txt").read_text(encoding="utf-8").strip() for i in range(4))
+          encoded = "".join(Path(name).read_text(encoding="utf-8").strip() for name in (".github/bootstrap-payload-0a.txt", ".github/bootstrap-payload-0b.txt", ".github/bootstrap-payload-1.txt", ".github/bootstrap-payload-2.txt", ".github/bootstrap-payload-3.txt"))
           patch = gzip.decompress(base64.b64decode(encoded, validate=True))
           digest = hashlib.sha256(patch).hexdigest()
           print("patch_sha256=" + digest)
@@ -36,7 +36,7 @@ jobs:
           Path("/tmp/bootstrap.patch").write_bytes(patch)
           PY
           git apply --index --binary /tmp/bootstrap.patch
-          git rm .github/bootstrap-payload.txt .github/bootstrap-payload-0.txt .github/bootstrap-payload-1.txt .github/bootstrap-payload-2.txt .github/bootstrap-payload-3.txt
+          git rm .github/bootstrap-payload.txt .github/bootstrap-payload-0.txt .github/bootstrap-payload-0a.txt .github/bootstrap-payload-0b.txt .github/bootstrap-payload-1.txt .github/bootstrap-payload-2.txt .github/bootstrap-payload-3.txt
       - name: Verify full candidate
         shell: bash
         run: |

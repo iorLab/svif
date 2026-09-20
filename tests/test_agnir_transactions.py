@@ -13,6 +13,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from svif.continuity.agnir import AgnirDiscoveryError, AgnirFilesystemContinuityProvider
+from svif.continuity.filesystem import ProjectFilesystem, FilesystemSafetyError
 from svif.runtime import ContinuityUpdate, OperationOutcome
 from test_agnir_continuity import write_project, PROJECT, SUBJECT
 
@@ -48,6 +49,25 @@ def interrupted(root, number, exception=Crash):
 
 
 class AgnirTransactionTests(unittest.TestCase):
+    def test_native_relative_and_absolute_paths_are_contained(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve()
+            filesystem = ProjectFilesystem(root)
+            target = root / "memory" / "state.md"
+            self.assertEqual(filesystem.path("memory/state.md"), target)
+            self.assertEqual(filesystem.path(Path("memory") / "state.md"), target)
+            self.assertEqual(filesystem.path(target), target)
+            for unsafe in ("../outside", "memory/state.md:stream", root.parent / "outside"):
+                with self.subTest(unsafe=str(unsafe)), self.assertRaises(FilesystemSafetyError):
+                    filesystem.path(unsafe)
+            if os.name == "nt":
+                self.assertEqual(filesystem.path("memory\\state.md"), target)
+                with self.assertRaises(FilesystemSafetyError):
+                    filesystem.path("C:relative")
+            else:
+                with self.assertRaises(FilesystemSafetyError):
+                    filesystem.path("memory\\state.md")
+
     def test_all_updates_are_preflighted_before_any_mutation(self):
         for version in VERSIONS:
             for decision in ("requested but no locator", 42):

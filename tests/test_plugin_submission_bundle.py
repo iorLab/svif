@@ -106,18 +106,38 @@ class PluginSubmissionBundleTests(unittest.TestCase):
 
     def test_missing_required_file_and_invalid_member_names_fail(self) -> None:
         builder = load_builder()
-        for bad in ("missing", "space ", "drive:name", "PLUGIN.json"):
+        for bad in ("missing", "space ", "drive:name"):
             with self.subTest(bad=bad), tempfile.TemporaryDirectory() as temporary:
                 root = Path(temporary) / "plugin"
                 shutil.copytree(PLUGIN_ROOT, root)
                 if bad == "missing":
                     (root / "skills/svif/SKILL.md").unlink()
                 else:
-                    if os.name == "nt" and bad in {"space ", "drive:name", "PLUGIN.json"}:
+                    if os.name == "nt" and bad in {"space ", "drive:name"}:
                         continue  # These spellings cannot be created as distinct NTFS files.
                     (root / bad).write_text("invalid", encoding="utf-8")
                 with patch.object(builder, "PLUGIN_ROOT", root), self.assertRaises(ValueError):
                     builder.build_submission_bundle(Path(temporary) / "bad.zip")
+
+    def test_normalization_collision_rejected_on_case_insensitive_hosts(self) -> None:
+        builder = load_builder()
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / "plugin"
+            shutil.copytree(PLUGIN_ROOT, root)
+            original = root / "plugin.json"
+            alias = root / "PLUGIN.json"
+            before = original.read_bytes()
+            if not alias.exists():
+                alias.write_bytes(before)
+            # Case-insensitive hosts cannot create both physical names. Model
+            # the two-member archive input without overwriting the manifest.
+            # File metadata and reads are still real on every tested host.
+            with patch.object(builder, "PLUGIN_ROOT", root), \
+                 patch.object(Path, "rglob", return_value=[original, alias]), \
+                 self.assertRaisesRegex(ValueError, "normalization collision"):
+                builder.build_submission_bundle(Path(temporary) / "bad.zip")
+            self.assertEqual(original.read_bytes(), before)
+            self.assertFalse((Path(temporary) / "bad.zip").exists())
 
     def test_io_failure_leaves_existing_output_untouched(self) -> None:
         builder = load_builder()

@@ -39,7 +39,12 @@ class ProjectFilesystem:
                 value = value.relative_to(self.root)
             except ValueError as exc:
                 raise FilesystemSafetyError("locator escapes authorized Project root") from exc
-        if not value.parts or any(p in {"..", ""} for p in value.parts) or "\\" in str(value):
+        # Path renders native separators on Windows. Reject a POSIX filename
+        # containing backslashes, not normal Windows path separators. Colons
+        # in relative components remain forbidden (including NTFS ADS names).
+        if (not value.parts or value.drive or value.root
+                or any(p in {"..", ""} or ":" in p for p in value.parts)
+                or (os.name != "nt" and "\\" in str(value))):
             raise FilesystemSafetyError("unsafe Project-relative path")
         return self.root / value
 

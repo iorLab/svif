@@ -65,7 +65,6 @@ Project/
 ├── AGENTS.md                 # [EDIT: add entry only] add Agnir activation locator; preserve existing instructions
 ├── README.md                 # [EDIT: add entry only] add ## Agnir Project Instructions; preserve existing content
 ├── AGNIR.yaml                # [ADD] founding Agnir discovery anchor
-├── brand/                             # approved brand masters, exports, QA, references, and handoff
 ├── .agnir/                   # [ADD] Project-owned durable continuity
 │   ├── state.md              # [ADD] current durable Project truth
 │   ├── next-actions.md       # [ADD] outstanding ordered work for the next Executor
@@ -184,6 +183,8 @@ OpenAI's current public submission flow explicitly accepts a **Skills-only** Plu
 The Repository Preview and the future public personal-user release are different distribution layers. Codex CLI and ChatGPT desktop/Codex Preview installation must be validated independently; public review approval, directory publication, personal ChatGPT installation, invocation, Agnir activation, verification, and checkpoint remain separate evidence layers.
 
 See [`plugin/README.md`](plugin/README.md) for public submission prerequisites, proposed listing metadata, review test cases, repository-marketplace development routes, and evidence boundaries.
+
+Local release acceptance and current limitations: [release-readiness matrix](conformance/RELEASE_READINESS.md). Native installation/Skill discovery, real model task/checkpoint/resume, and runtime safety are separate gates; Platform publication is paused.
 
 ## Repository Structure
 

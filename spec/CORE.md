@@ -12,7 +12,7 @@ Svif coordinates a configured Continuity Provider, Execution Surface, and Capabi
 
 Svif Core MUST NOT require ChatGPT, an AI agent, Git, GitHub, a repository, local-only or remote-only execution, a specific CI product, Skill/Plugin packaging, Agnir-specific storage layout, or any provider such as Cloudflare.
 
-ZeroLocal v0.1 remains predecessor evidence on the dedicated legacy branch and MUST NOT be silently relabeled as Svif conformance.
+ZeroLocal v0.1 remains predecessor evidence in immutable Git history and MUST NOT be silently relabeled as Svif conformance.
 
 ## 2. Core concepts
 
@@ -53,7 +53,7 @@ Svif Core requires durable Project continuity through the configured Continuity 
 - Svif MUST NOT define a competing durable Project Memory protocol.
 - Continuity failure/authorization failure MUST be distinguishable from an empty/new Project state when evidence permits.
 
-The active `0.2` Project binding uses Agnir Core `0.1` as the first provider. Agnir remains an independent protocol/project.
+The founding `0.2` example used Agnir Core `0.1` as its first provider. Current repository self-host declares Core/profile `1.0`, with historical `0.1` and `0.2` adapter support retained. Agnir remains an independent protocol/project.
 
 ## 4. Lifecycle
 

@@ -49,7 +49,7 @@ ChatGPT uses the externally driven form. Untrusted model/result payloads cannot 
 
 A Continuity Provider supplies durable Project truth and resumability. The Svif kernel depends on this interface, not permanently on Agnir.
 
-`src/svif/continuity/agnir.py` is the founding adapter for Agnir Core `0.1` repository/filesystem discovery and checkpoint semantics.
+`src/svif/continuity/agnir.py` is the founding adapter for Agnir Core/profile `0.1`, `0.2`, and `1.0` repository/filesystem discovery and recoverable checkpoint semantics. Trusted runtime policy and recovery details are in `spec/RUNTIME_SAFETY.md`.
 
 ## 5. Execution Surface
 
@@ -133,4 +133,4 @@ A provider fixture does not justify a separate canonical repository.
 
 The generic Orchestrator, Agnir Continuity Provider, ChatGPT bridge, Svif-owned Cloudflare Capability Provider, credential-free founding E2E, and installable Skill-first Plugin MVP now belong to one product tree.
 
-The next target is **test-driven Plugin iteration**: install/use the Skill-first package on real Project work, harden its workflow guidance from failures, and add the remote ChatGPT MCP/App component when it can reuse the existing `Orchestrator.begin()` / `Orchestrator.complete()` boundary without duplicating kernel semantics or weakening authority separation.
+Release-readiness acceptance is tracked in `conformance/RELEASE_READINESS.md`; local effectiveness and bounded functional completion have separate evidence gates. The current target is **test-driven Plugin iteration**: install/use the Skill-first package on real Project work, harden its workflow guidance from failures, and add the remote ChatGPT MCP/App component when it can reuse the existing `Orchestrator.begin()` / `Orchestrator.complete()` boundary without duplicating kernel semantics or weakening authority separation.

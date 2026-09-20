@@ -17,7 +17,12 @@ The integration must preserve:
 
 The transport implementation may use the Cloudflare API, Wrangler, hosted automation, or another authorized mechanism. That mechanism is packaging/integration detail, not Svif kernel semantics.
 
-`adapter.json` is the active provider descriptor.
+`adapter.json` is the active provider descriptor. `policy_for("deploy_verified_worker")`
+requires `protected-delivery` even when the result omits or empties its advisory authority
+field. Regression tests verify code/descriptor equality. The transport remains injected;
+the repository does not claim a production-ready Cloudflare network transport or live
+production delivery. An uncertain effect is observed/reconciled without automatic replay;
+see `spec/RUNTIME_SAFETY.md`.
 
 ## Reference migration
 

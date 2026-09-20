@@ -58,6 +58,8 @@ class ChatGPTExecutionSurface:
             "intent": session.request.intent,
             "bound_capabilities": sorted(session.binding.capabilities),
             "authority_grants": sorted(session.request.authority_grants),
+            "verification_required": session.request.verification_required,
+            "required_verifiers": sorted(session.request.required_verifiers),
             "continuity": {
                 "state": self._serializable(continuity.state),
                 "next_actions": self._serializable(continuity.next_actions),
@@ -78,6 +80,8 @@ class ChatGPTExecutionSurface:
         `Orchestrator.complete()` is called.
         """
 
+        if not isinstance(payload, Mapping):
+            raise BindingError("ChatGPT result must be an object")
         if payload.get("project_identity") != session.binding.project_identity:
             raise BindingError("ChatGPT result Project identity does not match operation session")
         if payload.get("operation_id") != session.request.operation_id:
@@ -94,6 +98,8 @@ class ChatGPTExecutionSurface:
         for item in evidence_value:
             if not isinstance(item, Mapping):
                 raise BindingError("ChatGPT evidence record must be an object")
+            if item.get("kind") in {"delivery", "observation", "checkpoint"}:
+                raise BindingError("effect/checkpoint receipts must come from trusted integration, not model claims")
             evidence.append(
                 EvidenceRecord(
                     kind=self._required_string(item.get("kind"), "evidence.kind"),
@@ -155,4 +161,5 @@ class ChatGPTExecutionSurface:
             evidence=tuple(evidence),
             capability_request=capability_request,
             continuity_update=continuity_update,
+            verification_needs_attestation=True,
         )

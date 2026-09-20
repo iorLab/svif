@@ -1,4 +1,4 @@
-"""Svif product runtime prototype."""
+"""Svif product reference runtime."""
 
 from .runtime import Orchestrator
 

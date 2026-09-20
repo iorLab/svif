@@ -207,3 +207,23 @@
 - Final repair CI run `35317245771` passed all product-check jobs; final acceptance-checkpoint run `35317410100` also passed all product-check jobs.
 - Continuity-only commits after `f9026f7e3db4db8956cfc88ba1990daf0757a011` may advance authoritative `main` without changing the accepted Plugin tree. External submission evidence MUST identify the exact submitted Plugin subject, not merely a moving branch.
 - The immutable released Repository Preview `v0.2.0-preview.1` remains a different historical subject and is not rewritten.
+
+
+## 2026-09-20 — Implement trusted runtime safety and native release acceptance
+
+- The Principal authorized repair to release standard, while OpenAI Platform publication
+  remains paused. This does not authorize live Cloudflare deployment or a public release.
+- Required authorization comes from trusted provider/operation policy. Required verification
+  comes from trusted planning. Model declarations cannot waive either or attest their own
+  success; the ChatGPT bridge requires separately obtained trusted verification receipts.
+- Filesystem checkpointing is preflighted, CAS-protected, process-locked and recoverable.
+  Runtime journals/effect markers are private working-copy machinery, not canonical memory.
+  Unresolved operations must be preserved/reconciled before moving or publishing a Project.
+- Uncertain external effects are independently observed/reconciled, never blindly replayed.
+  Kernel session/receipt controls are not a universal distributed exactly-once guarantee.
+- A bounded requirement-to-test matrix separates reference-runtime safety, native installation
+  and discovery, and real model-driven Skill behavior. Full acceptance needs same-candidate
+  positive and negative host observations. Future MCP/live transport remains separately scoped.
+- Existing Project identity, lineage, selector, compatibility and released Preview tags remain
+  unchanged. The unpublished 0.2.0 candidate may change; older exact package/ZIP receipts stay
+  historical and cannot certify the new bytes.

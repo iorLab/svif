@@ -8,7 +8,7 @@ from pathlib import Path
 from svif.capabilities.cloudflare import CloudflareWorkersCapabilityProvider
 from svif.continuity.agnir import AgnirFilesystemContinuityProvider
 from svif.execution.chatgpt import ChatGPTExecutionSurface
-from svif.runtime import OperationRequest, Orchestrator, ProjectBinding, ProviderBinding
+from svif.runtime import EvidenceRecord, OperationRequest, Orchestrator, ProjectBinding, ProviderBinding
 
 
 PROJECT = "urn:test:svif-founding-e2e"
@@ -120,6 +120,7 @@ class FoundingEndToEndTests(unittest.TestCase):
                 session,
                 work,
                 authority_grants=frozenset({AUTHORITY}),
+                verification_evidence=(EvidenceRecord("verification", SUBJECT, producer="founding-e2e-verifier"),),
             )
 
             self.assertTrue(outcome.externally_effectful)

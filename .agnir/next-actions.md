@@ -24,7 +24,7 @@ Full current-version Skill effectiveness and whole-release sign-off remain open.
    substitute for installed-Skill adherence. Repair any observed failure before sign-off.
 3. **Preserve exact integration and release evidence.** Tested source
    `225e535e32a18bf8db2bfc7d76efe6bed9378e97` / tree
-   `12542123c9ab47e5e938f8db8fd8a7d36f28a513` belongs to PR #10. Verify the final
+   `12542123c9ab47e5e938f8db8fd8a7d36f28a513` belongs to PR #11. Verify the final
    continuity-checkpoint CI and authoritative main after integration, and preserve
    the exact Plugin tree. Evidence is `.agnir/evidence/2026-09-20-runtime-readiness-repair.md`.
    Keep the explicit trusted-integration/filesystem limits in `spec/RUNTIME_SAFETY.md`.
@@ -49,6 +49,8 @@ proof of the changed Skill. No new version tag or public release is authorized h
 - Preserve accepted Agnir promotion/adoption, canonical brand and bilingual entry semantics.
 - Live Cloudflare delivery stays disabled. All committed regression/CI fixtures are dummy,
   credential-free and non-production. Optional future integrations stay separately scoped.
+- Earlier alternative PR #10 at `043464c6883518fb626bb0ea8e75020be42faf17` remains intact;
+  review any unique delta separately, never merge it automatically over PR #11.
 - Historical PR #3 stays closed unmerged and its archived validation ref is not a dependency.
   Retire completed temporary refs after recording their final tips; main remains sole authority.
 - Repository-managed Agnir memory is canonical. Orchestrator, Continuity Provider,

@@ -88,7 +88,7 @@ passed 126 tests plus both checks in source-materialization run `35509048052`.
 The runner's attempt to push a workflow-changing staging commit was refused by its
 workflow permission; no test failure was hidden. The verified tree was then published
 through the authorized connector as `d0f90a6505509b76776b5d4bf0c4b0249c129efb`.
-Temporary transfer/probe files are absent from the candidate. PR #10 carries the repair.
+Temporary transfer/probe files are absent from the candidate. PR #11 carries the repair.
 
 Initial PR run `35509114938` passed both Linux runtime jobs, repository/contract checks
 and both native installation jobs. It exposed two cross-platform defects: Windows
@@ -133,3 +133,13 @@ has been performed. The actual task/checkpoint/fresh-LLM-context and negative ho
 remain open; the passing native installation layer must not be generalized beyond it.
 A later continuity-only checkpoint may advance the candidate without changing product
 code or this Plugin tree. Fresh checkpoint CI/main integration must still be observed.
+
+## PR identity reconciliation
+
+Fresh GitHub readback confirms this work is PR #11 on `fix/local-release-readiness`.
+Earlier PR #10 is a different implementation candidate on `fix/local-readiness` at
+`043464c6883518fb626bb0ea8e75020be42faf17`; its own evidence records 109 local tests
+and no full native-model acceptance. A resume-time PR-number mix-up was corrected in
+these records and the PR descriptions. No alternate-candidate source was discarded.
+Do not merge PR #10 automatically over the continued repair; review any useful delta
+separately before retiring that historical preparation ref.

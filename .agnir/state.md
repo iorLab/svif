@@ -20,7 +20,7 @@ release acceptance remain open; installation alone does not close them.**
 - Baseline: `960526544da308ea8b0eb1d325b26609487ab856`, retaining audited product code
   `fe7788bd53d3a240f663860133b741799d0470e3`.
 - Reviewed repair source: `225e535e32a18bf8db2bfc7d76efe6bed9378e97`, tree
-  `12542123c9ab47e5e938f8db8fd8a7d36f28a513`, PR #10.
+  `12542123c9ab47e5e938f8db8fd8a7d36f28a513`, PR #11.
 - Exact repaired Plugin tree: `7cc90517013306181a4df2238f849b85cf716665`.
 - Local full suite: 128 tests pass on Linux/Python 3.13.5; repository integrity and
   portable contracts pass. Tests execute real code, including process termination.

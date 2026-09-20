@@ -60,6 +60,7 @@ checks:
   plugin_first_use_bootstrap: "tests/test_plugin_first_use_bootstrap.py"
   plugin_openai_distribution: "tests/test_plugin_openai_distribution.py"
   readiness_regressions: "tests/test_readiness_regressions.py"
+  native_install_evidence: "tests/test_native_install_evidence.py"
   plugin_submission_bundle: "tests/test_plugin_submission_bundle.py"
 
 extensions:

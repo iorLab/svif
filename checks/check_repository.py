@@ -285,7 +285,7 @@ def main() -> None:
         "src/svif/capabilities/cloudflare.py",
         "tests/test_runtime.py", "tests/test_agnir_continuity.py", "tests/test_chatgpt_surface.py",
         "tests/test_cloudflare_capability.py", "tests/test_founding_e2e.py", "tests/test_plugin_package.py",
-        "tests/test_plugin_component_discovery.py", "tests/test_readiness_regressions.py",
+        "tests/test_plugin_component_discovery.py", "tests/test_readiness_regressions.py", "tests/test_native_install_evidence.py", ".github/workflows/local-readiness.yml",
         "src/svif/continuity/_filesystem.py", "checks/check_native_install.py",
         "LOCAL_ACCEPTANCE.md", "RELEASE_READINESS.md",
         "integrations/chatgpt/README.md", "integrations/cloudflare/README.md", "integrations/cloudflare/adapter.json",

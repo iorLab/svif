@@ -48,6 +48,7 @@ svif/                                                     # Svif 产品主仓库
 │
 ├── .github/                                              # GitHub 托管侧自动化配置
 │   └── workflows/
+│       ├── local-readiness.yml                           # 持续跨平台故障恢复测试与隔离原生 Codex 安装/Skill 发现；不调用模型
 │       └── conformance.yml                               # CI：repository integrity、runtime tests、portable contracts
 │
 ├── brand/                                                # Svif 品牌识别与 fidelity-first production asset surface
@@ -124,6 +125,7 @@ svif/                                                     # Svif 产品主仓库
 │   ├── test_plugin_openai_distribution.py                # OpenAI/Codex marketplace source、Codex manifest 与 portable identity metadata 一致性测试
 │   ├── test_plugin_submission_bundle.py                  # Skills-only ZIP 的 deterministic byte mirror、path/size/normalization archive guards
 │   ├── test_readiness_regressions.py                      # 授权、必需验证、崩溃恢复、路径越界、并发与重放的行为回归
+│   ├── test_native_install_evidence.py                    # 原生 Skill 命名空间、Plugin 身份、启用状态、路径和字节证据判定反例
 │   └── test_plugin_package.py                            # Plugin manifest/Skill/package、filesystem failure isolation 与 Agnir activation boundary 验证
 │
 ├── conformance/                                          # Portable contracts 的一致性验证，不等同于产品 runtime

@@ -32,6 +32,39 @@ def tree_hashes(root: Path) -> dict[str, str]:
     return result
 
 
+
+def validate_discovery(result: dict, project: Path, installed_path: Path,
+                       expected_sha256: str) -> dict:
+    """Accept a native Skill only when its origin, state, path and bytes match.
+
+    Codex 0.155.1 exposes plugin skills as ``svif:svif``. The unqualified form
+    remains acceptable only with the same explicit plugin identity and path;
+    matching an arbitrary suffix or trusting a missing enabled flag is unsafe.
+    """
+    rows = result.get("data")
+    if not isinstance(rows, list) or len(rows) != 1 or not isinstance(rows[0], dict):
+        raise RuntimeError("native discovery must return exactly the selected Project")
+    row = rows[0]
+    cwd = row.get("cwd")
+    if not isinstance(cwd, str) or Path(cwd).resolve() != project.resolve():
+        raise RuntimeError("native discovery returned a different Project")
+    if row.get("errors") != [] or not isinstance(row.get("skills"), list):
+        raise RuntimeError("native discovery reported errors or omitted its Skill list")
+    matches = [skill for skill in row["skills"]
+               if isinstance(skill, dict) and skill.get("pluginId") == "svif@svif"
+               and skill.get("name") in {"svif:svif", "svif"}]
+    if len(matches) != 1 or matches[0].get("enabled") is not True:
+        raise RuntimeError("new native process did not discover one enabled Svif Skill")
+    skill = matches[0]
+    expected_path = installed_path / "skills/svif/SKILL.md"
+    value = skill.get("path")
+    if not isinstance(value, str) or Path(value).resolve() != expected_path.resolve():
+        raise RuntimeError("native Skill does not originate from the installed candidate")
+    if hashlib.sha256(expected_path.read_bytes()).hexdigest() != expected_sha256:
+        raise RuntimeError("discovered native Skill differs from tested source")
+    return skill
+
+
 def discovered_skills(codex: str, env: dict[str, str], project: Path) -> dict:
     """Ask a genuinely new native App Server process to enumerate its skills."""
     messages: queue.Queue[str | None] = queue.Queue()
@@ -107,12 +140,20 @@ def main() -> int:
             if result.returncode:
                 raise RuntimeError(f"native command failed: {' '.join(command)}: {result.stderr[-3000:]}")
             return result.stdout
+        metadata = subprocess.run(["git", "rev-parse", "HEAD", "HEAD:plugin"], cwd=ROOT,
+                                  capture_output=True, text=True, timeout=10)
+        clean = subprocess.run(["git", "diff", "--quiet", "HEAD", "--", "plugin",
+                                ".agents/plugins/marketplace.json"], cwd=ROOT,
+                               capture_output=True, timeout=10)
+        if metadata.returncode == 0 and clean.returncode == 0:
+            report["source_commit"], report["source_plugin_tree"] = metadata.stdout.splitlines()
+        original_project = tree_hashes(project)
         report["codex_version"] = run("--version").strip()
         report["marketplace"] = run("plugin", "marketplace", "add", str(market), "--json")
         installed = json.loads(run("plugin", "add", "svif@svif", "--json"))
         report["installation_receipt"] = installed
         report["listing"] = json.loads(run("plugin", "list", "--json"))
-        matches = [x for x in report["listing"].get("installed", []) if x.get("name") == "svif" and x.get("installed") is True and x.get("enabled") is True]
+        matches = [x for x in report["listing"].get("installed", []) if x.get("pluginId") == "svif@svif" and x.get("name") == "svif" and x.get("installed") is True and x.get("enabled") is True]
         if len(matches) != 1: raise RuntimeError("native host did not report exactly one installed/enabled Svif")
         version = json.loads((ROOT / "plugin/plugin.json").read_text())["version"]
         if matches[0].get("version") != version: raise RuntimeError("native version differs from tested source")
@@ -122,11 +163,14 @@ def main() -> int:
         report["native_install"] = "passed"
         result = discovered_skills(codex, env, project)
         report["skills_list"] = result
-        skills = [s for item in result.get("data", []) for s in item.get("skills", []) if s.get("name") == "svif" and s.get("enabled", True)]
-        if len(skills) != 1: raise RuntimeError("new native process did not discover one enabled Svif Skill")
-        skill = Path(skills[0]["path"])
-        if hashlib.sha256(skill.read_bytes()).hexdigest() != report["source_file_sha256"]["skills/svif/SKILL.md"]:
-            raise RuntimeError("discovered native Skill differs from tested source")
+        skill = validate_discovery(result, project, installed_path,
+                                   report["source_file_sha256"]["skills/svif/SKILL.md"])
+        report["discovered_skill"] = {key: skill[key] for key in ("name", "pluginId", "enabled", "path")}
+        if tree_hashes(installed_path) != report["source_file_sha256"]:
+            raise RuntimeError("native discovery changed the installed candidate")
+        if tree_hashes(project) != original_project:
+            raise RuntimeError("install/discovery unexpectedly changed the ordinary Project")
+        report["ordinary_project_unchanged"] = True
         report["native_discovery"] = "passed"
         return_code = 0
     except (OSError, ValueError, KeyError, RuntimeError, TimeoutError, queue.Empty, subprocess.SubprocessError) as exc:

@@ -10,7 +10,7 @@ From a clean checkout of the candidate on a computer with Codex installed:
 python checks/check_native_install.py --output /absolute/path/to/new-svif-acceptance
 ```
 
-The destination must be new. The harness creates an isolated HOME and CODEX_HOME, copies the exact Plugin and marketplace into that directory, installs using the native CLI, independently reads installed/enabled state, checks every installed file against the candidate, then starts a new App Server process and calls `skills/list`. It does not copy credentials or touch the user's existing Plugin configuration. It writes `receipt.json`; a missing host, changed package, unsupported command, or missing Skill returns nonzero. `release_ready` remains false even when installation/discovery pass.
+The destination must be new. The harness creates an isolated HOME and CODEX_HOME, copies the exact Plugin and marketplace into that directory, installs using the native CLI, independently reads installed/enabled state, checks every installed file against the candidate, then starts a new App Server process and calls `skills/list`. It does not copy credentials or touch the user's existing Plugin configuration. Codex may expose the Skill as `svif:svif`; acceptance also requires exact `pluginId=svif@svif`, explicit enabled state, the installed Skill path and matching bytes. It writes `receipt.json`; a missing host, changed package, unsupported command, or missing Skill returns nonzero. `release_ready` remains false even when installation/discovery pass.
 
 The CLI command contract used by the harness was checked on 2026-09-20:
 - https://developers.openai.com/codex/cli/reference — `plugin marketplace add`, `plugin add --json`, `plugin list --json`;
@@ -18,6 +18,10 @@ The CLI command contract used by the harness was checked on 2026-09-20:
 - https://developers.openai.com/plugins/build/plugins — local marketplace roots.
 
 Use a compatible native version and retain its actual version in the receipt. Do not reinterpret marketplace registration as installation or substitute ZIP extraction for native discovery.
+
+## Continuous repository checks
+
+`.github/workflows/local-readiness.yml` runs Python tests on Linux, macOS and Windows, plus an isolated native install/discovery job on Linux using the observed `@openai/codex@0.155.1`. The existing product workflow supplies the Linux/Python 3.12 baseline. Each native receipt carries the source commit/Plugin tree and file hashes when the checkout is clean. The CI jobs never read a user login, call a model, or claim the actual-work gate passed.
 
 ## Actual work and genuinely fresh sessions
 

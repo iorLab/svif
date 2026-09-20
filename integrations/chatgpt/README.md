@@ -71,3 +71,9 @@ Implement a remote Apps SDK/MCP wrapper that exposes at minimum:
 - clear tool metadata distinguishing read-only preparation from effectful completion paths.
 
 That wrapper should reuse this bridge and Orchestrator rather than duplicate Project continuity, provenance, or authority logic.
+
+## Trusted completion configuration
+
+The wrapper supplies `OperationRequest.verification_required` (default true), optional `required_checks`, and a reason for any not-applicable exemption. `parse_result()` exposes but cannot override these requirements. Evidence `check_id` values identify required checks separately from producers. The wrapper MUST authenticate tool/verifier receipts before passing them to completion; parsing JSON does not authenticate a model's claim.
+
+Capability Providers MUST expose trusted `operation_policy(operation)` metadata. Missing policy fails closed; a result's optional `authority_class` can only strengthen the provider requirement. `complete()` consumes its exact session once, even on a failed/uncertain attempt. The Agnir provider rejects stale contexts before effects and retains an unresolved-effect marker across process restart. `reconcile_effect()` requires trusted `effect-reconciliation` authority and a matching successful independent observation; it never retries delivery.

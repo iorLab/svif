@@ -4,6 +4,7 @@ import unittest
 
 from svif.runtime import (
     AuthorityRequired,
+    CapabilityPolicy,
     CapabilityRequest,
     ContinuitySnapshot,
     EvidenceRecord,
@@ -59,6 +60,9 @@ class ScriptedCapability:
         self.events = events
         self.observation_subject = observation_subject
         self.actuation_count = 0
+
+    def operation_policy(self, operation: str) -> CapabilityPolicy:
+        return CapabilityPolicy(operation, "actuate", frozenset({"protected-delivery"}))
 
     def actuate(self, request: CapabilityRequest) -> EvidenceRecord:
         self.events.append("actuate")

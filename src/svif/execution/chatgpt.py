@@ -28,14 +28,14 @@ class ChatGPTExecutionSurface:
     @staticmethod
     def _serializable(value: object) -> object:
         try:
-            json.dumps(value)
-        except TypeError as exc:
+            json.dumps(value, allow_nan=False)
+        except (TypeError, ValueError) as exc:
             raise BindingError("ChatGPT surface context is not JSON-serializable") from exc
         return value
 
     @staticmethod
     def _required_string(value: object, label: str) -> str:
-        if not isinstance(value, str) or not value:
+        if not isinstance(value, str) or not value.strip():
             raise BindingError(f"ChatGPT result requires non-empty {label}")
         return value
 
@@ -58,6 +58,10 @@ class ChatGPTExecutionSurface:
             "intent": session.request.intent,
             "bound_capabilities": sorted(session.binding.capabilities),
             "authority_grants": sorted(session.request.authority_grants),
+            "verification_required": session.request.verification_required,
+            "required_checks": sorted(session.request.required_checks),
+            "continuity_revision": session.context.continuity.revision,
+            "pending_effect": self._serializable(session.context.continuity.pending_effect),
             "continuity": {
                 "state": self._serializable(continuity.state),
                 "next_actions": self._serializable(continuity.next_actions),
@@ -106,6 +110,7 @@ class ChatGPTExecutionSurface:
                     target_identity=self._optional_string(
                         item.get("target_identity"), "evidence.target_identity"
                     ),
+                    check_id=self._optional_string(item.get("check_id"), "evidence.check_id"),
                     producer=self._optional_string(
                         item.get("producer"), "evidence.producer"
                     ),

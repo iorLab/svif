@@ -277,3 +277,7 @@ PYTHONPATH=src python -m unittest discover -s tests -v
 ## 下一步
 
 先在 Codex CLI 与 ChatGPT 桌面版/Codex 中，针对同一个不可变候选完成自分发 `v0.2.0-preview.1` 的验收；随后把已验证 tag 发布为 GitHub Prerelease，并保留同一份 Skills-only package 供以后提交 OpenAI Platform。通用目录 publication 仍需满足相应 publisher identity 与 review 流程；MCP/App packaging 继续作为后续能力增量，而不是 release gate。真实 Cloudflare actuation 仍然单独受权限门控。
+
+## 本地功能验收
+
+OpenAI Platform 发布暂缓。当前开发候选的授权、必需验证、路径边界与 checkpoint 恢复采用独立行为测试；原生宿主安装、Skill 加载和真实新会话恢复仍分别验收。参见 [本地验收步骤](LOCAL_ACCEPTANCE.md) 与 [功能／证据矩阵](RELEASE_READINESS.md)。不要用旧 Preview、压缩包校验或 Python 测试替代当前候选的客户端证据。

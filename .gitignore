@@ -1,0 +1,6 @@
+__pycache__/
+*.py[cod]
+.svif-continuity.lock
+.svif-checkpoint.json
+.svif-effect-pending.json
+.*.svif-tmp

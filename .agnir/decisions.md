@@ -207,3 +207,13 @@
 - Final repair CI run `35317245771` passed all product-check jobs; final acceptance-checkpoint run `35317410100` also passed all product-check jobs.
 - Continuity-only commits after `f9026f7e3db4db8956cfc88ba1990daf0757a011` may advance authoritative `main` without changing the accepted Plugin tree. External submission evidence MUST identify the exact submitted Plugin subject, not merely a moving branch.
 - The immutable released Repository Preview `v0.2.0-preview.1` remains a different historical subject and is not rewritten.
+
+
+## 2026-09-20 — Release-quality hardening before local acceptance
+
+- The Principal authorized implementing existing Svif functionality to release-quality standards, while public Platform publication remains paused.
+- `CapabilityPolicy` is trusted Provider/operation metadata, not result-selected authority. Missing policy fails closed; optional requested authority can only strengthen it.
+- `OperationRequest` owns required verification/check IDs. The default requires exact-subject success; non-applicability needs an explicit trusted reason. Failed checks never justify completion. Integrations authenticate actual receipts rather than treating JSON as proof.
+- The founding filesystem adapter uses cooperating-reader locks, revision checks, full preflight and a recoverable multi-file journal without changing Agnir identity/lineage/locators. Conflicting outside edits stop recovery.
+- Completion sessions are single-use. Uncertain external attempts survive restart and cannot be blindly replayed; independently observed effects require trusted reconciliation. This is not a live Cloudflare implementation or authorization.
+- Native install/discovery and actual task/bootstrap/idempotency/fresh-session effectiveness remain separately observed gates on the same Plugin subject. Local test success is not release authorization; no new tag or public publication occurs here.

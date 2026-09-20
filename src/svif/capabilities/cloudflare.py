@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Protocol
 
-from svif.runtime import BindingError, CapabilityRequest, EvidenceRecord
+from svif.runtime import BindingError, CapabilityPolicy, CapabilityRequest, EvidenceRecord
 
 
 class CloudflareWorkersTransport(Protocol):
@@ -29,6 +29,12 @@ class CloudflareWorkersCapabilityProvider:
 
     def __init__(self, transport: CloudflareWorkersTransport) -> None:
         self._transport = transport
+
+    @staticmethod
+    def operation_policy(operation: str) -> CapabilityPolicy:
+        if operation != "deploy_verified_worker":
+            raise BindingError("unsupported Cloudflare Workers capability operation")
+        return CapabilityPolicy(operation, "actuate", frozenset({"protected-delivery"}))
 
     def actuate(self, request: CapabilityRequest) -> EvidenceRecord:
         if request.provider != self.provider_id:

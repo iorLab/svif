@@ -80,3 +80,56 @@ behavior. Final-candidate exact-byte native install/discovery needs its own rece
   constraints are explicit in `spec/RUNTIME_SAFETY.md`.
 - Cloudflare's production transport and remote MCP wrapper are not added by this repair.
 - Preview.1 remains immutable. The old 0.2.0 package ZIP is not the new Skill candidate.
+
+## Cross-platform candidate repair and acceptance
+
+The exact first candidate tree `c3c642e7ea0c9783f6f3f7a6efd8da016e3ff339`
+passed 126 tests plus both checks in source-materialization run `35509048052`.
+The runner's attempt to push a workflow-changing staging commit was refused by its
+workflow permission; no test failure was hidden. The verified tree was then published
+through the authorized connector as `d0f90a6505509b76776b5d4bf0c4b0249c129efb`.
+Temporary transfer/probe files are absent from the candidate. PR #10 carries the repair.
+
+Initial PR run `35509114938` passed both Linux runtime jobs, repository/contract checks
+and both native installation jobs. It exposed two cross-platform defects: Windows
+native separators were incorrectly rejected by the path guard; macOS case-insensitive
+storage made the collision test overwrite the existing manifest instead of presenting
+two names. Both were repaired, not bypassed. The portable collision test now models
+both member names without destroying the physical source and validates real metadata;
+explicit native relative/absolute/ADS/escape tests were added. Local suite now passes
+128 tests, plus both checks.
+
+Verified repair source: `225e535e32a18bf8db2bfc7d76efe6bed9378e97`.
+Verified full tree: `12542123c9ab47e5e938f8db8fd8a7d36f28a513`.
+Plugin tree: `7cc90517013306181a4df2238f849b85cf716665` (unchanged by platform fixes).
+
+PR run `35509417968` passed all eight jobs:
+
+- Windows 2022 / Python 3.12 runtime: `106074610910`.
+- Ubuntu 24.04 / Python 3.12 runtime: `106074611029`.
+- Ubuntu 24.04 / Python 3.13 runtime: `106074610988`.
+- macOS 14 / Python 3.12 runtime: `106074610995`.
+- repository integrity: `106074610942`; portable contracts: `106074610934`.
+- native installation Ubuntu: `106074610931`; macOS: `106074610959`.
+
+Native run artifacts: Ubuntu `10604694096`, digest
+`91066b1a1c725dc41763061cf4726816688906b9fb9ae061905a39274c2aeac8`;
+macOS `10603999328`, digest
+`931d561a202617d58249f197c334ce21070701d4ecd331d93f03d354eaabe8d7`.
+
+The earlier same-Plugin native receipts were independently downloaded and inspected:
+Ubuntu artifact `10604249612` and macOS artifact `10604254767` from run `35509114938`.
+Their reports identify Codex 0.155.1, installed+enabled Svif, exact cached `svif:svif`
+discovery, no discovery errors, and installed file hashes matching the reviewed source.
+The package-file-map digest on both is
+`55d63f208e230b34c5f8b37a4543c5deb37d8978cfbb85013761b45b7a9d23c6`.
+This digest is SHA-256 of sorted JSON containing per-file SHA-256 values, not a Git
+subtree or ZIP digest. Native logs use the PR synthetic-merge checkout revision; use
+package hashes/tree equivalence, not a moving branch, to establish the installed subject.
+
+Both reports explicitly say `model_exercise: not-run` and
+`complete_release_acceptance: false`. No authenticated model task or desktop GUI run
+has been performed. The actual task/checkpoint/fresh-LLM-context and negative host gates
+remain open; the passing native installation layer must not be generalized beyond it.
+A later continuity-only checkpoint may advance the candidate without changing product
+code or this Plugin tree. Fresh checkpoint CI/main integration must still be observed.

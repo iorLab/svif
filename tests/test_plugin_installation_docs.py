@@ -69,19 +69,20 @@ class PluginInstallationDocumentationTests(unittest.TestCase):
         ):
             self.assertIn(marker, text)
 
-    def test_plugin_readme_and_skill_keep_agent_activation_mandatory(self) -> None:
+    def test_plugin_readme_and_skill_keep_version_appropriate_agent_activation_mandatory(self) -> None:
         readme = PLUGIN_README.read_text(encoding="utf-8")
         skill = SKILL.read_text(encoding="utf-8")
 
         for marker in (
-            "Agent-operable Agnir Project",
-            "repository-filesystem/0.1",
-            "Project root -> AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml -> durable memory",
-            "before normal Project work",
+            "preserve an existing Agnir Project's declared Core/profile compatibility",
+            "latest published stable Agnir",
+            "version-appropriate durable activation route",
+            "AGENTS.md -> AGNIR.md -> AGNIR.yaml",
+            "AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml",
         ):
             self.assertIn(marker, readme)
 
-        self.assertIn("the durable activation route is mandatory before normal Project work", skill)
+        self.assertIn("the durable activation route required by that Project's compatible Agnir installation is mandatory", skill)
         self.assertIn("current Agent can directly open `AGNIR.yaml`", skill)
 
     def test_repository_preview_uses_short_intent_and_immutable_release_ref(self) -> None:

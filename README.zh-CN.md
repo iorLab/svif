@@ -58,13 +58,14 @@ Install and enable Svif for this Project: https://github.com/iorLab/svif
 
 ## Svif 会给 Project 增加什么
 
-当 Svif 在一个真正未初始化的 repository/filesystem Project 中首次使用时，共享 Skill 会建立 founding Agnir continuity，并加入与之匹配的 Svif Project Binding。**Svif 不会接管已有 Project 文件。** 对已有的 `AGENTS.md` 和 `README.md`，只添加激活 / 指令入口，并保留原有无关内容。
+首次使用时，Svif 会先判断 Project 是否已经使用 Agnir。若已经存在 Agnir，就原样保留该 Project 声明的 Agnir Core/profile compatibility，并让 Svif binding 与这一条兼容线保持一致；安装 Svif 不等于获得迁移 Agnir 的授权。只有真正没有 Agnir / 其他 continuity binding 的 repository/filesystem Project，才解析 canonical **最新已发布 stable Agnir**，并按该 stable release 声明的 Core/profile 与 activation contract 初始化。**Svif 不会接管已有 Project 文件。** 已有 activation / 文档表面只增加所选 Agnir contract 需要的入口，并保留无关内容。
 
 ```text
 Project/
-├── AGENTS.md                 # [编辑：仅添加入口] 加入 Agnir activation locator；保留原有 instructions
-├── README.md                 # [编辑：仅添加入口] 加入 ## Agnir Project Instructions；保留原有内容
-├── AGNIR.yaml                # [新增] founding Agnir discovery anchor
+├── AGENTS.md                 # [编辑：仅添加入口] 加入所选 Agnir contract 的 activation locator；保留原有 instructions
+├── AGNIR.md                  # [所选 release 要求时新增] 当前 stable packaging 的 canonical Agnir Project instructions
+├── README.md                 # [编辑：仅添加入口] 加入所选 release 的兼容 / 指令入口；保留原有内容
+├── AGNIR.yaml                # [新增] founding Agnir discovery anchor；使用所选 stable Core/profile
 ├── .agnir/                   # [新增] Project 自己拥有的 durable continuity
 │   ├── state.md              # [新增] 当前仍然成立的 durable Project truth
 │   ├── next-actions.md       # [新增] 下一位 Executor 应继续推进的有序工作
@@ -73,7 +74,7 @@ Project/
 └── SVIF.yaml                 # [新增] Svif Project Binding：continuity、execution、capability 与 profile bindings
 ```
 
-如果兼容的 Agnir / Svif artifacts 已经存在，Skill 会校验并复用，而不是重新创建。部分存在或互相矛盾的 artifacts 属于 repair case，不按 clean initialization 处理。已经明确绑定其他 Continuity Provider 的 Project 不会被静默改写成 Agnir。
+如果兼容的 Agnir / Svif artifacts 已经存在，Skill 会校验并复用其原本声明的 compatibility，而不是重新创建或顺手升级。部分存在或互相矛盾的 artifacts 属于 repair case，不按 clean initialization 处理。已经明确绑定其他 Continuity Provider 的 Project 不会被静默改写成 Agnir。Agnir package release version 与 Core/profile compatibility 是不同层级：新版 distribution 可以继续支持旧 Project，但不能因此静默改写 Project 的兼容性声明。
 
 这些是 founding `repository-filesystem` onboarding artifacts，不是 Svif kernel 的普遍强制文件。Svif 协调的是可替换 provider 与 execution surface；Git、GitHub、Agnir、ChatGPT 或 Cloudflare 都不是永久 kernel dependency。
 

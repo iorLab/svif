@@ -10,9 +10,11 @@ The Principal requested release-standard functional repair and local effectivene
 OpenAI Platform submission/Publish remains paused until an explicit new instruction.
 
 **The four reproduced runtime blockers are repaired and cross-platform regression
-checks pass. Native Codex installation, enablement, exact installed bytes and Skill
-discovery pass on Linux and macOS. Full model-driven effectiveness and whole-product
-release acceptance remain open; installation alone does not close them.**
+checks pass. A new first-use version-selection repair is now under validation: existing
+Agnir Projects preserve their declared Core/profile, while genuinely uninitialized
+Projects resolve the canonical latest published stable Agnir. Because this changes Skill
+bytes, the prior native install/discovery receipt remains historical for the preceding
+candidate and must be rerun for the new candidate before model-driven release acceptance.**
 
 ## Verified repair subject
 
@@ -21,7 +23,7 @@ release acceptance remain open; installation alone does not close them.**
   `fe7788bd53d3a240f663860133b741799d0470e3`.
 - Reviewed repair source: `225e535e32a18bf8db2bfc7d76efe6bed9378e97`, tree
   `12542123c9ab47e5e938f8db8fd8a7d36f28a513`, PR #11.
-- Exact repaired Plugin tree: `7cc90517013306181a4df2238f849b85cf716665`.
+- Prior repaired Plugin tree `7cc90517013306181a4df2238f849b85cf716665` passed native install/discovery and remains historical evidence. The bootstrap-version-selection change creates a new Plugin subject that requires its own exact tree and native receipt before acceptance.
 - Local full suite: 128 tests pass on Linux/Python 3.13.5; repository integrity and
   portable contracts pass. Tests execute real code, including process termination.
 - PR candidate run `35509417968`: all eight jobs pass, including runtime on Linux
@@ -51,7 +53,7 @@ Orchestrator + Continuity Provider + Execution Surface + Capability Provider rem
 first-class components. `conformance/RELEASE_READINESS.md` maps requirements to evidence.
 
 Implementation, failures/repairs and exact CI/native receipts:
-`.agnir/evidence/2026-09-20-runtime-readiness-repair.md`.
+`.agnir/evidence/2026-09-20-runtime-readiness-repair.md`. Bootstrap version-selection rationale and current latest-stable observation are recorded in `.agnir/evidence/2026-09-20-bootstrap-version-selection.md`.
 
 ## Preserved continuity, release and product boundaries
 
@@ -59,8 +61,7 @@ Implementation, failures/repairs and exact CI/native receipts:
 - Lineage `urn:svif:lineage:authoritative`; distinct VCS selector `refs/heads/main`.
 - Memory locators remain `.agnir/state.md`, `.agnir/next-actions.md`, `.agnir/decisions.md`,
   `.agnir/evidence/`; applied Agnir remains v1.0.0 at `6d16dcfd17b8e9f22fd25804e22b9f8a516d06c3`.
-- Adapter support remains 0.1/0.2/1.0. Skill founding bootstrap remains 0.1; no implicit
-  migration or Agnir operational upgrade is performed by this repair.
+- Adapter support remains 0.1/0.2/1.0. Existing target Projects preserve the exact Agnir Core/profile they declare; invoking/installing Svif does not authorize migration. A genuinely uninitialized target resolves the latest published stable Agnir at bootstrap time and adopts that release's declared Core/profile. Svif's own self-host binding remains 1.0 and is not upgraded by this change.
 - Released **Plugin MVP** / Preview `v0.2.0-preview.1` remains immutable at
   `2b07b6b5ea0bc8feee59f9f647be9af3069d056e`, tag object `2535cb89426c2d38c2e061948e81954a7c7c26d7`.
   Its historical real-client evidence is preserved, not generalized to the repaired Skill.

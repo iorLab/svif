@@ -17,37 +17,32 @@ def _quoted_scalar(text: str, key: str) -> str:
 
 
 class PluginAgnirDiscoveryTests(unittest.TestCase):
-    def test_skill_requires_durable_agent_activation_route_before_discovery(self) -> None:
+    def test_skill_requires_version_appropriate_durable_agent_activation_before_discovery(self) -> None:
         text = SKILL.read_text(encoding="utf-8")
 
-        mandatory = text.index("the durable activation route is mandatory before normal Project work")
+        mandatory = text.index("the durable activation route required by that Project's compatible Agnir installation is mandatory")
         activation = text.index("Agnir Agent activation and Core discovery are distinct layers")
-        route = text.index("durable `AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml` route")
-        contract = text.index("Do not validate activation by heading/link presence alone")
+        legacy = text.index("AGENTS.md -> README.md / Agnir Project Instructions -> AGNIR.yaml")
+        current = text.index("AGENTS.md -> AGNIR.md -> AGNIR.yaml")
         direct = text.index("current Agent can directly open `AGNIR.yaml`")
-        non_agent = text.index("A non-Agent Executor or trusted adapter")
-        root_selection = text.index("select exactly one Project root")
+        root_selection = text.index("select exactly one Project root", direct)
 
         self.assertLess(mandatory, activation)
-        self.assertLess(activation, route)
-        self.assertLess(route, direct)
-        self.assertLess(direct, contract)
-        self.assertLess(contract, non_agent)
-        self.assertLess(non_agent, root_selection)
-        self.assertNotIn("when those surfaces exist", text)
+        self.assertLess(mandatory, legacy)
+        self.assertLess(mandatory, current)
+        self.assertLess(activation, direct)
+        self.assertLess(direct, root_selection)
         for marker in (
-            "part of the Project activation contract, not as an optional convenience",
-            "points to the canonical README Agnir section",
-            "unresolved material instruction conflict",
+            "Do not infer the activation route from the newest available version",
+            "Preserve a valid existing route unless an explicit compatible operational upgrade or repair authorizes changing it",
+            "selected canonical activation surface",
             "MUST NOT be used to bypass a missing, stale, contradictory, or predecessor-private activation route",
             "fresh Agent can resume from the Project root",
-            "does not silently convert this Agent Skill into a non-Agent activation context",
-            "surface the activation blocker",
-            "accidental direct readability of `AGNIR.yaml`",
         ):
             self.assertIn(marker, text)
 
-    def test_skill_validates_canonical_readme_activation_contract_not_only_locator_shape(self) -> None:
+
+    def test_skill_validates_selected_canonical_activation_contract_not_only_locator_shape(self) -> None:
         text = SKILL.read_text(encoding="utf-8")
 
         contract = text.index("Do not validate activation by heading/link presence alone")
@@ -55,7 +50,8 @@ class PluginAgnirDiscoveryTests(unittest.TestCase):
         self.assertLess(contract, non_agent)
 
         for marker in (
-            "canonical README `## Agnir Project Instructions` section itself MUST satisfy the current profile activation contract",
+            "canonical README `## Agnir Project Instructions` section itself MUST satisfy",
+            "When `AGNIR.md` is canonical",
             "Project uses Agnir for durable continuity",
             "Project root as the authorized Project Entry Point",
             "read top-level `AGNIR.yaml`",
@@ -66,15 +62,16 @@ class PluginAgnirDiscoveryTests(unittest.TestCase):
             "directly observed current Project fact",
             "checkpoint material continuity changes at an intentional save/finish boundary",
             "missing, materially weakened, or contradicted",
-            "activation is not healthy even when `AGENTS.md` reaches the correct heading",
+            "activation is not healthy even when `AGENTS.md` reaches the expected locator",
             "rerun activation from the Project root",
         ):
             self.assertIn(marker, text)
 
+
     def test_skill_repairs_existing_agents_locator_without_rewriting_project_instructions(self) -> None:
         text = SKILL.read_text(encoding="utf-8")
 
-        locator = text.index("`AGENTS.md` is only a locator")
+        locator = text.index("`AGENTS.md` remains locator-only")
         merge = text.index("make the smallest locator-only merge")
         idempotent = text.index("If an equivalent Agnir locator already exists")
         conflict = text.index("If resolving a material conflict would require deleting, overriding, or reinterpreting")
@@ -287,7 +284,7 @@ class PluginAgnirDiscoveryTests(unittest.TestCase):
         self.assertIn("repair the earliest violated discovery invariant", text)
         self.assertIn("original authorized Project Entry Point", text)
 
-    def test_current_project_binding_can_migrate_without_rewriting_released_bootstrap_baseline(self) -> None:
+    def test_current_project_binding_and_target_bootstrap_versions_are_separate(self) -> None:
         skill = SKILL.read_text(encoding="utf-8")
         agnir = (ROOT / "AGNIR.yaml").read_text(encoding="utf-8")
         svif = (ROOT / "SVIF.yaml").read_text(encoding="utf-8")
@@ -310,14 +307,15 @@ class PluginAgnirDiscoveryTests(unittest.TestCase):
         ):
             self.assertIn(marker, svif)
 
-        # The released Skills-only distribution still bootstraps new Projects on
-        # its published Agnir 0.1 baseline until a later distribution release says otherwise.
         for marker in (
-            "Agnir Core `0.1`",
-            "repository-filesystem/0.1",
-            'compatibility `"0.1"`',
+            "A valid Core/profile `0.1` Project remains `0.1`",
+            "a valid `0.2` Project remains `0.2`",
+            "a valid `1.0` Project remains `1.0`",
+            "Genuinely uninitialized Project: resolve the latest published stable Agnir",
+            "immutable released `v0.2.0-preview.1` retains its historical Core/profile `0.1` bootstrap bytes",
         ):
             self.assertIn(marker, skill)
+
 
     def test_discovery_guard_test_is_registered_in_project_binding(self) -> None:
         svif = (ROOT / "SVIF.yaml").read_text(encoding="utf-8")

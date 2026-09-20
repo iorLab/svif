@@ -73,7 +73,7 @@ jobs:
               elements.append({'path': path, 'mode': mode, 'type': 'blob', 'sha': result['sha']})
           tree = api('git/trees', {'base_tree': '6c430926bf8f80b57c1497f3230a5008c42a09de', 'tree': elements})
           assert tree['sha'] == expected
-          summary = {'tree': tree['sha'], 'plugin_tree': git('rev-parse', ':plugin'),
+          summary = {'tree': tree['sha'], 'plugin_tree': git('rev-parse', expected + ':plugin'),
                      'zip_sha256': archive_hash, 'files': elements}
           (out / 'candidate.json').write_text(json.dumps(summary, indent=2) + '\n')
           print('VERIFIED_CANDIDATE', json.dumps(summary))

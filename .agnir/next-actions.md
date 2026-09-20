@@ -30,14 +30,20 @@ Full current-version Skill effectiveness and whole-release sign-off remain open.
    initial/resulting file hashes, host/version and classification. The 141 passing tests
    include version-checker regressions, not fabricated model observations. Kernel tests
    and native installation cannot substitute for installed-Skill adherence.
-3. **Preserve current evidence and integration identity.** The bootstrap correction
-   and native receipts are in `.agnir/evidence/2026-09-20-bootstrap-version-selection.md`.
-   Candidate tree `3c053b2371f0fe916379ac7ea2f74ce1eb4bad3f` contains no temporary
-   workflow. Require the continuity-only PR checkpoint CI before integration and read
-   back authoritative main afterward. Keep `spec/RUNTIME_SAFETY.md` limitations explicit.
-   PR #11's older integrated runtime and Plugin receipt remain historical; they must not
-   replace the current Plugin identity. Full release acceptance stays unpassed until
-   authenticated positive and negative native behavior gates close.
+3. **Preserve the completed main integration and current evidence.** PR #13 was
+   squash-merged as `96c4d5fefd2bd4ceb3984c99e1e733e5d150dfa6`. Merge tree
+   `d2776331cd1d03c078bb87b95639f46c4c4f870a` equals the reviewed checkpoint tree;
+   Plugin tree remains `77953ba954b2c0f3ff7dcc6f9c7814df5fa05e12`.
+   Final PR run `35521027661` succeeded and authoritative-main run `35521078292`
+   passed all eight checks, including Linux/macOS native installation and runtime
+   on Linux/macOS/Windows. Bootstrap implementation, checker, native installation
+   and main integration gates are complete; do not repeat them as unimplemented work.
+   Details and distinct auxiliary workflow failures are recorded in
+   `.agnir/evidence/2026-09-20-bootstrap-version-selection.md`.
+   The one-shot workflow is absent from the integrated product. Final staging tip
+   `7a62052994815213a39f8077a0a325ea5580dd92` is a historical locator, not authority.
+   Keep `spec/RUNTIME_SAFETY.md` limitations and the remaining authenticated-model
+   gate explicit; older PR #11 Plugin receipts cannot replace this changed subject.
 
 ## Deferred public/personal ChatGPT path
 

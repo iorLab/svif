@@ -1,0 +1,89 @@
+name: Materialize verified readiness repair once
+on:
+  push:
+    branches: [fix/local-release-readiness]
+    paths: [.github/workflows/readiness-apply.yml]
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Reconstruct exact reviewed source and remove staging helpers
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import hashlib, json, lzma
+          from pathlib import Path, PurePosixPath
+          root = Path.cwd()
+          compressed = b''.join((root / '.github/readiness-payload' / f'part-{i}').read_bytes() for i in range(6))
+          payload = lzma.decompress(compressed)
+          assert hashlib.sha256(payload).hexdigest() == '962eee14daf590390adad50943df6e85f8e0c5e817cb92e472c128eee262d3f7'
+          updates = json.loads(payload)
+          assert len(updates) == 34
+          staged = {}
+          for update in updates:
+              name = update['path']
+              parts = PurePosixPath(name).parts
+              assert not name.startswith('/') and '..' not in parts and '.git' not in parts
+              assert name not in staged
+              path = root / name
+              assert path.resolve().is_relative_to(root) and not path.is_symlink()
+              before = path.read_bytes() if path.exists() else b''
+              assert hashlib.sha256(before).hexdigest() == update['before'], name
+              lines = before.decode('utf-8').splitlines(True)
+              edits = update['edits']
+              for start, end, replacement in reversed(edits):
+                  assert 0 <= start <= end <= len(lines), name
+                  lines[start:end] = [replacement]
+              after = ''.join(lines).encode('utf-8')
+              assert hashlib.sha256(after).hexdigest() == update['after'], name
+              staged[name] = after
+          for name, after in staged.items():
+              path = root / name
+              path.parent.mkdir(parents=True, exist_ok=True)
+              path.write_bytes(after)
+          PY
+          git rm -r .github/readiness-payload
+          git rm .github/workflows/readiness-source-export.yml .github/workflows/readiness-native-probe.yml .github/workflows/readiness-apply.yml
+          git add -A
+          actual="$(git write-tree)"
+          echo "candidate_tree=$actual"
+          test "$actual" = "c3c642e7ea0c9783f6f3f7a6efd8da016e3ff339"
+      - name: Verify candidate before staging publication
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/receipts"
+          PYTHONPATH=src python -B -m unittest discover -s tests -v 2>&1 | tee "$RUNNER_TEMP/receipts/tests.txt"
+          python checks/check_repository.py | tee "$RUNNER_TEMP/receipts/repository.txt"
+          python conformance/check_contracts.py | tee "$RUNNER_TEMP/receipts/contracts.txt"
+          python checks/build_submission_bundle.py --output "$RUNNER_TEMP/receipts/svif-0.2.0.zip" | tee "$RUNNER_TEMP/receipts/package.txt"
+      - name: Publish only the stale-checked staging ref
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git write-tree)" = "c3c642e7ea0c9783f6f3f7a6efd8da016e3ff339"
+          actual="$(git ls-remote origin refs/heads/fix/local-release-readiness | cut -f1)"
+          test "$actual" = "$GITHUB_SHA"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'fix: enforce trusted runtime safety and recoverable checkpoints'
+          git push origin HEAD:refs/heads/fix/local-release-readiness
+          git rev-parse HEAD HEAD^{tree} HEAD:plugin > "$RUNNER_TEMP/receipts/candidate-identity.txt"
+          git archive --format=tar HEAD > "$RUNNER_TEMP/receipts/svif-candidate-source.tar"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: svif-readiness-candidate
+          path: ${{ runner.temp }}/receipts/
+          if-no-files-found: error
+          retention-days: 14

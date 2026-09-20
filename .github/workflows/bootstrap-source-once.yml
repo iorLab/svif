@@ -4,7 +4,7 @@ on:
     branches: [fix/bootstrap-acceptance]
     paths: [.github/workflows/bootstrap-source-once.yml]
 permissions:
-  contents: read
+  contents: write
 jobs:
   source:
     runs-on: ubuntu-24.04
@@ -13,15 +13,75 @@ jobs:
         with:
           ref: 9501fd7ed0843f46882ee63ed9c19cd2759a7cb2
           persist-credentials: false
-      - name: Capture tracked source only
-        run: |
-          mkdir -p "$RUNNER_TEMP/source"
-          git rev-parse HEAD HEAD^{tree} > "$RUNNER_TEMP/source/identity.txt"
-          git ls-tree -r HEAD > "$RUNNER_TEMP/source/tree.txt"
-          git archive --format=tar HEAD > "$RUNNER_TEMP/source/source.tar"
-      - uses: actions/upload-artifact@v4
+      - uses: actions/setup-python@v5
         with:
-          name: svif-bootstrap-pinned-source
-          path: ${{ runner.temp }}/source/
-          retention-days: 3
+          python-version: '3.12'
+      - name: Verify authored patch, test, and materialize Git objects only
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PYTHONPATH: src
+        run: |
+          python - <<'PY'
+          import base64, hashlib, importlib.util, json, os, subprocess, urllib.request
+          from pathlib import Path
+          out = Path(os.environ['RUNNER_TEMP']) / 'bootstrap-result'
+          out.mkdir()
+          def api(path, data=None):
+              request = urllib.request.Request('https://api.github.com/repos/iorLab/svif/' + path,
+                  data=None if data is None else json.dumps(data).encode(),
+                  headers={'Authorization': 'Bearer ' + os.environ['GH_TOKEN'],
+                           'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json'})
+              with urllib.request.urlopen(request, timeout=30) as response:
+                  return json.load(response)
+          def git(*args):
+              return subprocess.check_output(['git', *args], text=True).strip()
+          assert git('rev-parse', 'HEAD') == '9501fd7ed0843f46882ee63ed9c19cd2759a7cb2'
+          blob = api('git/blobs/f0b1b5d26060f9256fa3e81d9209c39bc3ae759f')
+          patch = base64.b64decode(blob['content'])
+          assert hashlib.sha256(patch).hexdigest() == '830fa876982df4fd4b8aa26bb47e77abf9c5c3596db389f7de98dfa0e318950c'
+          subprocess.run(['git', 'apply', '--unidiff-zero', '-'], input=patch, check=True)
+          allowed = {'README.md', 'README.zh-CN.md', 'REPOSITORY_TREE.md',
+                     'checks/check_local_install.py', 'checks/check_repository.py',
+                     'conformance/RELEASE_READINESS.md', 'plugin/skills/svif/SKILL.md',
+                     'tests/test_local_acceptance_harness.py', 'tests/test_plugin_first_use_bootstrap.py'}
+          changed = git('diff', '--name-only').splitlines()
+          assert set(changed) == allowed
+          subprocess.run(['git', 'diff', '--check'], check=True)
+          subprocess.run(['python', 'checks/check_repository.py'], check=True)
+          subprocess.run(['python', 'conformance/check_contracts.py'], check=True)
+          with (out / 'tests.txt').open('w') as log:
+              subprocess.run(['python', '-B', '-m', 'unittest', 'discover', '-s', 'tests', '-v'],
+                             stdout=log, stderr=subprocess.STDOUT, check=True)
+          subprocess.run(['git', 'add', '-u'], check=True)
+          expected = '3c053b2371f0fe916379ac7ea2f74ce1eb4bad3f'
+          assert git('write-tree') == expected
+          spec = importlib.util.spec_from_file_location('acceptance', 'checks/check_local_install.py')
+          module = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(module)
+          receipt, files = module.resolve_latest_agnir()
+          (out / 'agnir-live-resolution.json').write_text(json.dumps(receipt, indent=2) + '\n')
+          print('LIVE_AGNIR', json.dumps(receipt))
+          subprocess.run(['python', 'checks/build_submission_bundle.py', '--output', str(out / 'svif-0.2.0.zip')], check=True)
+          archive_hash = hashlib.sha256((out / 'svif-0.2.0.zip').read_bytes()).hexdigest()
+          (out / 'svif-0.2.0.zip.sha256').write_text(archive_hash + '  svif-0.2.0.zip\n')
+          elements = []
+          for path in changed:
+              raw = Path(path).read_bytes()
+              mode = git('ls-files', '--stage', '--', path).split()[0]
+              result = api('git/blobs', {'content': base64.b64encode(raw).decode(), 'encoding': 'base64'})
+              assert result['sha'] == git('hash-object', path)
+              elements.append({'path': path, 'mode': mode, 'type': 'blob', 'sha': result['sha']})
+          tree = api('git/trees', {'base_tree': '6c430926bf8f80b57c1497f3230a5008c42a09de', 'tree': elements})
+          assert tree['sha'] == expected
+          summary = {'tree': tree['sha'], 'plugin_tree': git('rev-parse', ':plugin'),
+                     'zip_sha256': archive_hash, 'files': elements}
+          (out / 'candidate.json').write_text(json.dumps(summary, indent=2) + '\n')
+          print('VERIFIED_CANDIDATE', json.dumps(summary))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: svif-bootstrap-validation
+          path: ${{ runner.temp }}/bootstrap-result/
+          retention-days: 14
           if-no-files-found: error
